@@ -355,7 +355,7 @@ public class WorktreeServiceRemoveTests
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe("WT-RM-001");
-        result.ErrorMessage.ShouldContain("not found");
+        result.ErrorMessage!.ShouldContain("not found");
         result.Solution.ShouldBe("Use 'wt list' to see available worktrees");
     }
 
@@ -449,7 +449,7 @@ public class WorktreeServiceRemoveTests
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe("WT-RM-003");
-        result.ErrorMessage.ShouldContain("uncommitted changes");
+        result.ErrorMessage!.ShouldContain("uncommitted changes");
         result.Solution.ShouldBe("Commit or stash changes, or use --force to override");
     }
 
@@ -484,7 +484,7 @@ public class WorktreeServiceRemoveTests
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe("WT-RM-005");
-        result.ErrorMessage.ShouldContain("is locked");
+        result.ErrorMessage!.ShouldContain("is locked");
         result.Solution.ShouldBe("Use --force to override lock, or wait for process to finish");
     }
 
@@ -511,7 +511,7 @@ public class WorktreeServiceRemoveTests
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe("WT-RM-001");
-        result.ErrorMessage.ShouldContain("not found");
+        result.ErrorMessage!.ShouldContain("not found");
     }
 
     [Fact]

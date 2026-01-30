@@ -610,7 +610,7 @@ detached
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
-        result.ErrorMessage.ShouldContain("Failed to check lock status");
+        result.ErrorMessage!.ShouldContain("Failed to check lock status");
     }
 
     [Fact]
@@ -631,7 +631,7 @@ detached
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
-        result.ErrorMessage.ShouldContain("Access denied");
+        result.ErrorMessage!.ShouldContain("Access denied");
     }
 
     [Fact]
@@ -649,7 +649,7 @@ detached
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe(ErrorCodes.NotGitRepository);
-        result.ErrorMessage.ShouldContain("Could not determine git directory");
+        result.ErrorMessage!.ShouldContain("Could not determine git directory");
     }
 
     #endregion
@@ -717,7 +717,7 @@ detached
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe("WT-RM-001");
-        result.ErrorMessage.ShouldContain("not found");
+        result.ErrorMessage!.ShouldContain("not found");
     }
 
     [Fact]
@@ -739,7 +739,7 @@ detached
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe("WT-RM-003");
-        result.ErrorMessage.ShouldContain("uncommitted changes");
+        result.ErrorMessage!.ShouldContain("uncommitted changes");
     }
 
     [Fact]
@@ -761,7 +761,7 @@ detached
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe("WT-RM-005");
-        result.ErrorMessage.ShouldContain("locked");
+        result.ErrorMessage!.ShouldContain("locked");
     }
 
     [Fact]
@@ -783,7 +783,7 @@ detached
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
-        result.ErrorMessage.ShouldContain("Failed to remove worktree");
+        result.ErrorMessage!.ShouldContain("Failed to remove worktree");
     }
 
     [Fact]

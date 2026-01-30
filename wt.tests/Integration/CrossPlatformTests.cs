@@ -113,7 +113,8 @@ public class CrossPlatformTests
     {
         // Arrange
         var processRunner = new ProcessRunner();
-        var gitService = new GitService(processRunner);
+        var fileSystem = new System.IO.Abstractions.FileSystem();
+        var gitService = new GitService(processRunner, fileSystem);
 
         // Act - Test if Git is available on the current platform
         var result = await gitService.IsGitRepositoryAsync(default);

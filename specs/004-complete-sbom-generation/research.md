@@ -283,6 +283,7 @@ POST /repos/{owner}/{repo}/dependency-graph/snapshots
     path: ~/.nuget/packages
     key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 ```
+
 **効果**: 2回目以降のリストアを80%高速化
 
 #### 2. SBOM生成の並列化

@@ -58,6 +58,7 @@ Choose the installation method for your operating system:
    - Click "OK" to save
 
 4. **Verify installation**:
+
    ```cmd
    wt --version
    ```
@@ -67,6 +68,7 @@ Choose the installation method for your operating system:
 1. **Download** the `wt-v{version}-osx-arm64.tar.gz` file from the releases page
 
 2. **Extract and install**:
+
    ```bash
    tar -xzf wt-v*-osx-arm64.tar.gz
    sudo mv wt /usr/local/bin/
@@ -74,6 +76,7 @@ Choose the installation method for your operating system:
    ```
 
 3. **Verify installation**:
+
    ```bash
    wt --version
    ```
@@ -85,6 +88,7 @@ Choose the installation method for your operating system:
    - ARM: `wt-v{version}-linux-arm.tar.gz`
 
 2. **Extract and install**:
+
    ```bash
    tar -xzf wt-v*-linux-*.tar.gz
    sudo mv wt /usr/local/bin/
@@ -92,6 +96,7 @@ Choose the installation method for your operating system:
    ```
 
 3. **Verify installation**:
+
    ```bash
    wt --version
    ```

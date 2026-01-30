@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using Kuju63.WorkTree.CommandLine.Models;
 using Kuju63.WorkTree.CommandLine.Services.Git;
 using Kuju63.WorkTree.CommandLine.Utils;
@@ -9,12 +10,19 @@ namespace Kuju63.WorkTree.Tests.Services.Git;
 public class GitServiceTests
 {
     private readonly Mock<IProcessRunner> _mockProcessRunner;
+    private readonly Mock<IFileSystem> _mockFileSystem;
     private readonly GitService _gitService;
 
     public GitServiceTests()
     {
         _mockProcessRunner = new Mock<IProcessRunner>();
-        _gitService = new GitService(_mockProcessRunner.Object);
+        _mockFileSystem = new Mock<IFileSystem>();
+
+        // Setup default file system behavior
+        _mockFileSystem.Setup(fs => fs.File.Exists(It.IsAny<string>())).Returns(false);
+        _mockFileSystem.Setup(fs => fs.Directory.Exists(It.IsAny<string>())).Returns(true);
+
+        _gitService = new GitService(_mockProcessRunner.Object, _mockFileSystem.Object);
     }
 
     [Fact]
@@ -316,4 +324,494 @@ detached
         result.Data!.Count.ShouldBe(1);
         result.Data[0].IsDetached.ShouldBeTrue();
     }
+
+    #region HasUncommittedChangesAsync Tests
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WithNoChanges_ReturnsFalse()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WithOnlyUntrackedFiles_ReturnsFalse()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        var statusOutput = "?? untracked1.txt\n?? untracked2.txt\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, statusOutput, ""));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WithStagedChanges_ReturnsTrue()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        var statusOutput = "M  staged.txt\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, statusOutput, ""));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WithUnstagedChanges_ReturnsTrue()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        var statusOutput = " M unstaged.txt\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, statusOutput, ""));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WithMixedChanges_ReturnsTrue()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        var statusOutput = "M  staged.txt\n M unstaged.txt\n?? untracked.txt\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, statusOutput, ""));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WithDeletedFiles_ReturnsTrue()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        var statusOutput = "D  deleted.txt\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, statusOutput, ""));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WhenGitCommandFails_ReturnsError()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(128, "", "fatal: not a git repository"));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
+    }
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WithEmptyLines_IgnoresEmptyLines()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        var statusOutput = "\n\n?? untracked.txt\n\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, statusOutput, ""));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HasUncommittedChangesAsync_WithWhitespacePrefix_RecognizesChanges()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        var statusOutput = "  M  file.txt\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"-C \"{worktreePath}\" status --porcelain",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, statusOutput, ""));
+
+        // Act
+        var result = await _gitService.HasUncommittedChangesAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+    }
+
+    #endregion
+
+    #region IsWorktreeLockedAsync Tests
+
+    [Fact]
+    public async Task IsWorktreeLockedAsync_WhenLockFileExists_ReturnsTrue()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "rev-parse --git-dir", null, default))
+            .ReturnsAsync(new ProcessResult(0, "/repo/.git", ""));
+        _mockFileSystem
+            .Setup(fs => fs.File.Exists(It.Is<string>(p => p.EndsWith("locked"))))
+            .Returns(true);
+
+        // Act
+        var result = await _gitService.IsWorktreeLockedAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task IsWorktreeLockedAsync_WhenLockFileDoesNotExist_ReturnsFalse()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "rev-parse --git-dir", null, default))
+            .ReturnsAsync(new ProcessResult(0, "/repo/.git", ""));
+        _mockFileSystem
+            .Setup(fs => fs.File.Exists(It.Is<string>(p => p.EndsWith("locked"))))
+            .Returns(false);
+
+        // Act
+        var result = await _gitService.IsWorktreeLockedAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task IsWorktreeLockedAsync_WithDifferentWorktreeName_ChecksCorrectPath()
+    {
+        // Arrange
+        var worktreePath = "/path/to/my-feature";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "rev-parse --git-dir", null, default))
+            .ReturnsAsync(new ProcessResult(0, "/repo/.git", ""));
+
+        var expectedLockPath = "/repo/.git/worktrees/my-feature/locked";
+        _mockFileSystem
+            .Setup(fs => fs.File.Exists(expectedLockPath))
+            .Returns(true);
+
+        // Act
+        var result = await _gitService.IsWorktreeLockedAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+        _mockFileSystem.Verify(
+            fs => fs.File.Exists(It.Is<string>(p => p.Contains("my-feature") && p.EndsWith("locked"))),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task IsWorktreeLockedAsync_WhenIOExceptionThrown_ReturnsError()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "rev-parse --git-dir", null, default))
+            .ReturnsAsync(new ProcessResult(0, "/repo/.git", ""));
+        _mockFileSystem
+            .Setup(fs => fs.File.Exists(It.IsAny<string>()))
+            .Throws(new IOException("Disk read error"));
+
+        // Act
+        var result = await _gitService.IsWorktreeLockedAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
+        result.ErrorMessage!.ShouldContain("Failed to check lock status");
+    }
+
+    [Fact]
+    public async Task IsWorktreeLockedAsync_WhenUnauthorizedAccessExceptionThrown_ReturnsError()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "rev-parse --git-dir", null, default))
+            .ReturnsAsync(new ProcessResult(0, "/repo/.git", ""));
+        _mockFileSystem
+            .Setup(fs => fs.File.Exists(It.IsAny<string>()))
+            .Throws(new UnauthorizedAccessException("Access denied"));
+
+        // Act
+        var result = await _gitService.IsWorktreeLockedAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
+        result.ErrorMessage!.ShouldContain("Access denied");
+    }
+
+    [Fact]
+    public async Task IsWorktreeLockedAsync_WhenGitDirNotFound_ReturnsError()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "rev-parse --git-dir", null, default))
+            .ReturnsAsync(new ProcessResult(128, "", "fatal: not a git repository"));
+
+        // Act
+        var result = await _gitService.IsWorktreeLockedAsync(worktreePath);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.NotGitRepository);
+        result.ErrorMessage!.ShouldContain("Could not determine git directory");
+    }
+
+    #endregion
+
+    #region RemoveWorktreeAsync Tests
+
+    [Fact]
+    public async Task RemoveWorktreeAsync_WithoutForce_ExecutesStandardRemoval()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"worktree remove \"{worktreePath}\"",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.RemoveWorktreeAsync(worktreePath, false);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task RemoveWorktreeAsync_WithForce_ExecutesForceRemoval()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"worktree remove --force \"{worktreePath}\"",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.RemoveWorktreeAsync(worktreePath, true);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task RemoveWorktreeAsync_WhenWorktreeNotFound_ReturnsNotFoundError()
+    {
+        // Arrange
+        var worktreePath = "/path/to/nonexistent";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                It.IsAny<string>(),
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(1, "", "fatal: '/path/to/nonexistent' is not a working tree"));
+
+        // Act
+        var result = await _gitService.RemoveWorktreeAsync(worktreePath, false);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe("WT-RM-001");
+        result.ErrorMessage!.ShouldContain("not found");
+    }
+
+    [Fact]
+    public async Task RemoveWorktreeAsync_WhenUncommittedChanges_ReturnsUncommittedChangesError()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                It.IsAny<string>(),
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(1, "", "fatal: '/path/to/worktree' contains modified or untracked files, use --force to delete it"));
+
+        // Act
+        var result = await _gitService.RemoveWorktreeAsync(worktreePath, false);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe("WT-RM-003");
+        result.ErrorMessage!.ShouldContain("uncommitted changes");
+    }
+
+    [Fact]
+    public async Task RemoveWorktreeAsync_WhenLocked_ReturnsLockedError()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                It.IsAny<string>(),
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(1, "", "fatal: '/path/to/worktree' is locked"));
+
+        // Act
+        var result = await _gitService.RemoveWorktreeAsync(worktreePath, false);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe("WT-RM-005");
+        result.ErrorMessage!.ShouldContain("locked");
+    }
+
+    [Fact]
+    public async Task RemoveWorktreeAsync_WhenUnknownError_ReturnsGenericError()
+    {
+        // Arrange
+        var worktreePath = "/path/to/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                It.IsAny<string>(),
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(1, "", "fatal: unknown error occurred"));
+
+        // Act
+        var result = await _gitService.RemoveWorktreeAsync(worktreePath, false);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
+        result.ErrorMessage!.ShouldContain("Failed to remove worktree");
+    }
+
+    [Fact]
+    public async Task RemoveWorktreeAsync_WithSpecialCharactersInPath_QuotesPathCorrectly()
+    {
+        // Arrange
+        var worktreePath = "/path/with spaces/worktree";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                $"worktree remove \"{worktreePath}\"",
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.RemoveWorktreeAsync(worktreePath, false);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        _mockProcessRunner.Verify(
+            x => x.RunAsync(
+                "git",
+                It.Is<string>(s => s.Contains($"\"{worktreePath}\"")),
+                null,
+                default),
+            Times.Once);
+    }
+
+    #endregion
 }

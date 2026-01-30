@@ -12,29 +12,30 @@ Automate the publishing of comprehensive documentation to GitHub Pages synchroni
 ## Technical Context
 
 **Language/Version**: C# / .NET 10.0  
-**Primary Dependencies**: 
-  - DocFX 2.78.4 (documentation generator, .NET global tool)
-  - System.CommandLine 2.0.2 (for CLI command documentation extraction)
-  - GitHub Actions (for CI/CD automation)
-  - GitHub Pages (for hosting)
+**Primary Dependencies**:
+
+- DocFX 2.78.4 (documentation generator, .NET global tool)
+- System.CommandLine 2.0.2 (for CLI command documentation extraction)
+- GitHub Actions (for CI/CD automation)
+- GitHub Pages (for hosting)
 **Storage**: Static files (markdown, generated HTML/CSS/JS)  
-**Testing**: 
-  - DocFX build validation with `--warningsAsErrors` flag
-  - LinkChecker for link validation  
+**Testing**:
+- DocFX build validation with `--warningsAsErrors` flag
+- LinkChecker for link validation  
 **Target Platform**: GitHub Pages static hosting (cross-platform access via web browser)
 **Project Type**: Single project with documentation output (static site generator workflow)  
-**Performance Goals**: 
-  - Documentation site loads within 2 seconds on standard broadband (per SC-007)
-  - Build and publish within 10 minutes of release (per SC-003)
-**Constraints**: 
-  - Version-specific URLs must remain stable for 2+ years (architectural constraint via GitHub Pages)
-  - Must maintain documentation for each minor version independently (per FR-011)
-  - No backend/database - pure static site architecture
-**Scale/Scope**: 
-  - Initial: 5-10 documentation pages per version
-  - API Reference: Generated from all public APIs in wt.cli project
-  - Estimated versions to support simultaneously: 3-5 minor versions
-  - Documentation format: Markdown source → DocFX → Static HTML
+**Performance Goals**:
+- Documentation site loads within 2 seconds on standard broadband (per SC-007)
+- Build and publish within 10 minutes of release (per SC-003)
+**Constraints**:
+- Version-specific URLs must remain stable for 2+ years (architectural constraint via GitHub Pages)
+- Must maintain documentation for each minor version independently (per FR-011)
+- No backend/database - pure static site architecture
+**Scale/Scope**:
+- Initial: 5-10 documentation pages per version
+- API Reference: Generated from all public APIs in wt.cli project
+- Estimated versions to support simultaneously: 3-5 minor versions
+- Documentation format: Markdown source → DocFX → Static HTML
 
 ## Constitution Check
 
@@ -43,62 +44,81 @@ Automate the publishing of comprehensive documentation to GitHub Pages synchroni
 ### Initial Check (Pre-Phase 0)
 
 #### I. Developer Usability (CLI優先)
+
 ✅ **PASS** - Documentation enhances CLI usability by providing comprehensive command reference and examples. This feature supports the CLI-first approach rather than replacing it.
 
 #### II. Cross-Platform (クロスプラットフォーム対応)
+
 ✅ **PASS** - GitHub Pages documentation is accessible from any platform via web browser. DocFX-generated sites are pure HTML/CSS/JS with no platform dependencies.
 
 #### III. Clean & Secure Code (クリーンでセキュアなコード)
+
 ✅ **PASS** - Static documentation poses minimal security risk. No secrets will be embedded in documentation. GitHub Actions workflow will use repository secrets for deployment tokens. All generated content is public-facing and contains no sensitive information.
 
 #### IV. Documentation Clarity (ドキュメントの明瞭性)
+
 ✅ **PASS** - **This feature directly implements this principle.** Documentation will be primarily in Japanese (as specified in constitution) with technical terms in English. Technical decisions about documentation architecture will be recorded as ADRs.
 
 #### V. Minimal Dependencies (最小限の依存関係)
-⚠️ **REQUIRES JUSTIFICATION** - Adding DocFX as a documentation dependency. 
+
+⚠️ **REQUIRES JUSTIFICATION** - Adding DocFX as a documentation dependency.
+
 - **Justification**: DocFX is specifically designed for .NET projects and can generate API documentation from XML comments. Alternatives like Sphinx (Python-focused), MkDocs (lacks API generation for .NET), or custom solution (high maintenance burden) are less suitable.
 - **Risk Mitigation**: DocFX is maintained by Microsoft/.NET Foundation, reducing supply chain risk. We will pin specific versions and monitor for vulnerabilities.
 
 #### VI. Comprehensive Testing (テストの充実と自動化)
+
 ✅ **PASS (RESOLVED)** - Testing strategy defined in research.md:
+
 - Layer 1: DocFX build-time validation with `--warningsAsErrors`
 - Layer 2: LinkChecker for link validation
 - No xUnit tests required for static documentation content
 - Command documentation generation is part of build pipeline (fails if commands missing)
 
 #### VII. Quantitative Thresholds (閾値)
+
 ✅ **PASS** - Documentation build workflow is automation code, not production code. Standard code quality thresholds apply to any custom scripts. Documentation content itself follows clarity and completeness metrics defined in success criteria (SC-001 through SC-007).
 
 ### Post-Design Re-Evaluation (After Phase 1)
 
 #### I. Developer Usability (CLI優先)
+
 ✅ **CONFIRMED** - Design maintains CLI-first focus:
+
 - Command documentation auto-generated from CLI definitions
 - No separate documentation maintenance burden
 - Users access docs via web (universal accessibility)
 
 #### II. Cross-Platform (クロスプラットフォーム対応)
+
 ✅ **CONFIRMED** - Implementation is platform-agnostic:
+
 - GitHub Pages works on all browsers
 - No platform-specific deployment requirements
 - DocFX builds on ubuntu-latest runner (Linux)
 
 #### III. Clean & Secure Code (クリーンでセキュアなコード)
+
 ✅ **CONFIRMED** - Security measures implemented:
+
 - OIDC authentication (no long-lived tokens)
 - Minimal permissions (`contents: write`, `pages: write`, `id-token: write`)
 - Python manifest script validates JSON without arbitrary code execution
 - No secrets exposed in logs or deployed content
 
 #### IV. Documentation Clarity (ドキュメントの明瞭性)
+
 ✅ **CONFIRMED** - Documentation structure supports clarity:
+
 - Installation guide explains no .NET/Git required for end users
 - Contribution guide clarifies .NET SDK required for developers only
 - Clear separation of user vs. developer documentation
 - Version-specific documentation prevents confusion
 
 #### V. Minimal Dependencies (最小限の依存関係)
+
 ✅ **JUSTIFIED** - Dependency analysis post-design:
+
 - DocFX 2.78.4: Pinned version, Microsoft/.NET Foundation maintained
 - LinkChecker: Build-time only, not runtime dependency
 - Python 3: Pre-installed on GitHub runners, no additional installation
@@ -107,7 +127,9 @@ Automate the publishing of comprehensive documentation to GitHub Pages synchroni
 - **Risk level**: LOW - Both are well-maintained tools with established ecosystems
 
 #### VI. Comprehensive Testing (テストの充実と自動化)
+
 ✅ **CONFIRMED** - Two-layer testing strategy validated:
+
 - Build validation catches markdown errors, broken internal links
 - Link validation catches broken external links, missing resources
 - Command documentation generation failures caught in build pipeline
@@ -115,7 +137,9 @@ Automate the publishing of comprehensive documentation to GitHub Pages synchroni
 - **No TDD required**: Documentation is build artifact, not executable code
 
 #### VII. Quantitative Thresholds (閾値)
+
 ✅ **CONFIRMED** - Custom scripts meet quality standards:
+
 - `Tools/DocGenerator/Program.cs`: Will follow standard C# code quality rules
 - `.github/scripts/update-version-manifest.py`: Simple script (<100 LOC), single responsibility
 - GitHub Actions YAML: Declarative configuration, no complex logic
@@ -126,10 +150,12 @@ Automate the publishing of comprehensive documentation to GitHub Pages synchroni
 **✅ ALL GATES PASSED**
 
 **Justifications Accepted**:
+
 1. DocFX dependency justified due to .NET-specific API documentation generation needs
 2. No xUnit tests for static documentation content (validated through build process)
 
 **Action Items for Implementation**:
+
 - Pin DocFX version to 2.78.4 in workflow
 - Ensure Python manifest script has input validation
 - Add linting for Python script (optional: pylint or black)
@@ -211,15 +237,18 @@ _site/                            # DocFX build output
 ### Artifacts Generated (Phase 1 Complete)
 
 ✅ **Research Phase (Phase 0)**:
+
 - `research.md` - Comprehensive research on DocFX, testing strategies, version switching, and automation
 
 ✅ **Design Phase (Phase 1)**:
+
 - `data-model.md` - Entity definitions and relationships for documentation system
 - `contracts/github-workflow-contract.md` - GitHub Actions workflow specification
 - `contracts/docfx-config-contract.md` - DocFX configuration specification
 - `quickstart.md` - Step-by-step implementation guide (4-6 hours estimated)
 
 ✅ **Agent Context**:
+
 - `AGENTS.md` - Updated with documentation automation guidance
 
 ### Key Decisions

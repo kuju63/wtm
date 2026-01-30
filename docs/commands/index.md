@@ -67,6 +67,7 @@ Commands that produce structured output support multiple formats:
 - **JSON**: Machine-readable output for automation and scripting
 
 Example:
+
 ```bash
 wt create feature-api --output json | jq '.worktree.path'
 ```

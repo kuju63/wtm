@@ -12,7 +12,8 @@ This document consolidates research findings to resolve all "NEEDS CLARIFICATION
 
 **Decision**: Use DocFX v2.78.4 (latest stable) as .NET global tool
 
-**Rationale**: 
+**Rationale**:
+
 - DocFX 2.78.4 is the current production release maintained by Microsoft/.NET Foundation
 - Includes native support for .NET 10 (via Roslyn 4.13.0 update)
 - Global tool installation integrates seamlessly with .NET 10.0 SDK already in use
@@ -21,16 +22,19 @@ This document consolidates research findings to resolve all "NEEDS CLARIFICATION
 - Performance improvements: cached MarkdownPipeline, reused YamlDeserializer instances
 
 **Installation Method**:
+
 ```bash
 dotnet tool install --global docfx --version 2.78.4
 ```
 
 **Alternatives Considered**:
+
 - **Container-based (Docker)**: More complex CI/CD setup, unnecessary overhead for simple documentation build
 - **npm-based tools (MkDocs, Docusaurus)**: Cannot generate .NET API documentation from XML comments
 - **Sphinx**: Python-focused, poor .NET integration, requires additional plugins
 
 **Implementation Requirements**:
+
 - Add `<GenerateDocumentationFile>true</GenerateDocumentationFile>` to wt.cli.csproj
 - Pin DocFX version 2.78.4 in GitHub Actions workflow to prevent unexpected breaking changes
 - Configure `docfx.json` to output XML documentation from wt.cli project
@@ -42,6 +46,7 @@ dotnet tool install --global docfx --version 2.78.4
 **Decision**: Programmatic export of System.CommandLine help text using HelpBuilder and custom IConsole
 
 **Rationale**:
+
 - System.CommandLine (already used in wt.cli) provides rich command metadata
 - Automatic generation ensures documentation stays synchronized with actual CLI implementation
 - Prevents manual maintenance burden and documentation drift
@@ -50,6 +55,7 @@ dotnet tool install --global docfx --version 2.78.4
 **Implementation Architecture**:
 
 #### Step 1: Create Documentation Generator Tool
+
 ```csharp
 // Tools/DocGenerator/Program.cs
 using System.CommandLine;
@@ -205,6 +211,7 @@ class Program
 ```
 
 #### Step 2: Integrate into Build Pipeline
+
 ```yaml
 # .github/workflows/docs.yml
 - name: Generate command documentation
@@ -217,12 +224,14 @@ class Program
 ```
 
 **Benefits**:
+
 - ✅ **Zero manual maintenance**: CLI changes automatically reflected in docs
 - ✅ **Consistency guaranteed**: Documentation matches implementation
 - ✅ **Type safety**: Compilation errors prevent doc/code mismatch
 - ✅ **Rich metadata**: Full access to System.CommandLine attributes
 
 **Alternatives Considered**:
+
 - **Manual markdown files**: High maintenance, prone to drift
 - **Scraping `--help` output**: Loses structured metadata
 - **Third-party tools**: No existing System.CommandLine integration
@@ -234,6 +243,7 @@ class Program
 **Decision**: Two-layer testing approach with build-time and link validation
 
 **Rationale**:
+
 - Catches documentation errors early in deployment pipeline
 - No additional test project complexity required
 - Focuses on critical failure modes (broken links, build errors)
@@ -241,33 +251,38 @@ class Program
 **Testing Layers**:
 
 #### Layer 1: Build-Time Validation
+
 - **Tool**: DocFX's built-in `--warningsAsErrors` flag
-- **Validates**: 
+- **Validates**:
   - Markdown syntax errors
   - YAML structure issues
   - Internal file reference failures
   - Missing cross-references
 - **Execution**: During DocFX build step in deployment workflow
 - **Implementation**:
+
 ```bash
 docfx build docfx.json --warningsAsErrors
 ```
 
 **Failure Examples**:
+
 - Invalid markdown syntax → Build fails
 - Broken internal links (e.g., `[text](missing-file.md)`) → Build fails
 - YAML TOC errors → Build fails
 - Missing API XML documentation → Warning promoted to error
 
 #### Layer 2: Link Validation
+
 - **Tool**: LinkChecker (Python-based)
-- **Validates**: 
+- **Validates**:
   - All internal links between pages
   - Links to API reference pages
   - External links (optional - can filter noisy domains)
   - Image resources
 - **Execution**: After successful DocFX build, before deployment
 - **Implementation**:
+
 ```yaml
 - name: Validate documentation links
   run: |
@@ -280,17 +295,20 @@ docfx build docfx.json --warningsAsErrors
 ```
 
 **Failure Examples**:
+
 - Broken link to command page → Validation fails
 - Missing image file → Validation fails
 - Dead external link → Validation fails (configurable)
 
 **Benefits**:
+
 - ✅ **Fast feedback**: Errors caught in deployment pipeline
 - ✅ **No code changes**: No need to modify test project
 - ✅ **Comprehensive**: Covers critical documentation quality issues
 - ✅ **Simple**: Two tools, clear responsibilities
 
 **Alternatives Considered**:
+
 - **Manual testing**: Does not scale, violates Constitution VI
 - **xUnit content tests**: Adds unnecessary complexity for static content
 - **Full E2E browser testing**: Overkill for static documentation
@@ -303,6 +321,7 @@ docfx build docfx.json --warningsAsErrors
 **Decision**: Custom JavaScript version switcher with separate build outputs per minor version
 
 **Rationale**:
+
 - DocFX does not provide native version switching
 - Separate builds ensure complete isolation between versions
 - JavaScript provides seamless UX without server-side logic
@@ -328,6 +347,7 @@ https://username.github.io/wt/
 **Implementation Components**:
 
 #### 1. Version Switcher UI (Custom DocFX Template)
+
 Modify DocFX template to inject version selector in navigation bar:
 
 ```html
@@ -381,6 +401,7 @@ fetch('/version-manifest.json')
 ```
 
 #### 2. Version Manifest Format
+
 ```json
 {
   "versions": [
@@ -401,6 +422,7 @@ fetch('/version-manifest.json')
 ```
 
 **Edge Case Handling**:
+
 - **Non-existent page in version**: 404 page shows link to that version's homepage
 - **JavaScript disabled**: Users can manually edit URL (version visible in path)
 - **Bookmark stability**: URLs never change (meets SC-006: 2+ years stability)
@@ -408,6 +430,7 @@ fetch('/version-manifest.json')
 - **First-time visitors**: Auto-redirect from root to latest version
 
 **Alternatives Considered**:
+
 - **Single site with conditional content**: Complex, risk of version bleed, poor SEO
 - **Git branches per version**: Manual backporting required, consistency issues
 - **Third-party hosting (ReadTheDocs)**: External dependency, migration effort, less control
@@ -419,6 +442,7 @@ fetch('/version-manifest.json')
 **Decision**: Automatic generation/update on every GitHub release
 
 **Rationale**:
+
 - Fully automated - no manual JSON editing required
 - Idempotent - safe to re-run for same version
 - Persisted in gh-pages branch, versioned history
@@ -427,6 +451,7 @@ fetch('/version-manifest.json')
 **Automation Workflow**:
 
 #### Step 1: Fetch Existing Manifest
+
 ```yaml
 - name: Fetch existing version manifest
   run: |
@@ -443,6 +468,7 @@ fetch('/version-manifest.json')
 ```
 
 #### Step 2: Update Manifest with New Version
+
 ```yaml
 - name: Update version manifest
   run: |
@@ -457,6 +483,7 @@ fetch('/version-manifest.json')
 ```
 
 #### Step 3: Include in Deployment
+
 ```yaml
 - name: Copy manifest to deployment output
   run: |
@@ -468,6 +495,7 @@ fetch('/version-manifest.json')
 ```
 
 **Python Script** (`.github/scripts/update-version-manifest.py`):
+
 ```python
 #!/usr/bin/env python3
 """
@@ -534,12 +562,14 @@ if __name__ == '__main__':
 ```
 
 **Behavior**:
+
 - **First release**: Creates new manifest with single version
 - **Subsequent releases**: Adds new version, marks as latest
 - **Re-release**: Updates existing version's date
 - **Idempotent**: Running twice produces same result
 
 **Benefits**:
+
 - ✅ Zero manual intervention required
 - ✅ Automatic on every GitHub release
 - ✅ Idempotent and safe to re-run
@@ -547,6 +577,7 @@ if __name__ == '__main__':
 - ✅ Simple Python script (no external dependencies)
 
 **Result After Deployment**:
+
 ```text
 https://username.github.io/wt/
 ├── version-manifest.json       ← Updated with new version
@@ -677,6 +708,7 @@ jobs:
 ```
 
 **Key Features**:
+
 - ✅ **Automatic trigger**: Runs on every GitHub release publication (FR-001)
 - ✅ **Command generation**: Automatically generates command documentation
 - ✅ **Version extraction**: Extracts minor version from git tag (v1.2.3 → v1.2)
@@ -687,16 +719,19 @@ jobs:
 - ✅ **Concurrent-safe**: Prevents deployment race conditions
 
 **Configuration Requirements**:
+
 1. **Enable GitHub Pages**: Repository Settings → Pages → Source: "GitHub Actions"
 2. **Create environment**: Add "github-pages" environment in repository settings
 3. **Add script**: Create `.github/scripts/update-version-manifest.py` (from section 5)
 4. **Create tool**: Implement `Tools/DocGenerator/` (from section 2)
 
 **Performance**:
+
 - Estimated build time: 5-8 minutes
 - **Meets SC-003**: Documentation published within 10 minutes of release
 
 **Alternatives Considered**:
+
 - **Manual deployment**: No automation, violates FR-001
 - **Third-party hosting (Netlify, Vercel)**: External dependency, cost
 - **Azure Static Web Apps**: Requires Azure account, overkill for docs
@@ -777,6 +812,7 @@ jobs:
 ```
 
 **Key Configuration Elements**:
+
 - **`xref`**: Cross-references to .NET framework documentation (System.CommandLine types link to Microsoft docs)
 - **`sitemap`**: SEO optimization for search engine indexing
 - **`_gitContribute`**: Enables "Edit this page" links for community contributions

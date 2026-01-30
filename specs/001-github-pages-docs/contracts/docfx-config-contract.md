@@ -16,9 +16,11 @@
 ## Metadata Section
 
 ### Purpose
+
 Extracts API documentation from .NET projects using Roslyn.
 
 ### Contract
+
 ```json
 {
   "metadata": [
@@ -40,6 +42,7 @@ Extracts API documentation from .NET projects using Roslyn.
 ```
 
 **Requirements**:
+
 | Field | Type | Required | Validation | Purpose |
 |-------|------|----------|------------|---------|
 | `src[].src` | string | Yes | MUST be valid directory path | Source project directory |
@@ -49,6 +52,7 @@ Extracts API documentation from .NET projects using Roslyn.
 | `properties.TargetFramework` | string | Yes | MUST match project's `<TargetFramework>` | Framework version for API extraction |
 
 **Validation Rules**:
+
 - `src` directory MUST exist relative to docfx.json
 - At least one `.csproj` file MUST be found
 - `.csproj` MUST have `<GenerateDocumentationFile>true</GenerateDocumentationFile>`
@@ -62,6 +66,7 @@ Extracts API documentation from .NET projects using Roslyn.
 **Purpose**: Defines documentation source files to include.
 
 **Contract**:
+
 ```json
 {
   "build": {
@@ -84,16 +89,19 @@ Extracts API documentation from .NET projects using Roslyn.
 ```
 
 **Requirements**:
+
 | Field | Type | Required | Validation | Purpose |
 |-------|------|----------|------------|---------|
 | `files` | array | Yes | MUST include markdown and/or YAML | Content file patterns |
 | `exclude` | array | Yes | MUST exclude build artifacts | Directories to ignore |
 
 **Include Patterns**:
+
 - `**/*.md` - All markdown files (recursive)
 - `**/*.yml` - YAML TOC and metadata files
 
 **Exclude Patterns (REQUIRED)**:
+
 - `_site/**` - DocFX output directory
 - `obj/**`, `bin/**` - .NET build artifacts
 - `specs/**` - Feature specifications (not user docs)
@@ -102,6 +110,7 @@ Extracts API documentation from .NET projects using Roslyn.
 - `coverage/**` - Test coverage reports
 
 **Validation Rules**:
+
 - At least one markdown file MUST be found
 - Excluded directories MUST NOT be scanned
 - Invalid markdown syntax MUST cause build failure with `--warningsAsErrors`
@@ -111,6 +120,7 @@ Extracts API documentation from .NET projects using Roslyn.
 **Purpose**: Defines static assets (images, CSS, JS) to copy.
 
 **Contract**:
+
 ```json
 {
   "build": {
@@ -124,16 +134,19 @@ Extracts API documentation from .NET projects using Roslyn.
 ```
 
 **Requirements**:
+
 | Field | Type | Required | Validation | Purpose |
 |-------|------|----------|------------|---------|
 | `files` | array | Yes | Valid glob patterns | Asset file patterns |
 
 **Include Patterns**:
+
 - `images/**` - Image directory (if exists)
 - `assets/**` - General assets directory (if exists)
 - `*.png`, `*.jpg` - Root-level images
 
 **Validation Rules**:
+
 - Resources MUST be copied to output without modification
 - Missing resources MUST NOT cause build failure (warning only)
 - Binary files MUST be copied as-is
@@ -143,6 +156,7 @@ Extracts API documentation from .NET projects using Roslyn.
 **Purpose**: Defines output directory and DocFX themes.
 
 **Contract**:
+
 ```json
 {
   "build": {
@@ -153,17 +167,20 @@ Extracts API documentation from .NET projects using Roslyn.
 ```
 
 **Requirements**:
+
 | Field | Type | Required | Validation | Purpose |
 |-------|------|----------|------------|---------|
 | `output` | string | Yes | MUST be valid directory name | Output directory for generated site |
 | `template` | array | Yes | MUST include at least one valid template | DocFX themes to apply |
 
 **Template Options**:
+
 - `default` - Classic DocFX template
 - `modern` - Modern, responsive template
 - Custom templates can be added to `templates/` directory
 
 **Validation Rules**:
+
 - Output directory MUST be writable
 - Templates MUST exist in DocFX installation or local `templates/` directory
 - Multiple templates are merged (modern overrides default)
@@ -173,6 +190,7 @@ Extracts API documentation from .NET projects using Roslyn.
 **Purpose**: Site-wide metadata injected into all pages.
 
 **Contract**:
+
 ```json
 {
   "build": {
@@ -197,6 +215,7 @@ Extracts API documentation from .NET projects using Roslyn.
 ```
 
 **Requirements**:
+
 | Field | Type | Required | Validation | Purpose |
 |-------|------|----------|------------|---------|
 | `_appName` | string | Yes | Non-empty | Short application name |
@@ -211,6 +230,7 @@ Extracts API documentation from .NET projects using Roslyn.
 | `_gitContribute.path` | string | Yes | Valid directory path | Documentation source directory |
 
 **Validation Rules**:
+
 - All required fields MUST be present
 - GitHub repo links MUST be valid format
 - "Edit this page" links MUST point to correct documentation source
@@ -220,6 +240,7 @@ Extracts API documentation from .NET projects using Roslyn.
 **Purpose**: SEO optimization via XML sitemap generation.
 
 **Contract**:
+
 ```json
 {
   "build": {
@@ -233,6 +254,7 @@ Extracts API documentation from .NET projects using Roslyn.
 ```
 
 **Requirements**:
+
 | Field | Type | Required | Validation | Purpose |
 |-------|------|----------|------------|---------|
 | `baseUrl` | string | Yes | MUST be valid HTTPS URL with trailing `/` | Site base URL for sitemap |
@@ -240,6 +262,7 @@ Extracts API documentation from .NET projects using Roslyn.
 | `changefreq` | string | No | Valid values: always, hourly, daily, weekly, monthly, yearly, never | Expected update frequency |
 
 **Validation Rules**:
+
 - `baseUrl` MUST end with `/`
 - `baseUrl` MUST use HTTPS protocol
 - Sitemap MUST be generated at `_site/sitemap.xml`
@@ -249,6 +272,7 @@ Extracts API documentation from .NET projects using Roslyn.
 **Purpose**: Enable linking to external API documentation.
 
 **Contract**:
+
 ```json
 {
   "build": {
@@ -260,11 +284,13 @@ Extracts API documentation from .NET projects using Roslyn.
 ```
 
 **Requirements**:
+
 | Field | Type | Required | Validation | Purpose |
 |-------|------|----------|------------|---------|
 | `xref` | array | No | Valid URLs | External API reference URLs |
 
 **Validation Rules**:
+
 - URLs MUST be accessible during build
 - Cross-references to .NET types (e.g., `System.String`) automatically link to Microsoft Docs
 - Failed xref lookups produce warnings (not errors)
@@ -342,35 +368,42 @@ Extracts API documentation from .NET projects using Roslyn.
 ## Build Command Contract
 
 ### Standard Build
+
 ```bash
 docfx build docfx.json
 ```
 
 **Output**:
+
 - Generates site in `_site/` directory
 - Warnings are logged but don't fail build
 
 ### Strict Build (Required for CI/CD)
+
 ```bash
 docfx build docfx.json --warningsAsErrors
 ```
 
 **Output**:
+
 - Warnings cause build failure (exit code 1)
 - Enforces documentation quality
 
 ### Versioned Build (For Deployment)
+
 ```bash
 docfx build docfx.json --warningsAsErrors -o _output/v1.2
 ```
 
 **Output**:
+
 - Generates site in custom output directory
 - Used for version-specific documentation
 
 ## Validation Checklist
 
 ### Pre-Build Validation
+
 - ✅ `docfx.json` is valid JSON
 - ✅ Schema validation passes
 - ✅ `src` directory exists
@@ -379,6 +412,7 @@ docfx build docfx.json --warningsAsErrors -o _output/v1.2
 - ✅ All required metadata fields present
 
 ### Build Validation
+
 - ✅ .NET project builds successfully
 - ✅ XML documentation generated
 - ✅ Markdown files found
@@ -387,6 +421,7 @@ docfx build docfx.json --warningsAsErrors -o _output/v1.2
 - ✅ Templates applied successfully
 
 ### Post-Build Validation
+
 - ✅ `_site/` directory created
 - ✅ `_site/index.html` exists
 - ✅ `_site/api/` directory exists (if API docs enabled)

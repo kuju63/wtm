@@ -17,15 +17,6 @@ public record ProcessResult(
 public class ProcessRunner : IProcessRunner
 {
     /// <summary>
-    /// Runs an external process asynchronously with the specified command and arguments.
-    /// </summary>
-    /// <param name="command">The command or executable to run.</param>
-    /// <param name="arguments">The arguments to pass to the command.</param>
-    /// <param name="workingDirectory">The working directory for the process. If <see langword="null"/>, uses the current directory.</param>
-    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
-    /// <returns>A <see cref="ProcessResult"/> containing the exit code and output from the process.</returns>
-
-    /// <summary>
     /// Runs an external process asynchronously. This overload does not accept a working directory or cancellation token.
     /// </summary>
     /// <param name="command">The command or executable to run.</param>

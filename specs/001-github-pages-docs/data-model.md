@@ -13,6 +13,7 @@ This document defines the key entities, their attributes, relationships, and val
 Represents a specific minor version of the documentation (e.g., v1.0, v1.1, v2.0).
 
 **Attributes**:
+
 | Attribute | Type | Required | Description | Validation Rules |
 |-----------|------|----------|-------------|-----------------|
 | `label` | string | Yes | Display name in version switcher (e.g., "v1.0 (latest)") | Must match pattern: `v\d+\.\d+( \(latest\))?` |
@@ -21,11 +22,13 @@ Represents a specific minor version of the documentation (e.g., v1.0, v1.1, v2.0
 | `isLatest` | boolean | Yes | Whether this is the latest version | Only one version can have `isLatest: true` |
 
 **Relationships**:
+
 - Has many: Documentation Pages
 - Has many: Command Documentation Pages
 - Has one: API Reference Section
 
 **State Transitions**:
+
 ```
 [New Release] → Version Created (isLatest=true)
                 ↓
@@ -35,12 +38,14 @@ Represents a specific minor version of the documentation (e.g., v1.0, v1.1, v2.0
 ```
 
 **Business Rules**:
+
 - Exactly one version must be marked as `isLatest: true` at all times
 - Version path must be unique across all versions
 - Versions are immutable once published (no content changes to deployed versions)
 - Minor version level only (patch versions share documentation: v1.0.0, v1.0.1, v1.0.2 → all use v1.0)
 
 **Example**:
+
 ```json
 {
   "label": "v1.2 (latest)",
@@ -57,14 +62,17 @@ Represents a specific minor version of the documentation (e.g., v1.0, v1.1, v2.0
 Aggregates all available documentation versions for the version switcher UI.
 
 **Attributes**:
+
 | Attribute | Type | Required | Description | Validation Rules |
 |-----------|------|----------|-------------|-----------------|
 | `versions` | array | Yes | List of Documentation Version objects | Must contain at least 1 version |
 
 **Relationships**:
+
 - Contains many: Documentation Versions (aggregation)
 
 **State Transitions**:
+
 ```
 [First Release] → Empty manifest → First version added
                                     ↓
@@ -72,6 +80,7 @@ Aggregates all available documentation versions for the version switcher UI.
 ```
 
 **Business Rules**:
+
 - Stored at GitHub Pages root: `/version-manifest.json`
 - Copied to each version directory for redundancy
 - Automatically updated on every release
@@ -79,6 +88,7 @@ Aggregates all available documentation versions for the version switcher UI.
 - Idempotent updates (re-running same version updates timestamp, doesn't duplicate)
 
 **Example**:
+
 ```json
 {
   "versions": [
@@ -105,6 +115,7 @@ Aggregates all available documentation versions for the version switcher UI.
 Represents documentation for a single CLI command.
 
 **Attributes**:
+
 | Attribute | Type | Required | Description | Validation Rules |
 |-----------|------|----------|-------------|-----------------|
 | `commandName` | string | Yes | Name of the command (e.g., "create") | Must match existing CLI command |
@@ -115,15 +126,18 @@ Represents documentation for a single CLI command.
 | `filePath` | string | Yes | Markdown file location | Format: `docs/commands/{commandName}.md` |
 
 **Relationships**:
+
 - Belongs to: Documentation Version
 - Generated from: CLI Command Definition (wt.cli RootCommand)
 
 **State Transitions**:
+
 ```
 [CLI Code Change] → DocGenerator extracts metadata → Markdown generated → DocFX builds → HTML deployed
 ```
 
 **Business Rules**:
+
 - Auto-generated from System.CommandLine definitions (no manual editing)
 - One markdown file per command
 - Must exist for every command in wt.cli RootCommand.Subcommands
@@ -131,6 +145,7 @@ Represents documentation for a single CLI command.
 - Examples are manually curated in DocGenerator code
 
 **Example**:
+
 ```markdown
 # wt create
 
@@ -144,24 +159,29 @@ wt create [options] <branch-name>
 ## Options
 
 ### `--path`, `-p`
+
 Custom path for the worktree directory.
 **Type:** `string`
 
 ### `--editor`, `-e`
+
 Editor to open after creation (vscode, vim, emacs).
 **Type:** `string`
 
 ## Examples
 
 ### Create worktree with default path
+
 ```bash
 wt create feature-login
 ```
 
 ### Create with custom path
+
 ```bash
 wt create feature-login --path /tmp/wt-login
 ```
+
 ```
 
 ---
@@ -184,7 +204,9 @@ Generated documentation for all public APIs in wt.cli project.
 
 **State Transitions**:
 ```
+
 [Build wt.cli] → Generate XML docs → DocFX metadata extraction → API HTML generation → Deployment
+
 ```
 
 **Business Rules**:
@@ -196,11 +218,13 @@ Generated documentation for all public APIs in wt.cli project.
 
 **Example Structure**:
 ```
+
 api/
 ├── Kuju63.WorkTree.CommandLine.html
 ├── Kuju63.WorkTree.CommandLine.Commands.html
 ├── Kuju63.WorkTree.CommandLine.Commands.CreateCommand.html
 └── toc.yml
+
 ```
 
 ---
@@ -224,7 +248,9 @@ Platform-specific instructions for installing the self-contained native binary.
 
 **State Transitions**:
 ```
+
 [Manual Creation] → Version-specific review → Committed to repository → Built by DocFX
+
 ```
 
 **Business Rules**:
@@ -263,8 +289,10 @@ Download the appropriate binary for your platform from the [latest release](http
    ```powershell
    setx PATH "%PATH%;C:\Program Files\wt"
    ```
-4. Restart terminal
-5. Verify installation:
+
+1. Restart terminal
+2. Verify installation:
+
    ```powershell
    wt --version
    ```
@@ -273,12 +301,15 @@ Download the appropriate binary for your platform from the [latest release](http
 
 1. Download `wt-osx-arm64.tar.gz`
 2. Extract and move to `/usr/local/bin`:
+
    ```bash
    tar -xzf wt-osx-arm64.tar.gz
    sudo mv wt /usr/local/bin/
    sudo chmod +x /usr/local/bin/wt
    ```
+
 3. Verify installation:
+
    ```bash
    wt --version
    ```
@@ -287,12 +318,15 @@ Download the appropriate binary for your platform from the [latest release](http
 
 1. Download the appropriate archive for your architecture
 2. Extract and install:
+
    ```bash
    tar -xzf wt-linux-x64.tar.gz
    sudo mv wt /usr/local/bin/
    sudo chmod +x /usr/local/bin/wt
    ```
+
 3. Verify installation:
+
    ```bash
    wt --version
    ```
@@ -300,15 +334,19 @@ Download the appropriate binary for your platform from the [latest release](http
 ## Troubleshooting
 
 ### Command not found
+
 - Ensure the wt binary is in your PATH
 - On Windows, restart your terminal after updating PATH
 
 ### Permission denied (macOS/Linux)
+
 - Run: `sudo chmod +x /usr/local/bin/wt`
 
 ### Git not found
+
 - Install Git separately: `git --version` to check
 - Only required when actually using worktree commands
+
 ```
 
 ---
@@ -332,7 +370,9 @@ Guidelines for contributing code, documentation, or bug reports to the project.
 
 **State Transitions**:
 ```
+
 [Manual Creation] → Constitution alignment check → Committed → Built by DocFX
+
 ```
 
 **Business Rules**:
@@ -434,6 +474,7 @@ Use GitHub issue templates:
 ## Data Flow
 
 ### Documentation Build Flow
+
 ```
 1. Release Published (GitHub Event)
    ↓
@@ -455,6 +496,7 @@ Use GitHub issue templates:
 ```
 
 ### Version Switcher Flow
+
 ```
 1. User loads documentation page
    ↓
@@ -509,16 +551,19 @@ Use GitHub issue templates:
 ## Future Considerations
 
 ### Automatic Update Mechanism (Not in Current Scope)
+
 - Self-update command: `wt update`
 - Check for new versions on startup?
 - Auto-download and replace binary?
 
 ### Package Manager Distribution (Not in Current Scope)
+
 - Windows: `winget install wt`
 - macOS: `brew install wt`
 - Linux: `apt install wt` / `snap install wt`
 
 ### Deprecation Strategy (Not in Current Scope)
+
 - When to remove old versions from GitHub Pages?
 - Archive location for deprecated versions?
 - User notification for deprecated versions?

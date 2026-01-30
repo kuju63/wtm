@@ -8,12 +8,14 @@
 ## Workflow Inputs
 
 ### Trigger Events
+
 ```yaml
 # Part of release.yml workflow
 needs: [calculate-version, create-release]
 ```
 
 **Contract**:
+
 - MUST trigger after successful release creation
 - Version is obtained from `needs.calculate-version.outputs.version`
 - Integrated into release pipeline (no separate workflow trigger needed)
@@ -21,6 +23,7 @@ needs: [calculate-version, create-release]
 ## Workflow Outputs
 
 ### Deployment URL
+
 ```yaml
 outputs:
   page_url:
@@ -29,15 +32,18 @@ outputs:
 ```
 
 **Contract**:
+
 - MUST output the final GitHub Pages URL
 - Format: `https://{username}.github.io/{repo}/v{major}.{minor}/`
 
 ## Workflow Steps Contract
 
 ### Step 1: Extract Version
+
 **Input**: Version from `needs.calculate-version.outputs.version` (e.g., `v0.1.0`, `v1.2.3`)  
 **Output**: Minor version string (e.g., `v0.1`, `v1.2`)  
 **Contract**:
+
 ```yaml
 # MUST extract minor version from calculated version
 - name: Extract version
@@ -51,11 +57,13 @@ outputs:
 ```
 
 **Validation**:
+
 - Input version MUST match: `v\d+\.\d+\.\d+` (semantic versioning)
 - Output MUST match: `v\d+\.\d+`
 - MUST fail if version format is invalid
 
 **Test Cases**:
+
 | Input Version | Expected Output | Rationale |
 |---------------|-----------------|-----------|
 | `v0.1.0` | `v0.1` | Initial release |
@@ -64,23 +72,28 @@ outputs:
 | `v10.15.20` | `v10.15` | Large version numbers |
 
 ### Step 2: Generate Command Documentation
+
 **Input**: CLI command definitions from `wt.cli`  
 **Output**: Markdown files in `docs/commands/`  
 **Contract**:
+
 ```yaml
 - name: Generate command documentation
   run: dotnet run --project Tools/DocGenerator/DocGenerator -- --output docs/commands
 ```
 
 **Validation**:
+
 - MUST generate one `.md` file per command in `docs/commands/`
 - MUST exit with code 0 on success
 - MUST exit with non-zero if generation fails
 
 ### Step 3: Build Documentation
+
 **Input**: Markdown files, docfx.json, XML docs from wt.cli
 **Output**: Static HTML site in `_site/{version}/`  
 **Contract**:
+
 ```yaml
 - name: Build documentation
   run: |
@@ -89,6 +102,7 @@ outputs:
 ```
 
 **Validation**:
+
 - MUST generate API metadata from XML comments
 - MUST output to version-specific directory
 - MUST generate HTML/CSS/JS files
@@ -97,9 +111,11 @@ outputs:
 **Note**: Link validation and `--warningsAsErrors` flag are deferred to Phase 8 (Polish & Cross-Cutting Concerns) as quality improvements, not MVP requirements.
 
 ### Step 4: Update Version Manifest
+
 **Input**: New version from previous step
 **Output**: Updated `versions.json` in `_site/`  
 **Contract**:
+
 ```yaml
 - name: Update version manifest
   run: |
@@ -108,6 +124,7 @@ outputs:
 ```
 
 **Validation**:
+
 - MUST add new version to manifest
 - MUST mark new version as `isLatest: true`
 - MUST remove `isLatest` from all other versions
@@ -117,6 +134,7 @@ outputs:
 - MUST exit with code 0 on success
 
 **Python Script Contract** (`.github/scripts/update-version-manifest.py`):
+
 ```python
 # MUST accept positional arguments: <manifest_path> <version>
 # Usage: update-version-manifest.py <manifest_path> <version>
@@ -127,9 +145,11 @@ outputs:
 ```
 
 ### Step 5: Deploy to GitHub Pages
+
 **Input**: Built site in `_site/`  
 **Output**: Deployed documentation on GitHub Pages  
 **Contract**:
+
 ```yaml
 - name: Deploy to GitHub Pages
   uses: peaceiris/actions-gh-pages@v4
@@ -140,6 +160,7 @@ outputs:
 ```
 
 **Validation**:
+
 - MUST deploy entire `_site` directory
 - MUST preserve existing version directories (keep_files: true)
 - MUST use GITHUB_TOKEN for authentication
@@ -148,6 +169,7 @@ outputs:
 **Note**: The peaceiris/actions-gh-pages action handles manifest fetching internally through keep_files: true, eliminating the need for explicit gh-pages branch fetching.
       --no-warnings \
       _output/${{ steps.version.outputs.minor }}/
+
 ```
 **Note**: The peaceiris/actions-gh-pages action handles manifest fetching internally through keep_files: true, eliminating the need for explicit gh-pages branch fetching.
 
@@ -207,17 +229,20 @@ outputs:
 ```
 
 **Contract**:
+
 - MUST pin to specific major versions (e.g., `@v6`, not `@v6.1.0`)
 - MUST NOT use `@main` or `@latest`
 - MUST update via Renovate (configured in repository)
 
 ### External Tools
+
 | Tool | Version | Installation Method |
 |------|---------|---------------------|
 | docfx | 2.78.4 (exact) | `dotnet tool install --global docfx --version 2.78.4` |
 | python3 | 3.x | Pre-installed on ubuntu-latest |
 
 **Contract**:
+
 - DocFX version MUST be pinned via DOCFX_VERSION environment variable
 - Python 3 MUST be available
 - Link validation tools deferred to Phase 8
@@ -231,6 +256,7 @@ concurrency:
 ```
 
 **Contract**:
+
 - MUST use `group: pages` to prevent concurrent deploys
 - MUST set `cancel-in-progress: false` to allow queuing
 - Multiple releases MUST queue (not run in parallel)
@@ -239,6 +265,7 @@ concurrency:
 ## Environment Configuration
 
 ### Required Environment
+
 ```yaml
 environment:
   name: github-pages
@@ -246,16 +273,19 @@ environment:
 ```
 
 **Setup Steps**:
+
 1. Repository Settings → Environments → New environment
 2. Name: `github-pages`
 3. Optional: Add protection rules (approval, wait timer)
 
 **Contract**:
+
 - Environment MUST exist before first workflow run
 - Environment MUST have Pages deployment permissions
 - Environment URL is automatically set by `deploy-pages` action
 
 ### Required Permissions
+
 ```yaml
 permissions:
   contents: write  # Fetch gh-pages branch
@@ -273,6 +303,7 @@ permissions:
 ## Testing Contract
 
 ### Pre-Deployment Validation Checklist
+
 - ✅ Version extraction produces valid `v{major}.{minor}` format
 - ✅ Command documentation generated for all commands
 - ✅ API build succeeds in Release configuration
@@ -281,6 +312,7 @@ permissions:
 - ✅ Version manifest is valid JSON
 
 ### Post-Deployment Verification Checklist
+
 - ✅ Deployed URL returns HTTP 200
 - ✅ Version manifest loads successfully
 - ✅ New version appears in version switcher dropdown
@@ -291,6 +323,7 @@ permissions:
 ## Example Workflow Execution
 
 ### Scenario: Release v0.2.5
+
 ```
 1. Release published: v0.2.5
 2. Extract version: v0.2
@@ -305,6 +338,7 @@ permissions:
 ```
 
 ### Scenario: First Release v0.1.0
+
 ```
 1. Release published: v0.1.0
 2. Extract version: v0.1

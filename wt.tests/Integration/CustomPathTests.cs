@@ -147,7 +147,7 @@ public class CustomPathTests : IDisposable
         var processRunner = new ProcessRunner();
         var fileSystem = new FileSystem();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         var worktreeService = new WorktreeService(gitService, pathHelper);
 
         var relativePath = $"../relative-worktree-{Guid.NewGuid()}";
@@ -216,7 +216,7 @@ public class CustomPathTests : IDisposable
         var processRunner = new ProcessRunner();
         var fileSystem = new FileSystem();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         var worktreeService = new WorktreeService(gitService, pathHelper);
 
         var invalidPath = "/nonexistent/parent/directory/worktree";
@@ -267,7 +267,7 @@ public class CustomPathTests : IDisposable
         var processRunner = new ProcessRunner();
         var fileSystem = new FileSystem();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         var worktreeService = new WorktreeService(gitService, pathHelper);
 
         // Create existing directory
@@ -346,7 +346,7 @@ public class CustomPathTests : IDisposable
         var processRunner = new ProcessRunner();
         var fileSystem = new FileSystem();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         return new WorktreeService(gitService, pathHelper);
     }
 

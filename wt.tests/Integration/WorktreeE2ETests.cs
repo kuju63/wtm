@@ -288,7 +288,7 @@ public class WorktreeE2ETests : IDisposable
         var fileSystem = new System.IO.Abstractions.FileSystem();
         var processRunner = new ProcessRunner();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         var worktreeService = new WorktreeService(gitService, pathHelper);
         var command = new CreateCommand(worktreeService);
 
@@ -355,7 +355,7 @@ public class WorktreeE2ETests : IDisposable
         var fileSystem = new System.IO.Abstractions.FileSystem();
         var processRunner = new ProcessRunner();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         var worktreeService = new WorktreeService(gitService, pathHelper);
         var command = new CreateCommand(worktreeService);
 
@@ -405,7 +405,7 @@ public class WorktreeE2ETests : IDisposable
         var fileSystem = new System.IO.Abstractions.FileSystem();
         var processRunner = new ProcessRunner();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         var worktreeService = new WorktreeService(gitService, pathHelper);
         var command = new CreateCommand(worktreeService);
 
@@ -460,7 +460,7 @@ public class WorktreeE2ETests : IDisposable
         var fileSystem = new System.IO.Abstractions.FileSystem();
         var processRunner = new ProcessRunner();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         var worktreeService = new WorktreeService(gitService, pathHelper);
         var command = new CreateCommand(worktreeService);
 
@@ -504,7 +504,7 @@ public class WorktreeE2ETests : IDisposable
         var fileSystem = new System.IO.Abstractions.FileSystem();
         var processRunner = new ProcessRunner();
         var pathHelper = new PathHelper(fileSystem);
-        var gitService = new GitService(processRunner);
+        var gitService = new GitService(processRunner, fileSystem);
         var worktreeService = new WorktreeService(gitService, pathHelper);
         var command = new CreateCommand(worktreeService);
 

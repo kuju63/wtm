@@ -18,6 +18,7 @@ This guide provides step-by-step instructions to implement automated documentati
 ### Phase 1: Enable XML Documentation (15 minutes)
 
 #### Step 1.1: Update .csproj
+
 Edit `wt.cli/wt.cli.csproj`:
 
 ```xml
@@ -35,6 +36,7 @@ Edit `wt.cli/wt.cli.csproj`:
 ```
 
 #### Step 1.2: Add XML Documentation Comments
+
 Add XML comments to public APIs:
 
 ```csharp
@@ -51,6 +53,7 @@ public static int CreateWorktree(string branchName, string? path = null)
 ```
 
 #### Step 1.3: Verify Build
+
 ```bash
 cd wt.cli
 dotnet build --configuration Release
@@ -65,6 +68,7 @@ ls bin/Release/net10.0/wt.xml
 ### Phase 2: Create Command Documentation Generator (1-2 hours)
 
 #### Step 2.1: Create Project Structure
+
 ```bash
 mkdir -p Tools/DocGenerator
 cd Tools/DocGenerator
@@ -73,6 +77,7 @@ dotnet add package System.CommandLine --version 2.0.2
 ```
 
 #### Step 2.2: Implement Generator
+
 Create `Tools/DocGenerator/Program.cs`:
 
 ```csharp
@@ -190,6 +195,7 @@ class Program
 ```
 
 #### Step 2.3: Test Locally
+
 ```bash
 cd Tools/DocGenerator
 dotnet run -- ../../docs
@@ -205,6 +211,7 @@ cat ../../docs/command-reference.md
 ### Phase 3: Create Version Manifest Script (30 minutes)
 
 #### Step 3.1: Create Python Script
+
 Create `.github/scripts/update-version-manifest.py`:
 
 ```python
@@ -267,11 +274,13 @@ if __name__ == '__main__':
 ```
 
 #### Step 3.2: Make Executable
+
 ```bash
 chmod +x .github/scripts/update-version-manifest.py
 ```
 
 #### Step 3.3: Test Locally
+
 ```bash
 python3 .github/scripts/update-version-manifest.py \
   --version "v0.1" \
@@ -287,6 +296,7 @@ cat version-manifest.json
 ### Phase 4: Create GitHub Actions Workflow (1 hour)
 
 #### Step 4.1: Create Workflow File
+
 Create `.github/workflows/docs.yml`:
 
 ```yaml
@@ -399,11 +409,13 @@ jobs:
 ```
 
 #### Step 4.2: Configure GitHub Pages
+
 1. Go to repository Settings → Pages
 2. Source: Select "GitHub Actions"
 3. Save
 
 #### Step 4.3: Create Environment
+
 1. Go to Settings → Environments
 2. Click "New environment"
 3. Name: `github-pages`
@@ -415,11 +427,13 @@ jobs:
 ### Phase 5: Create Version Switcher UI (30-45 minutes)
 
 #### Step 5.1: Create Custom Template Directory
+
 ```bash
 mkdir -p templates/partials
 ```
 
 #### Step 5.2: Create Navbar Override
+
 Create `templates/partials/navbar.tmpl.partial`:
 
 ```html
@@ -496,6 +510,7 @@ Create `templates/partials/navbar.tmpl.partial`:
 ```
 
 #### Step 5.3: Update docfx.json Template Configuration
+
 Edit `docfx.json`:
 
 ```json
@@ -511,6 +526,7 @@ Edit `docfx.json`:
 ### Phase 6: Update Documentation Content (1-2 hours)
 
 #### Step 6.1: Create Installation Guide
+
 Create `docs/installation.md`:
 
 ```markdown
@@ -538,29 +554,35 @@ Download from [latest release](https://github.com/kuju63/wt/releases/latest):
    ```powershell
    setx PATH "%PATH%;C:\Program Files\wt"
    ```
-4. Verify: `wt --version`
+
+1. Verify: `wt --version`
 
 ## macOS Installation
 
 1. Download `wt-osx-arm64.tar.gz`
 2. Extract and install:
+
    ```bash
    tar -xzf wt-osx-arm64.tar.gz
    sudo mv wt /usr/local/bin/
    sudo chmod +x /usr/local/bin/wt
    ```
+
 3. Verify: `wt --version`
 
 ## Linux Installation
 
 1. Download appropriate archive
 2. Extract and install:
+
    ```bash
    tar -xzf wt-linux-x64.tar.gz
    sudo mv wt /usr/local/bin/
    sudo chmod +x /usr/local/bin/wt
    ```
+
 3. Verify: `wt --version`
+
 ```
 
 #### Step 6.2: Create Contribution Guide
@@ -596,6 +618,7 @@ See [Constitution](../.specify/memory/constitution.md):
 ```
 
 #### Step 6.3: Update docs/toc.yml
+
 Edit `docs/toc.yml`:
 
 ```yaml
@@ -616,6 +639,7 @@ Edit `docs/toc.yml`:
 ### Phase 7: Testing and Verification (30-45 minutes)
 
 #### Step 7.1: Local Build Test
+
 ```bash
 # Generate command docs
 cd Tools/DocGenerator
@@ -636,6 +660,7 @@ open _site/index.html  # or xdg-open on Linux
 ```
 
 #### Step 7.2: Commit and Push
+
 ```bash
 git checkout -b 001-github-pages-docs
 git add .
@@ -644,11 +669,13 @@ git push origin 001-github-pages-docs
 ```
 
 #### Step 7.3: Create PR and Merge
+
 1. Create pull request
 2. Review changes
 3. Merge to main
 
 #### Step 7.4: Create Release
+
 1. Go to Releases → Draft a new release
 2. Tag: `v0.1.0`
 3. Title: `v0.1.0 - Initial Release`
@@ -656,7 +683,9 @@ git push origin 001-github-pages-docs
 5. Watch Actions tab for workflow execution
 
 #### Step 7.5: Verify Deployment
+
 After workflow completes:
+
 1. Visit `https://{username}.github.io/wt/v0.1/`
 2. Check version switcher loads
 3. Test navigation between pages
@@ -668,18 +697,23 @@ After workflow completes:
 ## Troubleshooting
 
 ### Issue: XML Documentation Not Generated
+
 **Solution**: Verify `<GenerateDocumentationFile>true</GenerateDocumentationFile>` in `.csproj`
 
 ### Issue: DocFX Build Fails with "File not found"
+
 **Solution**: Check paths in `docfx.json` are relative to the config file location
 
 ### Issue: Version Switcher Not Showing
+
 **Solution**: Check browser console for errors, verify `/version-manifest.json` is accessible
 
 ### Issue: Link Validation Fails
+
 **Solution**: Fix broken links in markdown files, ensure all referenced files exist
 
 ### Issue: GitHub Pages Deployment Permission Denied
+
 **Solution**: Verify `github-pages` environment exists and has correct permissions
 
 ---

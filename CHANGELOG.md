@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Remove Worktree Command**: New `wt remove` command to safely delete git worktrees
+  - Safe removal with validation (uncommitted changes, locked worktrees)
+  - Force removal with `--force` flag to bypass uncommitted changes and locks
+  - Protection against removing main worktree or current working directory
+  - Human-readable and JSON output formats (`--output` flag)
+  - Verbose error reporting with error codes (`--verbose` flag)
+  - Actionable error messages with solutions (e.g., "Use 'wt list' to see available worktrees")
 - **SBOM (Software Bill of Materials) Generation**: Complete supply chain transparency for all releases
   - SPDX 2.3 format (ISO/IEC 5962:2021 compliant)
   - Automatic generation with Microsoft SBOM Tool

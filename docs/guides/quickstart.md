@@ -29,11 +29,13 @@ wt create feature-new-feature
 ```
 
 This command will:
+
 - Create a new branch called `feature-new-feature`
 - Set up a worktree at `../wt-feature-new-feature`
 - Automatically open the worktree in your default editor (if configured)
 
 **Output:**
+
 ```shell
 ✓ Created branch: feature-new-feature
 ✓ Created worktree: /Users/username/projects/wt-feature-new-feature
@@ -49,6 +51,7 @@ wt list
 ```
 
 **Output:**
+
 ```shell
 ┌─────────────────────────────────────────────┬──────────────────────┬─────────┐
 │ Path                                        │ Branch               │ Status  │
@@ -95,12 +98,14 @@ Supported editors: `vscode`, `vim`, `emacs`, `nano`, `idea`
 ### Feature Development Workflow
 
 1. **Start a new feature**:
+
    ```bash
    wt create feature-user-auth
    cd ../wt-feature-user-auth
    ```
 
 2. **Work on your feature**:
+
    ```bash
    # Make changes, commit as usual
    git add .
@@ -108,11 +113,13 @@ Supported editors: `vscode`, `vim`, `emacs`, `nano`, `idea`
    ```
 
 3. **Switch back to main**:
+
    ```bash
    cd ../wt  # or your main worktree path
    ```
 
 4. **Clean up when done**:
+
    ```bash
    git worktree remove ../wt-feature-user-auth
    ```

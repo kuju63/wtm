@@ -161,14 +161,28 @@ class MarkdownConsole
 /// <summary>
 /// Command documentation generator
 /// </summary>
+/// <summary>
+/// Parsed help text sections
+/// </summary>
+record HelpSections(
+    string? Description,
+    string? Usage,
+    List<(string name, string desc)> Arguments,
+    List<(string name, string desc)> Options
+);
+
 static class CommandDocGenerator
 {
     public static string ConvertHelpToMarkdown(string commandName, string helpText)
     {
-        var console = new MarkdownConsole();
+        var sections = ParseHelpText(helpText);
+        return GenerateMarkdown(commandName, sections);
+    }
+
+    private static HelpSections ParseHelpText(string helpText)
+    {
         var lines = helpText.Split('\n');
         
-        // Parse help text sections
         string? description = null;
         string? usage = null;
         var arguments = new List<(string name, string desc)>();
@@ -180,95 +194,143 @@ static class CommandDocGenerator
         {
             var trimmed = line.Trim();
             
-            if (trimmed.StartsWith("Description:"))
-            {
-                currentSection = "description";
-                continue;
-            }
-            else if (trimmed.Contains("使用法:") || trimmed.Contains("Usage:"))
-            {
-                currentSection = "usage";
-                continue;
-            }
-            else if (trimmed.Contains("引数:") || trimmed.Contains("Arguments:"))
-            {
-                currentSection = "arguments";
-                continue;
-            }
-            else if (trimmed.Contains("オプション:") || trimmed.Contains("Options:"))
-            {
-                currentSection = "options";
-                continue;
-            }
-            
             if (string.IsNullOrWhiteSpace(trimmed))
             {
                 continue;
             }
             
-            switch (currentSection)
+            currentSection = UpdateCurrentSection(trimmed, currentSection);
+            
+            ProcessLineForSection(currentSection, trimmed, ref description, ref usage, arguments, options);
+        }
+        
+        return new HelpSections(description, usage, arguments, options);
+    }
+
+    private static string? UpdateCurrentSection(string trimmed, string? currentSection)
+    {
+        if (trimmed.StartsWith("Description:"))
+        {
+            return "description";
+        }
+        else if (trimmed.Contains("使用法:") || trimmed.Contains("Usage:"))
+        {
+            return "usage";
+        }
+        else if (trimmed.Contains("引数:") || trimmed.Contains("Arguments:"))
+        {
+            return "arguments";
+        }
+        else if (trimmed.Contains("オプション:") || trimmed.Contains("Options:"))
+        {
+            return "options";
+        }
+        
+        return currentSection;
+    }
+
+    private static void ProcessLineForSection(
+        string? currentSection,
+        string trimmed,
+        ref string? description,
+        ref string? usage,
+        List<(string name, string desc)> arguments,
+        List<(string name, string desc)> options)
+    {
+        switch (currentSection)
+        {
+            case "description":
+                ProcessDescriptionLine(trimmed, ref description);
+                break;
+                
+            case "usage":
+                ProcessUsageLine(trimmed, ref usage);
+                break;
+                
+            case "arguments":
+                ProcessArgumentsLine(trimmed, arguments);
+                break;
+                
+            case "options":
+                ProcessOptionsLine(trimmed, options);
+                break;
+        }
+    }
+
+    private static void ProcessDescriptionLine(string trimmed, ref string? description)
+    {
+        if (!string.IsNullOrEmpty(trimmed))
+        {
+            description = trimmed;
+        }
+    }
+
+    private static void ProcessUsageLine(string trimmed, ref string? usage)
+    {
+        if (trimmed.StartsWith("wt "))
+        {
+            usage = trimmed;
+        }
+    }
+
+    private static void ProcessArgumentsLine(string trimmed, List<(string name, string desc)> arguments)
+    {
+        if (trimmed.StartsWith("<"))
+        {
+            var parts = trimmed.Split(new[] { "  " }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 2)
             {
-                case "description":
-                    if (!string.IsNullOrEmpty(trimmed))
-                    {
-                        description = trimmed;
-                    }
-                    break;
-                    
-                case "usage":
-                    if (trimmed.StartsWith("wt "))
-                    {
-                        usage = trimmed;
-                    }
-                    break;
-                    
-                case "arguments":
-                    if (trimmed.StartsWith("<"))
-                    {
-                        var parts = trimmed.Split(new[] { "  " }, StringSplitOptions.RemoveEmptyEntries);
-                        if (parts.Length >= 2)
-                        {
-                            arguments.Add((parts[0], string.Join(" ", parts.Skip(1))));
-                        }
-                    }
-                    break;
-                    
-                case "options":
-                    if (trimmed.StartsWith("-"))
-                    {
-                        var parts = trimmed.Split(new[] { "  " }, 2, StringSplitOptions.RemoveEmptyEntries);
-                        if (parts.Length >= 2)
-                        {
-                            options.Add((parts[0], parts[1]));
-                        }
-                        else if (parts.Length == 1)
-                        {
-                            options.Add((parts[0], ""));
-                        }
-                    }
-                    break;
-                    
-                default:
-                    // Unknown section
-                    Console.WriteLine($"Warning: Unknown help section '{currentSection}' encountered");
-                    break;
+                arguments.Add((parts[0], string.Join(" ", parts.Skip(1))));
             }
         }
+    }
+
+    private static void ProcessOptionsLine(string trimmed, List<(string name, string desc)> options)
+    {
+        if (trimmed.StartsWith("-"))
+        {
+            var parts = trimmed.Split(new[] { "  " }, 2, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 2)
+            {
+                options.Add((parts[0], parts[1]));
+            }
+            else if (parts.Length == 1)
+            {
+                options.Add((parts[0], ""));
+            }
+        }
+    }
+
+    private static string GenerateMarkdown(string commandName, HelpSections sections)
+    {
+        var console = new MarkdownConsole();
         
-        // Generate markdown
         console.WriteHeading(1, $"wt {commandName}");
         
-        if (!string.IsNullOrEmpty(description))
+        if (!string.IsNullOrEmpty(sections.Description))
         {
-            console.WriteText(description);
+            console.WriteText(sections.Description);
         }
         
+        WriteUsageSection(console, sections.Usage);
+        WriteArgumentsSection(console, sections.Arguments);
+        WriteOptionsSection(console, sections.Options);
+        WriteExamplesSection(console);
+        
+        return console.ToString();
+    }
+
+    private static void WriteUsageSection(MarkdownConsole console, string? usage)
+    {
         console.WriteHeading(2, "Syntax");
         if (!string.IsNullOrEmpty(usage))
         {
             console.WriteCodeBlock("bash", usage);
         }
-        
+    }
+
+    private static void WriteArgumentsSection(MarkdownConsole console, List<(string name, string desc)> arguments)
+    {
         if (arguments.Count > 0)
         {
             console.WriteHeading(2, "Arguments");
@@ -277,13 +339,15 @@ static class CommandDocGenerator
                 console.WriteText($"**`{name}`**  \n{desc}");
             }
         }
-        
+    }
+
+    private static void WriteOptionsSection(MarkdownConsole console, List<(string name, string desc)> options)
+    {
         if (options.Count > 0)
         {
             console.WriteHeading(2, "Options");
             foreach (var (name, desc) in options)
             {
-                // Skip help option
                 if (name.Contains("--help"))
                 {
                     continue;
@@ -291,10 +355,11 @@ static class CommandDocGenerator
                 console.WriteText($"`{name}`  \n{desc}");
             }
         }
-        
+    }
+
+    private static void WriteExamplesSection(MarkdownConsole console)
+    {
         console.WriteHeading(2, "Examples");
         console.WriteText("See the command reference documentation for usage examples.");
-        
-        return console.ToString();
     }
 }

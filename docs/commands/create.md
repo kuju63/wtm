@@ -33,4 +33,3 @@ Show detailed diagnostic information
 ## Examples
 
 See the command reference documentation for usage examples.
-

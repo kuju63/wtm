@@ -87,7 +87,7 @@ public class WorktreeService : IWorktreeService
     /// Creates a new worktree with the specified options. This overload does not accept a cancellation token.
     /// </summary>
     /// <param name="options">The options for creating the worktree.</param>
-    /// <returns>A <see cref="CommandResult{WorktreeInfo}"/> representing the result.</returns>
+    /// <returns>A <see cref="CommandResult{T}"/> representing the result.</returns>
     public Task<CommandResult<WorktreeInfo>> CreateWorktreeAsync(CreateWorktreeOptions options)
         => CreateWorktreeAsync(options, CancellationToken.None);
 
@@ -96,7 +96,7 @@ public class WorktreeService : IWorktreeService
     /// </summary>
     /// <param name="options">The options for creating the worktree.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
-    /// <returns>A <see cref="CommandResult{WorktreeInfo}"/> representing the result.</returns>
+    /// <returns>A <see cref="CommandResult{T}"/> representing the result.</returns>
     public async Task<CommandResult<WorktreeInfo>> CreateWorktreeAsync(CreateWorktreeOptions options, CancellationToken cancellationToken)
     {
         // Validate options
@@ -312,5 +312,172 @@ public class WorktreeService : IWorktreeService
             .ToList();
 
         return CommandResult<List<WorktreeInfo>>.Success(sortedWorktrees);
+    }
+
+    /// <inheritdoc/>
+    public Task<RemovalValidationError> ValidateForRemovalAsync(string worktreeIdentifier, bool force)
+        => ValidateForRemovalAsync(worktreeIdentifier, force, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public async Task<RemovalValidationError> ValidateForRemovalAsync(string worktreeIdentifier, bool force, CancellationToken cancellationToken)
+    {
+        var listResult = await _gitService.ListWorktreesAsync(cancellationToken);
+        if (!listResult.IsSuccess || listResult.Data == null)
+        {
+            return RemovalValidationError.NotFound;
+        }
+
+        var worktrees = listResult.Data;
+        var targetWorktree = FindWorktree(worktrees, worktreeIdentifier);
+
+        if (targetWorktree == null)
+        {
+            return RemovalValidationError.NotFound;
+        }
+
+        if (IsMainWorktree(worktrees, targetWorktree))
+        {
+            return RemovalValidationError.IsMainWorktree;
+        }
+
+        if (IsCurrentWorktree(targetWorktree))
+        {
+            return RemovalValidationError.IsCurrentWorktree;
+        }
+
+        if (!force)
+        {
+            return await ValidateWorktreeStateAsync(targetWorktree, cancellationToken);
+        }
+
+        return RemovalValidationError.None;
+    }
+
+    private async Task<RemovalValidationError> ValidateWorktreeStateAsync(WorktreeInfo targetWorktree, CancellationToken cancellationToken)
+    {
+        var hasChangesResult = await _gitService.HasUncommittedChangesAsync(targetWorktree.Path, cancellationToken);
+        if (hasChangesResult.IsSuccess && hasChangesResult.Data)
+        {
+            return RemovalValidationError.HasUncommittedChanges;
+        }
+
+        var isLockedResult = await _gitService.IsWorktreeLockedAsync(targetWorktree.Path, cancellationToken);
+        if (isLockedResult.IsSuccess && isLockedResult.Data)
+        {
+            return RemovalValidationError.IsLocked;
+        }
+
+        return RemovalValidationError.None;
+    }
+
+    /// <inheritdoc/>
+    public Task<CommandResult<RemoveWorktreeResult>> RemoveWorktreeAsync(RemoveWorktreeOptions options)
+        => RemoveWorktreeAsync(options, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<RemoveWorktreeResult>> RemoveWorktreeAsync(RemoveWorktreeOptions options, CancellationToken cancellationToken)
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+
+        var listResult = await _gitService.ListWorktreesAsync(cancellationToken);
+        if (!listResult.IsSuccess || listResult.Data == null)
+        {
+            return CommandResult<RemoveWorktreeResult>.Failure(
+                "WT-RM-001",
+                $"Worktree '{options.WorktreeIdentifier}' not found",
+                "Use 'wt list' to see available worktrees");
+        }
+
+        var worktrees = listResult.Data;
+        var targetWorktree = FindWorktree(worktrees, options.WorktreeIdentifier);
+
+        if (targetWorktree == null)
+        {
+            return CommandResult<RemoveWorktreeResult>.Failure(
+                "WT-RM-001",
+                $"Worktree '{options.WorktreeIdentifier}' not found",
+                "Use 'wt list' to see available worktrees");
+        }
+
+        var validation = await ValidateForRemovalAsync(options.WorktreeIdentifier, options.Force, cancellationToken);
+        if (validation != RemovalValidationError.None)
+        {
+            return CreateValidationErrorResult(validation, options.WorktreeIdentifier);
+        }
+
+        var removeResult = await _gitService.RemoveWorktreeAsync(targetWorktree.Path, options.Force, cancellationToken);
+        if (!removeResult.IsSuccess)
+        {
+            return CommandResult<RemoveWorktreeResult>.Failure(
+                removeResult.ErrorCode!,
+                removeResult.ErrorMessage!,
+                removeResult.Solution);
+        }
+
+        sw.Stop();
+        var result = new RemoveWorktreeResult
+        {
+            Success = true,
+            WorktreeId = options.WorktreeIdentifier,
+            RemovedPath = targetWorktree.Path,
+            WorktreeMetadataRemoved = true,
+            FilesDeleted = 0,
+            DeletionFailures = [],
+            Duration = sw.Elapsed
+        };
+
+        return CommandResult<RemoveWorktreeResult>.Success(result);
+    }
+
+    private static WorktreeInfo? FindWorktree(List<WorktreeInfo> worktrees, string identifier)
+    {
+        return worktrees.FirstOrDefault(w =>
+            w.Branch.Equals(identifier, StringComparison.OrdinalIgnoreCase) ||
+            w.Path.Equals(identifier, StringComparison.OrdinalIgnoreCase) ||
+            w.Path.EndsWith(identifier, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsMainWorktree(List<WorktreeInfo> worktrees, WorktreeInfo targetWorktree)
+    {
+        var mainWorktree = worktrees.FirstOrDefault();
+        return mainWorktree != null && mainWorktree.Path == targetWorktree.Path;
+    }
+
+    private static bool IsCurrentWorktree(WorktreeInfo targetWorktree)
+    {
+        var currentDir = Environment.CurrentDirectory;
+        return currentDir.StartsWith(targetWorktree.Path, StringComparison.OrdinalIgnoreCase) ||
+               targetWorktree.Path.Equals(currentDir, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static CommandResult<RemoveWorktreeResult> CreateValidationErrorResult(RemovalValidationError error, string worktreeId)
+    {
+        return error switch
+        {
+            RemovalValidationError.NotFound => CommandResult<RemoveWorktreeResult>.Failure(
+                "WT-RM-001",
+                $"Worktree '{worktreeId}' not found",
+                "Use 'wt list' to see available worktrees"),
+            RemovalValidationError.IsMainWorktree => CommandResult<RemoveWorktreeResult>.Failure(
+                "WT-RM-002",
+                "Cannot remove main worktree",
+                "The main working directory is protected from deletion"),
+            RemovalValidationError.IsCurrentWorktree => CommandResult<RemoveWorktreeResult>.Failure(
+                "WT-RM-002",
+                "Cannot remove the currently checked-out worktree",
+                "Switch to a different directory and try again"),
+            RemovalValidationError.HasUncommittedChanges => CommandResult<RemoveWorktreeResult>.Failure(
+                "WT-RM-003",
+                $"Worktree '{worktreeId}' has uncommitted changes",
+                "Commit or stash changes, or use --force to override"),
+            RemovalValidationError.IsLocked => CommandResult<RemoveWorktreeResult>.Failure(
+                "WT-RM-005",
+                $"Worktree '{worktreeId}' is locked",
+                "Use --force to override lock, or wait for process to finish"),
+            _ => CommandResult<RemoveWorktreeResult>.Failure(
+                "WT-RM-099",
+                "Unknown validation error",
+                null)
+        };
     }
 }

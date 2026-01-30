@@ -112,6 +112,7 @@ uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 #### 2. ドキュメントのテストとビルド
 
 **ローカルテスト**:
+
 ```bash
 # コマンドドキュメント生成
 cd Tools/DocGenerator && dotnet run -- ../../docs

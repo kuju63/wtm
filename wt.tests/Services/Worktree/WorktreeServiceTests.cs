@@ -327,4 +327,208 @@ public class WorktreeServiceTests
         _mockGitService.Verify(x => x.IsGitRepositoryAsync(cancellationToken), Times.Once);
         _mockGitService.Verify(x => x.ListWorktreesAsync(cancellationToken), Times.Once);
     }
+
+    #region Phase 2: Error Path Tests
+
+    [Fact]
+    public async Task CreateWorktreeAsync_WhenBranchExistsCheckFails_ReturnsError()
+    {
+        // Arrange
+        var options = new CreateWorktreeOptions
+        {
+            BranchName = "feature-x",
+            BaseBranch = "main"
+        };
+
+        _mockGitService
+            .Setup(x => x.IsGitRepositoryAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Success(true));
+
+        _mockGitService
+            .Setup(x => x.BranchExistsAsync("feature-x", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Failure(
+                ErrorCodes.GitCommandFailed,
+                "Failed to check branch existence",
+                "Check Git installation"));
+
+        // Act
+        var result = await _worktreeService.CreateWorktreeAsync(options);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
+        result.ErrorMessage.ShouldBe("Failed to check branch existence");
+        result.Solution.ShouldBe("Check Git installation");
+    }
+
+    [Fact]
+    public async Task CreateWorktreeAsync_WhenCreateBranchFails_ReturnsError()
+    {
+        // Arrange
+        var options = new CreateWorktreeOptions
+        {
+            BranchName = "feature-x",
+            BaseBranch = "main"
+        };
+
+        _mockGitService
+            .Setup(x => x.IsGitRepositoryAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Success(true));
+
+        _mockGitService
+            .Setup(x => x.BranchExistsAsync("feature-x", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Success(false));
+
+        _mockGitService
+            .Setup(x => x.CreateBranchAsync("feature-x", "main", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<BranchInfo>.Failure(
+                ErrorCodes.GitCommandFailed,
+                "Failed to create branch",
+                "Check if base branch exists"));
+
+        // Act
+        var result = await _worktreeService.CreateWorktreeAsync(options);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
+        result.ErrorMessage.ShouldBe("Failed to create branch");
+        result.Solution.ShouldBe("Check if base branch exists");
+    }
+
+    [Fact]
+    public async Task CreateWorktreeAsync_WhenGetCurrentBranchFails_ReturnsError()
+    {
+        // Arrange
+        var options = new CreateWorktreeOptions
+        {
+            BranchName = "feature-x"
+            // BaseBranch is not specified, so it should call GetCurrentBranchAsync
+        };
+
+        _mockGitService
+            .Setup(x => x.IsGitRepositoryAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Success(true));
+
+        _mockGitService
+            .Setup(x => x.GetCurrentBranchAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<string>.Failure(
+                ErrorCodes.GitCommandFailed,
+                "Failed to get current branch",
+                "Ensure you are on a branch"));
+
+        // Act
+        var result = await _worktreeService.CreateWorktreeAsync(options);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.GitCommandFailed);
+        result.ErrorMessage.ShouldBe("Failed to get current branch");
+        result.Solution.ShouldBe("Ensure you are on a branch");
+    }
+
+    #endregion
+
+    #region Phase 3: Additional Error Path Tests
+
+    [Fact]
+    public async Task CreateWorktreeAsync_WhenAddWorktreeFails_ReturnsError()
+    {
+        // Arrange
+        var options = new CreateWorktreeOptions
+        {
+            BranchName = "feature-x",
+            BaseBranch = "main"
+        };
+
+        _mockGitService
+            .Setup(x => x.IsGitRepositoryAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Success(true));
+
+        _mockGitService
+            .Setup(x => x.BranchExistsAsync("feature-x", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Success(false));
+
+        _mockGitService
+            .Setup(x => x.CreateBranchAsync("feature-x", "main", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<BranchInfo>.Success(new BranchInfo("feature-x", "main", true, false)));
+
+        _mockPathHelper
+            .Setup(x => x.ResolvePath("../wt-feature-x", It.IsAny<string>()))
+            .Returns("/Users/dev/wt-feature-x");
+
+        _mockPathHelper
+            .Setup(x => x.NormalizePath("/Users/dev/wt-feature-x"))
+            .Returns("/Users/dev/wt-feature-x");
+
+        _mockPathHelper
+            .Setup(x => x.ValidatePath("/Users/dev/wt-feature-x"))
+            .Returns(new PathValidationResult(true));
+
+        _mockGitService
+            .Setup(x => x.AddWorktreeAsync("/Users/dev/wt-feature-x", "feature-x", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Failure(
+                ErrorCodes.WorktreeCreationFailed,
+                "Failed to add worktree",
+                "Check if path is available"));
+
+        // Act
+        var result = await _worktreeService.CreateWorktreeAsync(options);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.WorktreeCreationFailed);
+        result.ErrorMessage.ShouldBe("Failed to add worktree");
+        result.Solution.ShouldBe("Check if path is available");
+    }
+
+    [Fact]
+    public async Task CreateWorktreeAsync_WhenPathPreparationThrows_ReturnsError()
+    {
+        // Arrange
+        var options = new CreateWorktreeOptions
+        {
+            BranchName = "feature-x",
+            BaseBranch = "main"
+        };
+
+        _mockGitService
+            .Setup(x => x.IsGitRepositoryAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Success(true));
+
+        _mockGitService
+            .Setup(x => x.BranchExistsAsync("feature-x", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<bool>.Success(false));
+
+        _mockGitService
+            .Setup(x => x.CreateBranchAsync("feature-x", "main", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<BranchInfo>.Success(new BranchInfo("feature-x", "main", true, false)));
+
+        _mockPathHelper
+            .Setup(x => x.ResolvePath("../wt-feature-x", It.IsAny<string>()))
+            .Returns("/Users/dev/wt-feature-x");
+
+        _mockPathHelper
+            .Setup(x => x.NormalizePath("/Users/dev/wt-feature-x"))
+            .Returns("/Users/dev/wt-feature-x");
+
+        _mockPathHelper
+            .Setup(x => x.ValidatePath("/Users/dev/wt-feature-x"))
+            .Returns(new PathValidationResult(true));
+
+        _mockPathHelper
+            .Setup(x => x.EnsureParentDirectoryExists("/Users/dev/wt-feature-x"))
+            .Throws(new UnauthorizedAccessException("Permission denied"));
+
+        // Act
+        var result = await _worktreeService.CreateWorktreeAsync(options);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.InvalidPath);
+        result.ErrorMessage.ShouldBe("Invalid worktree path");
+        result.Solution.ShouldBe("Permission denied");
+    }
+
+    #endregion
 }

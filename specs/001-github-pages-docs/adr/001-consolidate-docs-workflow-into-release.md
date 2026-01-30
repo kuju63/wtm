@@ -30,6 +30,7 @@ build-and-deploy-docs:
 ```
 
 **Key Changes**:
+
 1. Removed separate `.github/workflows/docs.yml` workflow
 2. Added `build-and-deploy-docs` job to `release.yml`
 3. Job depends on `create-release` job completion
@@ -42,10 +43,12 @@ build-and-deploy-docs:
 ### 1. Use Personal Access Token (PAT) instead of GITHUB_TOKEN
 
 **Pros**:
+
 - Would allow separate workflow trigger
 - Maintains original design separation
 
 **Cons**:
+
 - Requires PAT with write permissions (security concern)
 - PAT management overhead (rotation, expiration)
 - Violates principle of least privilege
@@ -63,10 +66,12 @@ on:
 ```
 
 **Pros**:
+
 - Maintains workflow separation
 - Uses GITHUB_TOKEN
 
 **Cons**:
+
 - Introduces delay (wait for release workflow completion)
 - More complex error handling (need to check workflow_run conclusion)
 - Harder to debug (two separate workflow runs)
@@ -77,10 +82,12 @@ on:
 ### 3. Use repository_dispatch custom event
 
 **Pros**:
+
 - Maximum flexibility
 - Can pass custom payloads
 
 **Cons**:
+
 - Requires additional API calls in release workflow
 - More code to maintain
 - Overkill for simple use case

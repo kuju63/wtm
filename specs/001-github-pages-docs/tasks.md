@@ -16,6 +16,7 @@
 ## Path Conventions
 
 Project follows single repository structure:
+
 - Documentation source: `docs/`
 - CLI project: `wt.cli/`
 - Tools: `Tools/DocGenerator/`
@@ -221,6 +222,7 @@ Project follows single repository structure:
 - **Phase 8**: T060, T061, T062, T063 can run in parallel
 
 Once Foundational phase completes:
+
 - **All 5 user stories can be worked on in parallel by different team members**
 - Each story is independently completable and testable
 
@@ -291,6 +293,7 @@ With multiple developers:
 ### Single Developer Strategy
 
 Follow sequential priority order:
+
 1. Setup → Foundational → US1 → US2 → US3 → US4 → US5 → Polish
 2. Deploy after US1+US2 for early user feedback
 3. Deploy again after each additional story
@@ -315,6 +318,7 @@ Follow sequential priority order:
 **Full Scope**: All 8 phases (69 tasks) deliver complete documentation system
 
 **Estimated Time**:
+
 - MVP (US1+US2): 4-6 hours
 - Enhanced (+US3): +1-2 hours  
 - Developer (+US4): +1 hour

@@ -13,4 +13,3 @@ wt list [options]
 ## Examples
 
 See the command reference documentation for usage examples.
-

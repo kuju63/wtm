@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Data Model: Remove Git Worktree | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Data Model: Remove Git Worktree | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/data-model.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="data-model-remove-git-worktree">Data Model: Remove Git Worktree</h1>
+
+<p><strong>Date</strong>: 2026-01-24 | <strong>Feature</strong>: 005-remove-worktree</p>
+<h2 id="entities">Entities</h2>
+<h3 id="removeworktreeoptions">RemoveWorktreeOptions</h3>
+<p><strong>Purpose</strong>: CLI options for the remove command</p>
+<p><strong>Fields</strong>:</p>
+<pre><code class="lang-csharp">public class RemoveWorktreeOptions
+{
+    /// &lt;summary&gt;
+    /// Worktree identifier: branch name or path
+    /// &lt;/summary&gt;
+    public required string WorktreeId { get; set; }
+
+    /// &lt;summary&gt;
+    /// Force removal even with uncommitted changes or locks
+    /// &lt;/summary&gt;
+    public bool Force { get; set; } = false;
+
+    /// &lt;summary&gt;
+    /// Detailed diagnostics output
+    /// &lt;/summary&gt;
+    public bool Verbose { get; set; } = false;
+
+    /// &lt;summary&gt;
+    /// Output format: &quot;human&quot; or &quot;json&quot;
+    /// &lt;/summary&gt;
+    public string OutputFormat { get; set; } = &quot;human&quot;;
+}
+</code></pre>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>WorktreeId: Non-null, non-empty string (max 255 characters)</li>
+<li>Force: Boolean flag (no validation)</li>
+<li>OutputFormat: Must be &quot;human&quot; or &quot;json&quot; (enum recommended)</li>
+</ul>
+<p><strong>Usage</strong>: Bound from System.CommandLine command arguments/options</p>
+<hr>
+<h3 id="removeworktreeresult">RemoveWorktreeResult</h3>
+<p><strong>Purpose</strong>: Structured result of a remove operation</p>
+<p><strong>Fields</strong>:</p>
+<pre><code class="lang-csharp">public class RemoveWorktreeResult : CommandResult&lt;RemoveWorktreeData&gt;
+{
+    /// &lt;summary&gt;
+    /// Removal result details
+    /// &lt;/summary&gt;
+    public RemoveWorktreeData Data { get; set; } = new();
+}
+
+public class RemoveWorktreeData
+{
+    /// &lt;summary&gt;
+    /// Whether removal completed successfully
+    /// &lt;/summary&gt;
+    public bool Success { get; set; }
+
+    /// &lt;summary&gt;
+    /// Worktree identifier that was removed
+    /// &lt;/summary&gt;
+    public required string WorktreeId { get; set; }
+
+    /// &lt;summary&gt;
+    /// Full path to the removed worktree
+    /// &lt;/summary&gt;
+    public required string Path { get; set; }
+
+    /// &lt;summary&gt;
+    /// Whether the git worktree metadata was removed
+    /// &lt;/summary&gt;
+    public bool WorktreeMetadataRemoved { get; set; }
+
+    /// &lt;summary&gt;
+    /// Number of files successfully deleted from disk
+    /// &lt;/summary&gt;
+    public int FilesDeleted { get; set; }
+
+    /// &lt;summary&gt;
+    /// Files that could not be deleted and their reasons
+    /// &lt;/summary&gt;
+    public List&lt;DeletionFailure&gt; UndeleteableItems { get; set; } = new();
+
+    /// &lt;summary&gt;
+    /// Total duration of removal operation
+    /// &lt;/summary&gt;
+    public TimeSpan Duration { get; set; }
+}
+
+public class DeletionFailure
+{
+    /// &lt;summary&gt;
+    /// Path to the file/directory that could not be deleted
+    /// &lt;/summary&gt;
+    public required string Path { get; set; }
+
+    /// &lt;summary&gt;
+    /// Reason for failure (permission denied, file locked, etc.)
+    /// &lt;/summary&gt;
+    public required string Reason { get; set; }
+}
+</code></pre>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>Extends CommandResult<t> (existing pattern)</t></li>
+<li>Contains DeletionFailure items</li>
+<li>Used by RemoveCommand for formatting output</li>
+</ul>
+<hr>
+<h3 id="worktreevalidationerror">WorktreeValidationError</h3>
+<p><strong>Purpose</strong>: Validation error details for pre-removal checks</p>
+<p><strong>Fields</strong>:</p>
+<pre><code class="lang-csharp">public enum RemovalValidationError
+{
+    None = 0,
+    NotFound = 1,
+    IsMainWorktree = 2,
+    IsCurrentWorktree = 3,
+    UncommittedChanges = 4,
+    LockedByAnotherProcess = 5,
+    PermissionDenied = 6,
+    UnknownError = 7
+}
+</code></pre>
+<p><strong>State Transitions</strong>:</p>
+<ul>
+<li>Worktree → CheckExists (NotFound if missing)</li>
+<li>Worktree → CheckMainWorktree (IsMainWorktree if git root)</li>
+<li>Worktree → CheckCurrentWorktree (IsCurrentWorktree if pwd matches)</li>
+<li>Worktree → CheckUncommittedChanges (UncommittedChanges if modified, unless Force=true)</li>
+<li>Worktree → CheckLocked (LockedByAnotherProcess if git lock present)</li>
+<li>✓ → RemoveGitMetadata → RemoveDirectory → ✓ Success</li>
+</ul>
+<p><strong>Usage</strong>: Returned by WorktreeService validation methods to determine if removal can proceed</p>
+<hr>
+<h2 id="service-layer-integration">Service Layer Integration</h2>
+<h3 id="iworktreeservice-extension">IWorktreeService Extension</h3>
+<p><strong>New Methods</strong>:</p>
+<pre><code class="lang-csharp">public interface IWorktreeService
+{
+    // Existing methods...
+
+    /// &lt;summary&gt;
+    /// Validates a worktree for removal
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;worktreeId&quot;&gt;Worktree identifier (branch name or path)&lt;/param&gt;
+    /// &lt;param name=&quot;force&quot;&gt;If true, skip uncommitted changes check&lt;/param&gt;
+    /// &lt;returns&gt;Validation error code; None if valid&lt;/returns&gt;
+    RemovalValidationError ValidateForRemoval(string worktreeId, bool force);
+
+    /// &lt;summary&gt;
+    /// Removes a worktree and its working directory
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;options&quot;&gt;Removal options&lt;/param&gt;
+    /// &lt;returns&gt;Removal operation result with detailed information&lt;/returns&gt;
+    Task&lt;RemoveWorktreeResult&gt; RemoveWorktreeAsync(RemoveWorktreeOptions options);
+}
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>ValidateForRemoval: Performs all safety checks; returns first error or None</li>
+<li>RemoveWorktreeAsync: Orchestrates removal workflow; handles errors gracefully
+<ol>
+<li>Validate worktree exists and can be removed</li>
+<li>Check for uncommitted changes (unless Force)</li>
+<li>Remove git metadata via git worktree remove</li>
+<li>Remove working directory recursively</li>
+<li>Report any partial failures</li>
+<li>Return structured result</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="data-validation-rules">Data Validation Rules</h2>
+<h3 id="worktreeid-validation">WorktreeId Validation</h3>
+<ul>
+<li>Non-empty string (max 255 chars)</li>
+<li>Supports alphanumeric, hyphens, underscores, slashes (path separators)</li>
+<li>Resolved to absolute path via existing PathHelper</li>
+</ul>
+<h3 id="force-flag-validation">Force Flag Validation</h3>
+<ul>
+<li>Boolean; no specific validation needed</li>
+<li>When true: bypasses UncommittedChanges check</li>
+<li>When true: allows removal of locked worktrees</li>
+</ul>
+<h3 id="path-validation">Path Validation</h3>
+<ul>
+<li>Absolute path required (resolved by PathHelper.ResolvePath)</li>
+<li>Must be within git repository</li>
+<li>Must exist on filesystem (verified via IFileSystem)</li>
+</ul>
+<hr>
+<h2 id="error-handling--edge-cases">Error Handling &amp; Edge Cases</h2>
+<h3 id="handled-edge-cases">Handled Edge Cases</h3>
+<ol>
+<li><p><strong>Worktree not found</strong></p>
+<ul>
+<li>Result: RemovalValidationError.NotFound</li>
+<li>Error code: WT-RM-001</li>
+<li>Message: &quot;Worktree 'X' not found&quot;</li>
+</ul>
+</li>
+<li><p><strong>Main/primary worktree removal attempt</strong></p>
+<ul>
+<li>Result: RemovalValidationError.IsMainWorktree</li>
+<li>Error code: WT-RM-002</li>
+<li>Message: &quot;Cannot remove main worktree&quot;</li>
+</ul>
+</li>
+<li><p><strong>Current worktree removal attempt (pwd is inside)</strong></p>
+<ul>
+<li>Result: RemovalValidationError.IsCurrentWorktree</li>
+<li>Error code: WT-RM-002</li>
+<li>Message: &quot;Cannot remove the currently checked-out worktree&quot;</li>
+</ul>
+</li>
+<li><p><strong>Uncommitted changes present</strong></p>
+<ul>
+<li>Result: RemovalValidationError.UncommittedChanges (unless force=true)</li>
+<li>Error code: WT-RM-003</li>
+<li>Suggestion: &quot;Commit or stash changes, or use --force to override&quot;</li>
+</ul>
+</li>
+<li><p><strong>Worktree locked by another process</strong></p>
+<ul>
+<li>Result: RemovalValidationError.LockedByAnotherProcess</li>
+<li>Error code: WT-RM-005</li>
+<li>Suggestion: &quot;Use --force to override lock, or wait for process to finish&quot;</li>
+</ul>
+</li>
+<li><p><strong>Permission denied during directory deletion</strong></p>
+<ul>
+<li>Result: Success=false but WorktreeMetadataRemoved=true</li>
+<li>Error code: WT-RM-004</li>
+<li>Partial deletion reported; user can manually clean up</li>
+</ul>
+</li>
+<li><p><strong>Directory already deleted but worktree entry exists</strong></p>
+<ul>
+<li>Git metadata is removed</li>
+<li>FilesDeleted = 0, UndeleteableItems = empty</li>
+<li>Success = true (goal achieved)</li>
+</ul>
+</li>
+<li><p><strong>Partial directory deletion (some files locked)</strong></p>
+<ul>
+<li>Result: Success=false (FR-010 behavior)</li>
+<li>WorktreeMetadataRemoved=true</li>
+<li>UndeleteableItems list populated with locked files</li>
+<li>Message indicates which files remain on disk</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="lifecycle--state-transitions">Lifecycle &amp; State Transitions</h2>
+<pre><code>Initial State: Worktree exists in git, directory on disk
+
+1. Validation Phase
+   ├─ Check exists?
+   ├─ Check main worktree?
+   ├─ Check current worktree?
+   ├─ Check uncommitted changes (if not force)?
+   └─ Check locked by process?
+
+2. Removal Phase
+   ├─ Remove git metadata (git worktree remove)
+   └─ Remove directory from disk (recursive delete)
+
+3. Report Phase
+   ├─ Count deleted files
+   ├─ List undeleteable items
+   └─ Return RemoveWorktreeResult
+
+Final State: Worktree removed from git, directory deleted (or partially)
+</code></pre>
+<hr>
+<h2 id="testing-strategy">Testing Strategy</h2>
+<h3 id="unit-tests-this-scope">Unit Tests (This Scope)</h3>
+<ul>
+<li>RemoveWorktreeOptions validation</li>
+<li>RemovalValidationError classification</li>
+<li>Path resolution and normalization</li>
+<li>Uncommitted changes detection (mocked git)</li>
+<li>Validation logic (mocked GitService, IFileSystem)</li>
+<li>Error message formatting</li>
+<li>Result object creation</li>
+</ul>
+<h3 id="mocking--test-helpers">Mocking &amp; Test Helpers</h3>
+<ul>
+<li>Mock IGitService for git command execution</li>
+<li>Mock IFileSystem using Moq for file operations</li>
+<li>Mock IProcessRunner for git process calls</li>
+</ul>
+<h3 id="future-scope-out-of-scope-for-this-feature">Future Scope (Out of Scope for This Feature)</h3>
+<ul>
+<li>Integration tests (require integration test infrastructure)</li>
+<li>E2E tests (require test harness and temporary worktree creation)</li>
+<li>These will be addressed in a follow-up feature when CI pipeline supports them</li>
+</ul>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>All classes follow existing project patterns (CommandResult<t>, Options classes)</t></li>
+<li>No new dependencies required (uses System.IO.Abstractions, existing git service)</li>
+<li>Error codes extend existing WT-RM prefix (consistent with other operations)</li>
+<li>Supports both simple branch names and full paths for worktree identification</li>
+<li>Unit tests only; integration/E2E deferred to future infrastructure work</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/data-model.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

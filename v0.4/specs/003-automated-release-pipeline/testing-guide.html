@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Testing Guide: Automated Binary Release Pipeline | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Testing Guide: Automated Binary Release Pipeline | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/testing-guide.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="testing-guide-automated-binary-release-pipeline">Testing Guide: Automated Binary Release Pipeline</h1>
+
+<p><strong>Feature</strong>: <code>003-automated-release-pipeline</code><br>
+<strong>Date</strong>: 2026-01-05<br>
+<strong>Related</strong>: <a href="spec.html">spec.md</a>, <a href="quickstart.html">quickstart.md</a></p>
+<p>このガイドは、自動化されたバイナリリリースパイプラインのテスト方法を説明します。</p>
+<hr>
+<h2 id="-テスト概要">📋 テスト概要</h2>
+<h3 id="テスト対象">テスト対象</h3>
+<ol>
+<li><strong>ビルドプロセス</strong>: 全プラットフォームのバイナリ生成</li>
+<li><strong>バージョン計算</strong>: Conventional Commitsベースの自動バージョニング</li>
+<li><strong>リリースノート生成</strong>: コミット履歴からの自動生成</li>
+<li><strong>ハッシュ生成</strong>: SHA256チェックサム計算</li>
+<li><strong>SBOM生成</strong>: CycloneDX形式のSBOM作成</li>
+<li><strong>デジタル署名</strong>: GPG署名の生成と検証</li>
+<li><strong>GitHub Release作成</strong>: Release APIへのアップロード</li>
+<li><strong>テスト自動化</strong>: 全ブランチでのテスト実行</li>
+<li><strong>カバレッジ報告</strong>: Codacy連携</li>
+</ol>
+<h3 id="テスト戦略">テスト戦略</h3>
+<ul>
+<li><strong>Phase 1 Tests</strong>: ビルドとリリースの基本機能 (T017, T021-T022, T026, T032, T032e-f)</li>
+<li><strong>Phase 2 Tests</strong>: バージョン計算とテスト自動化 (T040, T044, T048-T049, T055-T056)</li>
+<li><strong>Phase 3 Tests</strong>: エンドツーエンド統合テスト (T086-T096)</li>
+</ul>
+<hr>
+<h2 id="-phase-1-ビルドとリリースの基本テスト">🧪 Phase 1: ビルドとリリースの基本テスト</h2>
+<h3 id="t017-ローカルビルドテスト">T017: ローカルビルドテスト</h3>
+<p><strong>目的</strong>: 全プラットフォームのビルドスクリプトが正常に動作することを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. Windows x64ビルド
+cd /Users/kuriharajun/project/wt
+.github/scripts/build-windows.sh &quot;v0.1.0-test&quot; &quot;win-x64&quot;
+
+# 期待される出力: release-assets/wt-v0.1.0-test-windows-x64.exe
+
+# 2. Linux x64ビルド
+.github/scripts/build-linux-x64.sh &quot;v0.1.0-test&quot; &quot;linux-x64&quot;
+
+# 期待される出力: release-assets/wt-v0.1.0-test-linux-x64
+
+# 3. Linux ARMビルド (オプション)
+.github/scripts/build-linux-arm.sh &quot;v0.1.0-test&quot; &quot;linux-arm&quot;
+
+# 期待される出力: release-assets/wt-v0.1.0-test-linux-arm (失敗しても問題なし)
+
+# 4. macOS ARM64ビルド
+.github/scripts/build-macos-arm64.sh &quot;v0.1.0-test&quot; &quot;osx-arm64&quot;
+
+# 期待される出力: release-assets/wt-v0.1.0-test-macos-arm64
+</code></pre>
+<p><strong>検証</strong>:</p>
+<pre><code class="lang-bash"># バイナリが生成されたことを確認
+ls -lh release-assets/
+
+# 各バイナリが実行可能であることを確認 (Linux/macOS)
+chmod +x release-assets/wt-*-linux-*
+chmod +x release-assets/wt-*-macos-*
+
+# バージョン情報を表示 (実装されている場合)
+./release-assets/wt-v0.1.0-test-linux-x64 --version
+</code></pre>
+<p><strong>成功基準</strong>:</p>
+<ul>
+<li>✅ Windows, Linux x64, macOS ARM64バイナリが生成される (MANDATORY)</li>
+<li>✅ 各バイナリが実行可能で、エラーなく起動する</li>
+<li>⚠️ Linux ARMビルドは失敗してもよい (OPTIONAL)</li>
+</ul>
+<hr>
+<h3 id="t021-t022-リリースワークフローテストとドキュメント">T021-T022: リリースワークフローテストとドキュメント</h3>
+<p><strong>目的</strong>: mainブランチへのマージでリリースが自動作成されることを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. テスト用ブランチを作成
+git checkout -b test/release-workflow-001
+
+# 2. 軽微な変更をコミット
+echo &quot;# Test Release&quot; &gt;&gt; README.md
+git add README.md
+git commit -m &quot;test: verify release workflow automation&quot;
+
+# 3. リモートにプッシュ
+git push origin test/release-workflow-001
+
+# 4. GitHubでプルリクエストを作成
+gh pr create --title &quot;test: release workflow&quot; --body &quot;Testing automated release creation&quot;
+
+# 5. PRをmainにマージ
+gh pr merge --squash --delete-branch
+
+# 6. GitHub Actionsワークフローを監視
+gh run watch
+</code></pre>
+<p><strong>検証</strong>:</p>
+<pre><code class="lang-bash"># リリースが作成されたことを確認
+gh release list
+
+# 最新リリースの詳細を確認
+gh release view --web
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ mainマージから30分以内にリリースが作成される</li>
+<li>✅ リリースに全プラットフォームのバイナリが含まれる</li>
+<li>✅ SHA256SUMS、SBOM、署名ファイルが含まれる</li>
+<li>✅ リリースノートが自動生成される</li>
+</ul>
+<p><strong>ドキュメント更新</strong> (T022):</p>
+<p><a href="quickstart.html">quickstart.md</a>に以下を追加:</p>
+<ul>
+<li>リリース作成フローの説明</li>
+<li>手動ダウンロード手順</li>
+<li>トラブルシューティング</li>
+</ul>
+<hr>
+<h3 id="t026-ハッシュ生成テスト">T026: ハッシュ生成テスト</h3>
+<p><strong>目的</strong>: SHA256チェックサムが正しく生成されることを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. テスト用バイナリを作成
+mkdir -p test-assets
+echo &quot;test binary content&quot; &gt; test-assets/wt-v0.1.0-test-linux-x64
+
+# 2. チェックサムを生成
+.github/scripts/generate-checksums.sh test-assets/
+
+# 3. SHA256SUMSファイルを確認
+cat test-assets/SHA256SUMS
+</code></pre>
+<p><strong>検証</strong>:</p>
+<pre><code class="lang-bash"># ハッシュ値を手動計算して比較
+sha256sum test-assets/wt-v0.1.0-test-linux-x64
+
+# SHA256SUMSファイルを使って検証
+cd test-assets
+sha256sum -c SHA256SUMS --ignore-missing
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ <code>SHA256SUMS</code>ファイルが生成される</li>
+<li>✅ 各バイナリのハッシュ値が正しい</li>
+<li>✅ <code>sha256sum -c</code>コマンドで検証成功</li>
+</ul>
+<hr>
+<h3 id="t032-sbomテスト">T032: SBOMテスト</h3>
+<p><strong>目的</strong>: CycloneDX SBOMが正しく生成されることを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. GitHub Actionsワークフローを実行してSBOMを生成
+# (ローカルでSBOM生成をテストする場合)
+
+# Syftをインストール (Anchore SBOM Action の代替)
+brew install syft  # macOS
+# または
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+# 2. SBOMを生成
+syft packages dir:./wt.cli -o cyclonedx-json &gt; test-sbom.json
+
+# 3. SBOMの内容を確認
+cat test-sbom.json | jq .
+</code></pre>
+<p><strong>検証</strong>:</p>
+<pre><code class="lang-bash"># 依存関係の数を確認
+jq '.components | length' test-sbom.json
+
+# 主要な依存関係を確認
+jq '.components[].name' test-sbom.json | grep -E 'System.CommandLine|Microsoft'
+
+# SBOM形式が正しいことを確認
+jq '.bomFormat' test-sbom.json  # 期待値: &quot;CycloneDX&quot;
+jq '.specVersion' test-sbom.json  # 期待値: &quot;1.4&quot; または &quot;1.5&quot;
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ SBOM JSONファイルが生成される</li>
+<li>✅ <code>.bomFormat</code>が<code>&quot;CycloneDX&quot;</code>である</li>
+<li>✅ <code>.components</code>に依存関係が含まれる (.NET SDKなど)</li>
+</ul>
+<hr>
+<h3 id="t032e-f-デジタル署名テストとドキュメント">T032e-f: デジタル署名テストとドキュメント</h3>
+<p><strong>目的</strong>: GPG署名が正しく生成・検証できることを確認</p>
+<p><strong>前提条件</strong>:</p>
+<pre><code class="lang-bash"># GPGキーペアを生成 (テスト用)
+gpg --batch --gen-key &lt;&lt;EOF
+%no-protection
+Key-Type: RSA
+Key-Length: 4096
+Name-Real: Test Release Bot
+Name-Email: test-release@example.com
+Expire-Date: 0
+%commit
+EOF
+
+# 秘密鍵をエクスポート
+gpg --armor --export-secret-keys test-release@example.com &gt; test-gpg-private.asc
+
+# 公開鍵をエクスポート
+gpg --armor --export test-release@example.com &gt; test-gpg-public.asc
+</code></pre>
+<p><strong>手順</strong> (T032e):</p>
+<pre><code class="lang-bash"># 1. テストファイルを作成
+echo &quot;test content&quot; &gt; test-file.txt
+
+# 2. 署名を生成
+gpg --armor --detach-sign test-file.txt
+
+# 3. 署名ファイルを確認
+ls -lh test-file.txt.asc
+cat test-file.txt.asc
+</code></pre>
+<p><strong>検証</strong>:</p>
+<pre><code class="lang-bash"># 署名を検証
+gpg --verify test-file.txt.asc test-file.txt
+
+# 期待される出力:
+# gpg: Signature made ...
+# gpg: Good signature from &quot;Test Release Bot &lt;test-release@example.com&gt;&quot;
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ <code>.asc</code>署名ファイルが生成される</li>
+<li>✅ GPG署名が有効である</li>
+<li>✅ 署名検証が成功する</li>
+</ul>
+<p><strong>ドキュメント更新</strong> (T032f):</p>
+<p><a href="quickstart.html">quickstart.md</a>に以下を追加:</p>
+<pre><code class="lang-markdown">### 署名検証プロセス
+
+1. 公開鍵をインポート:
+   \`\`\`bash
+   curl -fsSL https://raw.githubusercontent.com/kuju63/wt/main/docs/GPG_PUBLIC_KEY.asc | gpg --import
+   \`\`\`
+
+2. SBOM署名を検証:
+   \`\`\`bash
+   gpg --verify wt-v1.0.0-sbom.json.asc wt-v1.0.0-sbom.json
+   \`\`\`
+
+3. チェックサム署名を検証:
+   \`\`\`bash
+   gpg --verify SHA256SUMS.asc SHA256SUMS
+   \`\`\`
+</code></pre>
+<hr>
+<h2 id="-phase-2-バージョン計算とテスト自動化">🧪 Phase 2: バージョン計算とテスト自動化</h2>
+<h3 id="t040-バージョン計算テスト">T040: バージョン計算テスト</h3>
+<p><strong>目的</strong>: Conventional Commitsに基づくバージョンインクリメントが正しく動作することを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. 最新タグを確認
+git describe --tags --abbrev=0
+
+# 2. feat: コミット (MINOR bump)
+git checkout -b test/version-minor
+echo &quot;# New Feature&quot; &gt;&gt; docs/test.md
+git add docs/test.md
+git commit -m &quot;feat: add new amazing feature&quot;
+git push origin test/version-minor
+
+# 3. PRを作成してマージ
+gh pr create --title &quot;feat: new feature&quot; --body &quot;Test MINOR version bump&quot;
+gh pr merge --squash --delete-branch
+
+# 4. リリースを確認
+gh release list
+
+# 5. fix: コミット (PATCH bump)
+git checkout -b test/version-patch
+echo &quot;# Bug Fix&quot; &gt;&gt; docs/test.md
+git add docs/test.md
+git commit -m &quot;fix: resolve critical bug&quot;
+git push origin test/version-patch
+
+# 6. PRを作成してマージ
+gh pr create --title &quot;fix: bug fix&quot; --body &quot;Test PATCH version bump&quot;
+gh pr merge --squash --delete-branch
+
+# 7. リリースを確認
+gh release list
+
+# 8. BREAKING CHANGE: コミット (MAJOR bump)
+git checkout -b test/version-major
+echo &quot;# Breaking Change&quot; &gt;&gt; docs/test.md
+git add docs/test.md
+git commit -m &quot;feat: change API format
+
+BREAKING CHANGE: All CLI arguments now use kebab-case.
+Migration guide: docs/migration/v2.0.md&quot;
+git push origin test/version-major
+
+# 9. PRを作成してマージ
+gh pr create --title &quot;feat: breaking change&quot; --body &quot;Test MAJOR version bump&quot;
+gh pr merge --squash --delete-branch
+
+# 10. リリースを確認
+gh release list
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ <code>feat:</code> → MINORバージョン増加 (例: v0.5.0 → v0.6.0)</li>
+<li>✅ <code>fix:</code> → PATCHバージョン増加 (例: v0.6.0 → v0.6.1)</li>
+<li>✅ <code>BREAKING CHANGE:</code> → MAJORバージョン増加 (例: v0.6.1 → v1.0.0)</li>
+<li>✅ <code>docs:</code>, <code>chore:</code> → バージョン変更なし</li>
+</ul>
+<hr>
+<h3 id="t044-リリースノートテスト">T044: リリースノートテスト</h3>
+<p><strong>目的</strong>: リリースノートが正しく生成されることを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. 複数のコミットタイプを含むPRを作成
+git checkout -b test/release-notes
+git commit --allow-empty -m &quot;feat: add feature A&quot;
+git commit --allow-empty -m &quot;fix: resolve bug B&quot;
+git commit --allow-empty -m &quot;docs: update README&quot;
+git push origin test/release-notes
+
+# 2. PRをマージ
+gh pr create --title &quot;test: release notes&quot; --body &quot;Test release notes generation&quot;
+gh pr merge --squash --delete-branch
+
+# 3. リリースノートを確認
+gh release view --web
+</code></pre>
+<p><strong>期待されるリリースノート形式</strong>:</p>
+<pre><code class="lang-markdown">## Features
+- add feature A
+
+## Bug Fixes
+- resolve bug B
+
+## Documentation
+- update README
+</code></pre>
+<p><strong>検証</strong>:</p>
+<ul>
+<li>✅ <code>feat:</code>コミットが「Features」セクションに表示される</li>
+<li>✅ <code>fix:</code>コミットが「Bug Fixes」セクションに表示される</li>
+<li>✅ <code>BREAKING CHANGE:</code>が強調表示される</li>
+<li>✅ <code>docs:</code>, <code>chore:</code>コミットは除外される (またはOther Changesセクション)</li>
+</ul>
+<hr>
+<h3 id="t048-t049-リリース自動化のエンドツーエンドテスト">T048-T049: リリース自動化のエンドツーエンドテスト</h3>
+<p><strong>目的</strong>: mainマージからリリース作成まで の全フローが正常に動作することを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. テスト用ブランチを作成
+git checkout -b test/e2e-release
+echo &quot;# E2E Test&quot; &gt;&gt; docs/test-e2e.md
+git add docs/test-e2e.md
+git commit -m &quot;feat: end-to-end release test&quot;
+git push origin test/e2e-release
+
+# 2. PRを作成
+gh pr create --title &quot;feat: E2E test&quot; --body &quot;Testing full release pipeline&quot;
+
+# 3. GitHub Actionsを監視
+gh pr checks --watch
+
+# 4. テストが成功したらマージ
+gh pr merge --squash --delete-branch
+
+# 5. リリースワークフローを監視
+gh run watch
+
+# 6. リリースが作成されるまで待機 (最大30分)
+timeout 1800 bash -c 'until gh release list | grep -q &quot;v&quot;; do sleep 30; done'
+
+# 7. リリースを確認
+gh release view --web
+</code></pre>
+<p><strong>検証</strong>:</p>
+<pre><code class="lang-bash"># リリースアセットを確認
+gh release view --json assets -q '.assets[].name'
+
+# 期待されるファイル:
+# - wt-v&lt;version&gt;-windows-x64.exe
+# - wt-v&lt;version&gt;-linux-x64
+# - wt-v&lt;version&gt;-linux-arm (オプション)
+# - wt-v&lt;version&gt;-macos-arm64
+# - wt-v&lt;version&gt;-sbom.json
+# - wt-v&lt;version&gt;-sbom.json.asc
+# - SHA256SUMS
+# - SHA256SUMS.asc
+</code></pre>
+<p><strong>性能検証</strong> (SC-003):</p>
+<pre><code class="lang-bash"># mainマージ時刻を取得
+MERGE_TIME=$(git log -1 --format=%ct origin/main)
+
+# リリース作成時刻を取得
+RELEASE_TIME=$(gh release view --json publishedAt -q '.publishedAt' | date -j -f &quot;%Y-%m-%dT%H:%M:%SZ&quot; &quot;+%s&quot;)
+
+# 経過時間を計算 (秒)
+DURATION=$((RELEASE_TIME - MERGE_TIME))
+
+echo &quot;Release duration: ${DURATION} seconds ($((DURATION / 60)) minutes)&quot;
+
+# 30分 (1800秒) 以内であることを確認
+if [ $DURATION -le 1800 ]; then
+  echo &quot;✅ PASS: Release published within 30 minutes&quot;
+else
+  echo &quot;❌ FAIL: Release took longer than 30 minutes&quot;
+fi
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ mainマージから30分以内にリリースが作成される</li>
+<li>✅ 全必須プラットフォームのバイナリが含まれる</li>
+<li>✅ SHA256SUMS、SBOM、署名ファイルが含まれる</li>
+<li>✅ リリースノートが正しく生成される</li>
+</ul>
+<hr>
+<h3 id="t055-t056-ブランチプロテクションとテスト自動化">T055-T056: ブランチプロテクションとテスト自動化</h3>
+<p><strong>目的</strong>: テスト失敗時にmainへのマージがブロックされることを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. テスト失敗を含むブランチを作成
+git checkout -b test/failing-tests
+
+# 2. 意図的にテストを失敗させる
+# (例: wt.tests/SampleTest.cs に失敗するテストを追加)
+cat &lt;&lt;EOF &gt;&gt; wt.tests/FailingTest.cs
+using Xunit;
+
+namespace wt.tests
+{
+    public class FailingTest
+    {
+        [Fact]
+        public void ThisTestShouldFail()
+        {
+            Assert.True(false, &quot;Intentional test failure&quot;);
+        }
+    }
+}
+EOF
+
+git add wt.tests/FailingTest.cs
+git commit -m &quot;test: add intentionally failing test&quot;
+git push origin test/failing-tests
+
+# 3. PRを作成
+gh pr create --title &quot;test: failing tests&quot; --body &quot;Testing branch protection with failing tests&quot;
+
+# 4. GitHub Actionsを監視
+gh pr checks --watch
+
+# 5. テストが失敗することを確認
+gh pr checks
+
+# 6. マージを試みる (失敗するはず)
+gh pr merge --squash --delete-branch
+# 期待されるエラー: &quot;Required status check 'Test and Coverage / Run Tests' is failing&quot;
+</code></pre>
+<p><strong>検証</strong>:</p>
+<ul>
+<li>✅ テストが失敗したPRはマージできない</li>
+<li>✅ PRに「❌ Test and Coverage / Run Tests」が表示される</li>
+<li>✅ GitHub UIで「Merge」ボタンが無効になる</li>
+</ul>
+<p><strong>修正して再テスト</strong>:</p>
+<pre><code class="lang-bash"># 7. 失敗するテストを削除
+git rm wt.tests/FailingTest.cs
+git commit -m &quot;test: remove failing test&quot;
+git push origin test/failing-tests
+
+# 8. テストが成功することを確認
+gh pr checks --watch
+
+# 9. マージが許可されることを確認
+gh pr merge --squash --delete-branch
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ テスト失敗でマージブロック</li>
+<li>✅ テスト成功でマージ許可</li>
+</ul>
+<hr>
+<h2 id="-phase-3-エンドツーエンド統合テスト">🧪 Phase 3: エンドツーエンド統合テスト</h2>
+<h3 id="t086-t087-完全なリリースフローテスト">T086-T087: 完全なリリースフローテスト</h3>
+<p><strong>目的</strong>: 機能ブランチ作成からリリース公開までの全フローを検証</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 1. 機能ブランチを作成
+git checkout -b feature/complete-e2e-test
+
+# 2. 新機能を実装 (簡易版)
+echo &quot;// New feature implementation&quot; &gt;&gt; wt.cli/Program.cs
+git add wt.cli/Program.cs
+git commit -m &quot;feat: implement complete E2E test feature&quot;
+
+# 3. テストを追加
+echo &quot;// Test for new feature&quot; &gt;&gt; wt.tests/E2ETest.cs
+git add wt.tests/E2ETest.cs
+git commit -m &quot;test: add E2E test for new feature&quot;
+
+# 4. リモートにプッシュ
+git push origin feature/complete-e2e-test
+
+# 5. PRを作成
+gh pr create --title &quot;feat: complete E2E test&quot; --body &quot;Testing full pipeline from feature to release&quot;
+
+# 6. テストワークフローを監視
+gh pr checks --watch
+
+# 7. テストが成功したらマージ
+gh pr merge --squash --delete-branch
+
+# 8. リリースワークフローを監視
+gh run watch
+
+# 9. リリースを確認
+gh release view
+</code></pre>
+<p><strong>検証ポイント</strong> (T086):</p>
+<ul>
+<li>✅ テストワークフローが自動実行される</li>
+<li>✅ カバレッジがCodacyにアップロードされる</li>
+<li>✅ テスト成功後にマージが許可される</li>
+</ul>
+<p><strong>検証ポイント</strong> (T087):</p>
+<ul>
+<li>✅ mainマージ後にリリースワークフローが自動実行される</li>
+<li>✅ 正しいバージョン番号が計算される</li>
+<li>✅ リリースノートに<code>feat:</code>コミットが含まれる</li>
+<li>✅ 全プラットフォームのバイナリが生成される</li>
+<li>✅ ハッシュ、SBOM、署名ファイルが含まれる</li>
+</ul>
+<hr>
+<h3 id="t088-t090-リリースアセット検証">T088-T090: リリースアセット検証</h3>
+<p><strong>目的</strong>: リリースに含まれる全アセットが正しいことを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># 最新リリースのアセットをダウンロード
+LATEST_RELEASE=$(gh release list --limit 1 | awk '{print $1}')
+gh release download &quot;$LATEST_RELEASE&quot;
+
+# ファイル一覧を確認
+ls -lh
+
+# 期待されるファイル:
+# - wt-v&lt;version&gt;-windows-x64.exe
+# - wt-v&lt;version&gt;-linux-x64
+# - wt-v&lt;version&gt;-linux-arm (オプション)
+# - wt-v&lt;version&gt;-macos-arm64
+# - wt-v&lt;version&gt;-sbom.json
+# - wt-v&lt;version&gt;-sbom.json.asc
+# - SHA256SUMS
+# - SHA256SUMS.asc
+</code></pre>
+<p><strong>T088: 全プラットフォームバイナリ確認</strong>:</p>
+<pre><code class="lang-bash"># Windows x64
+file wt-v*-windows-x64.exe  # PE32+ executable
+
+# Linux x64
+file wt-v*-linux-x64  # ELF 64-bit LSB executable, x86-64
+
+# Linux ARM (オプション)
+file wt-v*-linux-arm  # ELF 32-bit LSB executable, ARM
+
+# macOS ARM64
+file wt-v*-macos-arm64  # Mach-O 64-bit arm64 executable
+</code></pre>
+<p><strong>T089: SHA256SUMS検証</strong>:</p>
+<pre><code class="lang-bash"># チェックサムファイルを確認
+cat SHA256SUMS
+
+# GPG署名を検証
+gpg --verify SHA256SUMS.asc SHA256SUMS
+
+# ハッシュ値を検証
+sha256sum -c SHA256SUMS --ignore-missing
+</code></pre>
+<p><strong>T090: SBOM検証</strong>:</p>
+<pre><code class="lang-bash"># SBOMファイルを確認
+cat wt-v*-sbom.json | jq .
+
+# GPG署名を検証
+gpg --verify wt-v*-sbom.json.asc wt-v*-sbom.json
+
+# SBOM形式を確認
+jq '.bomFormat' wt-v*-sbom.json  # &quot;CycloneDX&quot;
+jq '.specVersion' wt-v*-sbom.json  # &quot;1.4&quot; または &quot;1.5&quot;
+
+# 依存関係を確認
+jq '.components[].name' wt-v*-sbom.json
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ 全バイナリが正しい形式である</li>
+<li>✅ SHA256SUMSのハッシュ値が一致する</li>
+<li>✅ GPG署名が有効である</li>
+<li>✅ SBOMにCycloneDX形式で依存関係が含まれる</li>
+</ul>
+<hr>
+<h3 id="t091-手動ダウンロードテスト">T091: 手動ダウンロードテスト</h3>
+<p><strong>目的</strong>: ユーザー視点でバイナリのダウンロードと実行が正常に行えることを確認</p>
+<p><strong>手順</strong> (各プラットフォーム):</p>
+<p><strong>Windows</strong>:</p>
+<pre><code class="lang-powershell"># PowerShellでダウンロード
+$LATEST = (gh release list --limit 1 | Select-String -Pattern &quot;v\d+\.\d+\.\d+&quot;).Matches.Value
+gh release download $LATEST --pattern &quot;wt-*-windows-x64.exe&quot;
+
+# 実行
+.\wt-*-windows-x64.exe --version
+</code></pre>
+<p><strong>Linux x64</strong>:</p>
+<pre><code class="lang-bash"># ダウンロード
+LATEST=$(gh release list --limit 1 | awk '{print $1}')
+gh release download &quot;$LATEST&quot; --pattern &quot;wt-*-linux-x64&quot;
+
+# 実行権限を付与
+chmod +x wt-*-linux-x64
+
+# 実行
+./wt-*-linux-x64 --version
+</code></pre>
+<p><strong>macOS ARM64</strong>:</p>
+<pre><code class="lang-bash"># ダウンロード
+LATEST=$(gh release list --limit 1 | awk '{print $1}')
+gh release download &quot;$LATEST&quot; --pattern &quot;wt-*-macos-arm64&quot;
+
+# 実行権限を付与
+chmod +x wt-*-macos-arm64
+
+# 実行
+./wt-*-macos-arm64 --version
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ 各プラットフォームでバイナリがダウンロードできる</li>
+<li>✅ バイナリが実行可能である</li>
+<li>✅ <code>--version</code>フラグでバージョン情報が表示される</li>
+</ul>
+<hr>
+<h3 id="t092-リリースノート検証">T092: リリースノート検証</h3>
+<p><strong>目的</strong>: リリースノートが正確でフォーマットが適切であることを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># リリースノートを確認
+gh release view --json body -q .body
+</code></pre>
+<p><strong>検証ポイント</strong>:</p>
+<ul>
+<li>✅ <code>## Features</code>セクションに<code>feat:</code>コミットが含まれる</li>
+<li>✅ <code>## Bug Fixes</code>セクションに<code>fix:</code>コミットが含まれる</li>
+<li>✅ <code>## Breaking Changes</code>セクションに<code>BREAKING CHANGE:</code>コミットが含まれる</li>
+<li>✅ Markdown形式が正しい</li>
+<li>✅ コミットメッセージが読みやすく整形されている</li>
+</ul>
+<hr>
+<h3 id="t093-性能テスト">T093: 性能テスト</h3>
+<p><strong>目的</strong>: リリース作成がSLA (30分) 以内に完了することを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># スクリプトを作成: test-performance.sh
+cat &gt; test-performance.sh &lt;&lt;'EOF'
+#!/bin/bash
+set -e
+
+# mainブランチの最新コミット時刻を取得
+COMMIT_TIME=$(git log -1 --format=%ct origin/main)
+
+# 最新リリースの作成時刻を取得
+RELEASE_TIME=$(gh release list --limit 1 --json publishedAt -q '.[0].publishedAt')
+RELEASE_TIMESTAMP=$(date -j -f &quot;%Y-%m-%dT%H:%M:%SZ&quot; &quot;$RELEASE_TIME&quot; &quot;+%s&quot; 2&gt;/dev/null || date -d &quot;$RELEASE_TIME&quot; &quot;+%s&quot;)
+
+# 経過時間を計算
+DURATION=$((RELEASE_TIMESTAMP - COMMIT_TIME))
+MINUTES=$((DURATION / 60))
+
+echo &quot;📊 Performance Test Results:&quot;
+echo &quot;  Commit time: $(date -r $COMMIT_TIME)&quot;
+echo &quot;  Release time: $(date -r $RELEASE_TIMESTAMP)&quot;
+echo &quot;  Duration: ${MINUTES} minutes (${DURATION} seconds)&quot;
+echo &quot;&quot;
+
+# SLA検証 (30分 = 1800秒)
+if [ $DURATION -le 1800 ]; then
+  echo &quot;✅ PASS: Release published within 30 minutes (SLA: SC-003)&quot;
+  exit 0
+else
+  echo &quot;❌ FAIL: Release took longer than 30 minutes (SLA violation)&quot;
+  exit 1
+fi
+EOF
+
+chmod +x test-performance.sh
+./test-performance.sh
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ リリース作成が30分以内に完了する (SC-003)</li>
+<li>✅ 平均リリース時間が20分以下である (80%ルール)</li>
+</ul>
+<hr>
+<h3 id="t094-バイナリダウンロード性能テスト">T094: バイナリダウンロード性能テスト</h3>
+<p><strong>目的</strong>: バイナリのダウンロードが2分以内に完了することを確認 (SC-004)</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># ダウンロード性能テスト
+time gh release download $(gh release list --limit 1 | awk '{print $1}') --pattern &quot;wt-*-linux-x64&quot;
+
+# 期待される結果: real &lt; 2m0.000s
+</code></pre>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ バイナリダウンロードが2分以内に完了する (典型的な接続環境)</li>
+</ul>
+<hr>
+<h3 id="t095-セキュリティテスト">T095: セキュリティテスト</h3>
+<p><strong>目的</strong>: ワークフローやスクリプトでシークレットが漏洩していないことを確認</p>
+<p><strong>手順</strong>:</p>
+<pre><code class="lang-bash"># ワークフローログを確認 (シークレットがマスクされていることを確認)
+gh run view --log | grep -i &quot;secret\|token\|password\|key&quot;
+
+# 期待される結果: すべてのシークレットが `***` でマスクされている
+</code></pre>
+<p><strong>検証ポイント</strong>:</p>
+<ul>
+<li>✅ <code>GPG_PRIVATE_KEY</code>が漏洩していない</li>
+<li>✅ <code>GPG_PASSPHRASE</code>が漏洩していない</li>
+<li>✅ <code>CODACY_PROJECT_TOKEN</code>が漏洩していない</li>
+<li>✅ <code>GITHUB_TOKEN</code>が漏洩していない</li>
+</ul>
+<p><strong>セキュリティチェックリスト</strong>:</p>
+<pre><code class="lang-bash"># リポジトリ内でシークレットの痕跡を検索
+git grep -i &quot;BEGIN.*PRIVATE KEY&quot;  # 期待: ヒットなし (テスト用キー除く)
+git grep -i &quot;ghp_&quot;  # GitHub Personal Access Token形式
+git grep -i &quot;sk_live&quot;  # Stripe等のAPIキー形式
+</code></pre>
+<hr>
+<h3 id="t096-アクセシビリティテスト">T096: アクセシビリティテスト</h3>
+<p><strong>目的</strong>: ドキュメントが新規開発者にとって明確であることを確認</p>
+<p><strong>手順</strong>:</p>
+<ol>
+<li><p><strong>新規開発者視点でドキュメントをレビュー</strong>:</p>
+<ul>
+<li><a href="quickstart.html">quickstart.md</a>: リリースのダウンロードと検証手順が明確か</li>
+<li><a href="research.html">research.md</a>: 技術的決定の背景が理解できるか</li>
+<li><a href="../../docs/adr/">ADR文書</a>: 決定理由が明確に記録されているか</li>
+</ul>
+</li>
+<li><p><strong>ドキュメントのチェックリスト</strong>:</p>
+<ul>
+<li>✅ 専門用語に説明がある</li>
+<li>✅ コマンド例が実行可能である</li>
+<li>✅ 前提条件が明記されている</li>
+<li>✅ トラブルシューティングセクションがある</li>
+<li>✅ 日本語ドキュメントが提供されている</li>
+</ul>
+</li>
+</ol>
+<p><strong>期待される結果</strong>:</p>
+<ul>
+<li>✅ 新規開発者がドキュメントを読んで理解できる</li>
+<li>✅ 手順が明確で実行可能である</li>
+<li>✅ トラブルシューティング情報が充実している</li>
+</ul>
+<hr>
+<h2 id="-テスト結果の記録">📊 テスト結果の記録</h2>
+<h3 id="テストレポート形式">テストレポート形式</h3>
+<p>各テスト完了後、以下の形式で結果を記録:</p>
+<pre><code class="lang-markdown">## Test Report: T&lt;番号&gt;
+
+**Date**: 2026-01-05  
+**Tester**: [名前]  
+**Status**: ✅ PASS / ❌ FAIL / ⚠️ PARTIAL
+
+**Details**:
+- [テスト手順と結果]
+
+**Issues**:
+- [発見された問題]
+
+**Follow-up**:
+- [必要なフォローアップアクション]
+</code></pre>
+<h3 id="テスト完了基準">テスト完了基準</h3>
+<ul>
+<li>✅ 全Phase 1テストが成功</li>
+<li>✅ 全Phase 2テストが成功</li>
+<li>✅ 全Phase 3テストが成功</li>
+<li>✅ セキュリティテストが成功</li>
+<li>✅ 性能テストがSLAを満たす</li>
+<li>✅ アクセシビリティテストが成功</li>
+</ul>
+<hr>
+<h2 id="-関連ドキュメント">🔗 関連ドキュメント</h2>
+<ul>
+<li><a href="spec.html">spec.md</a>: 仕様書</li>
+<li><a href="quickstart.html">quickstart.md</a>: クイックスタートガイド</li>
+<li><a href="troubleshooting.html">troubleshooting.md</a>: トラブルシューティングガイド</li>
+<li><a href="../../docs/adr/0002-sbom-format-and-signature-choice.html">ADR 0002</a>: SBOM形式とデジタル署名の選択</li>
+<li><a href="../../docs/adr/0003-semantic-versioning-conventional-commits.html">ADR 0003</a>: セマンティックバージョニング戦略</li>
+<li><a href="../../docs/adr/0004-release-workflow-timeout-sla.html">ADR 0004</a>: リリースワークフローのタイムアウトとSLA</li>
+<li><a href="../../docs/adr/0005-quality-gates-testing-requirements.html">ADR 0005</a>: 品質ゲートとテスト要件</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/testing-guide.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

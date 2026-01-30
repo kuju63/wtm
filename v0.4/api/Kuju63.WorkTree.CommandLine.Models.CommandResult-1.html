@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CommandResult&lt;T&gt; | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CommandResult&lt;T&gt; | wt ">
+      
+      <meta name="description" content="Represents the result of a command operation using the Result pattern.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/new/main/apiSpec/new?filename=Kuju63_WorkTree_CommandLine_Models_CommandResult_1.md&amp;value=---%0Auid%3A%20Kuju63.WorkTree.CommandLine.Models.CommandResult%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1">
+
+
+
+  <h1 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1" class="text-break">
+Class CommandResult&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L7"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Kuju63.html">Kuju63</a>.<a class="xref" href="Kuju63.WorkTree.html">WorkTree</a>.<a class="xref" href="Kuju63.WorkTree.CommandLine.html">CommandLine</a>.<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.html">Models</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>wt.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents the result of a command operation using the Result pattern.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class CommandResult&lt;T&gt;</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of data returned on success.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CommandResult&lt;T&gt;</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Data_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Data*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Data" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Data">
+  Data
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T? Data { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_ErrorCode_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorCode*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_ErrorCode" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorCode">
+  ErrorCode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? ErrorCode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_ErrorMessage_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorMessage*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_ErrorMessage" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorMessage">
+  ErrorMessage
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? ErrorMessage { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_IsSuccess_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.IsSuccess*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_IsSuccess" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.IsSuccess">
+  IsSuccess
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsSuccess { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Solution_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Solution*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Solution" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Solution">
+  Solution
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Solution { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Warnings_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Warnings*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Warnings" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Warnings">
+  Warnings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;string&gt; Warnings { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Failure_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Failure_System_String_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure(System.String,System.String)">
+  Failure(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failure result with the specified error information.
+This overload does not accept an explicit solution string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResult&lt;T&gt; Failure(string errorCode, string errorMessage)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>errorCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The error code identifying the type of error.</p>
+</dd>
+    <dt><code>errorMessage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A descriptive error message.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;T&gt;</dt>
+    <dd><p>A failed <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing error details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Failure_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Failure_System_String_System_String_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure(System.String,System.String,System.String)">
+  Failure(string, string, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failure result with the specified error information.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResult&lt;T&gt; Failure(string errorCode, string errorMessage, string? solution)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>errorCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The error code identifying the type of error.</p>
+</dd>
+    <dt><code>errorMessage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A descriptive error message.</p>
+</dd>
+    <dt><code>solution</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An optional solution or suggestion to resolve the error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;T&gt;</dt>
+    <dd><p>A failed <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing error details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Success_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Success__0_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success(`0)">
+  Success(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful result with the specified data.
+This overload does not accept explicit warnings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResult&lt;T&gt; Success(T data)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <span class="xref">T</span></dt>
+    <dd><p>The data to include in the result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;T&gt;</dt>
+    <dd><p>A successful <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Success_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Success__0_System_Collections_Generic_List_System_String__" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success(`0,System.Collections.Generic.List{System.String})">
+  Success(T, List&lt;string&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful result with the specified data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResult&lt;T&gt; Success(T data, List&lt;string&gt;? warnings)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <span class="xref">T</span></dt>
+    <dd><p>The data to include in the result.</p>
+</dd>
+    <dt><code>warnings</code> <span class="xref">List</span>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Optional list of warning messages.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;T&gt;</dt>
+    <dd><p>A successful <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_SuccessWithWarnings_" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.SuccessWithWarnings*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Models_CommandResult_1_SuccessWithWarnings__0_System_Collections_Generic_List_System_String__" data-uid="Kuju63.WorkTree.CommandLine.Models.CommandResult`1.SuccessWithWarnings(`0,System.Collections.Generic.List{System.String})">
+  SuccessWithWarnings(T, List&lt;string&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful result with warning messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResult&lt;T&gt; SuccessWithWarnings(T data, List&lt;string&gt; warnings)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <span class="xref">T</span></dt>
+    <dd><p>The data to include in the result.</p>
+</dd>
+    <dt><code>warnings</code> <span class="xref">List</span>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>A list of warning messages.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;T&gt;</dt>
+    <dd><p>A successful <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the data and warnings.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/wt.cli/Models/CommandResult.cs/#L7" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>GitHub Dependency Submission API Contract | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="GitHub Dependency Submission API Contract | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/004-complete-sbom-generation/contracts/github-dependency-submission-api.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="github-dependency-submission-api-contract">GitHub Dependency Submission API Contract</h1>
+
+<p>このファイルは、GitHub Dependency Submission API v1の契約を定義します。</p>
+<h2 id="エンドポイント">エンドポイント</h2>
+<pre><code class="lang-curl">POST /repos/{owner}/{repo}/dependency-graph/snapshots
+</code></pre>
+<h3 id="パス-パラメータ">パス パラメータ</h3>
+<table>
+<thead>
+<tr>
+<th>パラメータ</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>owner</code></td>
+<td>string</td>
+<td>✅</td>
+<td>リポジトリのオーナー（ユーザー名または組織名）</td>
+</tr>
+<tr>
+<td><code>repo</code></td>
+<td>string</td>
+<td>✅</td>
+<td>リポジトリ名</td>
+</tr>
+</tbody>
+</table>
+<h3 id="認証">認証</h3>
+<pre><code class="lang-text">Authorization: Bearer {GITHUB_TOKEN}
+</code></pre>
+<p>必要な権限:</p>
+<ul>
+<li><code>contents: write</code> - 依存関係スナップショットの書き込み</li>
+<li><code>id-token: write</code> - OIDCトークンの生成（GitHub Actions内で自動）</li>
+</ul>
+<hr>
+<h2 id="リクエスト">リクエスト</h2>
+<h3 id="ヘッダー">ヘッダー</h3>
+<pre><code class="lang-text">Content-Type: application/json
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+</code></pre>
+<h3 id="ボディjson">ボディ（JSON）</h3>
+<pre><code class="lang-json">{
+  &quot;version&quot;: 0,
+  &quot;sha&quot;: &quot;string&quot;,
+  &quot;ref&quot;: &quot;string&quot;,
+  &quot;job&quot;: {
+    &quot;correlator&quot;: &quot;string&quot;,
+    &quot;id&quot;: &quot;string&quot;,
+    &quot;html_url&quot;: &quot;string&quot;
+  },
+  &quot;detector&quot;: {
+    &quot;name&quot;: &quot;string&quot;,
+    &quot;version&quot;: &quot;string&quot;,
+    &quot;url&quot;: &quot;string&quot;
+  },
+  &quot;scanned&quot;: &quot;string&quot;,
+  &quot;metadata&quot;: {},
+  &quot;manifests&quot;: {
+    &quot;{manifest_name}&quot;: {
+      &quot;name&quot;: &quot;string&quot;,
+      &quot;file&quot;: {
+        &quot;source_location&quot;: &quot;string&quot;
+      },
+      &quot;metadata&quot;: {},
+      &quot;resolved&quot;: {
+        &quot;{package_url}&quot;: {
+          &quot;package_url&quot;: &quot;string&quot;,
+          &quot;relationship&quot;: &quot;string&quot;,
+          &quot;scope&quot;: &quot;string&quot;,
+          &quot;dependencies&quot;: [&quot;string&quot;]
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<hr>
+<h2 id="フィールド定義">フィールド定義</h2>
+<h3 id="トップレベル">トップレベル</h3>
+<table>
+<thead>
+<tr>
+<th>フィールド</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td>integer</td>
+<td>✅</td>
+<td>APIバージョン（常に <code>0</code>）</td>
+</tr>
+<tr>
+<td><code>sha</code></td>
+<td>string</td>
+<td>✅</td>
+<td>スナップショットに関連するコミットSHA</td>
+</tr>
+<tr>
+<td><code>ref</code></td>
+<td>string</td>
+<td>✅</td>
+<td>Git参照（例: <code>refs/heads/main</code>）</td>
+</tr>
+<tr>
+<td><code>job</code></td>
+<td>object</td>
+<td>✅</td>
+<td>ジョブ情報</td>
+</tr>
+<tr>
+<td><code>detector</code></td>
+<td>object</td>
+<td>✅</td>
+<td>検出ツール情報</td>
+</tr>
+<tr>
+<td><code>scanned</code></td>
+<td>string</td>
+<td>✅</td>
+<td>スキャン日時（ISO 8601形式）</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>❌</td>
+<td>追加メタデータ（任意）</td>
+</tr>
+<tr>
+<td><code>manifests</code></td>
+<td>object</td>
+<td>✅</td>
+<td>マニフェストと依存関係のマップ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="job-オブジェクト">job オブジェクト</h3>
+<table>
+<thead>
+<tr>
+<th>フィールド</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>correlator</code></td>
+<td>string</td>
+<td>✅</td>
+<td>ワークフローとジョブの一意識別子</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td>string</td>
+<td>✅</td>
+<td>ジョブID（GitHub Actions run IDなど）</td>
+</tr>
+<tr>
+<td><code>html_url</code></td>
+<td>string</td>
+<td>❌</td>
+<td>ジョブのURL</td>
+</tr>
+</tbody>
+</table>
+<p><strong>correlatorの形式</strong>: <code>{workflow_name}-{job_name}</code></p>
+<p>例: <code>release-publish</code></p>
+<h3 id="detector-オブジェクト">detector オブジェクト</h3>
+<table>
+<thead>
+<tr>
+<th>フィールド</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>✅</td>
+<td>検出ツール名</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>✅</td>
+<td>ツールバージョン</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td>✅</td>
+<td>ツールのURL</td>
+</tr>
+</tbody>
+</table>
+<h3 id="manifests-オブジェクト">manifests オブジェクト</h3>
+<p>キーはマニフェストファイル名（例: <code>wt.cli.csproj</code>）、値はManifestオブジェクト。</p>
+<h4 id="manifest-オブジェクト">Manifest オブジェクト</h4>
+<table>
+<thead>
+<tr>
+<th>フィールド</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>✅</td>
+<td>マニフェスト名</td>
+</tr>
+<tr>
+<td><code>file.source_location</code></td>
+<td>string</td>
+<td>❌</td>
+<td>ソースファイルの相対パス</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>❌</td>
+<td>追加メタデータ</td>
+</tr>
+<tr>
+<td><code>resolved</code></td>
+<td>object</td>
+<td>✅</td>
+<td>解決済み依存関係のマップ</td>
+</tr>
+</tbody>
+</table>
+<h4 id="resolved-オブジェクト">resolved オブジェクト</h4>
+<p>キーはPackage URL（purl）、値はDependencyオブジェクト。</p>
+<h4 id="dependency-オブジェクト">Dependency オブジェクト</h4>
+<table>
+<thead>
+<tr>
+<th>フィールド</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>package_url</code></td>
+<td>string</td>
+<td>✅</td>
+<td>Package URL（purl）形式</td>
+</tr>
+<tr>
+<td><code>relationship</code></td>
+<td>string</td>
+<td>❌</td>
+<td><code>direct</code> または <code>indirect</code></td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>string</td>
+<td>❌</td>
+<td><code>runtime</code> または <code>development</code></td>
+</tr>
+<tr>
+<td><code>dependencies</code></td>
+<td>array</td>
+<td>❌</td>
+<td>このパッケージが依存する他のpurlのリスト</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="レスポンス">レスポンス</h2>
+<h3 id="成功201-created">成功（201 Created）</h3>
+<pre><code class="lang-json">{
+  &quot;id&quot;: 12345678,
+  &quot;created_at&quot;: &quot;2026-01-06T12:00:00Z&quot;,
+  &quot;message&quot;: &quot;Dependency snapshot created successfully&quot;
+}
+</code></pre>
+<h4 id="レスポンスフィールド">レスポンスフィールド</h4>
+<table>
+<thead>
+<tr>
+<th>フィールド</th>
+<th>型</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer</td>
+<td>スナップショットID</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>string</td>
+<td>作成日時（ISO 8601形式）</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>string</td>
+<td>成功メッセージ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="エラー">エラー</h3>
+<h4 id="400-bad-request">400 Bad Request</h4>
+<pre><code class="lang-json">{
+  &quot;message&quot;: &quot;Invalid request&quot;,
+  &quot;errors&quot;: [
+    {
+      &quot;field&quot;: &quot;manifests&quot;,
+      &quot;code&quot;: &quot;missing_field&quot;
+    }
+  ]
+}
+</code></pre>
+<h4 id="401-unauthorized">401 Unauthorized</h4>
+<pre><code class="lang-json">{
+  &quot;message&quot;: &quot;Bad credentials&quot;
+}
+</code></pre>
+<h4 id="403-forbidden">403 Forbidden</h4>
+<pre><code class="lang-json">{
+  &quot;message&quot;: &quot;Resource not accessible by integration&quot;
+}
+</code></pre>
+<h4 id="404-not-found">404 Not Found</h4>
+<pre><code class="lang-json">{
+  &quot;message&quot;: &quot;Not Found&quot;
+}
+</code></pre>
+<h4 id="422-unprocessable-entity">422 Unprocessable Entity</h4>
+<pre><code class="lang-json">{
+  &quot;message&quot;: &quot;Validation Failed&quot;,
+  &quot;errors&quot;: [
+    {
+      &quot;resource&quot;: &quot;DependencySnapshot&quot;,
+      &quot;field&quot;: &quot;package_url&quot;,
+      &quot;code&quot;: &quot;invalid&quot;
+    }
+  ]
+}
+</code></pre>
+<hr>
+<h2 id="使用例">使用例</h2>
+<h3 id="リクエスト例wt-cli-tool">リクエスト例（wt CLI Tool）</h3>
+<pre><code class="lang-bash">curl -X POST \
+  -H &quot;Authorization: Bearer ${GITHUB_TOKEN}&quot; \
+  -H &quot;Accept: application/vnd.github+json&quot; \
+  -H &quot;X-GitHub-Api-Version: 2022-11-28&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  https://api.github.com/repos/kuju63/wt/dependency-graph/snapshots \
+  -d @- &lt;&lt;EOF
+{
+  &quot;version&quot;: 0,
+  &quot;sha&quot;: &quot;abc123def456&quot;,
+  &quot;ref&quot;: &quot;refs/heads/main&quot;,
+  &quot;job&quot;: {
+    &quot;correlator&quot;: &quot;release-publish&quot;,
+    &quot;id&quot;: &quot;87654321&quot;
+  },
+  &quot;detector&quot;: {
+    &quot;name&quot;: &quot;Microsoft SBOM Tool&quot;,
+    &quot;version&quot;: &quot;2.2.0&quot;,
+    &quot;url&quot;: &quot;https://github.com/microsoft/sbom-tool&quot;
+  },
+  &quot;scanned&quot;: &quot;2026-01-06T12:00:00Z&quot;,
+  &quot;manifests&quot;: {
+    &quot;wt.cli.csproj&quot;: {
+      &quot;name&quot;: &quot;wt.cli&quot;,
+      &quot;file&quot;: {
+        &quot;source_location&quot;: &quot;wt.cli/wt.cli.csproj&quot;
+      },
+      &quot;resolved&quot;: {
+        &quot;pkg:nuget/System.CommandLine@2.0.1&quot;: {
+          &quot;package_url&quot;: &quot;pkg:nuget/System.CommandLine@2.0.1&quot;,
+          &quot;relationship&quot;: &quot;direct&quot;,
+          &quot;scope&quot;: &quot;runtime&quot;,
+          &quot;dependencies&quot;: [
+            &quot;pkg:nuget/System.Memory@4.5.5&quot;
+          ]
+        },
+        &quot;pkg:nuget/System.Memory@4.5.5&quot;: {
+          &quot;package_url&quot;: &quot;pkg:nuget/System.Memory@4.5.5&quot;,
+          &quot;relationship&quot;: &quot;indirect&quot;,
+          &quot;scope&quot;: &quot;runtime&quot;
+        },
+        &quot;pkg:nuget/System.IO.Abstractions@22.1.0&quot;: {
+          &quot;package_url&quot;: &quot;pkg:nuget/System.IO.Abstractions@22.1.0&quot;,
+          &quot;relationship&quot;: &quot;direct&quot;,
+          &quot;scope&quot;: &quot;runtime&quot;
+        }
+      }
+    }
+  }
+}
+EOF
+</code></pre>
+<h3 id="レスポンス例">レスポンス例</h3>
+<pre><code class="lang-json">{
+  &quot;id&quot;: 12345678,
+  &quot;created_at&quot;: &quot;2026-01-06T12:00:01Z&quot;,
+  &quot;message&quot;: &quot;Dependency snapshot created successfully&quot;
+}
+</code></pre>
+<hr>
+<h2 id="github-actions統合">GitHub Actions統合</h2>
+<h3 id="actionsdependency-submission">actions/dependency-submission@v3の使用</h3>
+<p>GitHub公式のアクションを使用する場合（推奨）:</p>
+<pre><code class="lang-yaml">- name: Submit dependencies to GitHub
+  uses: actions/dependency-submission@v3
+  with:
+    # SBOMファイルのパス
+    sbom-file: _manifest/sbom.spdx.json
+    # フォーマット（spdxまたはcyclonedx）
+    snapshot-format: spdx
+    # トークン（省略時はGITHUB_TOKENを自動使用）
+    token: ${{ secrets.GITHUB_TOKEN }}
+</code></pre>
+<p>このアクションは内部で以下を実行:</p>
+<ol>
+<li>SPDX/CycloneDXファイルをパース</li>
+<li>Dependency Snapshot形式に変換</li>
+<li>API呼び出し</li>
+<li>エラーハンドリング</li>
+</ol>
+<h3 id="手動api呼び出し">手動API呼び出し</h3>
+<p>より細かい制御が必要な場合:</p>
+<pre><code class="lang-yaml">- name: Convert SBOM to Dependency Snapshot
+  run: |
+    # SPDXからDependency Snapshot形式への変換スクリプト
+    python scripts/spdx-to-snapshot.py \
+      --spdx _manifest/sbom.spdx.json \
+      --output snapshot.json \
+      --sha ${{ github.sha }} \
+      --ref ${{ github.ref }}
+
+- name: Submit to GitHub API
+  run: |
+    curl -X POST \
+      -H &quot;Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}&quot; \
+      -H &quot;Accept: application/vnd.github+json&quot; \
+      -H &quot;X-GitHub-Api-Version: 2022-11-28&quot; \
+      -H &quot;Content-Type: application/json&quot; \
+      https://api.github.com/repos/${{ github.repository }}/dependency-graph/snapshots \
+      -d @snapshot.json
+</code></pre>
+<hr>
+<h2 id="エラーハンドリング戦略">エラーハンドリング戦略</h2>
+<h3 id="リトライ戦略">リトライ戦略</h3>
+<pre><code class="lang-yaml">- name: Submit with retry
+  uses: nick-fields/retry@v2
+  with:
+    timeout_minutes: 5
+    max_attempts: 3
+    retry_wait_seconds: 10
+    command: |
+      gh api \
+        --method POST \
+        -H &quot;Accept: application/vnd.github+json&quot; \
+        -H &quot;X-GitHub-Api-Version: 2022-11-28&quot; \
+        /repos/${{ github.repository }}/dependency-graph/snapshots \
+        --input snapshot.json
+</code></pre>
+<h3 id="失敗時の動作fr-013準拠">失敗時の動作（FR-013準拠）</h3>
+<pre><code class="lang-yaml">- name: Submit dependencies
+  uses: actions/dependency-submission@v3
+  with:
+    sbom-file: _manifest/sbom.spdx.json
+    snapshot-format: spdx
+  # 失敗時はパイプライン全体を失敗させる
+  continue-on-error: false
+</code></pre>
+<hr>
+<h2 id="バリデーション">バリデーション</h2>
+<h3 id="リクエストバリデーション">リクエストバリデーション</h3>
+<p>送信前に以下を確認:</p>
+<ol>
+<li><strong>Package URL形式</strong>: <code>pkg:nuget/PackageName@Version</code></li>
+<li><strong>ISO 8601日時</strong>: <code>YYYY-MM-DDTHH:MM:SSZ</code></li>
+<li><strong>Git参照</strong>: <code>refs/heads/</code> または <code>refs/tags/</code> で始まる</li>
+<li><strong>コミットSHA</strong>: 40文字の16進数</li>
+</ol>
+<h3 id="検証スクリプト例">検証スクリプト例</h3>
+<pre><code class="lang-bash">#!/bin/bash
+set -euo pipefail
+
+SNAPSHOT_FILE=&quot;$1&quot;
+
+# JSON形式チェック
+jq empty &quot;$SNAPSHOT_FILE&quot; || {
+  echo &quot;Invalid JSON format&quot;
+  exit 1
+}
+
+# 必須フィールドチェック
+required_fields=(&quot;version&quot; &quot;sha&quot; &quot;ref&quot; &quot;job&quot; &quot;detector&quot; &quot;scanned&quot; &quot;manifests&quot;)
+for field in &quot;${required_fields[@]}&quot;; do
+  jq -e &quot;.$field&quot; &quot;$SNAPSHOT_FILE&quot; &gt; /dev/null || {
+    echo &quot;Missing required field: $field&quot;
+    exit 1
+  }
+done
+
+# Package URL形式チェック
+jq -r '.manifests[].resolved | keys[]' &quot;$SNAPSHOT_FILE&quot; | while read -r purl; do
+  if [[ ! &quot;$purl&quot; =~ ^pkg:[a-z]+/.+@.+ ]]; then
+    echo &quot;Invalid package URL: $purl&quot;
+    exit 1
+  fi
+done
+
+echo &quot;Validation passed&quot;
+</code></pre>
+<hr>
+<h2 id="レート制限">レート制限</h2>
+<h3 id="github-actions内">GitHub Actions内</h3>
+<ul>
+<li><strong>制限</strong>: 通常制限なし（大規模なスナップショットを除く）</li>
+<li><strong>監視</strong>: X-RateLimit-* ヘッダーをチェック</li>
+</ul>
+<h3 id="github-actions外">GitHub Actions外</h3>
+<ul>
+<li><strong>認証済みリクエスト</strong>: 5,000リクエスト/時間</li>
+<li><strong>未認証</strong>: 60リクエスト/時間</li>
+</ul>
+<hr>
+<h2 id="セキュリティ考慮事項">セキュリティ考慮事項</h2>
+<ol>
+<li><strong>トークン権限</strong>: 最小権限（<code>contents: write</code>のみ）</li>
+<li><strong>秘密情報の除外</strong>: 依存関係情報のみ送信（ソースコードや秘密情報は含まない）</li>
+<li><strong>HTTPS必須</strong>: すべてのAPI通信はHTTPS</li>
+<li><strong>トークン有効期限</strong>: GitHub Actionsのトークンはジョブごとに自動更新</li>
+</ol>
+<hr>
+<h2 id="参考リンク">参考リンク</h2>
+<ul>
+<li><a href="https://docs.github.com/en/rest/dependency-graph/dependency-submission">GitHub Dependency Submission API公式ドキュメント</a></li>
+<li><a href="https://github.com/actions/dependency-submission">actions/dependency-submission</a></li>
+<li><a href="https://github.com/package-url/purl-spec">Package URL仕様</a></li>
+<li><a href="https://spdx.github.io/spdx-spec/">SPDX仕様</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/004-complete-sbom-generation/contracts/github-dependency-submission-api.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

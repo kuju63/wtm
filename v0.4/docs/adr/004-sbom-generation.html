@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ADR 004: SBOM Generation for Release Pipeline | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ADR 004: SBOM Generation for Release Pipeline | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/adr/004-sbom-generation.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adr-004-sbom-generation-for-release-pipeline">ADR 004: SBOM Generation for Release Pipeline</h1>
+
+<h2 id="status">Status</h2>
+<p>Accepted</p>
+<h2 id="context">Context</h2>
+<p>As a command-line tool distributed through GitHub releases, we need to provide transparency about our software supply chain. Users need to know:</p>
+<ul>
+<li>What dependencies are included in each release</li>
+<li>License information for compliance</li>
+<li>Vulnerability tracking through automated tools</li>
+<li>Complete bill of materials for audit purposes</li>
+</ul>
+<h2 id="decision">Decision</h2>
+<p>We will implement SBOM (Software Bill of Materials) generation as part of our release pipeline with the following approach:</p>
+<h3 id="tool-selection-microsoft-sbom-tool">Tool Selection: Microsoft SBOM Tool</h3>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li>Official Microsoft tool for .NET ecosystem</li>
+<li>Native support for .NET project dependency analysis</li>
+<li>Generates SPDX 2.3+ format (ISO/IEC 5962:2021 compliant)</li>
+<li>Easy integration with GitHub Actions</li>
+<li>Multi-platform support (Windows/Linux/macOS)</li>
+</ul>
+<p><strong>Alternatives Considered:</strong></p>
+<ul>
+<li><strong>CycloneDX Generator</strong>: More generic but less .NET-specific → Rejected</li>
+<li><strong>OWASP Dependency-Check</strong>: Focused on vulnerability scanning, SBOM is secondary → Rejected</li>
+<li><strong>Syft/Grype</strong>: Container-focused, overkill for .NET projects → Rejected</li>
+</ul>
+<h3 id="sbom-format-spdx-23-json">SBOM Format: SPDX 2.3 (JSON)</h3>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li>ISO international standard (ISO/IEC 5962:2021)</li>
+<li>Required by US government and many regulations</li>
+<li>Microsoft's recommended format</li>
+<li>Strong tool ecosystem support</li>
+<li>Long-term maintenance by Linux Foundation</li>
+</ul>
+<p><strong>Alternatives Considered:</strong></p>
+<ul>
+<li><strong>CycloneDX</strong>: More developer-friendly but not an ISO standard → Rejected for regulatory compliance</li>
+<li><strong>SWID Tags</strong>: Legacy format, not suitable for modern CI/CD → Rejected</li>
+</ul>
+<h3 id="implementation-approach">Implementation Approach</h3>
+<ol>
+<li><strong>Dependency Restoration</strong>: Complete restore of all project dependencies before SBOM generation</li>
+<li><strong>Multi-platform Support</strong>: Restore for all target platforms (win-x64, linux-x64, linux-arm, osx-arm64)</li>
+<li><strong>Validation</strong>: Verify SBOM completeness and format compliance</li>
+<li><strong>GitHub Integration</strong>:
+<ul>
+<li>Submit to GitHub Dependency Graph API</li>
+<li>Attach SBOM to release assets</li>
+</ul>
+</li>
+<li><strong>PR Testing</strong>: Pre-release validation workflow</li>
+</ol>
+<h3 id="key-requirements">Key Requirements</h3>
+<ul>
+<li><strong>FR-001</strong>: Complete dependency restore before SBOM generation</li>
+<li><strong>FR-002</strong>: All direct and transitive dependencies must be included</li>
+<li><strong>FR-006</strong>: SPDX 2.3+ format compliance</li>
+<li><strong>FR-011</strong>: GitHub Dependency Graph integration</li>
+<li><strong>FR-019</strong>: PR testing workflow for early detection</li>
+</ul>
+<h2 id="consequences">Consequences</h2>
+<h3 id="positive">Positive</h3>
+<ul>
+<li><strong>Supply Chain Transparency</strong>: Users can verify all components in the software</li>
+<li><strong>Vulnerability Management</strong>: Automated detection via Dependabot/Renovate</li>
+<li><strong>License Compliance</strong>: Clear license information for all dependencies</li>
+<li><strong>Regulatory Compliance</strong>: Meets government and enterprise requirements</li>
+<li><strong>Audit Trail</strong>: Versioned SBOM files attached to each release</li>
+<li><strong>Early Detection</strong>: PR workflow catches issues before release</li>
+</ul>
+<h3 id="negative">Negative</h3>
+<ul>
+<li><strong>Build Time</strong>: Adds 2-5 minutes to release pipeline (acceptable within 15-minute SLA)</li>
+<li><strong>Storage</strong>: SBOM files add ~100KB per release (minimal impact)</li>
+<li><strong>Maintenance</strong>: Requires monitoring of Microsoft SBOM Tool updates</li>
+</ul>
+<h3 id="neutral">Neutral</h3>
+<ul>
+<li><strong>Learning Curve</strong>: Team needs to understand SPDX format for troubleshooting</li>
+<li><strong>Toolchain Dependency</strong>: Relies on Microsoft maintaining the SBOM tool</li>
+</ul>
+<h2 id="implementation-notes">Implementation Notes</h2>
+<h3 id="workflow-integration-points">Workflow Integration Points</h3>
+<ol>
+<li><p><strong>Release Pipeline</strong> (<code>.github/workflows/release.yml</code>):</p>
+<ul>
+<li>Dependency restore with <code>--locked-mode</code></li>
+<li>Multi-platform restore</li>
+<li>SBOM generation with Microsoft SBOM Tool</li>
+<li>SPDX format validation</li>
+<li>GitHub API submission</li>
+<li>Release asset attachment</li>
+</ul>
+</li>
+<li><p><strong>PR Testing Pipeline</strong> (<code>.github/workflows/sbom-test.yml</code>):</p>
+<ul>
+<li>Dry-run SBOM generation</li>
+<li>Format validation</li>
+<li>Dependency verification</li>
+<li>Performance benchmarking</li>
+</ul>
+</li>
+</ol>
+<h3 id="critical-success-factors">Critical Success Factors</h3>
+<ul>
+<li><strong>Complete Dependency Capture</strong>: Must restore all dependencies before SBOM generation</li>
+<li><strong>Format Compliance</strong>: Must pass SPDX 2.3 validation</li>
+<li><strong>API Integration</strong>: Must successfully submit to GitHub Dependency Graph</li>
+<li><strong>Performance</strong>: Must complete within 15-minute workflow timeout</li>
+</ul>
+<h3 id="monitoring--maintenance">Monitoring &amp; Maintenance</h3>
+<ul>
+<li>Monitor Microsoft SBOM Tool release notes for updates</li>
+<li>Review GitHub Dependency Graph for accuracy</li>
+<li>Validate SBOM files on each release</li>
+<li>Track workflow execution times</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://github.com/microsoft/sbom-tool">Microsoft SBOM Tool</a></li>
+<li><a href="https://spdx.github.io/spdx-spec/v2.3/">SPDX Specification 2.3</a></li>
+<li><a href="https://www.iso.org/standard/81870.html">ISO/IEC 5962:2021</a></li>
+<li><a href="https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/using-the-dependency-submission-api">GitHub Dependency Submission API</a></li>
+<li><a href="https://www.whitehouse.gov/briefing-room/presidential-actions/2021/05/12/executive-order-on-improving-the-nations-cybersecurity/">Executive Order 14028 (US Cybersecurity)</a></li>
+</ul>
+<h2 id="date">Date</h2>
+<p>2026-01-10</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/adr/004-sbom-generation.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Quickstart: Remove Git Worktree Feature | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Quickstart: Remove Git Worktree Feature | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/quickstart.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="quickstart-remove-git-worktree-feature">Quickstart: Remove Git Worktree Feature</h1>
+
+<p><strong>For</strong>: Developers implementing the remove worktree feature</p>
+<h2 id="overview">Overview</h2>
+<p>This feature adds a new <code>wt remove</code> command to safely delete git worktrees and their associated working directories from disk.</p>
+<p><strong>Key Behavior</strong>:</p>
+<ul>
+<li>Validates worktree before removal (not found, main worktree, current worktree)</li>
+<li>Prevents removal of worktrees with uncommitted changes (unless --force)</li>
+<li>Gracefully handles partial disk failures</li>
+<li>No interactive confirmation prompts</li>
+<li>Cross-platform compatible</li>
+</ul>
+<h2 id="architecture-summary">Architecture Summary</h2>
+<h3 id="command-entry-point">Command Entry Point</h3>
+<p><strong>File</strong>: <code>wt.cli/Commands/Worktree/RemoveCommand.cs</code></p>
+<ul>
+<li>Inherits System.CommandLine command pattern</li>
+<li>Parses arguments: <code>&lt;worktree&gt;</code>, <code>--force</code>, <code>--output</code>, <code>--verbose</code></li>
+<li>Delegates to WorktreeService.RemoveWorktreeAsync()</li>
+<li>Formats and outputs result</li>
+</ul>
+<h3 id="service-layer">Service Layer</h3>
+<p><strong>File</strong>: <code>wt.cli/Services/Worktree/WorktreeService.cs</code></p>
+<ul>
+<li>Extends existing IWorktreeService interface</li>
+<li>Adds RemoveWorktreeAsync() method</li>
+<li>Adds ValidateForRemoval() validation method</li>
+<li>Uses IGitService for git metadata operations</li>
+<li>Uses IFileSystem for directory deletion</li>
+</ul>
+<h3 id="data-models">Data Models</h3>
+<p><strong>Files</strong>:</p>
+<ul>
+<li><code>wt.cli/Models/RemoveWorktreeOptions.cs</code> - CLI options binding</li>
+<li><code>wt.cli/Models/RemoveWorktreeResult.cs</code> - Result structure</li>
+<li><code>wt.cli/Models/RemovalValidationError.cs</code> - Enum for validation errors</li>
+</ul>
+<h3 id="tests">Tests</h3>
+<p><strong>Files</strong>:</p>
+<ul>
+<li><code>wt.tests/Commands/Worktree/RemoveCommandTests.cs</code> - Command tests</li>
+<li><code>wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</code> - Service tests</li>
+</ul>
+<h2 id="implementation-checklist">Implementation Checklist</h2>
+<h3 id="phase-1-models--interfaces">Phase 1: Models &amp; Interfaces</h3>
+<ul>
+<li>[ ] Create <code>RemoveWorktreeOptions</code> class with WorktreeId, Force, Verbose, OutputFormat</li>
+<li>[ ] Create <code>RemoveWorktreeResult</code> and <code>RemoveWorktreeData</code> classes extending CommandResult<t></t></li>
+<li>[ ] Create <code>DeletionFailure</code> class for partial failure reporting</li>
+<li>[ ] Create <code>RemovalValidationError</code> enum</li>
+<li>[ ] Update <code>IWorktreeService</code> interface:
+<ul>
+<li>[ ] Add <code>ValidateForRemoval(string worktreeId, bool force): RemovalValidationError</code></li>
+<li>[ ] Add <code>RemoveWorktreeAsync(RemoveWorktreeOptions options): Task&lt;RemoveWorktreeResult&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="phase-2-service-implementation">Phase 2: Service Implementation</h3>
+<ul>
+<li><p>[ ] Implement <code>WorktreeService.ValidateForRemoval()</code>:</p>
+<ul>
+<li>[ ] Check worktree exists</li>
+<li>[ ] Check not main worktree</li>
+<li>[ ] Check not current worktree</li>
+<li>[ ] Check for uncommitted changes (unless force)</li>
+<li>[ ] Check for locks (unless force)</li>
+</ul>
+</li>
+<li><p>[ ] Implement <code>WorktreeService.RemoveWorktreeAsync()</code>:</p>
+<ul>
+<li>[ ] Call ValidateForRemoval()</li>
+<li>[ ] Return error if validation fails</li>
+<li>[ ] Execute <code>git worktree remove</code> via GitService</li>
+<li>[ ] Delete working directory via IFileSystem</li>
+<li>[ ] Handle UnauthorizedAccessException/IOException</li>
+<li>[ ] Collect file deletion metrics</li>
+<li>[ ] Return structured RemoveWorktreeResult</li>
+</ul>
+</li>
+</ul>
+<h3 id="phase-3-command-implementation">Phase 3: Command Implementation</h3>
+<ul>
+<li><p>[ ] Create <code>RemoveCommand</code> class:</p>
+<ul>
+<li>[ ] Add Command argument for worktree ID</li>
+<li>[ ] Add --force option</li>
+<li>[ ] Add --verbose option</li>
+<li>[ ] Add --output option {human, json}</li>
+<li>[ ] Implement Handler that calls RemoveWorktreeAsync()</li>
+<li>[ ] Format output based on --output flag</li>
+</ul>
+</li>
+<li><p>[ ] Register RemoveCommand in Program.cs</p>
+</li>
+</ul>
+<h3 id="phase-4-testing">Phase 4: Testing</h3>
+<ul>
+<li><p>[ ] Write RemoveCommandTests:</p>
+<ul>
+<li>[ ] Test parsing valid arguments</li>
+<li>[ ] Test error messages for invalid inputs</li>
+<li>[ ] Test output formatting (human vs JSON)</li>
+<li>[ ] Test --force flag behavior</li>
+</ul>
+</li>
+<li><p>[ ] Write WorktreeServiceRemoveTests:</p>
+<ul>
+<li>[ ] Test validation: not found</li>
+<li>[ ] Test validation: main worktree</li>
+<li>[ ] Test validation: current worktree</li>
+<li>[ ] Test validation: uncommitted changes</li>
+<li>[ ] Test validation: success path</li>
+<li>[ ] Mock IGitService.HasUncommittedChanges()</li>
+<li>[ ] Mock IFileSystem for directory deletion</li>
+<li>[ ] Test partial failure scenario</li>
+<li>[ ] Test error message formatting</li>
+<li>[ ] Ensure &gt;80% test coverage</li>
+</ul>
+</li>
+</ul>
+<h3 id="phase-5-documentation--build">Phase 5: Documentation &amp; Build</h3>
+<ul>
+<li><p>[ ] Verify RemoveCommand has proper XML documentation comments (all public methods)</p>
+</li>
+<li><p>[ ] Build the project: <code>dotnet build</code></p>
+</li>
+<li><p>[ ] Run DocGenerator tool to auto-generate command documentation:</p>
+<pre><code class="lang-bash">dotnet run --project Tools/DocGenerator/DocGenerator/DocGenerator.csproj
+</code></pre>
+</li>
+<li><p>[ ] Verify generated documentation includes <code>wt remove</code> command reference</p>
+</li>
+<li><p>[ ] Update CHANGELOG with new feature entry</p>
+</li>
+</ul>
+<h2 id="key-implementation-patterns">Key Implementation Patterns</h2>
+<h3 id="validation-pattern">Validation Pattern</h3>
+<pre><code class="lang-csharp">// In WorktreeService
+public RemovalValidationError ValidateForRemoval(string worktreeId, bool force)
+{
+    // Check exists
+    var worktree = _gitService.GetWorktreeInfo(worktreeId);
+    if (worktree == null) return RemovalValidationError.NotFound;
+
+    // Check main worktree
+    if (IsMainWorktree(worktree)) return RemovalValidationError.IsMainWorktree;
+
+    // Check current worktree
+    if (IsCurrentWorktree(worktree)) return RemovalValidationError.IsCurrentWorktree;
+
+    // Check uncommitted changes (unless force)
+    if (!force &amp;&amp; _gitService.HasUncommittedChanges(worktree.Path))
+        return RemovalValidationError.UncommittedChanges;
+
+    return RemovalValidationError.None;
+}
+</code></pre>
+<h3 id="async-removal-pattern">Async Removal Pattern</h3>
+<pre><code class="lang-csharp">// In WorktreeService
+public async Task&lt;RemoveWorktreeResult&gt; RemoveWorktreeAsync(RemoveWorktreeOptions options)
+{
+    var sw = Stopwatch.StartNew();
+    var validation = ValidateForRemoval(options.WorktreeId, options.Force);
+
+    if (validation != RemovalValidationError.None)
+        return CreateErrorResult(validation);
+
+    // Execute git removal
+    var gitResult = _gitService.RemoveWorktree(path, options.Force);
+    if (!gitResult.Success)
+        return CreateErrorResult(gitResult);
+
+    // Delete directory
+    var deletionResult = await DeleteWorktreeDirectoryAsync(options.WorktreeId, gitResult.Path);
+
+    return new RemoveWorktreeResult
+    {
+        Success = deletionResult.Success,
+        Data = new RemoveWorktreeData
+        {
+            WorktreeId = options.WorktreeId,
+            Path = gitResult.Path,
+            WorktreeMetadataRemoved = true,
+            FilesDeleted = deletionResult.FilesDeleted,
+            UndeleteableItems = deletionResult.UndeleteableItems,
+            Duration = sw.Elapsed
+        }
+    };
+}
+</code></pre>
+<h3 id="partial-failure-handling">Partial Failure Handling</h3>
+<pre><code class="lang-csharp">// In WorktreeService
+private async Task&lt;DeletionResult&gt; DeleteWorktreeDirectoryAsync(string worktreeId, string path)
+{
+    var undeleteable = new List&lt;DeletionFailure&gt;();
+    int filesDeleted = 0;
+
+    try
+    {
+        var dir = _fileSystem.DirectoryInfo.New(path);
+        foreach (var file in dir.GetFiles(&quot;*&quot;, SearchOption.AllDirectories))
+        {
+            try
+            {
+                file.Delete();
+                filesDeleted++;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                undeleteable.Add(new DeletionFailure
+                {
+                    Path = file.FullName,
+                    Reason = &quot;Permission denied&quot;
+                });
+            }
+            catch (IOException)
+            {
+                undeleteable.Add(new DeletionFailure
+                {
+                    Path = file.FullName,
+                    Reason = &quot;File in use&quot;
+                });
+            }
+        }
+
+        // Clean up directory structure (best effort)
+        try
+        {
+            _fileSystem.Directory.Delete(path, recursive: false);
+        }
+        catch
+        {
+            // Directory still contains files; leave for user cleanup
+        }
+    }
+    catch (Exception)
+    {
+        // Directory access failed entirely
+    }
+
+    return new DeletionResult(Success: undeleteable.Count == 0, filesDeleted, undeleteable);
+}
+</code></pre>
+<h3 id="output-formatting-pattern">Output Formatting Pattern</h3>
+<pre><code class="lang-csharp">// In RemoveCommand Handler
+var result = await _worktreeService.RemoveWorktreeAsync(options);
+
+if (options.OutputFormat == &quot;json&quot;)
+{
+    // Return JSON serialized result
+    Console.WriteLine(JsonSerializer.Serialize(result));
+}
+else
+{
+    // Return human-readable output
+    if (result.Success)
+        Console.WriteLine($&quot;✓ Worktree '{result.Data.WorktreeId}' removed successfully&quot;);
+    else
+        Console.WriteLine($&quot;✗ Error: {result.ErrorMessage}&quot;);
+}
+
+return result.Success ? 0 : 1;
+</code></pre>
+<h2 id="error-handling-rules">Error Handling Rules</h2>
+<ol>
+<li><strong>Validation errors</strong> return immediately without attempting removal</li>
+<li><strong>Git command failures</strong> are logged and reported; directory deletion is attempted anyway if possible</li>
+<li><strong>Directory deletion failures</strong> are collected and reported but don't block success status</li>
+<li><strong>Partial failures</strong> return Success=false but WorktreeMetadataRemoved=true</li>
+<li><strong>Unexpected errors</strong> return RemovalValidationError.UnknownError</li>
+</ol>
+<h2 id="testing-guidelines">Testing Guidelines</h2>
+<ul>
+<li>Mock IGitService.HasUncommittedChanges() to test validation</li>
+<li>Mock IFileSystem for directory deletion tests</li>
+<li>Use Moq to verify correct methods are called with expected parameters</li>
+<li>Test both success and failure paths</li>
+<li>Verify error messages are user-friendly and actionable</li>
+<li>Ensure test coverage exceeds 80% (per constitution)</li>
+<li>Test method LOC should stay &lt;50 lines per constitution</li>
+</ul>
+<h2 id="cross-platform-considerations">Cross-Platform Considerations</h2>
+<ul>
+<li>Use IFileSystem abstraction for all file operations (handled by existing PathHelper)</li>
+<li>Directory separator normalization (handled by existing PathHelper)</li>
+<li>Path length validation per OS limits (Windows 260, Unix 4096)</li>
+<li>File permission differences (Windows ACL vs Unix chmod)</li>
+<li>Built-in executable distribution for all platforms (handled by existing build matrix)</li>
+</ul>
+<h2 id="build--documentation-process">Build &amp; Documentation Process</h2>
+<ol>
+<li><p>Implement RemoveCommand with proper XML documentation comments</p>
+</li>
+<li><p>Build project: <code>dotnet build</code></p>
+</li>
+<li><p>Run DocGenerator tool (auto-generates command reference from XML docs):</p>
+<pre><code class="lang-bash">dotnet run --project Tools/DocGenerator/DocGenerator/DocGenerator.csproj
+</code></pre>
+<ul>
+<li>Reflects over RemoveCommand class</li>
+<li>Extracts XML documentation comments</li>
+<li>Generates command syntax and argument descriptions</li>
+<li>Produces user-facing CLI reference documentation</li>
+</ul>
+</li>
+<li><p>Verify generated docs are correct and include all options</p>
+</li>
+<li><p>Commit updated documentation</p>
+</li>
+</ol>
+<h2 id="code-quality-standards">Code Quality Standards</h2>
+<p>Per project constitution:</p>
+<ul>
+<li><strong>Method LOC</strong>: &lt;50 lines (target), refactor if exceeding</li>
+<li><strong>Cyclomatic Complexity</strong>: &lt;8 (target for each method)</li>
+<li><strong>Test Coverage</strong>: &gt;80% overall, &gt;90% for critical paths</li>
+<li><strong>Code Style</strong>: Match existing project patterns (see CreateCommand)</li>
+<li><strong>XML Documentation</strong>: All public methods must have doc comments</li>
+<li><strong>Specific Exception Handling</strong>: Catch specific exceptions, not generic Exception</li>
+</ul>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>No integration or E2E tests in this scope (deferred to future CI infrastructure)</li>
+<li>All error codes use WT-RM-### prefix for consistency</li>
+<li>Follow existing code style and conventions (see CreateCommand for reference)</li>
+<li>Add XML documentation comments to all public methods and properties</li>
+<li>Use <code>_</code> prefix for private fields, <code>camelCase</code> for locals</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/quickstart.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

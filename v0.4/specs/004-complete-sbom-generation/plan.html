@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Implementation Plan: Complete SBOM Generation in Release Pipeline | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Implementation Plan: Complete SBOM Generation in Release Pipeline | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/004-complete-sbom-generation/plan.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="implementation-plan-complete-sbom-generation-in-release-pipeline">Implementation Plan: Complete SBOM Generation in Release Pipeline</h1>
+
+<p><strong>Branch</strong>: <code>004-complete-sbom-generation</code> | <strong>Date</strong>: 2026-01-06 | <strong>Spec</strong>: <a href="spec.html">spec.md</a>
+<strong>Input</strong>: Feature specification from <code>/specs/004-complete-sbom-generation/spec.md</code></p>
+<p><strong>Note</strong>: This template is filled in by the <code>/speckit.plan</code> command. See <code>.specify/templates/commands/plan.md</code> for the execution workflow.</p>
+<h2 id="summary">Summary</h2>
+<p>現在のリリースパイプラインは、SBOM生成前にプロジェクトの依存関係を復元していないため、推移的依存関係が欠落した不完全なSBOMが生成されています。この機能は、依存関係の完全な復元プロセスを追加し、SPDX 2.3+形式の完全なSBOMを生成し、GitHubのDependency Submission APIに送信してDependabotおよびRenovateとの統合を有効にします。</p>
+<p>技術的アプローチ:</p>
+<ol>
+<li>リリースパイプラインに<code>dotnet restore</code>ステップを追加（SBOM生成前）</li>
+<li>Microsoft SBOM Toolを使用してSPDX 2.3+形式のSBOMを生成</li>
+<li>GitHub Dependency Submission APIを使用してSBOMを依存関係グラフに送信</li>
+<li>SBOMファイルをGitHubリリースの成果物として添付</li>
+<li>15分のタイムアウトと依存関係キャッシングを実装</li>
+</ol>
+<h2 id="technical-context">Technical Context</h2>
+<p><strong>Language/Version</strong>: C# / .NET 10.0<br>
+<strong>Primary Dependencies</strong>: System.CommandLine 2.0.1, System.IO.Abstractions 22.1.0<br>
+<strong>Storage</strong>: N/A (CLI tool, no persistent storage)<br>
+<strong>Testing</strong>: xUnit (wt.tests project)<br>
+<strong>Target Platform</strong>: Multi-platform (win-x64, linux-x64, linux-arm, osx-arm64)<br>
+<strong>Project Type</strong>: Single project (CLI application)<br>
+<strong>Performance Goals</strong>: SBOM生成完了時間 - 一般的なプロジェクト（50依存関係）で5分以内、大規模（200依存関係）で15分以内<br>
+<strong>Constraints</strong>:</p>
+<ul>
+<li><p>タイムアウト: 15分以内でSBOM生成完了必須</p>
+</li>
+<li><p>SBOM形式: SPDX 2.3+ (ISO/IEC 5962:2021) 準拠</p>
+</li>
+<li><p>GitHubインテグレーション: Dependency Submission API必須</p>
+</li>
+<li><p>失敗時の動作: SBOM生成またはAPI送信失敗時はパイプライン全体を失敗させる
+<strong>Scale/Scope</strong>:</p>
+</li>
+<li><p>対象: .NETソリューション（単一または複数プロジェクト）</p>
+</li>
+<li><p>依存関係数: 最大200の直接・推移的依存関係をサポート</p>
+</li>
+<li><p>リリース頻度: mainブランチへのプッシュまたは手動トリガー</p>
+</li>
+</ul>
+<h2 id="constitution-check">Constitution Check</h2>
+<p><em>GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.</em></p>
+<h3 id="i-developer-usability-開発者のユーザビリティ">I. Developer Usability (開発者のユーザビリティ)</h3>
+<p>✅ <strong>PASS</strong> - リリースパイプラインの変更はCLIツール自体には影響せず、CI/CD設定のみを変更。ワークフローファイルは明確で理解しやすい構造を維持。</p>
+<h3 id="ii-cross-platform-クロスプラットフォーム">II. Cross-Platform (クロスプラットフォーム)</h3>
+<p>✅ <strong>PASS</strong> - Microsoft SBOM ToolはWindows、Linux、macOSで動作。GitHub Actionsはクロスプラットフォーム。パイプラインは既存のマルチプラットフォームビルドに影響を与えない。</p>
+<h3 id="iii-clean--secure-code-クリーンでセキュアなコード">III. Clean &amp; Secure Code (クリーンでセキュアなコード)</h3>
+<p>✅ <strong>PASS</strong> - SBOM生成により依存関係の脆弱性が可視化される。セキュリティベストプラクティスに従い:</p>
+<ul>
+<li>GitHubトークン権限を最小限（contents: write）に制限</li>
+<li>SBOM生成失敗時はパイプライン全体を失敗させる（不完全な成果物の防止）</li>
+<li>秘密情報はGitHub Secretsで管理</li>
+<li>Dependency Submission APIによりDependabotアラートを自動有効化</li>
+</ul>
+<h3 id="iv-documentation-clarity-ドキュメントの明瞭性">IV. Documentation Clarity (ドキュメントの明瞭性)</h3>
+<p>✅ <strong>PASS</strong> - 日本語の仕様書、ADR、実装計画を作成。ワークフロー変更は明確にコメントされ、SBOMの目的と使用方法が文書化される。</p>
+<h3 id="v-minimal-dependencies-最小限の依存関係">V. Minimal Dependencies (最小限の依存関係)</h3>
+<p>✅ <strong>PASS</strong> - 新規依存関係:</p>
+<ul>
+<li>Microsoft SBOM Tool: Microsoft公式ツール、SPDX生成に必須</li>
+<li>GitHub Dependency Submission API: GitHubネイティブ機能、追加パッケージ不要
+両方とも要件を満たすために不可欠で、代替手段なし。</li>
+</ul>
+<h3 id="vi-comprehensive-testing-テストの充実と自動化">VI. Comprehensive Testing (テストの充実と自動化)</h3>
+<p>✅ <strong>PASS</strong> - パイプライン変更のテスト戦略:</p>
+<ul>
+<li>ワークフロー検証: 実際のリリースプロセスでのE2Eテスト</li>
+<li>SBOM検証: 生成されたSBOMをSPDXスキーマバリデーターで検証</li>
+<li>統合テスト: GitHub依存関係グラフとDependency Submission APIの統合を確認</li>
+<li>タイムアウトテスト: 大規模ソリューションでの15分制限を検証</li>
+</ul>
+<p><strong>Constitution Check結果</strong>: ✅ <strong>全項目PASS</strong> - 追加の正当化不要</p>
+<h2 id="project-structure">Project Structure</h2>
+<h3 id="documentation-this-feature">Documentation (this feature)</h3>
+<pre><code class="lang-text">specs/[###-feature]/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+</code></pre>
+<h3 id="source-code-repository-root">Source Code (repository root)</h3>
+<pre><code class="lang-text"># 既存プロジェクト構造（変更なし）
+wt.cli/
+├── Commands/            # コマンド実装（変更不要）
+├── Models/              # データモデル（変更不要）
+├── Services/            # サービス層（変更不要）
+└── Utils/               # ユーティリティ（変更不要）
+
+wt.tests/                # テスト（変更不要）
+
+# 変更対象
+.github/workflows/
+├── release.yml          # 📝 SBOM生成ステップを追加
+└── sbom-test.yml        # 📝 新規: PR時のSBOM生成テストワークフロー
+
+# Phase 1で追加予定
+docs/
+├── adr/
+│   └── 004-sbom-generation.md  # Architecture Decision Record
+└── guides/
+    └── sbom-usage.md           # SBOM使用ガイド
+</code></pre>
+<p><strong>Structure Decision</strong>:</p>
+<ul>
+<li>ソースコード変更は不要（wt.cli、wt.testsともに既存のまま）</li>
+<li>変更はCI/CDパイプライン（.github/workflows/release.yml）のみ</li>
+<li>Microsoft SBOM Toolはワークフロー内で実行（インストール不要）</li>
+<li>GitHub Dependency Submission APIはGitHub Actions標準機能で利用</li>
+</ul>
+<h2 id="complexity-tracking">Complexity Tracking</h2>
+<blockquote>
+<p><strong>Fill ONLY if Constitution Check has violations that must be justified</strong></p>
+</blockquote>
+<p><strong>該当なし</strong> - Constitution Checkは全項目PASSのため、正当化が必要な違反は存在しません。</p>
+<hr>
+<h2 id="phase-0-research-完了">Phase 0: Research (完了)</h2>
+<p>✅ <strong>research.md作成完了</strong></p>
+<p>調査結果:</p>
+<ul>
+<li>Microsoft SBOM Tool: dotnet toolとして簡単に統合可能</li>
+<li>SPDX 2.3+: ISO標準準拠、JSONフォーマット</li>
+<li>GitHub Dependency Submission API: actions/dependency-submission@v3で簡単に統合</li>
+<li>パフォーマンス最適化: キャッシュ戦略と並列化で目標達成可能</li>
+<li>エラーハンドリング: すべての失敗でパイプライン停止</li>
+</ul>
+<p>すべての「NEEDS CLARIFICATION」が解決されました。</p>
+<hr>
+<h2 id="phase-1-design--contracts-完了">Phase 1: Design &amp; Contracts (完了)</h2>
+<p>✅ <strong>data-model.md作成完了</strong>: SPDX Document、Dependency Snapshot、Workflow Configの構造を定義<br>
+✅ <strong>contracts/作成完了</strong>: GitHub Dependency Submission API v1の詳細な契約を文書化<br>
+✅ <strong>quickstart.md作成完了</strong>: ユーザーと開発者向けのSBOM使用ガイド<br>
+✅ <strong>agent context更新完了</strong>: Copilotエージェントに技術スタック追加<br>
+✅ <strong>テスト戦略追加</strong>: PR時テストワークフロー（sbom-test.yml）を設計</p>
+<h3 id="constitution-check再評価phase-1後">Constitution Check再評価（Phase 1後）</h3>
+<h4 id="i-developer-usability-開発者のユーザビリティ-1">I. Developer Usability (開発者のユーザビリティ)</h4>
+<p>✅ <strong>PASS (変更なし)</strong> - quickstart.mdで明確なガイドを提供。開発者はローカルでもSBOM生成可能。</p>
+<h4 id="ii-cross-platform-クロスプラットフォーム-1">II. Cross-Platform (クロスプラットフォーム)</h4>
+<p>✅ <strong>PASS (変更なし)</strong> - すべてのツールがマルチプラットフォームで動作確認済み。</p>
+<h4 id="iii-clean--secure-code-クリーンでセキュアなコード-1">III. Clean &amp; Secure Code (クリーンでセキュアなコード)</h4>
+<p>✅ <strong>PASS (強化)</strong> - 契約定義により、APIセキュリティ要件が明確化。トークン権限、エラーハンドリング、レート制限対策を文書化。</p>
+<h4 id="iv-documentation-clarity-ドキュメントの明瞭性-1">IV. Documentation Clarity (ドキュメントの明瞭性)</h4>
+<p>✅ <strong>PASS (強化)</strong> - 包括的なドキュメント（research.md、data-model.md、contracts/、quickstart.md）により、実装の透明性が向上。</p>
+<h4 id="v-minimal-dependencies-最小限の依存関係-1">V. Minimal Dependencies (最小限の依存関係)</h4>
+<p>✅ <strong>PASS (変更なし)</strong> - 追加依存関係なし。Microsoft SBOM ToolはCI/CD内でのみ使用。</p>
+<h4 id="vi-comprehensive-testing-テストの充実と自動化-1">VI. Comprehensive Testing (テストの充実と自動化)</h4>
+<p>✅ <strong>PASS (強化)</strong> - <strong>PR時テストワークフローにより早期不具合発見を実現</strong>。SPDX検証、必須パッケージ確認、パフォーマンスベンチマークを自動実行。リリース前に品質を保証。</p>
+<p><strong>再評価結果</strong>: ✅ <strong>全項目PASS（Phase 1により強化）</strong> - 設計により憲法原則がさらに強化されました。特にテスト自動化が大幅に改善。</p>
+<hr>
+<h2 id="次のステップ">次のステップ</h2>
+<p>Phase 2（タスク分解）は <code>/speckit.tasks</code> コマンドで実行してください。</p>
+<h3 id="phase-2で作成されるもの">Phase 2で作成されるもの</h3>
+<ul>
+<li><strong>tasks.md</strong>: 実装タスクの詳細な分解</li>
+<li>各タスクの優先順位、見積もり、依存関係</li>
+<li>テストタスクとドキュメントタスクの定義</li>
+</ul>
+<h3 id="実装準備完了">実装準備完了</h3>
+<p>以下のドキュメントがすべて完成しました：</p>
+<p>✅ spec.md - 機能仕様（<strong>FR-019/FR-020、SC-011/SC-012追加: PR時テスト要件</strong>）<br>
+✅ research.md - 技術調査（<strong>PR時テスト戦略、sbom-test.ymlワークフロー設計追加</strong>）<br>
+✅ data-model.md - データモデル<br>
+✅ contracts/ - API契約<br>
+✅ quickstart.md - 使用ガイド（<strong>PR時テストとトラブルシューティング追加</strong>）<br>
+✅ plan.md（本ファイル） - 実装計画</p>
+<p>すべての不明点が解決され、実装に必要な情報がすべて揃っています。</p>
+<h3 id="-重要な追加機能ユーザー要望対応">📝 重要な追加機能（ユーザー要望対応）</h3>
+<p><strong>問題</strong>: リリースパイプライン実行まで不具合が発見できない<br>
+<strong>解決</strong>: PR時自動テストワークフローを追加</p>
+<p>新規ワークフローファイル:</p>
+<ul>
+<li><code>.github/workflows/sbom-test.yml</code> - PR作成時に自動実行されるSBOM生成テスト</li>
+</ul>
+<p>テスト内容:</p>
+<ol>
+<li>✅ 依存関係リストア成功確認</li>
+<li>✅ SBOM生成成功確認</li>
+<li>✅ SPDX 2.3フォーマット検証</li>
+<li>✅ 必須パッケージ存在確認（System.CommandLine等）</li>
+<li>✅ パフォーマンスベンチマーク（15分制限）</li>
+<li>❌ <strong>GitHub API送信なし</strong>（Dry-runモード、本番環境を汚染しない）</li>
+</ol>
+<p><strong>重要な制約</strong>:</p>
+<ul>
+<li>PR時は<strong>GitHub Dependency Graphにアップロードしません</strong></li>
+<li>PR時は<strong>Dependency Submission APIを呼び出しません</strong></li>
+<li>実際のAPI送信とDependency Graph更新は<strong>リリース時のみ</strong>実行</li>
+</ul>
+<p>これにより、<strong>リリース前に不具合を検出</strong>し、開発サイクルを高速化しつつ、本番環境の整合性を保ちます。</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/004-complete-sbom-generation/plan.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

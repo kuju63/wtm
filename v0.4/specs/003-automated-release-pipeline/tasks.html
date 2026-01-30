@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: 自動化されたバイナリリリースパイプライン | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: 自動化されたバイナリリリースパイプライン | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-自動化されたバイナリリリースパイプライン">Tasks: 自動化されたバイナリリリースパイプライン</h1>
+
+<p><strong>Feature</strong>: <code>001-automated-release-pipeline</code><br>
+<strong>Date</strong>: 2026-01-04<br>
+<strong>Plan</strong>: <a href="plan.html">plan.md</a> | <strong>Spec</strong>: <a href="spec.html">spec.md</a></p>
+<h2 id="task-workflow">Task Workflow</h2>
+<p>This feature is organized by user story (independent implementation and testing). Each phase must be completed and tested before moving to the next.</p>
+<p><strong>Phases</strong>:</p>
+<ol>
+<li><strong>Phase 0: Foundation</strong> - Build infrastructure and prerequisites</li>
+<li><strong>Phase 1: P1 Stories</strong> - Core user stories (binary distribution + security)</li>
+<li><strong>Phase 2: P2 Stories</strong> - Supporting stories (automation + quality)</li>
+<li><strong>Phase 3: Integration &amp; Polish</strong> - Cross-cutting concerns and final validation</li>
+</ol>
+<hr>
+<h2 id="phase-0-foundation--prerequisites">Phase 0: Foundation &amp; Prerequisites</h2>
+<p>Phase 0 establishes the base infrastructure needed by all user stories.</p>
+<h3 id="setup--configuration">Setup &amp; Configuration</h3>
+<ul>
+<li>[X] T001 Create GitHub Actions workflow directory structure in <code>.github/workflows/</code></li>
+<li>[X] T002 Create shell script directory in <code>.github/scripts/</code></li>
+<li>[X] T003 Create GitHub repository secrets configuration document (list required secrets: GH_RELEASE_TOKEN, CODACY_TOKEN, etc.)</li>
+<li>[X] T004 Document Conventional Commits naming convention in <code>.github/</code> (for team reference)</li>
+<li>[X] T005 Create semantic versioning decision log in <code>specs/001-automated-release-pipeline/research.md</code></li>
+</ul>
+<h3 id="dependency--tool-verification">Dependency &amp; Tool Verification</h3>
+<ul>
+<li>[X] T006 Research and document CycloneDX integration options for .NET projects (dotnet-sbom, etc.)</li>
+<li>[X] T007 Research and document Conventional Commits parser options (semantic-release, commitlint, custom)</li>
+<li>[X] T008 Verify GitHub Actions concurrency limits for parallel platform builds</li>
+<li>[X] T009 Verify Codacy integration status and required workflow configuration</li>
+<li>[X] T010 Document platform-specific compiler availability in GitHub-hosted runners</li>
+</ul>
+<hr>
+<h2 id="phase-1-p1-stories---core-binary-distribution--security">Phase 1: P1 Stories - Core Binary Distribution &amp; Security</h2>
+<h3 id="user-story-1-download-and-install-compiled-binary">User Story 1: Download and Install Compiled Binary</h3>
+<p>This story delivers the ability to download pre-built binaries for each platform.</p>
+<p><strong>Story Goal</strong>: Binaries are available on GitHub Releases for download, testable, and runnable on target platforms.</p>
+<p><strong>Independent Test</strong>: Download a binary for each platform, verify it runs and displays version info.</p>
+<h4 id="build-infrastructure-prerequisite-for-us1">Build Infrastructure (Prerequisite for US1)</h4>
+<p><strong>Platform Matrix</strong>: Mandatory (Windows x64, Linux x64, Mac ARM64) - build failure blocks release. Optional (Linux ARM) - build failure logged but does not block release (see T078 for error handling).</p>
+<ul>
+<li>[X] T011 [P] Implement cross-platform build matrix in <code>.github/workflows/build.yml</code> (Windows x64, Linux x64, Linux ARM, Mac ARM64) with platform status tracking</li>
+<li>[X] T012 [P] Create <code>.github/scripts/build-windows.sh</code> to build Windows x64 binary (MANDATORY)</li>
+<li>[X] T013 [P] Create <code>.github/scripts/build-linux-x64.sh</code> to build Linux x64 binary (MANDATORY)</li>
+<li>[X] T014 [P] Create <code>.github/scripts/build-linux-arm.sh</code> to build Linux ARM binary (OPTIONAL - failure allowed)</li>
+<li>[X] T015 [P] Create <code>.github/scripts/build-macos-arm64.sh</code> to build Mac ARM64 binary (MANDATORY)</li>
+<li>[X] T016 [P] Update <code>wt.cli.csproj</code> to support multi-platform publishing (RID-specific builds)</li>
+<li>[ ] T017 Test local builds for all 4 platform combinations manually before workflow automation</li>
+</ul>
+<h4 id="binary-release-to-github-releases">Binary Release to GitHub Releases</h4>
+<ul>
+<li>[X] T018 Implement <code>.github/workflows/release.yml</code> to trigger on main branch push</li>
+<li>[X] T019 Add release workflow step to upload all platform binaries as GitHub Release assets</li>
+<li>[X] T020 Verify binary naming convention: <code>wt-&lt;version&gt;-&lt;platform&gt;-&lt;arch&gt;.&lt;ext&gt;</code> (e.g., <code>wt-v1.0.0-windows-x64.exe</code>)</li>
+<li>[ ] T021 Test release workflow: merge a PR to main and verify binaries appear on GitHub Releases</li>
+<li>[ ] T022 Document release manual download process in <code>specs/001-automated-release-pipeline/quickstart.md</code></li>
+</ul>
+<hr>
+<h3 id="user-story-2-verify-software-supply-chain-security">User Story 2: Verify Software Supply Chain Security</h3>
+<p>This story delivers file hashes and SBOM for binary integrity and dependency verification.</p>
+<p><strong>Story Goal</strong>: Every release includes SHA256SUMS and CycloneDX SBOM files alongside binaries.</p>
+<p><strong>Independent Test</strong>: Download SBOM, download checksum file, verify hash matches computed hash.</p>
+<h4 id="hash-generation">Hash Generation</h4>
+<ul>
+<li>[X] T023 Create <code>.github/scripts/generate-checksums.sh</code> to compute SHA256 hashes for all binaries</li>
+<li>[X] T024 Add workflow step in <code>build.yml</code> to generate SHA256SUMS file after all builds complete</li>
+<li>[X] T025 Upload SHA256SUMS file to GitHub Release as asset</li>
+<li>[ ] T026 Test hash generation: verify downloaded binary hash matches SHA256SUMS entry</li>
+</ul>
+<h4 id="sbom-generation">SBOM Generation</h4>
+<ul>
+<li>[X] T027 Integrate CycloneDX tool into build workflow (research result from Phase 0 used here)</li>
+<li>[X] T028 Create <code>.github/scripts/generate-sbom.sh</code> to generate CycloneDX SBOM for binary</li>
+<li>[X] T029 Add workflow step in <code>build.yml</code> to generate SBOM for each platform build</li>
+<li>[X] T030 Generate single aggregated SBOM listing all dependencies across platforms</li>
+<li>[X] T031 Upload aggregated SBOM (JSON format) to GitHub Release as asset</li>
+<li>[ ] T032 Test SBOM: download and verify SBOM contains expected dependency list</li>
+</ul>
+<h4 id="digital-signature-generation">Digital Signature Generation</h4>
+<ul>
+<li>[X] T032a Research and select signature tool (GPG, cosign, or GitHub Actions built-in) during Phase 0</li>
+<li>[X] T032b Create <code>.github/scripts/sign-artifacts.sh</code> to generate signatures for SBOM and SHA256SUMS files</li>
+<li>[X] T032c Add workflow step in <code>build.yml</code> to sign SBOM.json and SHA256SUMS files after generation</li>
+<li>[X] T032d Upload signature files (SBOM.json.sig, SHA256SUMS.sig) to GitHub Release as assets</li>
+<li>[ ] T032e Test signature generation: verify signature files are present and properly formatted</li>
+<li>[ ] T032f Document signature verification process in <code>quickstart.md</code> (public key distribution, verification command)</li>
+</ul>
+<h4 id="supply-chain-documentation">Supply Chain Documentation</h4>
+<ul>
+<li>[X] T033 Add file hash verification instructions to <code>quickstart.md</code></li>
+<li>[X] T034 Add SBOM interpretation guide to <code>quickstart.md</code></li>
+<li>[X] T035 Create ADR (Architecture Decision Record) explaining SBOM format choice (CycloneDX JSON/XML) and signature tool selection</li>
+<li>[X] T035a Add signature verification guide to <code>quickstart.md</code> (download .sig files, verify with public key)</li>
+</ul>
+<hr>
+<h2 id="phase-2-p2-stories---automation--quality-assurance">Phase 2: P2 Stories - Automation &amp; Quality Assurance</h2>
+<h3 id="user-story-3-receive-automated-releases-on-main-branch-merge">User Story 3: Receive Automated Releases on Main Branch Merge</h3>
+<p>This story delivers automatic version management and release notes.</p>
+<p><strong>Story Goal</strong>: Releases are published automatically with correct version numbers and descriptive notes when PR merges to main.</p>
+<p><strong>Independent Test</strong>: Merge a feature PR to main, verify release is created with incremented version and release notes.</p>
+<h4 id="version-management">Version Management</h4>
+<ul>
+<li>[X] T036 Implement version number parsing from latest Git tag</li>
+<li>[X] T037 Create <code>.github/scripts/calculate-version.sh</code> to determine next version based on Conventional Commits</li>
+<li>[X] T038 Implement logic: feat: → minor, fix: → patch, BREAKING CHANGE: → major</li>
+<li>[X] T039 Add workflow step to create Git tag for new version</li>
+<li>[ ] T040 Test version calculation: commit feat/fix/BREAKING CHANGE and verify version increments correctly</li>
+</ul>
+<h4 id="release-notes-generation">Release Notes Generation</h4>
+<ul>
+<li>[X] T041 Create <code>.github/scripts/generate-release-notes.sh</code> to extract Conventional Commits since last tag</li>
+<li>[X] T042 Implement categorization: features (feat:), fixes (fix:), breaking changes (BREAKING CHANGE:)</li>
+<li>[X] T043 Add workflow step to generate release notes and include in GitHub Release body</li>
+<li>[ ] T044 Test release notes: verify notes accurately reflect commits since last release</li>
+</ul>
+<h4 id="release-workflow-automation">Release Workflow Automation</h4>
+<ul>
+<li>[X] T045 Update <code>release.yml</code> workflow to automatically trigger on main push (not manual)</li>
+<li>[X] T046 Add version calculation and git tag creation to release workflow</li>
+<li>[X] T047 Add release notes generation to release workflow</li>
+<li>[ ] T048 Verify release appears on GitHub Releases within 30 minutes of main merge</li>
+<li>[ ] T049 Test release end-to-end: merge PR to main, monitor workflow, verify release created</li>
+</ul>
+<h4 id="release-documentation">Release Documentation</h4>
+<ul>
+<li>[X] T050 Document versioning strategy in ADR (Conventional Commits → SemVer)</li>
+<li>[X] T051 Add release notification setup guide to <code>quickstart.md</code></li>
+</ul>
+<hr>
+<h3 id="user-story-4-verify-all-changes-are-tested-with-coverage">User Story 4: Verify All Changes Are Tested with Coverage</h3>
+<p>This story delivers automated testing, coverage reporting, and quality gates.</p>
+<p><strong>Story Goal</strong>: All branches are tested, coverage is reported to Codacy, and failures block main merges.</p>
+<p><strong>Independent Test</strong>: Create feature branch, push failing test, verify merge is blocked; push passing test, verify merge is allowed and Codacy reports coverage.</p>
+<h4 id="test-automation-on-all-branches">Test Automation on All Branches</h4>
+<ul>
+<li>[X] T052 Create <code>.github/workflows/test.yml</code> to run all tests on every push/PR</li>
+<li>[X] T053 Add test execution step to run <code>dotnet test</code> with code coverage collection</li>
+<li>[X] T054 Configure test failure reporting (exit code check)</li>
+<li>[ ] T055 Add branch protection rule: require passing tests before main merge</li>
+<li>[ ] T056 Test: push failing test to feature branch, verify CI fails and merge is blocked</li>
+</ul>
+<h4 id="coverage-reporting-to-codacy">Coverage Reporting to Codacy</h4>
+<ul>
+<li>[ ] T057 Add Codacy token secret configuration in GitHub repository settings</li>
+<li>[X] T058 Integrate Codacy coverage upload in <code>test.yml</code> workflow</li>
+<li>[ ] T059 Configure coverage threshold: 80% project-wide goal (from spec)</li>
+<li>[X] T060 Add coverage report comment on pull requests</li>
+<li>[ ] T061 Test: push change with coverage drop, verify Codacy warning appears on PR</li>
+</ul>
+<h4 id="quality-gates">Quality Gates</h4>
+<ul>
+<li>[ ] T062 Configure Codacy check to warn (not block) on coverage below 80%</li>
+<li>[ ] T063 Configure test failure check to block merge</li>
+<li>[X] T064 Document quality gate policy in ADR</li>
+<li>[ ] T065 Test: verify test failure blocks merge, coverage drop shows warning but allows merge</li>
+</ul>
+<h4 id="release-trigger-on-quality-gate-pass">Release Trigger on Quality Gate Pass</h4>
+<ul>
+<li>[X] T066 Update <code>release.yml</code> to run only if test workflow succeeds</li>
+<li>[X] T067 Add check: all required status checks passed before release</li>
+<li>[ ] T068 Test: merge PR to main with failing tests, verify release is NOT triggered</li>
+<li>[ ] T069 Test: merge PR to main with passing tests, verify release IS triggered</li>
+</ul>
+<h4 id="release-performance-sla-configuration">Release Performance SLA Configuration</h4>
+<ul>
+<li>[X] T048a Configure GitHub Actions job timeout in <code>release.yml</code> to 25 minutes (buffer before 30-minute SLA from SC-003)</li>
+<li>[X] T048b Document timeout rationale in ADR (5-minute buffer for cleanup, upload finalization)</li>
+<li>[ ] T048c Test: verify workflow kills gracefully at timeout and logs clear error message</li>
+</ul>
+<h4 id="testing-documentation">Testing Documentation</h4>
+<ul>
+<li>[ ] T070 Document testing requirements in <code>quickstart.md</code></li>
+<li>[ ] T071 Document Codacy integration in <code>quickstart.md</code></li>
+<li>[X] T072 Create testing ADR explaining TDD expectations and coverage goals</li>
+</ul>
+<hr>
+<h2 id="phase-3-integration--polish">Phase 3: Integration &amp; Polish</h2>
+<h3 id="cross-cutting-concerns">Cross-Cutting Concerns</h3>
+<ul>
+<li>[ ] T073 [P] Create comprehensive testing guide for workflow validation (manual test scenarios)</li>
+<li>[ ] T074 [P] Document troubleshooting guide for common workflow failures</li>
+<li>[ ] T075 [P] Create workflow status monitoring dashboard documentation</li>
+<li>[ ] T076 [P] Implement error logging/reporting from all shell scripts</li>
+</ul>
+<h3 id="error-handling--robustness">Error Handling &amp; Robustness</h3>
+<ul>
+<li>[X] T077 Add retry logic to Codacy upload (transient failure handling)</li>
+<li>[X] T078 Add graceful failure if optional platform build fails (log warning, skip asset)</li>
+<li>[X] T079 Add graceful failure if SBOM generation fails (fail release - security critical)</li>
+<li>[ ] T080 Test error scenarios: simulate Codacy outage, simulate single platform failure</li>
+</ul>
+<h3 id="documentation--handoff">Documentation &amp; Handoff</h3>
+<ul>
+<li>[X] T081 Complete <code>research.md</code> with all Phase 0 research findings</li>
+<li>[X] T082 Complete <code>data-model.md</code> with release pipeline data model (versions, tags, releases)</li>
+<li>[X] T083 Complete <code>contracts/</code> directory with detailed workflow specifications</li>
+<li>[X] T084 Complete <code>quickstart.md</code> with end-to-end user journey walkthrough</li>
+<li>[X] T085 Create troubleshooting guide in <code>specs/001-automated-release-pipeline/troubleshooting.md</code></li>
+</ul>
+<h3 id="final-validation--testing">Final Validation &amp; Testing</h3>
+<ul>
+<li>[ ] T086 End-to-end test: create feature branch with test + code, push, verify all workflows run</li>
+<li>[ ] T087 End-to-end test: merge to main, verify release created with version/notes/binaries/hashes/sbom</li>
+<li>[ ] T088 Verify all 4 platform binaries present in release</li>
+<li>[ ] T089 Verify SHA256SUMS file is present and checksums are correct</li>
+<li>[ ] T090 Verify SBOM file is present and contains expected dependencies</li>
+<li>[ ] T091 Manual download test: download each binary, verify it runs and shows version</li>
+<li>[ ] T092 Verify release notes are accurate and well-formatted</li>
+<li>[ ] T093 Performance test: measure time from main merge to release availability (goal: &lt; 30 min)</li>
+<li>[ ] T094 Performance test: measure binary download time (goal: &lt; 2 min for typical connection)</li>
+<li>[ ] T095 Security test: verify no secrets leaked in workflows or scripts</li>
+<li>[ ] T096 Accessibility test: verify documentation is clear for new developers</li>
+</ul>
+<hr>
+<h2 id="task-execution-strategy">Task Execution Strategy</h2>
+<h3 id="phase-0-foundation">Phase 0 (Foundation)</h3>
+<p><strong>Duration</strong>: ~1 week<br>
+<strong>Parallelization</strong>: T001-T005 can run in parallel, followed by T006-T010 in parallel<br>
+<strong>Blocking</strong>: Phase 1 blocks on Phase 0 completion</p>
+<h3 id="phase-1-p1-stories">Phase 1 (P1 Stories)</h3>
+<p><strong>Duration</strong>: ~2 weeks<br>
+<strong>Parallelization</strong>:</p>
+<ul>
+<li>Build infrastructure (T011-T017) can run in parallel across platforms</li>
+<li>Hash generation (T023-T026) and SBOM generation (T027-T032) can run in parallel</li>
+<li>Documentation (T033-T035) can run in parallel</li>
+</ul>
+<h3 id="phase-2-p2-stories">Phase 2 (P2 Stories)</h3>
+<p><strong>Duration</strong>: ~2 weeks<br>
+<strong>Parallelization</strong>:</p>
+<ul>
+<li>Version management (T036-T040) and release notes (T041-T044) can run in parallel</li>
+<li>Test automation (T052-T056) and coverage reporting (T057-T061) can run in parallel</li>
+<li>Quality gates (T062-T065) are sequential (depend on earlier steps)</li>
+</ul>
+<h3 id="phase-3-integration--polish-1">Phase 3 (Integration &amp; Polish)</h3>
+<p><strong>Duration</strong>: ~1 week<br>
+<strong>Parallelization</strong>: T073-T076 can run in parallel, followed by T077-T080, then final validation (T086-T096)</p>
+<h3 id="total-estimated-timeline">Total Estimated Timeline</h3>
+<p><strong>~6 weeks</strong> with efficient parallelization and team coordination</p>
+<hr>
+<h2 id="dependency-map">Dependency Map</h2>
+<pre><code class="lang-text">Phase 0: Foundation (T001-T010)
+  ↓
+Phase 1a: Build Infrastructure (T011-T017)
+  ├→ Phase 1b: Release to GitHub (T018-T022)
+  ├→ Phase 1c: Hash &amp; SBOM (T023-T035)
+  ↓
+Phase 2a: Version Management (T036-T040)
+  ├→ Phase 2b: Release Notes (T041-T044)
+  ├→ Phase 2c: Test Automation (T052-T056)
+  ├→ Phase 2d: Coverage Reporting (T057-T061)
+  ├→ Phase 2e: Quality Gates (T062-T065)
+  ├→ Phase 2f: Release Trigger (T066-T069)
+  ↓
+Phase 3: Integration &amp; Polish (T073-T096)
+</code></pre>
+<hr>
+<h2 id="success-criteria-per-phase">Success Criteria per Phase</h2>
+<p><strong>Phase 0</strong>: All prerequisites verified, research completed, team ready<br>
+<strong>Phase 1</strong>: Binaries downloadable, hashes verifiable, SBOM accessible<br>
+<strong>Phase 2</strong>: Releases automatic, version increments correct, quality gates enforced<br>
+<strong>Phase 3</strong>: All workflows robust, documentation complete, end-to-end validated</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

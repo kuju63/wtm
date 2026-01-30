@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Research: Worktreeとブランチ情報の一覧表示 | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Research: Worktreeとブランチ情報の一覧表示 | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/research.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="research-worktreeとブランチ情報の一覧表示">Research: Worktreeとブランチ情報の一覧表示</h1>
+
+<p><strong>Phase</strong>: 0 - Outline &amp; Research<br>
+<strong>Date</strong>: 2026-01-04<br>
+<strong>Feature</strong>: <a href="spec.html">spec.md</a> | <a href="plan.html">plan.md</a></p>
+<h2 id="purpose">Purpose</h2>
+<p>このドキュメントは、worktreeとブランチ一覧表示機能を実装するための技術調査結果をまとめています。<code>git worktree list</code>コマンドの出力形式、ブランチ情報の取得方法、テーブル整形アプローチ、ソート方法について調査しました。</p>
+<h2 id="research-tasks">Research Tasks</h2>
+<h3 id="1-git-worktree-list-コマンドの出力形式">1. Git Worktree List コマンドの出力形式</h3>
+<p><strong>調査内容</strong>: <code>git worktree list</code>コマンドの標準出力とポーセラン出力の形式</p>
+<p><strong>結果</strong>:</p>
+<p><code>git worktree list</code>の標準出力形式:</p>
+<pre><code class="lang-text">/path/to/main-worktree  abc1234 [main]
+/path/to/feature-worktree  def5678 [feature-branch]
+/path/to/detached-worktree  ghi9012 (detached HEAD)
+</code></pre>
+<p><code>git worktree list --porcelain</code>の出力形式（機械可読）:</p>
+<pre><code class="lang-text">worktree /path/to/main-worktree
+HEAD abc1234567890abcdef
+branch refs/heads/main
+
+worktree /path/to/feature-worktree
+HEAD def5678901234567890
+branch refs/heads/feature-branch
+
+worktree /path/to/detached-worktree
+HEAD ghi9012345678901234
+detached
+</code></pre>
+<p><strong>決定事項</strong>:</p>
+<ul>
+<li><code>git worktree list --porcelain</code>を使用して機械可読形式で情報を取得</li>
+<li>ポーセラン形式は安定したAPIであり、将来のGitバージョンでも互換性が保証される</li>
+<li>各worktreeの情報は空行で区切られる</li>
+</ul>
+<p><strong>代替案</strong>:</p>
+<ul>
+<li>標準出力を正規表現でパース: 却下（出力形式が変更される可能性があり不安定）</li>
+<li><code>.git/worktrees/</code>ディレクトリを直接読む: 却下（Gitの内部実装に依存し、将来の変更に脆弱）</li>
+</ul>
+<h3 id="2-ブランチ情報とdetached-head状態の判定">2. ブランチ情報とDetached HEAD状態の判定</h3>
+<p><strong>調査内容</strong>: ブランチ名の取得方法とdetached HEAD状態の識別</p>
+<p><strong>結果</strong>:</p>
+<p>ポーセラン出力から:</p>
+<ul>
+<li><code>branch refs/heads/branch-name</code>行が存在する場合: 通常のブランチ</li>
+<li><code>detached</code>行が存在する場合: detached HEAD状態</li>
+<li>detached HEAD時のコミットハッシュは<code>HEAD</code>行から取得</li>
+</ul>
+<p>短縮コミットハッシュの生成:</p>
+<ul>
+<li><code>git rev-parse --short HEAD</code>コマンドで短縮形を取得（デフォルト7文字）</li>
+<li>または<code>HEAD</code>行の最初の7文字を使用</li>
+</ul>
+<p><strong>決定事項</strong>:</p>
+<ul>
+<li>ポーセラン出力の<code>branch</code>行または<code>detached</code>行で状態を判定</li>
+<li>detached HEAD時は<code>HEAD</code>行のコミットハッシュの最初の7文字を使用</li>
+<li>フォーマット: <code>abc1234 (detached)</code></li>
+</ul>
+<h3 id="3-worktreeの作成日時取得方法">3. Worktreeの作成日時取得方法</h3>
+<p><strong>調査内容</strong>: worktreeを作成日時順（新しい順）でソートするための情報取得</p>
+<p><strong>結果</strong>:</p>
+<p>オプション1: <code>.git/worktrees/&lt;name&gt;/gitdir</code>ファイルのタイムスタンプ</p>
+<ul>
+<li>各worktreeには<code>.git/worktrees/&lt;worktree-name&gt;/</code>ディレクトリが作成される</li>
+<li><code>gitdir</code>ファイルの作成日時 = worktreeの作成日時</li>
+<li>クロスプラットフォームで利用可能（System.IO.FileInfo.CreationTime）</li>
+</ul>
+<p>オプション2: <code>git reflog</code>を使用</p>
+<ul>
+<li>worktree作成時のreflogエントリを検索</li>
+<li>より正確だが、パフォーマンスが低く、reflogが削除されている可能性がある</li>
+</ul>
+<p><strong>決定事項</strong>:</p>
+<ul>
+<li>オプション1を採用: ファイルシステムのタイムスタンプを使用</li>
+<li><code>.git/worktrees/</code>ディレクトリ内の各worktreeサブディレクトリの<code>gitdir</code>ファイルの作成日時を取得</li>
+<li>クロスプラットフォームで動作し、パフォーマンスが良い</li>
+</ul>
+<p><strong>理由</strong>:</p>
+<ul>
+<li>シンプルで高速</li>
+<li>依存関係なし（標準ファイルシステムAPI）</li>
+<li>Gitの内部実装への最小限の依存</li>
+</ul>
+<h3 id="4-テーブル整形アプローチ">4. テーブル整形アプローチ</h3>
+<p><strong>調査内容</strong>: C#でテーブル形式の出力を生成する方法</p>
+<p><strong>結果</strong>:</p>
+<p>オプション1: 標準ライブラリで自作</p>
+<ul>
+<li>列幅の動的計算</li>
+<li>罫線文字（Unicode Box Drawing）を使用</li>
+<li>依存関係ゼロ</li>
+</ul>
+<p>オプション2: ConsoleTables NuGetパッケージ</p>
+<ul>
+<li>軽量なテーブル整形ライブラリ</li>
+<li>MIT ライセンス</li>
+<li>追加の依存関係</li>
+</ul>
+<p>オプション3: Spectre.Console</p>
+<ul>
+<li>高機能なコンソールUIライブラリ</li>
+<li>テーブル、色、プログレスバー等をサポート</li>
+<li>比較的大きな依存関係</li>
+</ul>
+<p><strong>決定事項</strong>:</p>
+<ul>
+<li>オプション1を採用: 標準ライブラリで自作</li>
+<li><code>TableFormatter</code>ユーティリティクラスを実装</li>
+<li>憲章V（最小限の依存関係）に準拠</li>
+</ul>
+<p><strong>実装アプローチ</strong>:</p>
+<pre><code class="lang-text">┌─────────────────────┬──────────────────┬───────────┐
+│ Path                │ Branch           │ Status    │
+├─────────────────────┼──────────────────┼───────────┤
+│ /path/to/main       │ main             │ active    │
+│ /path/to/feature    │ feature-branch   │ active    │
+│ /path/to/detached   │ abc1234 (detached)│ active   │
+└─────────────────────┴──────────────────┴───────────┘
+</code></pre>
+<ul>
+<li>各列の最大幅を計算</li>
+<li>Unicode Box Drawing文字を使用（U+2500系）</li>
+<li>左揃え/右揃えのサポート</li>
+</ul>
+<h3 id="5-エラーハンドリング">5. エラーハンドリング</h3>
+<p><strong>調査内容</strong>: 存在しないworktreeや破損したworktreeの検出</p>
+<p><strong>結果</strong>:</p>
+<p>ポーセラン出力には存在しないworktreeも含まれる可能性あり:</p>
+<ul>
+<li>ファイルシステムでworktreeパスが削除された場合</li>
+<li><code>git worktree prune</code>を実行していない場合</li>
+</ul>
+<p><strong>決定事項</strong>:</p>
+<ul>
+<li>各worktreeパスの存在をDirectory.Exists()で確認</li>
+<li>存在しない場合は警告メッセージを出力: <code>Warning: Worktree at '/path/to/missing' does not exist on disk</code></li>
+<li>警告後も処理を継続し、他のworktreeを表示（FR-008）</li>
+</ul>
+<p><strong>実装方法</strong>:</p>
+<pre><code class="lang-csharp">if (!Directory.Exists(worktreePath))
+{
+    Console.WriteLine($&quot;Warning: Worktree at '{worktreePath}' does not exist on disk&quot;);
+    continue;
+}
+</code></pre>
+<h2 id="technology-stack-confirmation">Technology Stack Confirmation</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Technology</th>
+<th>Justification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLI Framework</td>
+<td>System.CommandLine 2.0.1</td>
+<td>既存プロジェクトで使用中、標準的なCLIフレームワーク</td>
+</tr>
+<tr>
+<td>Git実行</td>
+<td>System.Diagnostics.Process</td>
+<td>標準ライブラリ、既存実装を再利用</td>
+</tr>
+<tr>
+<td>パス操作</td>
+<td>System.IO.Abstractions 22.1.0</td>
+<td>既存プロジェクトで使用中、テスト可能な抽象化</td>
+</tr>
+<tr>
+<td>テーブル整形</td>
+<td>カスタム実装</td>
+<td>依存関係ゼロ、要件に最適化</td>
+</tr>
+<tr>
+<td>日時処理</td>
+<td>System.IO.FileInfo</td>
+<td>標準ライブラリ、クロスプラットフォーム</td>
+</tr>
+</tbody>
+</table>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="git-worktree操作">Git Worktree操作</h3>
+<ul>
+<li><code>--porcelain</code>フラグを常に使用して機械可読出力を取得</li>
+<li>エラー出力（stderr）を捕捉してユーザーに提示</li>
+<li>Git 2.5以上の存在を前提（既存機能と同じ）</li>
+</ul>
+<h3 id="パフォーマンス">パフォーマンス</h3>
+<ul>
+<li><code>git worktree list</code>は1回のみ実行</li>
+<li>ファイルシステムアクセスは必要最小限</li>
+<li>大量のworktree（100個）でも1秒以内に表示完了</li>
+</ul>
+<h3 id="クロスプラットフォーム">クロスプラットフォーム</h3>
+<ul>
+<li>パスセパレーターはPath.DirectorySeparatorCharを使用</li>
+<li>Unicode Box Drawing文字はUTF-8コンソールで正しく表示される前提</li>
+<li>タイムゾーン処理はDateTimeKind.Localを使用</li>
+</ul>
+<h2 id="integration-patterns">Integration Patterns</h2>
+<h3 id="既存コードとの統合">既存コードとの統合</h3>
+<p><strong>GitServiceの拡張</strong>:</p>
+<pre><code class="lang-csharp">public interface IGitService
+{
+    // 既存メソッド
+    Task&lt;ProcessResult&gt; CreateWorktreeAsync(...);
+    
+    // 新規メソッド
+    Task&lt;IEnumerable&lt;WorktreeInfo&gt;&gt; ListWorktreesAsync();
+}
+</code></pre>
+<p><strong>新しいモデル</strong>:</p>
+<pre><code class="lang-csharp">public class WorktreeInfo
+{
+    public string Path { get; set; }
+    public string Branch { get; set; }
+    public bool IsDetached { get; set; }
+    public string CommitHash { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+</code></pre>
+<p><strong>コマンド実装</strong>:</p>
+<pre><code class="lang-csharp">public class ListCommand : Command
+{
+    // System.CommandLineパターンに従う
+    // ハンドラーでWorktreeServiceを呼び出し
+    // TableFormatterで整形して出力
+}
+</code></pre>
+<h2 id="unknowns-resolved">Unknowns Resolved</h2>
+<p>すべての主要な技術的不明点が解決されました：</p>
+<table>
+<thead>
+<tr>
+<th>Unknown</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Git出力のパース方法</td>
+<td><code>--porcelain</code>フラグで機械可読形式を使用</td>
+</tr>
+<tr>
+<td>作成日時の取得</td>
+<td><code>.git/worktrees/&lt;name&gt;/gitdir</code>のファイルタイムスタンプ</td>
+</tr>
+<tr>
+<td>テーブル整形</td>
+<td>カスタムTableFormatterを実装（依存関係なし）</td>
+</tr>
+<tr>
+<td>Detached HEAD表示</td>
+<td>コミットハッシュの最初の7文字 + &quot;(detached)&quot;</td>
+</tr>
+<tr>
+<td>エラーハンドリング</td>
+<td>Directory.Exists()で確認、警告後も継続</td>
+</tr>
+</tbody>
+</table>
+<h2 id="next-steps">Next Steps</h2>
+<p>Phase 1に進む準備が整いました：</p>
+<ul>
+<li>data-model.md: WorktreeInfo、BranchInfoモデルの詳細設計</li>
+<li>contracts/cli-interface.md: CLIコマンド仕様（引数、オプション、出力形式）</li>
+<li>quickstart.md: 開発者向けクイックスタートガイド</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/research.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

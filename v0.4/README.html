@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>wt - Git Worktree Manager | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="wt - Git Worktree Manager | wt ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/README.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="wt---git-worktree-manager">wt - Git Worktree Manager</h1>
+
+<p>A modern CLI tool to simplify Git worktree management. Create worktrees with a single command and optionally launch your favorite editor.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>✨ <strong>Simple worktree creation</strong>: <code>wt create feature-branch</code></li>
+<li>📋 <strong>List all worktrees</strong>: <code>wt list</code> - Display all worktrees with their branches</li>
+<li>🎯 <strong>Smart defaults</strong>: Automatically creates worktrees in <code>../wt-&lt;branch&gt;</code> directory</li>
+<li>🚀 <strong>Editor integration</strong>: Auto-launch VS Code, Vim, Emacs, or IntelliJ IDEA</li>
+<li>🛠️ <strong>Custom paths</strong>: Specify where to create worktrees</li>
+<li>📊 <strong>Table format</strong>: Human-readable table output with Unicode box-drawing characters</li>
+<li>📋 <strong>Multiple output formats</strong>: Human-readable or JSON for automation</li>
+<li>✅ <strong>Cross-platform</strong>: Works on macOS, Linux, and Windows</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>.NET 10.0 SDK or later</li>
+<li>Git 2.5 or later</li>
+</ul>
+<h3 id="build-from-source">Build from source</h3>
+<pre><code class="lang-bash">git clone https://github.com/kuju63/wt.git
+cd wt
+dotnet build
+dotnet run --project wt.cli -- create --help
+</code></pre>
+<h3 id="install-globally-optional">Install globally (optional)</h3>
+<pre><code class="lang-bash">dotnet pack
+dotnet tool install --global --add-source ./nupkg wt
+</code></pre>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="basic-usage">Basic Usage</h3>
+<p>Create a new worktree with a new branch:</p>
+<pre><code class="lang-bash">wt create feature-login
+</code></pre>
+<p>This will:</p>
+<ol>
+<li>Create a new branch named <code>feature-login</code> from your current branch</li>
+<li>Create a worktree at <code>../wt-feature-login</code></li>
+<li>Check out the new branch in the worktree</li>
+</ol>
+<h3 id="specify-base-branch">Specify Base Branch</h3>
+<p>Create a branch from a specific base branch:</p>
+<pre><code class="lang-bash">wt create feature-login --base main
+</code></pre>
+<h3 id="custom-path">Custom Path</h3>
+<p>Create a worktree at a custom location:</p>
+<pre><code class="lang-bash">wt create feature-login --path ~/projects/myapp-feature-login
+</code></pre>
+<h3 id="auto-launch-editor">Auto-Launch Editor</h3>
+<p>Create a worktree and automatically open it in your editor:</p>
+<pre><code class="lang-bash">wt create feature-login --editor vscode
+</code></pre>
+<p>Supported editors:</p>
+<ul>
+<li><code>vscode</code> - Visual Studio Code</li>
+<li><code>vim</code> - Vim</li>
+<li><code>emacs</code> - Emacs</li>
+<li><code>nano</code> - Nano</li>
+<li><code>idea</code> - IntelliJ IDEA</li>
+</ul>
+<h3 id="json-output">JSON Output</h3>
+<p>For automation and scripting:</p>
+<pre><code class="lang-bash">wt create feature-login --output json
+</code></pre>
+<h3 id="verbose-mode">Verbose Mode</h3>
+<p>Show detailed diagnostic information:</p>
+<pre><code class="lang-bash">wt create feature-login --verbose
+</code></pre>
+<h2 id="command-reference">Command Reference</h2>
+<h3 id="wt-list"><code>wt list</code></h3>
+<p>List all worktrees with their branch information.</p>
+<p>Display all Git worktrees in the repository with their paths, checked-out branches, and status in a table format. Missing worktrees (registered but not existing on disk) are highlighted with warnings.</p>
+<p><strong>Output:</strong></p>
+<pre><code class="lang-shell">┌─────────────────────────────────┬──────────────────┬─────────┐
+│ Path                            │ Branch           │ Status  │
+├─────────────────────────────────┼──────────────────┼─────────┤
+│ /Users/dev/project/wt           │ main             │ active  │
+│ /Users/dev/project/wt-feature   │ feature-branch   │ active  │
+└─────────────────────────────────┴──────────────────┴─────────┘
+</code></pre>
+<p><strong>Exit Codes:</strong></p>
+<ul>
+<li><code>0</code> - Success</li>
+<li><code>1</code> - Git not found</li>
+<li><code>2</code> - Not a Git repository</li>
+<li><code>10</code> - Git command failed</li>
+<li><code>99</code> - Unexpected error</li>
+</ul>
+<h3 id="wt-create-branch-options"><code>wt create &lt;branch&gt; [options]</code></h3>
+<p>Create a new worktree with a new branch.</p>
+<p><strong>Arguments:</strong></p>
+<ul>
+<li><code>&lt;branch&gt;</code> - Name of the branch to create (required)</li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>-b, --base &lt;base&gt;</code> - Base branch to branch from (default: current branch)</li>
+<li><code>-p, --path &lt;path&gt;</code> - Path where the worktree will be created (default: <code>../wt-&lt;branch&gt;</code>)</li>
+<li><code>-e, --editor &lt;type&gt;</code> - Editor to launch after creating worktree (choices: vscode, vim, emacs, nano, idea)</li>
+<li><code>--output &lt;format&gt;</code> - Output format: human or json (default: human)</li>
+<li><code>-v, --verbose</code> - Show detailed diagnostic information</li>
+<li><code>-h, --help</code> - Show help and usage information</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<h3 id="example-1-simple-feature-branch">Example 1: Simple Feature Branch</h3>
+<pre><code class="lang-bash">wt create feature-auth
+</code></pre>
+<p>Output:</p>
+<pre><code class="lang-shell">✓ Created branch: feature-auth
+✓ Created worktree: /Users/username/projects/wt-feature-auth
+✓ Checked out: feature-auth
+</code></pre>
+<h3 id="example-2-bug-fix-with-custom-path">Example 2: Bug Fix with Custom Path</h3>
+<pre><code class="lang-bash">wt create bugfix-123 --base main --path ~/bugfixes/fix-123
+</code></pre>
+<h3 id="example-3-with-editor-launch">Example 3: With Editor Launch</h3>
+<pre><code class="lang-bash">wt create feature-ui --editor vscode
+</code></pre>
+<p>This will create the worktree and automatically open VS Code in the new worktree directory.</p>
+<h3 id="example-4-automation-with-json">Example 4: Automation with JSON</h3>
+<pre><code class="lang-bash">wt create feature-api --output json | jq '.worktree.path'
+</code></pre>
+<p>Output:</p>
+<pre><code class="lang-json">{
+  &quot;success&quot;: true,
+  &quot;worktree&quot;: {
+    &quot;path&quot;: &quot;/Users/username/projects/wt-feature-api&quot;,
+    &quot;branch&quot;: &quot;feature-api&quot;,
+    &quot;baseBranch&quot;: &quot;main&quot;,
+    &quot;createdAt&quot;: &quot;2026-01-03T12:34:56Z&quot;
+  }
+}
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="error-not-a-git-repository">Error: Not a git repository</h3>
+<p><strong>Solution</strong>: Run <code>wt</code> from within a Git repository directory.</p>
+<pre><code class="lang-bash">cd /path/to/your/git/repo
+wt create my-branch
+</code></pre>
+<h3 id="error-branch-already-exists">Error: Branch already exists</h3>
+<p><strong>Solution</strong>: Use a different branch name or delete the existing branch first.</p>
+<pre><code class="lang-bash">git branch -d existing-branch
+wt create existing-branch
+</code></pre>
+<h3 id="error-path-already-exists">Error: Path already exists</h3>
+<p><strong>Solution</strong>: Specify a different path or remove the existing directory.</p>
+<pre><code class="lang-bash">wt create my-branch --path ~/different/path
+</code></pre>
+<h3 id="error-editor-not-found">Error: Editor not found</h3>
+<p><strong>Solution</strong>: Ensure the editor is installed and available in your PATH.</p>
+<pre><code class="lang-bash"># For VS Code on macOS
+code --version
+
+# For Vim
+vim --version
+</code></pre>
+<h2 id="supply-chain-transparency">Supply Chain Transparency</h2>
+<h3 id="sbom-software-bill-of-materials">SBOM (Software Bill of Materials)</h3>
+<p>Every release of <code>wt</code> includes a complete Software Bill of Materials (SBOM) that provides transparency about all dependencies used in the software:</p>
+<ul>
+<li><strong>📄 Format</strong>: SPDX 2.3 (ISO/IEC 5962:2021 compliant)</li>
+<li><strong>🔍 Transparency</strong>: Complete list of all direct and transitive dependencies</li>
+<li><strong>🛡️ Security</strong>: Automatic vulnerability tracking via GitHub Dependabot</li>
+<li><strong>⚖️ Compliance</strong>: License information for all components</li>
+<li><strong>📦 Availability</strong>: Attached to every GitHub release</li>
+</ul>
+<h4 id="download-sbom">Download SBOM</h4>
+<pre><code class="lang-bash"># Download SBOM from latest release
+VERSION=$(curl -s https://api.github.com/repos/kuju63/wt/releases/latest | grep '&quot;tag_name&quot;:' | sed -E 's/.*&quot;([^&quot;]+)&quot;.*/\1/')
+curl -L https://github.com/kuju63/wt/releases/download/${VERSION}/wt-${VERSION}-sbom.spdx.json \
+  -o wt-sbom.spdx.json
+
+# Or download a specific version
+curl -L https://github.com/kuju63/wt/releases/download/v1.0.0/wt-v1.0.0-sbom.spdx.json \
+  -o wt-sbom.spdx.json
+</code></pre>
+<h4 id="verify-sbom">Verify SBOM</h4>
+<pre><code class="lang-bash"># Install SPDX validator
+npm install -g @spdx/spdx-validator
+
+# Validate SBOM format
+spdx-validator wt-sbom.spdx.json
+</code></pre>
+<h4 id="view-dependencies">View Dependencies</h4>
+<pre><code class="lang-bash"># List all dependencies with versions
+jq -r '.packages[] | &quot;\(.name)@\(.versionInfo)&quot;' wt-sbom.spdx.json
+
+# Check license information
+jq -r '.packages[] | &quot;\(.name): \(.licenseDeclared)&quot;' wt-sbom.spdx.json
+</code></pre>
+<p><strong>Learn more</strong>: See the <a href="docs/guides/sbom-usage.html">SBOM Usage Guide</a> for detailed information.</p>
+<h2 id="development">Development</h2>
+<h3 id="project-structure">Project Structure</h3>
+<pre><code class="lang-tree">wt/
+├── wt.cli/              # CLI application
+│   ├── Commands/        # Command implementations
+│   ├── Models/          # Data models
+│   ├── Services/        # Business logic
+│   └── Utils/           # Helper utilities
+├── wt.tests/            # Unit and integration tests
+└── specs/               # Feature specifications
+</code></pre>
+<h3 id="running-tests">Running Tests</h3>
+<pre><code class="lang-bash">dotnet test
+</code></pre>
+<h3 id="test-coverage">Test Coverage</h3>
+<pre><code class="lang-bash">dotnet test --collect:&quot;XPlat Code Coverage&quot;
+</code></pre>
+<h3 id="contributing">Contributing</h3>
+<p>Contributions are welcome! Please follow the <a href="specs/001-create-worktree/quickstart.html">development guidelines</a>.</p>
+<h2 id="license">License</h2>
+<p><a href="./LICENSE">MIT License</a></p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<p>Built with:</p>
+<ul>
+<li><a href="https://github.com/dotnet/command-line-api">System.CommandLine</a> - Modern command-line parsing</li>
+<li><a href="https://xunit.net/">xUnit</a> - Testing framework</li>
+<li><a href="https://fluentassertions.com/">FluentAssertions</a> - Fluent assertion library</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/README.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

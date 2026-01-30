@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Contract: Release Workflow | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Contract: Release Workflow | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/contracts/release-workflow.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="contract-release-workflow">Contract: Release Workflow</h1>
+
+<p><strong>Workflow</strong>: <code>.github/workflows/release.yml</code><br>
+<strong>Feature</strong>: 003-automated-release-pipeline<br>
+<strong>Date</strong>: 2026-01-05</p>
+<h2 id="概要">概要</h2>
+<p>mainブランチへのマージをトリガーとして、バージョン計算、ビルド、リリース作成を自動実行するワークフロー。</p>
+<hr>
+<h2 id="トリガー">トリガー</h2>
+<h3 id="push-to-main">Push to main</h3>
+<pre><code class="lang-yaml">on:
+  push:
+    branches:
+      - main
+</code></pre>
+<p><strong>動作</strong>: mainブランチへのプッシュで自動実行</p>
+<h3 id="manual-dispatch-手動実行">Manual dispatch (手動実行)</h3>
+<pre><code class="lang-yaml">on:
+  workflow_dispatch:
+    inputs:
+      force-version:
+        description: 'Force specific version (e.g., v1.0.0)'
+        required: false
+        type: string
+</code></pre>
+<p><strong>動作</strong>: GitHub Actions UIから手動実行可能、バージョンを強制指定可能</p>
+<hr>
+<h2 id="ジョブ定義">ジョブ定義</h2>
+<h3 id="job-1-calculate-version">Job 1: <code>calculate-version</code></h3>
+<p><strong>Purpose</strong>: 次のバージョン番号を計算する</p>
+<p><strong>Outputs</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>出力</th>
+<th>型</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>新しいバージョンタグ</td>
+<td><code>v1.2.3</code></td>
+</tr>
+<tr>
+<td><code>previous-version</code></td>
+<td>string</td>
+<td>前回のバージョンタグ</td>
+<td><code>v1.2.2</code></td>
+</tr>
+<tr>
+<td><code>should-release</code></td>
+<td>boolean</td>
+<td>リリース作成が必要か</td>
+<td><code>true</code>, <code>false</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>ステップ</strong>:</p>
+<ol>
+<li><p><strong>Checkout repository</strong> (fetch-depth: 0)</p>
+<ul>
+<li>すべてのGit履歴を取得 (バージョン計算に必要)</li>
+</ul>
+</li>
+<li><p><strong>Calculate next version</strong></p>
+<ul>
+<li>Action: <code>paulhatch/semantic-version@a8f8f59fd7f0625188492e945240f12d7ad2dca3</code> (v5.4.0)</li>
+<li>条件: <code>force-version</code>が指定されていない場合</li>
+<li>パターン:
+<ul>
+<li>MAJOR: <code>(BREAKING CHANGE:|BREAKING:)</code></li>
+<li>MINOR: <code>feat:</code></li>
+<li>PATCH: (デフォルト)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Use forced version</strong></p>
+<ul>
+<li>条件: <code>force-version</code>が指定されている場合</li>
+<li>動作: 指定されたバージョンを使用</li>
+</ul>
+</li>
+<li><p><strong>Check if release is needed</strong></p>
+<ul>
+<li>条件: バージョンが変更されている場合のみ <code>should-release=true</code></li>
+<li>動作: バージョン変更なし → リリーススキップ</li>
+</ul>
+</li>
+</ol>
+<p><strong>バージョン計算ロジック</strong>:</p>
+<pre><code class="lang-text">Input: Commits since last tag
+Logic:
+  if any commit contains &quot;BREAKING CHANGE:&quot; → MAJOR++
+  elif any commit starts with &quot;feat:&quot; → MINOR++
+  elif any commit starts with &quot;fix:&quot; → PATCH++
+  else → No version change
+Output: New version tag (e.g., v1.3.0)
+</code></pre>
+<hr>
+<h3 id="job-2-build">Job 2: <code>build</code></h3>
+<p><strong>Purpose</strong>: 全プラットフォームのバイナリをビルドする</p>
+<p><strong>Dependencies</strong>: <code>calculate-version</code></p>
+<p><strong>Condition</strong>: <code>needs.calculate-version.outputs.should-release == 'true'</code></p>
+<p><strong>Implementation</strong>: <code>workflow_call</code> to <code>.github/workflows/build.yml</code></p>
+<p><strong>Inputs</strong>:</p>
+<ul>
+<li><code>version</code>: <code>${{ needs.calculate-version.outputs.version }}</code></li>
+</ul>
+<p><strong>詳細</strong>: <a href="build-workflow.html">build-workflow.md</a> を参照</p>
+<hr>
+<h3 id="job-3-create-release">Job 3: <code>create-release</code></h3>
+<p><strong>Purpose</strong>: GitHub Releaseを作成し、アセットをアップロードする</p>
+<p><strong>Dependencies</strong>: <code>calculate-version</code>, <code>build</code></p>
+<p><strong>Timeout</strong>: 25分 (SLA: 30分, 5分バッファ)</p>
+<p><strong>ステップ</strong>:</p>
+<ol>
+<li><p><strong>Checkout repository</strong> (fetch-depth: 0)</p>
+<ul>
+<li>リリースノート生成のため全履歴を取得</li>
+</ul>
+</li>
+<li><p><strong>Download build artifacts</strong></p>
+<ul>
+<li>Action: <code>actions/download-artifact@v4</code></li>
+<li>Path: <code>artifacts/</code></li>
+<li>動作: ビルドジョブの全アーティファクトをダウンロード</li>
+</ul>
+</li>
+<li><p><strong>Organize binaries</strong></p>
+<ul>
+<li>スクリプト: Bashスクリプト (inline)</li>
+<li>動作: バイナリを <code>release-assets/</code> ディレクトリに整理</li>
+<li>ファイル名変更: <code>wt-{version}-{platform}-{arch}[.exe]</code></li>
+</ul>
+</li>
+<li><p><strong>Generate checksums</strong></p>
+<ul>
+<li>スクリプト: <code>.github/scripts/generate-checksums.sh</code></li>
+<li>入力: <code>release-assets/</code></li>
+<li>出力: <code>release-assets/SHA256SUMS</code></li>
+</ul>
+</li>
+<li><p><strong>Generate SBOM</strong></p>
+<ul>
+<li>Action: <code>anchore/sbom-action@61119d458adab75f756bc0b9e4bde25725f86a7a</code> (v0.17.2)</li>
+<li>入力: <code>./wt.cli</code></li>
+<li>出力: <code>release-assets/wt-{version}-sbom.json</code></li>
+<li>フォーマット: CycloneDX JSON</li>
+</ul>
+</li>
+<li><p><strong>Sign artifacts</strong></p>
+<ul>
+<li>スクリプト: <code>.github/scripts/sign-artifacts.sh</code></li>
+<li>入力: <code>release-assets/</code></li>
+<li>出力:
+<ul>
+<li><code>release-assets/wt-{version}-sbom.json.asc</code></li>
+<li><code>release-assets/SHA256SUMS.asc</code></li>
+</ul>
+</li>
+<li>シークレット: <code>GPG_PRIVATE_KEY</code>, <code>GPG_PASSPHRASE</code></li>
+</ul>
+</li>
+<li><p><strong>Generate release notes</strong></p>
+<ul>
+<li>スクリプト: <code>.github/scripts/generate-release-notes.sh</code></li>
+<li>引数:
+<ul>
+<li><code>$1</code>: 前回バージョン</li>
+<li><code>$2</code>: 新バージョン</li>
+</ul>
+</li>
+<li>出力: <code>release-notes.md</code></li>
+</ul>
+</li>
+<li><p><strong>Create Git tag</strong></p>
+<ul>
+<li>コマンド: <code>git tag -a {version} -m &quot;Release {version}&quot;</code></li>
+<li>プッシュ: <code>git push origin {version}</code></li>
+</ul>
+</li>
+<li><p><strong>Create GitHub Release</strong></p>
+<ul>
+<li>Action: <code>softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b</code> (v2)</li>
+<li>Tag: <code>${{ needs.calculate-version.outputs.version }}</code></li>
+<li>Body: <code>release-notes.md</code></li>
+<li>Files:
+<ul>
+<li><code>release-assets/wt-*-windows-*.exe</code></li>
+<li><code>release-assets/wt-*-linux-*</code></li>
+<li><code>release-assets/wt-*-macos-*</code></li>
+<li><code>release-assets/wt-*-sbom.json</code></li>
+<li><code>release-assets/wt-*-sbom.json.asc</code></li>
+<li><code>release-assets/SHA256SUMS</code></li>
+<li><code>release-assets/SHA256SUMS.asc</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Release summary</strong></p>
+<ul>
+<li>動作: GitHub Actions Step Summaryにリリース情報を表示</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="リリースアセット">リリースアセット</h2>
+<h3 id="ファイル一覧">ファイル一覧</h3>
+<table>
+<thead>
+<tr>
+<th>File Pattern</th>
+<th>Description</th>
+<th>Size (approx)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wt-v{version}-windows-x64.exe</code></td>
+<td>Windows x64 binary</td>
+<td>15-20 MB</td>
+</tr>
+<tr>
+<td><code>wt-v{version}-linux-x64</code></td>
+<td>Linux x64 binary</td>
+<td>15-20 MB</td>
+</tr>
+<tr>
+<td><code>wt-v{version}-linux-arm</code></td>
+<td>Linux ARM binary (optional)</td>
+<td>12-18 MB</td>
+</tr>
+<tr>
+<td><code>wt-v{version}-macos-arm64</code></td>
+<td>macOS ARM64 binary</td>
+<td>15-20 MB</td>
+</tr>
+<tr>
+<td><code>wt-v{version}-sbom.json</code></td>
+<td>CycloneDX SBOM</td>
+<td>200-500 KB</td>
+</tr>
+<tr>
+<td><code>wt-v{version}-sbom.json.asc</code></td>
+<td>SBOM GPG signature</td>
+<td>1-5 KB</td>
+</tr>
+<tr>
+<td><code>SHA256SUMS</code></td>
+<td>Checksums for all binaries</td>
+<td>1-5 KB</td>
+</tr>
+<tr>
+<td><code>SHA256SUMS.asc</code></td>
+<td>Checksums GPG signature</td>
+<td>1-5 KB</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total size</strong>: 45-80 MB (within GitHub Release limits)</p>
+<hr>
+<h2 id="リリースノート形式">リリースノート形式</h2>
+<pre><code class="lang-markdown">## Features
+- add support for multiple worktrees (#123)
+- implement config file parsing (#124)
+
+## Bug Fixes
+- handle special characters in branch names (#125)
+- fix path resolution on Windows (#126)
+
+## Breaking Changes
+- change CLI argument format to kebab-case
+
+Migration guide: docs/migration/v2.0.md
+
+## Contributors
+- @user1
+- @user2
+</code></pre>
+<p><strong>生成ロジック</strong>:</p>
+<ol>
+<li>前回タグから現在までのコミットを取得</li>
+<li>Conventional Commitsでパース</li>
+<li>タイプ別にグループ化 (<code>feat:</code>, <code>fix:</code>, <code>BREAKING CHANGE:</code>)</li>
+<li>Markdownフォーマットで出力</li>
+</ol>
+<hr>
+<h2 id="バージョン計算例">バージョン計算例</h2>
+<h3 id="例1-minor-bump-feat">例1: MINOR bump (feat:)</h3>
+<pre><code class="lang-text">Last tag: v1.2.3
+Commits since last tag:
+  - feat: add new feature
+  - docs: update README
+  - chore: update dependencies
+  
+Result: v1.3.0 (MINOR bump)
+</code></pre>
+<h3 id="例2-patch-bump-fix">例2: PATCH bump (fix:)</h3>
+<pre><code class="lang-text">Last tag: v1.3.0
+Commits since last tag:
+  - fix: resolve critical bug
+  - test: add unit tests
+  
+Result: v1.3.1 (PATCH bump)
+</code></pre>
+<h3 id="例3-major-bump-breaking-change">例3: MAJOR bump (BREAKING CHANGE:)</h3>
+<pre><code class="lang-text">Last tag: v1.3.1
+Commits since last tag:
+  - feat: change API format
+    
+    BREAKING CHANGE: All CLI arguments now use kebab-case.
+  
+Result: v2.0.0 (MAJOR bump)
+</code></pre>
+<h3 id="例4-no-version-change">例4: No version change</h3>
+<pre><code class="lang-text">Last tag: v2.0.0
+Commits since last tag:
+  - docs: update documentation
+  - chore: update CI configuration
+  
+Result: No release (version unchanged)
+</code></pre>
+<hr>
+<h2 id="エラーハンドリング">エラーハンドリング</h2>
+<h3 id="ビルド失敗">ビルド失敗</h3>
+<ul>
+<li><strong>MANDATORY プラットフォーム失敗</strong>: リリース全体が中止</li>
+<li><strong>OPTIONAL プラットフォーム失敗</strong>: 警告のみ、リリース続行</li>
+</ul>
+<h3 id="sbom生成失敗">SBOM生成失敗</h3>
+<ul>
+<li><strong>動作</strong>: リリース中止 (セキュリティクリティカル)</li>
+<li><strong>エラーコード</strong>: <code>1</code></li>
+</ul>
+<h3 id="署名生成失敗">署名生成失敗</h3>
+<ul>
+<li><strong>動作</strong>: リリース中止 (セキュリティクリティカル)</li>
+<li><strong>エラーコード</strong>: <code>1</code></li>
+</ul>
+<h3 id="タイムアウト">タイムアウト</h3>
+<ul>
+<li><strong>制限</strong>: 25分</li>
+<li><strong>動作</strong>: ワークフロー強制終了、リリース未作成</li>
+<li><strong>ログ</strong>: タイムアウトエラーメッセージ</li>
+</ul>
+<hr>
+<h2 id="性能要件-sc-003">性能要件 (SC-003)</h2>
+<table>
+<thead>
+<tr>
+<th>フェーズ</th>
+<th>目標時間</th>
+<th>許容時間</th>
+<th>SLA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>バージョン計算</td>
+<td>&lt; 1分</td>
+<td>&lt; 2分</td>
+<td>-</td>
+</tr>
+<tr>
+<td>ビルド (並列)</td>
+<td>&lt; 15分</td>
+<td>&lt; 20分</td>
+<td>-</td>
+</tr>
+<tr>
+<td>リリース作成</td>
+<td>&lt; 10分</td>
+<td>&lt; 15分</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>合計</strong></td>
+<td><strong>&lt; 20分</strong></td>
+<td><strong>&lt; 30分</strong></td>
+<td><strong>30分</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="シークレット">シークレット</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Purpose</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GITHUB_TOKEN</code></td>
+<td>GitHub Release作成</td>
+<td>自動生成 (actions権限)</td>
+</tr>
+<tr>
+<td><code>GPG_PRIVATE_KEY</code></td>
+<td>デジタル署名</td>
+<td>ASCII-armored GPG key</td>
+</tr>
+<tr>
+<td><code>GPG_PASSPHRASE</code></td>
+<td>GPG鍵パスフレーズ</td>
+<td>Plain text</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="権限">権限</h2>
+<pre><code class="lang-yaml">permissions:
+  contents: write   # Git tag作成, Release作成
+  packages: write   # (将来のパッケージ公開用)
+</code></pre>
+<hr>
+<h2 id="テスト">テスト</h2>
+<h3 id="シナリオ1-feat-コミット-minor-bump">シナリオ1: feat: コミット (MINOR bump)</h3>
+<pre><code class="lang-bash">git checkout -b test/feat
+echo &quot;test&quot; &gt;&gt; README.md
+git add README.md
+git commit -m &quot;feat: add new feature&quot;
+git push origin test/feat
+gh pr create --title &quot;feat: new feature&quot; --body &quot;Test&quot;
+gh pr merge --squash
+
+# 期待される結果:
+# - バージョン: v1.2.0 → v1.3.0
+# - リリースノート: &quot;Features&quot; セクションに含まれる
+# - リリース時間: &lt; 30分
+</code></pre>
+<h3 id="シナリオ2-fix-コミット-patch-bump">シナリオ2: fix: コミット (PATCH bump)</h3>
+<pre><code class="lang-bash">git checkout -b test/fix
+echo &quot;fix&quot; &gt;&gt; README.md
+git add README.md
+git commit -m &quot;fix: resolve bug&quot;
+git push origin test/fix
+gh pr create --title &quot;fix: bug fix&quot; --body &quot;Test&quot;
+gh pr merge --squash
+
+# 期待される結果:
+# - バージョン: v1.3.0 → v1.3.1
+# - リリースノート: &quot;Bug Fixes&quot; セクションに含まれる
+</code></pre>
+<h3 id="シナリオ3-breaking-change-major-bump">シナリオ3: BREAKING CHANGE: (MAJOR bump)</h3>
+<pre><code class="lang-bash">git checkout -b test/breaking
+echo &quot;breaking&quot; &gt;&gt; README.md
+git add README.md
+git commit -m &quot;feat: breaking change
+
+BREAKING CHANGE: Change API format&quot;
+git push origin test/breaking
+gh pr create --title &quot;feat: breaking change&quot; --body &quot;Test&quot;
+gh pr merge --squash
+
+# 期待される結果:
+# - バージョン: v1.3.1 → v2.0.0
+# - リリースノート: &quot;Breaking Changes&quot; セクションに強調表示
+</code></pre>
+<hr>
+<h2 id="リファレンス">リファレンス</h2>
+<ul>
+<li>ワークフローファイル: <a href="../../../.github/workflows/release.yml">.github/workflows/release.yml</a></li>
+<li>ビルドワークフロー契約: <a href="build-workflow.html">build-workflow.md</a></li>
+<li>データモデル: <a href="../data-model.html">data-model.md</a></li>
+<li>タスク: <a href="../tasks.html">tasks.md</a></li>
+<li>ADR 0003: <a href="../../../docs/adr/0003-semantic-versioning-conventional-commits.html">セマンティックバージョニング</a></li>
+<li>ADR 0004: <a href="../../../docs/adr/0004-release-workflow-timeout-sla.html">タイムアウトとSLA</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/contracts/release-workflow.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

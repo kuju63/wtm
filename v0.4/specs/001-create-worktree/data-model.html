@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Data Model: Git Worktree 作成コマンド | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Data Model: Git Worktree 作成コマンド | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/data-model.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="data-model-git-worktree-作成コマンド">Data Model: Git Worktree 作成コマンド</h1>
+
+<p><strong>Feature</strong>: 001-create-worktree<br>
+<strong>Date</strong>: 2026-01-03<br>
+<strong>Source</strong>: <a href="spec.html">spec.md</a></p>
+<h2 id="core-entities">Core Entities</h2>
+<h3 id="1-worktreeinfo">1. WorktreeInfo</h3>
+<p>Worktreeの情報を表現するモデル。</p>
+<p><strong>Properties</strong>:</p>
+<ul>
+<li><code>Path</code> (string): worktreeの絶対パス</li>
+<li><code>Branch</code> (string): 関連するブランチ名</li>
+<li><code>BaseBranch</code> (string): ベースブランチ名</li>
+<li><code>CreatedAt</code> (DateTime): 作成日時</li>
+<li><code>IsActive</code> (bool): アクティブかどうか</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>1つのWorktreeは1つのBranchに関連付けられる</li>
+</ul>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>Pathは有効な絶対パスでなければならない</li>
+<li>Branchは空文字列ではない</li>
+<li>BaseBranchは空文字列ではない</li>
+</ul>
+<p><strong>State Transitions</strong>:</p>
+<pre><code class="lang-text">[Not Exists] --create--&gt; [Active] --remove--&gt; [Removed]
+</code></pre>
+<h3 id="2-branchinfo">2. BranchInfo</h3>
+<p>Gitブランチの情報を表現するモデル。</p>
+<p><strong>Properties</strong>:</p>
+<ul>
+<li><code>Name</code> (string): ブランチ名</li>
+<li><code>BaseBranch</code> (string, optional): ベースブランチ名（nullの場合は現在のブランチ）</li>
+<li><code>Exists</code> (bool): 既に存在するか</li>
+<li><code>IsRemote</code> (bool): リモートブランチか</li>
+</ul>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>Nameは Git命名規則に準拠（英数字、<code>-</code>、<code>_</code>、<code>/</code>のみ）</li>
+<li>Nameは以下で開始してはならない: <code>-</code>、<code>.</code></li>
+<li>Nameに以下を含めてはならない: <code>..</code>、<code>@{</code>、<code>\</code>、スペース</li>
+</ul>
+<p><strong>Validation Logic</strong>:</p>
+<pre><code class="lang-csharp">private static readonly Regex BranchNamePattern = 
+    new(@&quot;^[a-zA-Z0-9][a-zA-Z0-9/_-]*$&quot;, RegexOptions.Compiled);
+
+public bool IsValidBranchName(string name)
+{
+    if (string.IsNullOrWhiteSpace(name)) return false;
+    if (name.Contains(&quot;..&quot;) || name.Contains(&quot;@{&quot;)) return false;
+    return BranchNamePattern.IsMatch(name);
+}
+</code></pre>
+<h3 id="3-editorconfig">3. EditorConfig</h3>
+<p>エディター設定を表現するモデル。</p>
+<p><strong>Properties</strong>:</p>
+<ul>
+<li><code>EditorType</code> (EditorType enum): エディターの種類</li>
+<li><code>Command</code> (string): 実行コマンド</li>
+<li><code>Arguments</code> (string): コマンド引数テンプレート</li>
+<li><code>IsAvailable</code> (bool): エディターが利用可能か</li>
+</ul>
+<p><strong>EditorType Enum</strong>:</p>
+<pre><code class="lang-csharp">public enum EditorType
+{
+    VSCode,
+    Vim,
+    Emacs,
+    Nano,
+    IntelliJIDEA
+}
+</code></pre>
+<p><strong>Preset Examples</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>EditorType</th>
+<th>Command</th>
+<th>Arguments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VSCode</td>
+<td><code>code</code></td>
+<td><code>{path}</code></td>
+</tr>
+<tr>
+<td>Vim</td>
+<td><code>vim</code></td>
+<td><code>{path}</code></td>
+</tr>
+<tr>
+<td>Emacs</td>
+<td><code>emacs</code></td>
+<td><code>{path}</code></td>
+</tr>
+<tr>
+<td>Nano</td>
+<td><code>nano</code></td>
+<td><code>{path}</code></td>
+</tr>
+<tr>
+<td>IntelliJIDEA</td>
+<td><code>idea</code></td>
+<td><code>{path}</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>Commandは空文字列ではない</li>
+<li>Argumentsには<code>{path}</code>プレースホルダーを含む必要がある</li>
+</ul>
+<h3 id="4-commandresultt">4. <code>CommandResult&lt;T&gt;</code></h3>
+<p>コマンド実行結果を表現するジェネリックモデル（Resultパターン）。</p>
+<p><strong>Properties</strong>:</p>
+<ul>
+<li><code>Success</code> (bool): 成功したか</li>
+<li><code>Data</code> (T, optional): 成功時のデータ</li>
+<li><code>Error</code> (ErrorInfo, optional): エラー情報</li>
+<li><code>Warnings</code> (<code>List&lt;string&gt;</code>): 警告メッセージ</li>
+</ul>
+<p><strong>ErrorInfo</strong>:</p>
+<ul>
+<li><code>Code</code> (string): エラーコード</li>
+<li><code>Message</code> (string): エラーメッセージ</li>
+<li><code>Solution</code> (string): 解決策の提案</li>
+<li><code>Details</code> (string, optional): 詳細情報（verboseモード用）</li>
+</ul>
+<p><strong>Usage Pattern</strong>:</p>
+<pre><code class="lang-csharp">var result = await worktreeService.CreateAsync(options);
+if (result.Success)
+{
+    Console.WriteLine($&quot;Worktree created: {result.Data.Path}&quot;);
+}
+else
+{
+    Console.Error.WriteLine($&quot;Error: {result.Error.Message}&quot;);
+    Console.Error.WriteLine($&quot;Solution: {result.Error.Solution}&quot;);
+}
+</code></pre>
+<h3 id="5-createworktreeoptions">5. CreateWorktreeOptions</h3>
+<p>Worktree作成オプションを表現するモデル。</p>
+<p><strong>Properties</strong>:</p>
+<ul>
+<li><code>BranchName</code> (string, required): 作成するブランチ名</li>
+<li><code>BaseBranch</code> (string, optional): ベースブランチ（nullの場合は現在のブランチ）</li>
+<li><code>WorktreePath</code> (string, optional): worktreeパス（nullの場合はデフォルト）</li>
+<li><code>EditorType</code> (EditorType, optional): 起動するエディター</li>
+<li><code>CustomEditorCommand</code> (string, optional): カスタムエディターコマンド</li>
+<li><code>ForceCheckout</code> (bool): 既存ブランチを強制チェックアウトするか</li>
+<li><code>OutputFormat</code> (OutputFormat enum): 出力形式（Human/Json）</li>
+<li><code>Verbose</code> (bool): 詳細出力を有効にするか</li>
+</ul>
+<p><strong>OutputFormat Enum</strong>:</p>
+<pre><code class="lang-csharp">public enum OutputFormat
+{
+    Human,
+    Json
+}
+</code></pre>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>BranchNameは必須かつ有効な名前</li>
+<li>WorktreePathが指定された場合は有効なパスでなければならない</li>
+<li>EditorTypeとCustomEditorCommandは排他的（両方指定はエラー）</li>
+</ul>
+<h2 id="data-flow">Data Flow</h2>
+<h3 id="worktree作成フロー">Worktree作成フロー</h3>
+<pre><code class="lang-text">User Input (BranchName + Options)
+    ↓
+CreateWorktreeOptions (バリデーション)
+    ↓
+WorktreeService
+    ├→ GitService: リポジトリチェック
+    ├→ GitService: ブランチ存在確認
+    ├→ BranchInfo: ブランチ情報作成
+    ├→ GitService: ブランチ作成
+    ├→ GitService: worktree追加
+    ├→ WorktreeInfo: worktree情報作成
+    └→ EditorService: エディター起動 (optional)
+    ↓
+CommandResult&lt;WorktreeInfo&gt;
+    ↓
+OutputFormatter (Human/Json)
+    ↓
+Console Output
+</code></pre>
+<h2 id="error-codes">Error Codes</h2>
+<p>エラーコードの体系的な定義。</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Category</th>
+<th>Message</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GIT001</code></td>
+<td>Git</td>
+<td>Git not found</td>
+<td>Install Git 2.5 or later</td>
+</tr>
+<tr>
+<td><code>GIT002</code></td>
+<td>Git</td>
+<td>Not a git repository</td>
+<td>Run command in a git repository or run 'git init'</td>
+</tr>
+<tr>
+<td><code>GIT003</code></td>
+<td>Git</td>
+<td>Git command failed</td>
+<td>Check git status and try again</td>
+</tr>
+<tr>
+<td><code>BR001</code></td>
+<td>Branch</td>
+<td>Invalid branch name</td>
+<td>Use only alphanumeric, <code>-</code>, <code>_</code>, <code>/</code> characters</td>
+</tr>
+<tr>
+<td><code>BR002</code></td>
+<td>Branch</td>
+<td>Branch already exists</td>
+<td>Use <code>--checkout-existing</code> to checkout existing branch</td>
+</tr>
+<tr>
+<td><code>WT001</code></td>
+<td>Worktree</td>
+<td>Worktree already exists</td>
+<td>Choose a different branch name or remove existing worktree</td>
+</tr>
+<tr>
+<td><code>WT002</code></td>
+<td>Worktree</td>
+<td>Invalid worktree path</td>
+<td>Specify a valid absolute or relative path</td>
+</tr>
+<tr>
+<td><code>WT003</code></td>
+<td>Worktree</td>
+<td>Path not writable</td>
+<td>Check directory permissions</td>
+</tr>
+<tr>
+<td><code>FS001</code></td>
+<td>FileSystem</td>
+<td>Disk space low</td>
+<td>Free up disk space (need at least 100MB)</td>
+</tr>
+<tr>
+<td><code>ED001</code></td>
+<td>Editor</td>
+<td>Editor not found</td>
+<td>Check editor installation or use a different editor</td>
+</tr>
+</tbody>
+</table>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<h3 id="memory-usage">Memory Usage</h3>
+<p>各エンティティのメモリフットプリント（概算）:</p>
+<ul>
+<li>WorktreeInfo: ~200 bytes</li>
+<li>BranchInfo: ~150 bytes</li>
+<li>EditorConfig: ~100 bytes</li>
+<li><code>CommandResult&lt;WorktreeInfo&gt;</code>: ~500 bytes</li>
+</ul>
+<p><strong>Total for single operation</strong>: &lt; 1KB（目標の100MB内に十分収まる）</p>
+<h3 id="caching-strategy">Caching Strategy</h3>
+<p>現時点ではキャッシングは実装しません（シンプルさ優先）。将来的な拡張として検討可能：</p>
+<ul>
+<li>エディタープリセットのキャッシュ</li>
+<li>Git設定のキャッシュ</li>
+</ul>
+<h2 id="extensibility">Extensibility</h2>
+<p>将来的な拡張を考慮した設計：</p>
+<ol>
+<li><strong>Additional Editor Support</strong>: EditorPresetsクラスに追加するだけ</li>
+<li><strong>Remote Worktrees</strong>: WorktreeInfoにRemoteInfoプロパティを追加</li>
+<li><strong>Worktree Templates</strong>: 新しいTemplateInfoエンティティを追加</li>
+</ol>
+<h2 id="summary">Summary</h2>
+<p>このデータモデルは以下の要件を満たします：</p>
+<ul>
+<li>✅ 明確な責任分離（Single Responsibility）</li>
+<li>✅ バリデーションルールの明示</li>
+<li>✅ エラーハンドリングの体系化</li>
+<li>✅ 拡張性の確保</li>
+<li>✅ パフォーマンス目標との整合性</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/data-model.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

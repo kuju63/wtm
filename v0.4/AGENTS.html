@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>AI エージェント共通ルール | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="AI エージェント共通ルール | wt ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/AGENTS.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="ai-エージェント共通ルール">AI エージェント共通ルール</h1>
+
+<p>このドキュメントは、プロジェクトで使用する AI エージェントに対する共通ルールを定義します。</p>
+<h2 id="1-コミュニケーション言語">1. コミュニケーション言語</h2>
+<ul>
+<li><strong>日本語を優先</strong>とします</li>
+<li>ユーザーから英語で問いかけられた場合には、英語で回答すること</li>
+<li>技術用語は適切に英語を併記することが望ましい</li>
+</ul>
+<h2 id="2-質問のガイドライン">2. 質問のガイドライン</h2>
+<ul>
+<li>ユーザーに対する質問は<strong>単一</strong>とすること</li>
+<li>複数の質問をまとめて行わないこと</li>
+<li>一つの質問に対する回答を得てから、次の質問を行うこと</li>
+</ul>
+<h2 id="3-技術的な質問への対応">3. 技術的な質問への対応</h2>
+<ul>
+<li>技術的な質問を行う際は、詳細を明確にすること</li>
+<li>ユーザーが<strong>複数の選択肢から選定できるように</strong>情報を提供すること</li>
+<li>各選択肢のメリット・デメリットを提示すること</li>
+<li>推奨案がある場合は、その理由とともに提示すること</li>
+</ul>
+<h2 id="4-開発スタイル">4. 開発スタイル</h2>
+<p>プロジェクトは以下の開発スタイルをベースとします:</p>
+<ul>
+<li><strong>SDD (Specification-Driven Development)</strong>: 仕様駆動開発</li>
+<li><strong>TDD (Test-Driven Development)</strong>: テスト駆動開発</li>
+</ul>
+<h3 id="開発ワークフロー">開発ワークフロー</h3>
+<p>以下のワークフローに従って開発を進めます:</p>
+<pre><code class="lang-mermaid">flowchart TD
+    A[要件・課題の確認] --&gt; B[仕様書作成&lt;br/&gt;Spec Kitを使用]
+    B --&gt; C{仕様レビュー}
+    C --&gt;|修正必要| B
+    C --&gt;|承認| D[テスト設計]
+    D --&gt; E[テストコード作成&lt;br/&gt;Red: テスト失敗を確認]
+    E --&gt; F[実装&lt;br/&gt;Green: テストが通る最小限の実装]
+    F --&gt; G{テスト実行}
+    G --&gt;|失敗| F
+    G --&gt;|成功| H[リファクタリング&lt;br/&gt;コード品質の向上]
+    H --&gt; I{テスト実行}
+    I --&gt;|失敗| H
+    I --&gt;|成功| J{仕様を満たしているか}
+    J --&gt;|不足| D
+    J --&gt;|完了| K[コミット準備]
+    K --&gt; L[変更内容確認]
+    L --&gt; M[コミットメッセージ&lt;br/&gt;Draft提供]
+    M --&gt; N[ユーザーがコミット実行]
+</code></pre>
+<p><strong>ワークフローのポイント:</strong></p>
+<ol>
+<li><strong>仕様優先</strong>: 実装前に必ず仕様書を作成し、レビューを行う</li>
+<li><strong>Red-Green-Refactor</strong>: TDD の基本サイクルを遵守する</li>
+<li><strong>小さなステップ</strong>: 一度に多くの変更を行わず、小さな単位で進める</li>
+<li><strong>継続的な検証</strong>: 各ステップでテストを実行し、品質を保証する</li>
+<li><strong>ユーザー主導</strong>: 最終的なコミットはユーザーが判断・実行する</li>
+</ol>
+<h2 id="5-sdd-の実装">5. SDD の実装</h2>
+<ul>
+<li>SDD の実装には <strong>Spec Kit</strong> を使用すること</li>
+<li>Spec Kit は GitHub が提供する仕様駆動開発のためのツールです
+<ul>
+<li>公式リポジトリ: <a href="https://github.com/github/spec-kit">https://github.com/github/spec-kit</a></li>
+</ul>
+</li>
+<li>Spec Kit がインストールされていない場合は、ユーザーにインストールを促すこと</li>
+</ul>
+<h3 id="spec-kit-のインストール">Spec Kit のインストール</h3>
+<pre><code class="lang-bash">uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+</code></pre>
+<h3 id="仕様書の管理">仕様書の管理</h3>
+<ul>
+<li>仕様書の作成と管理は Spec Kit の規約に従うこと</li>
+</ul>
+<h3 id="api-ドキュメントの生成">API ドキュメントの生成</h3>
+<ul>
+<li>APIドキュメントの生成には<code>docfx</code>を使用すること（バージョン: 2.78.4）</li>
+<li>ドキュメントコメントの作成対象はpublic,protected,protected internalとなるclass,interface,enum,struct,delegate,fieldに限定すること</li>
+<li>ドキュメントコメントのフォーマットはXMLドキュメントコメントを使用すること</li>
+<li>ドキュメントコメントは英語で記述すること</li>
+<li>ドキュメントコメントの記述は<a href="https://github.com/dotnet/dotnet-api-docs/wiki">dotnet-api-docs</a>を参照のこと</li>
+</ul>
+<h3 id="ドキュメントの自動化システム">ドキュメントの自動化システム</h3>
+<p>プロジェクトは GitHub Pages を使用した自動ドキュメント公開システムを実装しています:</p>
+<h4 id="1-ドキュメントの種類と管理方法">1. ドキュメントの種類と管理方法</h4>
+<p><strong>ユーザー向けドキュメント(手動管理)</strong>:</p>
+<ul>
+<li><code>docs/installation.md</code> - インストールガイド(手動編集)</li>
+<li><code>docs/contributing.md</code> - コントリビューションガイド(手動編集)</li>
+<li>その他の <code>docs/</code> 内のMarkdownファイル(手動編集)</li>
+</ul>
+<p><strong>コマンドドキュメント(自動生成)</strong>:</p>
+<ul>
+<li><code>docs/commands/*.md</code> - CLIコマンドのリファレンス</li>
+<li><code>docs/command-reference.md</code> - コマンド一覧</li>
+<li><strong>重要</strong>: これらは <code>Tools/DocGenerator</code> により System.CommandLine から自動生成されるため、直接編集しないこと</li>
+</ul>
+<p><strong>API リファレンス(自動生成)</strong>:</p>
+<ul>
+<li><code>api/</code> ディレクトリ - .NET API ドキュメント</li>
+<li><strong>重要</strong>: DocFX により XML ドキュメントコメントから自動生成されるため、直接編集しないこと</li>
+</ul>
+<h4 id="2-ドキュメントのテストとビルド">2. ドキュメントのテストとビルド</h4>
+<p><strong>ローカルテスト</strong>:</p>
+<pre><code class="lang-bash"># コマンドドキュメント生成
+cd Tools/DocGenerator &amp;&amp; dotnet run -- ../../docs
+
+# DocFX ビルド
+docfx build docfx.json
+
+# ローカルプレビュー
+open _site/index.html  # または xdg-open on Linux
+</code></pre>
+<p><strong>CI/CDテスト</strong>:</p>
+<ul>
+<li>DocFX ビルド時に <code>--warningsAsErrors</code> フラグで壊れたリンクを検出</li>
+<li>LinkChecker によるリンク検証</li>
+<li>ドキュメントのユニットテストは不要</li>
+</ul>
+<h4 id="3-バージョン管理">3. バージョン管理</h4>
+<ul>
+<li>ドキュメントはマイナーバージョンレベルで管理（v0.1、v1.0、v1.1など）</li>
+<li>パッチバージョンは同じドキュメントを共有（v1.0.0、v1.0.1 → v1.0）</li>
+<li>各バージョンの URL は 2 年以上安定して維持</li>
+<li>バージョン切り替えは自動的に実装される（<code>version-manifest.json</code>）</li>
+</ul>
+<h4 id="4-ai-エージェント向けガイダンス">4. AI エージェント向けガイダンス</h4>
+<p><strong>ドキュメントについて質問された場合</strong>:</p>
+<ol>
+<li>コンテンツが手動管理か自動生成かを判断</li>
+<li>手動管理の場合: Markdown ファイルを直接編集</li>
+<li>自動生成の場合: ソースコード(CLI定義または XML コメント)を更新</li>
+</ol>
+<p><strong>新しいCLIコマンドを実装する場合</strong>:</p>
+<ol>
+<li><code>wt.cli</code> の RootCommand にコマンドを追加</li>
+<li>ドキュメントは次回デプロイ時に自動生成される</li>
+<li>プレビューが必要な場合は DocGenerator を手動実行可能</li>
+</ol>
+<p><strong>API を追加・変更する場合</strong>:</p>
+<ol>
+<li>public メンバーに XML ドキュメントコメントを追加</li>
+<li><a href="https://github.com/dotnet/dotnet-api-docs/wiki">dotnet-api-docs</a> のフォーマットに従う</li>
+<li>コメントは英語で記述</li>
+<li>対象: public, protected, protected internal の型/メンバー</li>
+</ol>
+<h2 id="6-バージョン管理とコミット">6. バージョン管理とコミット</h2>
+<ul>
+<li><strong>コミットはユーザーが行う</strong>こと</li>
+<li>AI エージェントが直接コミットを実行してはならない</li>
+<li>ただし、<strong>コミットメッセージの Draft を提供すること</strong>は許容される</li>
+<li>コミット前に変更内容の確認を促すこと</li>
+</ul>
+<h2 id="7-コミットメッセージの規約">7. コミットメッセージの規約</h2>
+<ul>
+<li>コミットメッセージは<strong>英語で記述</strong>すること</li>
+<li>コミットメッセージは <strong>Conventional Commits</strong> に準拠すること（scope は原則使用しない）</li>
+<li>基本フォーマット: <code>&lt;type&gt;: &lt;subject&gt;</code>（scope が必要な場合のみ <code>&lt;type&gt;(scope): &lt;subject&gt;</code> とする）</li>
+<li>主な type:
+<ul>
+<li><code>feat</code>: 新機能</li>
+<li><code>fix</code>: バグ修正</li>
+<li><code>docs</code>: ドキュメントのみの変更</li>
+<li><code>style</code>: コードの意味に影響を与えない変更（空白、フォーマット等）</li>
+<li><code>refactor</code>: バグ修正や機能追加を伴わないコード変更</li>
+<li><code>test</code>: テストの追加や修正</li>
+<li><code>chore</code>: ビルドプロセスやツールの変更</li>
+</ul>
+</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/AGENTS.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

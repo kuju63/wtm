@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Feature Specification: GitHub Pages Documentation Publishing | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Feature Specification: GitHub Pages Documentation Publishing | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="feature-specification-github-pages-documentation-publishing">Feature Specification: GitHub Pages Documentation Publishing</h1>
+
+<p><strong>Feature Branch</strong>: <code>001-github-pages-docs</code><br>
+<strong>Created</strong>: 2026-01-15<br>
+<strong>Status</strong>: Draft<br>
+<strong>Input</strong>: User description: &quot;バイナリのリリースと同時にドキュメントをGitHub Pagesに公開する。ドキュメントにはInstllation Guideやコマンドの一覧、Contribution方法などを用意する。また、今後のためにAPI一覧も用意する。ドキュメントはマイナーバージョンレベルで切り替えて表示することができるようにする必要がある。利用者が最初にアクセスするTopページであり、簡単にアプリをインストール、利用できるようにするためのガイドの役割となる。また、利用者がコマンドの詳細を知るためのmanページのような役割を持たせたい。&quot;</p>
+<h2 id="user-scenarios--testing-mandatory">User Scenarios &amp; Testing <em>(mandatory)</em></h2>
+<h3 id="user-story-1---quick-start-installation-priority-p1">User Story 1 - Quick Start Installation (Priority: P1)</h3>
+<p>A new user visits the documentation site to install the tool and start using it immediately. They need clear, step-by-step installation instructions and basic usage examples to get started within minutes.</p>
+<p><strong>Why this priority</strong>: This is the primary entry point for all users. Without clear installation guidance, users cannot adopt the tool, making this the highest-value feature.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by a new user following the installation guide from start to finish and successfully executing their first command. Delivers immediate value by enabling tool adoption.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a user visits the documentation homepage, <strong>When</strong> they navigate to the Installation Guide, <strong>Then</strong> they see platform-specific installation instructions (Windows, macOS, Linux)</li>
+<li><strong>Given</strong> a user completes the installation steps, <strong>When</strong> they run the verification command shown in the guide, <strong>Then</strong> they confirm the tool is properly installed</li>
+<li><strong>Given</strong> a user has installed the tool, <strong>When</strong> they follow the &quot;First Steps&quot; section, <strong>Then</strong> they successfully execute their first basic command</li>
+</ol>
+<hr>
+<h3 id="user-story-2---command-reference-lookup-priority-p1">User Story 2 - Command Reference Lookup (Priority: P1)</h3>
+<p>An existing user needs to find detailed information about a specific command, including its parameters, options, and usage examples. They want to quickly search or browse command documentation like a man page.</p>
+<p><strong>Why this priority</strong>: This is the core reference functionality that users will access repeatedly. Without comprehensive command documentation, users cannot effectively use the tool beyond basic operations.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by a user searching for any command and finding complete documentation with examples. Delivers continuous value for all user skill levels.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a user is on the documentation site, <strong>When</strong> they navigate to the Command Reference section, <strong>Then</strong> they see a complete list of available commands organized by category</li>
+<li><strong>Given</strong> a user selects a specific command, <strong>When</strong> they view its documentation page, <strong>Then</strong> they see command syntax, parameter descriptions, options, and practical examples</li>
+<li><strong>Given</strong> a user wants to find a command quickly, <strong>When</strong> they use the search functionality, <strong>Then</strong> they get relevant command documentation results</li>
+</ol>
+<hr>
+<h3 id="user-story-3---version-specific-documentation-access-priority-p2">User Story 3 - Version-Specific Documentation Access (Priority: P2)</h3>
+<p>A user working with a specific version of the tool needs to view documentation that matches their installed version. They need to switch between different minor versions to see relevant features and commands.</p>
+<p><strong>Why this priority</strong>: This ensures users see accurate documentation for their version, preventing confusion from features that don't exist in their installation. Critical for maintaining user trust but secondary to having basic documentation available.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by a user selecting different version numbers from a version switcher and seeing the documentation update accordingly. Delivers value for users on different version tracks.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a user is viewing documentation, <strong>When</strong> they access the version selector, <strong>Then</strong> they see a list of available minor versions (e.g., v1.0, v1.1, v2.0)</li>
+<li><strong>Given</strong> a user selects a different minor version, <strong>When</strong> the page reloads, <strong>Then</strong> they see documentation specific to that version with URL reflecting the version number</li>
+<li><strong>Given</strong> a user visits the documentation without specifying a version, <strong>When</strong> they land on the homepage, <strong>Then</strong> they automatically see the latest stable version with an indicator showing which version they're viewing</li>
+</ol>
+<hr>
+<h3 id="user-story-4---api-reference-for-developers-priority-p2">User Story 4 - API Reference for Developers (Priority: P2)</h3>
+<p>A developer integrating with or extending the tool needs to access comprehensive API documentation. They want to understand available interfaces, classes, methods, and integration patterns.</p>
+<p><strong>Why this priority</strong>: Essential for developers building extensions or integrations, but represents a smaller subset of users compared to general tool users. Secondary to end-user documentation.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by a developer finding a specific API class or method and successfully integrating it into their code. Delivers value for the developer ecosystem.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a developer visits the documentation, <strong>When</strong> they navigate to the API Reference section, <strong>Then</strong> they see organized API documentation with namespaces, classes, and methods</li>
+<li><strong>Given</strong> a developer is viewing an API class, <strong>When</strong> they read the documentation, <strong>Then</strong> they see method signatures, parameter types, return values, and usage examples</li>
+<li><strong>Given</strong> a developer wants to understand integration patterns, <strong>When</strong> they view the API overview, <strong>Then</strong> they see common integration scenarios with code samples</li>
+</ol>
+<hr>
+<h3 id="user-story-5---contributing-to-the-project-priority-p3">User Story 5 - Contributing to the Project (Priority: P3)</h3>
+<p>A contributor wants to help improve the tool by submitting code, documentation, or bug reports. They need clear guidelines on development setup, coding standards, and the contribution process.</p>
+<p><strong>Why this priority</strong>: Important for building a contributor community and long-term project health, but not essential for basic tool usage. Lower priority than user-facing documentation.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by a new contributor following the guide to set up their development environment and submit their first contribution. Delivers value for project sustainability.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a potential contributor visits the documentation, <strong>When</strong> they navigate to the Contribution Guide, <strong>Then</strong> they see instructions for development environment setup, coding standards, and pull request process</li>
+<li><strong>Given</strong> a contributor follows the setup instructions, <strong>When</strong> they complete the steps, <strong>Then</strong> they have a working development environment and can run tests</li>
+<li><strong>Given</strong> a contributor wants to report a bug, <strong>When</strong> they view the contribution guidelines, <strong>Then</strong> they see templates and instructions for submitting issues</li>
+</ol>
+<hr>
+<h3 id="edge-cases">Edge Cases</h3>
+<ul>
+<li>What happens when a user tries to access documentation for a version that doesn't exist (e.g., future version, typo)?</li>
+<li>How does the site handle users with JavaScript disabled when using version switcher?</li>
+<li>What happens when API documentation is not yet available for the latest version?</li>
+<li>How does the system handle documentation for pre-release or beta versions?</li>
+<li>What happens when a user bookmarks a version-specific page and that version is later deprecated?</li>
+<li>How does search handle queries across multiple versions of documentation?</li>
+</ul>
+<h2 id="requirements-mandatory">Requirements <em>(mandatory)</em></h2>
+<h3 id="functional-requirements">Functional Requirements</h3>
+<ul>
+<li><strong>FR-001</strong>: System MUST publish documentation to GitHub Pages automatically when a new binary release is created</li>
+<li><strong>FR-002</strong>: Documentation MUST include an Installation Guide with platform-specific instructions (Windows, macOS, Linux)</li>
+<li><strong>FR-003</strong>: Documentation MUST include a comprehensive Command Reference listing all available commands with syntax, parameters, and examples</li>
+<li><strong>FR-004</strong>: Documentation MUST include a Contribution Guide with development setup instructions and contribution process</li>
+<li><strong>FR-005</strong>: Documentation MUST include an API Reference section with comprehensive interface and class documentation</li>
+<li><strong>FR-006</strong>: Users MUST be able to switch between different minor versions of documentation (e.g., v1.0, v1.1, v2.0)</li>
+<li><strong>FR-007</strong>: Documentation MUST display the current version being viewed prominently on every page</li>
+<li><strong>FR-008</strong>: Users MUST be able to search for commands and topics across the documentation</li>
+<li><strong>FR-009</strong>: Documentation homepage MUST serve as the primary entry point with clear navigation to all major sections</li>
+<li><strong>FR-010</strong>: Documentation MUST display the latest stable version by default when accessed without version specification</li>
+<li><strong>FR-011</strong>: System MUST maintain documentation for each minor version independently (e.g., separate documentation sets for 1.0.x, 1.1.x, 2.0.x)</li>
+<li><strong>FR-012</strong>: Command Reference MUST function as a man page equivalent with detailed parameter descriptions and usage examples</li>
+<li><strong>FR-013</strong>: Documentation MUST be accessible from a dedicated GitHub Pages URL</li>
+<li><strong>FR-014</strong>: System MUST handle documentation versioning at minor version level only (patch versions share documentation)</li>
+<li><strong>FR-015</strong>: API Reference MUST be generated from source code documentation comments</li>
+</ul>
+<h3 id="key-entities">Key Entities</h3>
+<ul>
+<li><strong>Documentation Version</strong>: Represents a specific minor version of documentation (e.g., 1.0, 1.1), containing all pages and content for that version</li>
+<li><strong>Installation Guide</strong>: Platform-specific installation instructions including prerequisites, installation steps, and verification procedures</li>
+<li><strong>Command Reference</strong>: Comprehensive list of commands with detailed information including syntax, parameters, options, examples, and related commands</li>
+<li><strong>API Documentation</strong>: Generated documentation for public interfaces, classes, methods, and properties with type information and usage examples</li>
+<li><strong>Contribution Guide</strong>: Instructions for contributors including development environment setup, coding standards, testing requirements, and pull request process</li>
+</ul>
+<h2 id="success-criteria-mandatory">Success Criteria <em>(mandatory)</em></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes</h3>
+<ul>
+<li><strong>SC-001</strong>: New users can complete installation and execute their first command within 5 minutes of visiting the documentation</li>
+<li><strong>SC-002</strong>: 90% of users can find command documentation they need within 30 seconds using search or navigation</li>
+<li><strong>SC-003</strong>: Documentation is automatically published within 10 minutes of a new binary release being created</li>
+<li><strong>SC-004</strong>: Users viewing documentation for version X.Y see content that accurately reflects features available in that version</li>
+<li><strong>SC-005</strong>: Contributors can set up a working development environment by following the Contribution Guide with 95% success rate</li>
+<li><strong>SC-006</strong>: API Reference coverage includes 100% of public interfaces and classes</li>
+<li><strong>SC-007</strong>: Documentation site loads and displays content within 2 seconds for users on standard broadband connections</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

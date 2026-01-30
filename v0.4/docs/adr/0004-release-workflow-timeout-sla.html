@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ADR 0004: Release Workflow Timeout and Performance SLA | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ADR 0004: Release Workflow Timeout and Performance SLA | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/adr/0004-release-workflow-timeout-sla.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adr-0004-release-workflow-timeout-and-performance-sla">ADR 0004: Release Workflow Timeout and Performance SLA</h1>
+
+<p><strong>Status</strong>: Accepted<br>
+<strong>Date</strong>: 2026-01-05<br>
+<strong>Context</strong>: Feature 003 - Automated Binary Release Pipeline<br>
+<strong>Related</strong>: <a href="../../specs/003-automated-release-pipeline/spec.html">spec.md</a>, SC-003, T048a</p>
+<h2 id="context">Context</h2>
+<p>The specification defines a performance requirement:</p>
+<p><strong>SC-003</strong>: Release must be published within <strong>30 minutes</strong> of merging to main branch.</p>
+<p>To ensure this SLA is met, we need to:</p>
+<ol>
+<li>Set appropriate GitHub Actions workflow timeouts</li>
+<li>Provide safety buffer for cleanup and error handling</li>
+<li>Prevent workflows from hanging indefinitely</li>
+<li>Log clear error messages when timeout occurs</li>
+</ol>
+<h2 id="decision">Decision</h2>
+<h3 id="workflow-timeout-25-minutes">Workflow Timeout: 25 Minutes</h3>
+<p>The <code>create-release</code> job in <code>.github/workflows/release.yml</code> will have a <strong>25-minute timeout</strong>.</p>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="lang-yaml">create-release:
+  name: Create GitHub Release
+  needs: [calculate-version, build]
+  runs-on: ubuntu-latest
+  timeout-minutes: 25  # SLA: 30 minutes total, 5-minute buffer
+</code></pre>
+<h3 id="rationale">Rationale</h3>
+<ol>
+<li><strong>SLA Compliance</strong>: 25 minutes + 5-minute buffer = 30-minute total</li>
+<li><strong>Safety Margin</strong>: Allows 5 minutes for:
+<ul>
+<li>GitHub Actions queue time</li>
+<li>Artifact download delays</li>
+<li>Network latency for Release API calls</li>
+<li>Graceful error logging and cleanup</li>
+</ul>
+</li>
+<li><strong>Fail-Fast</strong>: Prevents indefinite hangs if external service fails (e.g., Codacy, GitHub API)</li>
+<li><strong>User Experience</strong>: Users receive clear timeout error within SLA window</li>
+</ol>
+<h3 id="timeout-buffer-allocation">Timeout Buffer Allocation</h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Expected Duration</th>
+<th>Timeout Allocation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Build Job</strong> (parallel)</td>
+<td>10-15 minutes</td>
+<td>20 minutes per platform</td>
+</tr>
+<tr>
+<td><strong>Create Release Job</strong></td>
+<td>8-12 minutes</td>
+<td><strong>25 minutes</strong></td>
+</tr>
+<tr>
+<td><strong>Total Pipeline</strong></td>
+<td>18-27 minutes</td>
+<td>30 minutes (SLA)</td>
+</tr>
+<tr>
+<td><strong>Buffer</strong></td>
+<td>-</td>
+<td><strong>5 minutes</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="breakdown-of-create-release-job">Breakdown of Create Release Job</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Expected Time</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Checkout repository</td>
+<td>10-30 seconds</td>
+<td>Fetch all history for release notes</td>
+</tr>
+<tr>
+<td>Download build artifacts</td>
+<td>1-2 minutes</td>
+<td>4 platform binaries (~20-50 MB total)</td>
+</tr>
+<tr>
+<td>Organize binaries</td>
+<td>5-10 seconds</td>
+<td>Copy and rename files</td>
+</tr>
+<tr>
+<td>Generate checksums</td>
+<td>5-10 seconds</td>
+<td>SHA256 for all binaries</td>
+</tr>
+<tr>
+<td>Generate SBOM</td>
+<td>30-60 seconds</td>
+<td>Anchore SBOM scan</td>
+</tr>
+<tr>
+<td>Sign artifacts</td>
+<td>10-20 seconds</td>
+<td>GPG signing</td>
+</tr>
+<tr>
+<td>Generate release notes</td>
+<td>10-30 seconds</td>
+<td>Parse commits since last tag</td>
+</tr>
+<tr>
+<td>Create Git tag</td>
+<td>5-10 seconds</td>
+<td>Tag + push</td>
+</tr>
+<tr>
+<td>Create GitHub Release</td>
+<td>30-60 seconds</td>
+<td>Upload 8-10 files to Release API</td>
+</tr>
+<tr>
+<td>Release summary</td>
+<td>5 seconds</td>
+<td>Generate workflow summary</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>3-6 minutes</strong></td>
+<td>Under normal conditions</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Worst-Case Scenarios Covered by 25-Minute Timeout</strong>:</p>
+<ul>
+<li>SBOM generation fails/retries (up to 5 minutes)</li>
+<li>GitHub API rate limiting (up to 10 minutes backoff)</li>
+<li>Artifact download slow network (up to 10 minutes)</li>
+<li>Multiple platform build retries (parallel, max 20 minutes)</li>
+</ul>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<h3 id="alternative-1-no-timeout-default-github-actions">Alternative 1: No Timeout (Default GitHub Actions)</h3>
+<p><strong>Approach</strong>: Use default 360-minute (6-hour) timeout</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Never fails due to timeout</li>
+<li>Handles extreme edge cases</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Violates SC-003 SLA requirement</li>
+<li>Workflows can hang indefinitely on failures</li>
+<li>Wastes GitHub Actions minutes</li>
+<li>Poor user experience (no feedback)</li>
+</ul>
+<p><strong>Rejected</strong>: Does not meet SLA requirement.</p>
+<h3 id="alternative-2-15-minute-timeout">Alternative 2: 15-Minute Timeout</h3>
+<p><strong>Approach</strong>: Aggressive timeout to ensure fast feedback</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Guarantees very fast failure detection</li>
+<li>Forces optimization of workflow</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Too tight for edge cases (slow network, API rate limits)</li>
+<li>High risk of false positives (legitimate builds failing)</li>
+<li>No buffer for transient failures</li>
+</ul>
+<p><strong>Rejected</strong>: Too risky, may cause legitimate releases to fail.</p>
+<h3 id="alternative-3-30-minute-timeout-exact-sla">Alternative 3: 30-Minute Timeout (Exact SLA)</h3>
+<p><strong>Approach</strong>: Set timeout exactly at SLA boundary</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Matches SLA precisely</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>No buffer for cleanup/logging</li>
+<li>User receives timeout error exactly at SLA deadline (bad UX)</li>
+<li>No time for graceful degradation</li>
+</ul>
+<p><strong>Rejected</strong>: No safety margin for cleanup.</p>
+<h2 id="consequences">Consequences</h2>
+<h3 id="positive">Positive</h3>
+<ul>
+<li><strong>SLA Guarantee</strong>: Ensures releases complete within 30 minutes or fail clearly</li>
+<li><strong>Resource Efficiency</strong>: Prevents runaway workflows from consuming GitHub Actions minutes</li>
+<li><strong>Clear Failures</strong>: Timeout errors logged with context for debugging</li>
+<li><strong>Performance Accountability</strong>: Forces workflow optimization to stay under 25 minutes</li>
+</ul>
+<h3 id="negative">Negative</h3>
+<ul>
+<li><strong>Potential False Positives</strong>: Legitimate releases may fail if external service is slow</li>
+<li><strong>Timeout Handling</strong>: Requires careful error logging before timeout</li>
+<li><strong>Monitoring Required</strong>: Need to track timeout frequency to identify systemic issues</li>
+</ul>
+<h3 id="error-handling">Error Handling</h3>
+<p>When timeout occurs:</p>
+<ol>
+<li><strong>GitHub Actions Logs</strong>: Workflow shows &quot;timeout-minutes exceeded&quot; error</li>
+<li><strong>Step Summary</strong>: Last completed step visible in workflow summary</li>
+<li><strong>User Notification</strong>: No release published, users check Actions tab for details</li>
+<li><strong>Debugging</strong>: Logs indicate which step timed out</li>
+</ol>
+<p><strong>Example Timeout Log</strong>:</p>
+<pre><code class="lang-text">Error: The operation was canceled.
+##[error]The action 'Create GitHub Release' has timed out after 25 minutes.
+##[error]Workflow canceled by GitHub Actions (timeout-minutes: 25)
+</code></pre>
+<h2 id="monitoring-and-alerting">Monitoring and Alerting</h2>
+<h3 id="metrics-to-track">Metrics to Track</h3>
+<ol>
+<li><strong>Average Release Duration</strong>: Target &lt; 20 minutes (80% of timeout)</li>
+<li><strong>Timeout Frequency</strong>: Target &lt; 5% of releases</li>
+<li><strong>Bottleneck Steps</strong>: Identify slowest steps via workflow logs</li>
+</ol>
+<h3 id="when-to-re-evaluate-timeout">When to Re-evaluate Timeout</h3>
+<p>Re-evaluate timeout if:</p>
+<ul>
+<li><strong>&gt; 5% of releases fail due to timeout</strong> → Increase timeout or optimize workflow</li>
+<li><strong>Average duration &gt; 20 minutes</strong> → Optimize slow steps</li>
+<li><strong>SLA requirement changes</strong> → Adjust timeout accordingly</li>
+</ul>
+<h2 id="implementation-notes">Implementation Notes</h2>
+<h3 id="timeout-configuration">Timeout Configuration</h3>
+<pre><code class="lang-yaml"># .github/workflows/release.yml
+create-release:
+  name: Create GitHub Release
+  needs: [calculate-version, build]
+  runs-on: ubuntu-latest
+  timeout-minutes: 25  # SLA: 30 minutes total, 5-minute buffer
+  steps:
+    # ... release steps
+</code></pre>
+<h3 id="build-job-timeout-per-platform">Build Job Timeout (Per Platform)</h3>
+<pre><code class="lang-yaml"># .github/workflows/build.yml
+build:
+  name: Build ${{ matrix.platform }}-${{ matrix.arch }}
+  runs-on: ${{ matrix.os }}
+  timeout-minutes: 20  # Per-platform timeout
+</code></pre>
+<p><strong>Rationale</strong>: Builds run in parallel, so 20-minute individual timeout + 25-minute release timeout = max 45 minutes total (exceeds SLA if builds serialize, but they don't).</p>
+<h3 id="graceful-timeout-handling">Graceful Timeout Handling</h3>
+<pre><code class="lang-yaml">- name: Upload to GitHub Release
+  timeout-minutes: 10  # Step-level timeout
+  continue-on-error: false  # Fail job if timeout
+</code></pre>
+<h2 id="testing">Testing</h2>
+<h3 id="performance-test-t093">Performance Test (T093)</h3>
+<pre><code class="lang-bash"># Measure time from main merge to release availability
+time_start=$(git log -1 --format=%ct main)
+time_release=$(gh release view --json publishedAt -q .publishedAt)
+duration=$((time_release - time_start))
+
+if [ $duration -gt 1800 ]; then
+  echo &quot;FAIL: Release took ${duration}s (&gt; 30 minutes)&quot;
+  exit 1
+fi
+</code></pre>
+<h3 id="timeout-simulation">Timeout Simulation</h3>
+<pre><code class="lang-bash"># Simulate slow SBOM generation
+- name: Generate SBOM (with artificial delay)
+  run: |
+    sleep 600  # 10 minutes
+    # ... actual SBOM generation
+</code></pre>
+<p><strong>Expected</strong>: Workflow completes within 25 minutes or fails gracefully.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idtimeout-minutes">GitHub Actions Timeout Limits</a></li>
+<li><a href="../../specs/003-automated-release-pipeline/spec.html">SC-003: Performance Requirements</a></li>
+<li><a href="../../specs/003-automated-release-pipeline/tasks.html">T048a: Configure timeout</a></li>
+</ul>
+<h2 id="review-schedule">Review Schedule</h2>
+<p>This ADR should be reviewed:</p>
+<ul>
+<li>If timeout failures exceed 5% of releases</li>
+<li>If average release duration exceeds 20 minutes</li>
+<li>If SLA requirement changes (SC-003)</li>
+<li>Quarterly during performance reviews</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/adr/0004-release-workflow-timeout-sla.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

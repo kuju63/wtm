@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Quick Start Guide | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Quick Start Guide | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/guides/quickstart.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="quick-start-guide">Quick Start Guide</h1>
+
+<p>Get started with <code>wt</code> in just a few minutes. This guide walks you through creating your first worktree and covers basic commands.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Git installed and configured</li>
+<li><code>wt</code> installed (see <a href="../installation.html">Installation Guide</a>)</li>
+<li>An existing Git repository</li>
+</ul>
+<hr>
+<h2 id="your-first-worktree">Your First Worktree</h2>
+<h3 id="step-1-navigate-to-your-repository">Step 1: Navigate to Your Repository</h3>
+<p>Open a terminal and navigate to any Git repository:</p>
+<pre><code class="lang-bash">cd /path/to/your/project
+</code></pre>
+<h3 id="step-2-create-a-worktree">Step 2: Create a Worktree</h3>
+<p>Create a new worktree for a feature branch:</p>
+<pre><code class="lang-bash">wt create feature-new-feature
+</code></pre>
+<p>This command will:</p>
+<ul>
+<li>Create a new branch called <code>feature-new-feature</code></li>
+<li>Set up a worktree at <code>../wt-feature-new-feature</code></li>
+<li>Automatically open the worktree in your default editor (if configured)</li>
+</ul>
+<p><strong>Output:</strong></p>
+<pre><code class="lang-shell">✓ Created branch: feature-new-feature
+✓ Created worktree: /Users/username/projects/wt-feature-new-feature
+✓ Checked out: feature-new-feature
+</code></pre>
+<h3 id="step-3-list-your-worktrees">Step 3: List Your Worktrees</h3>
+<p>View all worktrees in your repository:</p>
+<pre><code class="lang-bash">wt list
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code class="lang-shell">┌─────────────────────────────────────────────┬──────────────────────┬─────────┐
+│ Path                                        │ Branch               │ Status  │
+├─────────────────────────────────────────────┼──────────────────────┼─────────┤
+│ /Users/username/projects/wt                 │ main                 │ active  │
+│ /Users/username/projects/wt-feature-new     │ feature-new-feature  │ active  │
+└─────────────────────────────────────────────┴──────────────────────┴─────────┘
+</code></pre>
+<hr>
+<h2 id="basic-commands">Basic Commands</h2>
+<h3 id="create-worktree-with-custom-path">Create Worktree with Custom Path</h3>
+<p>Specify a custom location for your worktree:</p>
+<pre><code class="lang-bash">wt create feature-login --path ~/projects/myapp-login
+</code></pre>
+<h3 id="create-worktree-from-specific-base-branch">Create Worktree from Specific Base Branch</h3>
+<p>Create a branch from a specific base (e.g., <code>main</code>):</p>
+<pre><code class="lang-bash">wt create feature-login --base main
+</code></pre>
+<h3 id="auto-launch-editor">Auto-Launch Editor</h3>
+<p>Create a worktree and automatically open it in your editor:</p>
+<pre><code class="lang-bash">wt create feature-login --editor vscode
+</code></pre>
+<p>Supported editors: <code>vscode</code>, <code>vim</code>, <code>emacs</code>, <code>nano</code>, <code>idea</code></p>
+<hr>
+<h2 id="common-workflows">Common Workflows</h2>
+<h3 id="feature-development-workflow">Feature Development Workflow</h3>
+<ol>
+<li><p><strong>Start a new feature</strong>:</p>
+<pre><code class="lang-bash">wt create feature-user-auth
+cd ../wt-feature-user-auth
+</code></pre>
+</li>
+<li><p><strong>Work on your feature</strong>:</p>
+<pre><code class="lang-bash"># Make changes, commit as usual
+git add .
+git commit -m &quot;Add user authentication&quot;
+</code></pre>
+</li>
+<li><p><strong>Switch back to main</strong>:</p>
+<pre><code class="lang-bash">cd ../wt  # or your main worktree path
+</code></pre>
+</li>
+<li><p><strong>Clean up when done</strong>:</p>
+<pre><code class="lang-bash">git worktree remove ../wt-feature-user-auth
+</code></pre>
+</li>
+</ol>
+<h3 id="parallel-development">Parallel Development</h3>
+<p>Work on multiple features simultaneously:</p>
+<pre><code class="lang-bash"># Terminal 1: Work on feature A
+wt create feature-a
+cd ../wt-feature-a
+
+# Terminal 2: Work on feature B  
+wt create feature-b
+cd ../wt-feature-b
+
+# Terminal 3: Review code in main
+cd /path/to/wt
+</code></pre>
+<p>Each worktree is independent - changes in one don't affect others.</p>
+<hr>
+<h2 id="editor-integration">Editor Integration</h2>
+<p><code>wt</code> can automatically open new worktrees in your preferred editor.</p>
+<h3 id="supported-editors">Supported Editors</h3>
+<ul>
+<li><strong>Visual Studio Code</strong> (<code>vscode</code>)</li>
+<li><strong>Vim</strong> (<code>vim</code>)</li>
+<li><strong>Emacs</strong> (<code>emacs</code>)</li>
+<li><strong>Nano</strong> (<code>nano</code>)</li>
+<li><strong>IntelliJ IDEA</strong> (<code>idea</code>)</li>
+</ul>
+<h3 id="example">Example</h3>
+<pre><code class="lang-bash">wt create feature-ui --editor vscode
+</code></pre>
+<p>This will create the worktree and automatically launch VS Code in that directory.</p>
+<hr>
+<h2 id="tips-and-best-practices">Tips and Best Practices</h2>
+<h3 id="1-naming-conventions">1. Naming Conventions</h3>
+<p>Use descriptive branch names with prefixes:</p>
+<pre><code class="lang-bash">wt create feature-user-authentication
+wt create bugfix-login-timeout
+wt create hotfix-security-patch
+</code></pre>
+<h3 id="2-default-directory-structure">2. Default Directory Structure</h3>
+<p>Worktrees are created as sibling directories with <code>wt-</code> prefix by default:</p>
+<pre><code>projects/
+├── wt/                    (main worktree)
+├── wt-feature-a/
+├── wt-feature-b/
+└── wt-bugfix-login/
+</code></pre>
+<h3 id="3-clean-up-regularly">3. Clean Up Regularly</h3>
+<p>Remove worktrees when you're done:</p>
+<pre><code class="lang-bash">git worktree remove ../wt-feature-name
+</code></pre>
+<p>Or use Git's built-in prune command:</p>
+<pre><code class="lang-bash">git worktree prune
+</code></pre>
+<h3 id="4-use-json-output-for-automation">4. Use JSON Output for Automation</h3>
+<p>For scripting and automation:</p>
+<pre><code class="lang-bash">wt create feature-api --output json | jq '.worktree.path'
+</code></pre>
+<hr>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li><strong><a href="../commands/index.html">Command Reference</a></strong>: Detailed documentation for all commands</li>
+<li><strong><a href="../installation.html">Installation Guide</a></strong>: Advanced installation options</li>
+<li><strong><a href="../contributing.md">Contributing</a></strong>: Help improve <code>wt</code></li>
+</ul>
+<hr>
+<h2 id="getting-help">Getting Help</h2>
+<ul>
+<li>Run <code>wt --help</code> for command help</li>
+<li>Run <code>wt create --help</code> for create command options</li>
+<li>Visit the <a href="https://github.com/kuju63/wt">GitHub repository</a></li>
+<li>Report issues on <a href="https://github.com/kuju63/wt/issues">GitHub Issues</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/guides/quickstart.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

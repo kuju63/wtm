@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Conventional Commits 規約 | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Conventional Commits 規約 | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/ja/CONVENTIONAL_COMMITS.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="conventional-commits-規約">Conventional Commits 規約</h1>
+
+<p>このプロジェクトでは、コミットメッセージに <strong>Conventional Commits</strong> 規約を採用しています。</p>
+<h2 id="公式仕様">公式仕様</h2>
+<ul>
+<li>公式サイト: <a href="https://www.conventionalcommits.org/">https://www.conventionalcommits.org/</a></li>
+<li>バージョン: 1.0.0</li>
+</ul>
+<h2 id="基本フォーマット">基本フォーマット</h2>
+<pre><code class="lang-text">&lt;type&gt;[optional scope]: &lt;description&gt;
+
+[optional body]
+
+[optional footer(s)]
+</code></pre>
+<h3 id="type-必須">type (必須)</h3>
+<p>コミットの種類を示します。以下のtypeを使用してください:</p>
+<ul>
+<li><strong>feat</strong>: 新機能の追加 (MINOR version bump)</li>
+<li><strong>fix</strong>: バグ修正 (PATCH version bump)</li>
+<li><strong>docs</strong>: ドキュメントのみの変更</li>
+<li><strong>style</strong>: コードの意味に影響を与えない変更 (空白、フォーマット、セミコロン等)</li>
+<li><strong>refactor</strong>: バグ修正や機能追加を伴わないコード変更</li>
+<li><strong>perf</strong>: パフォーマンス改善</li>
+<li><strong>test</strong>: テストの追加や修正</li>
+<li><strong>chore</strong>: ビルドプロセス、補助ツール、ライブラリの変更 (例: package.json更新)</li>
+<li><strong>ci</strong>: CI設定ファイルやスクリプトの変更 (例: GitHub Actions)</li>
+<li><strong>build</strong>: ビルドシステムや外部依存関係に影響する変更</li>
+</ul>
+<h3 id="scope-オプション">scope (オプション)</h3>
+<p>変更の影響範囲を示します。このプロジェクトでは<strong>原則として使用しません</strong>が、必要な場合のみ以下のように記述できます:</p>
+<pre><code class="lang-text">feat(cli): add --version flag
+fix(worktree): handle invalid branch names
+</code></pre>
+<h3 id="description-必須">description (必須)</h3>
+<p>変更内容を簡潔に説明します:</p>
+<ul>
+<li><strong>英語で記述</strong>すること</li>
+<li><strong>命令形・現在形</strong>を使用 (例: &quot;add&quot; not &quot;added&quot; or &quot;adds&quot;)</li>
+<li><strong>小文字で開始</strong> (最初の文字は小文字)</li>
+<li><strong>末尾にピリオドを付けない</strong></li>
+</ul>
+<h3 id="body-オプション">body (オプション)</h3>
+<p>変更の理由、以前の動作との違い、影響範囲などを説明します:</p>
+<ul>
+<li>description から1行空けて記述</li>
+<li>複数行可能</li>
+<li>Markdown形式可能</li>
+</ul>
+<h3 id="footer-オプション">footer (オプション)</h3>
+<p>Breaking changes、Issue参照を記述します:</p>
+<ul>
+<li><strong>BREAKING CHANGE</strong>: 破壊的変更を示す (MAJOR version bump)</li>
+<li><strong>Closes #123</strong>: Issueのクローズを示す</li>
+</ul>
+<h2 id="例">例</h2>
+<h3 id="新機能-feat">新機能 (feat)</h3>
+<pre><code class="lang-text">feat: add multi-platform binary distribution
+
+Implement GitHub Actions workflow to build binaries for
+Windows x64, Linux x64/ARM, and Mac ARM64.
+
+Closes #42
+</code></pre>
+<h3 id="バグ修正-fix">バグ修正 (fix)</h3>
+<pre><code class="lang-text">fix: prevent crash when branch name contains special characters
+
+Handle edge case where branch names with slashes cause
+path resolution errors.
+</code></pre>
+<h3 id="破壊的変更-breaking-change">破壊的変更 (BREAKING CHANGE)</h3>
+<pre><code class="lang-text">feat: change CLI argument format to kebab-case
+
+BREAKING CHANGE: All CLI arguments now use kebab-case instead of camelCase.
+Users must update scripts: `--outputFormat` → `--output-format`
+
+Migration guide: docs/migration/v2.0.md
+</code></pre>
+<h3 id="ドキュメント-docs">ドキュメント (docs)</h3>
+<pre><code class="lang-text">docs: update installation guide for macOS ARM64
+</code></pre>
+<h3 id="cicd-ci">CI/CD (ci)</h3>
+<pre><code class="lang-text">ci: add Codacy coverage upload to test workflow
+</code></pre>
+<h3 id="テスト-test">テスト (test)</h3>
+<pre><code class="lang-text">test: add integration tests for SBOM generation
+</code></pre>
+<h2 id="セマンティックバージョニングとの関係">セマンティックバージョニングとの関係</h2>
+<p>Conventional Commitsは、自動バージョニングに使用されます:</p>
+<table>
+<thead>
+<tr>
+<th>Commit Type</th>
+<th>Version Bump</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fix:</code></td>
+<td>PATCH (0.0.X)</td>
+<td>0.1.0 → 0.1.1</td>
+</tr>
+<tr>
+<td><code>feat:</code></td>
+<td>MINOR (0.X.0)</td>
+<td>0.1.0 → 0.2.0</td>
+</tr>
+<tr>
+<td><code>BREAKING CHANGE:</code></td>
+<td>MAJOR (X.0.0)</td>
+<td>0.1.0 → 1.0.0</td>
+</tr>
+<tr>
+<td>その他 (docs, style, etc.)</td>
+<td>バージョン変更なし</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="自動バージョニングの仕組み">自動バージョニングの仕組み</h2>
+<ol>
+<li>mainブランチへのマージ時、最新Gitタグを取得</li>
+<li>前回リリース以降のコミットメッセージを解析</li>
+<li><code>feat:</code>, <code>fix:</code>, <code>BREAKING CHANGE:</code> の有無でバージョンを決定</li>
+<li>新しいバージョンタグを作成し、GitHub Releaseを公開</li>
+</ol>
+<h2 id="コミットメッセージのチェック">コミットメッセージのチェック</h2>
+<p>将来的に、以下のツールを導入予定です:</p>
+<ul>
+<li><strong>commitlint</strong>: コミットメッセージの形式チェック</li>
+<li><strong>husky</strong>: Git hooksによるローカルバリデーション</li>
+</ul>
+<p>現在は、手動でConventional Commits規約に従ってください。</p>
+<h2 id="参考資料">参考資料</h2>
+<ul>
+<li><a href="https://www.conventionalcommits.org/ja/">Conventional Commits 日本語翻訳</a></li>
+<li><a href="https://semver.org/">Semantic Versioning 2.0.0</a></li>
+<li><a href="https://github.com/semantic-release/semantic-release">GitHub - semantic-release</a></li>
+</ul>
+<hr>
+<p><strong>最終更新</strong>: 2026-01-05<br>
+<strong>担当者</strong>: Release Pipeline Team</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/ja/CONVENTIONAL_COMMITS.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

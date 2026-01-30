@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Implementation Plan: Worktreeとブランチ情報の一覧表示 | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Implementation Plan: Worktreeとブランチ情報の一覧表示 | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/plan.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="implementation-plan-worktreeとブランチ情報の一覧表示">Implementation Plan: Worktreeとブランチ情報の一覧表示</h1>
+
+<p><strong>Branch</strong>: <code>002-list-worktree-branches</code> | <strong>Date</strong>: 2026-01-04 | <strong>Spec</strong>: <a href="spec.html">spec.md</a>
+<strong>Input</strong>: Feature specification from <code>/specs/002-list-worktree-branches/spec.md</code></p>
+<p><strong>Note</strong>: This template is filled in by the <code>/speckit.plan</code> command. See <code>.specify/templates/commands/plan.md</code> for the execution workflow.</p>
+<h2 id="summary">Summary</h2>
+<p>Git worktreeとブランチの一覧を表示するCLIコマンドを開発します。開発者は<code>wt list</code>コマンドを実行することで、すべてのworktreeとその各worktreeでチェックアウトされているブランチをテーブル形式で確認できます。出力には、worktreeのパス、ブランチ名、ステータス（通常/detached HEAD）が含まれます。これにより、複数のworktreeを使用した並列作業時に、どのworktreeでどのブランチを作業しているかを一目で把握できます。</p>
+<p><strong>Technical Approach</strong>: 既存のC# .NET 10 CLIツール（wt.cli）に新しいlistコマンドを追加。<code>git worktree list</code>コマンドの出力を解析し、各worktreeのブランチ情報を取得してテーブル形式で整形します。作成日時順ソートのために、Gitの内部情報またはファイルシステムのメタデータを活用します。</p>
+<h2 id="technical-context">Technical Context</h2>
+<p><strong>Language/Version</strong>: C# .NET 10 (既存プロジェクトwt.cliに統合)<br>
+<strong>Primary Dependencies</strong>:</p>
+<ul>
+<li>System.CommandLine 2.0.1 (CLIフレームワーク)</li>
+<li>System.IO.Abstractions 22.1.0 (パス操作の抽象化)</li>
+<li>System.Text.Json または Newtonsoft.Json (将来の代替フォーマット対応用)</li>
+</ul>
+<p><strong>Storage</strong>: N/A (ファイルシステムとGitの内部情報のみ使用)<br>
+<strong>Testing</strong>: xUnit, Shouldly, Moq (既存プロジェクトで使用中)<br>
+<strong>Target Platform</strong>: Windows, macOS, Linux (クロスプラットフォーム)<br>
+<strong>Project Type</strong>: single (CLIツール - 既存プロジェクトに機能追加)<br>
+<strong>Performance Goals</strong>:</p>
+<ul>
+<li><code>git worktree list</code>実行から表示完了まで 3秒以内</li>
+<li>10個のworktreeで1秒以内にテーブル表示</li>
+<li>メモリ使用量 &lt; 50MB（既存の軽量性を維持）</li>
+</ul>
+<p><strong>Constraints</strong>:</p>
+<ul>
+<li>Git 2.5以上が必要（git worktree サポート）</li>
+<li>クロスプラットフォーム対応必須（憲章 II）</li>
+<li>外部依存関係は最小限（憲章 V）</li>
+<li>TDDアプローチ必須（憲章 VI）</li>
+<li>P3（代替出力フォーマット）は初期リリースで未実装</li>
+</ul>
+<p><strong>Scale/Scope</strong>:</p>
+<ul>
+<li>単一ユーザー・単一リポジトリでの使用</li>
+<li>想定worktree数: 通常1-10個、最大100個</li>
+<li>同時実行想定なし（ローカルCLI）</li>
+</ul>
+<h2 id="constitution-check">Constitution Check</h2>
+<p><em>GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.</em></p>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Requirement</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>I. Developer Usability</strong></td>
+<td>CLI優先、明瞭な操作</td>
+<td>✅ PASS</td>
+<td>シンプルなコマンド構文、テーブル形式の読みやすい出力（FR-003）</td>
+</tr>
+<tr>
+<td><strong>I. Developer Usability</strong></td>
+<td>エラーメッセージに解決策</td>
+<td>✅ PASS</td>
+<td>存在しないworktreeに対する明確な警告メッセージ（FR-008）</td>
+</tr>
+<tr>
+<td><strong>II. Cross-Platform</strong></td>
+<td>Windows/macOS/Linux対応</td>
+<td>✅ PASS</td>
+<td>.NET 10のクロスプラットフォーム対応、System.IO.Abstractionsでパス抽象化</td>
+</tr>
+<tr>
+<td><strong>II. Cross-Platform</strong></td>
+<td>OS固有機能に非依存</td>
+<td>✅ PASS</td>
+<td>Gitコマンド実行のみ、プラットフォーム固有処理なし</td>
+</tr>
+<tr>
+<td><strong>III. Clean &amp; Secure</strong></td>
+<td>セキュアなコード</td>
+<td>✅ PASS</td>
+<td>機密情報なし、Git出力の安全な解析</td>
+</tr>
+<tr>
+<td><strong>III. Clean &amp; Secure</strong></td>
+<td>静的解析</td>
+<td>✅ PASS</td>
+<td>.NETの標準アナライザー使用、既存プロジェクトの品質基準を継承</td>
+</tr>
+<tr>
+<td><strong>IV. Documentation</strong></td>
+<td>日本語ドキュメント優先</td>
+<td>✅ PASS</td>
+<td>仕様書とガイドは日本語で作成</td>
+</tr>
+<tr>
+<td><strong>IV. Documentation</strong></td>
+<td>ADRで技術決定記録</td>
+<td>✅ PASS</td>
+<td>テーブル表示ライブラリ選定等の技術決定をADRとして記録予定</td>
+</tr>
+<tr>
+<td><strong>V. Minimal Dependencies</strong></td>
+<td>最小限の依存</td>
+<td>✅ PASS</td>
+<td>新規依存関係なし、既存の依存関係（System.CommandLine等）のみ使用</td>
+</tr>
+<tr>
+<td><strong>V. Minimal Dependencies</strong></td>
+<td>標準ライブラリ優先</td>
+<td>✅ PASS</td>
+<td>テーブル整形は標準ライブラリで実装可能、必要に応じて軽量ライブラリを検討</td>
+</tr>
+<tr>
+<td><strong>VI. Testing</strong></td>
+<td>TDD必須</td>
+<td>✅ PASS</td>
+<td>xUnit + Shouldly + Moq でテスト先行開発</td>
+</tr>
+<tr>
+<td><strong>VI. Testing</strong></td>
+<td>CI/CDでテスト自動化</td>
+<td>✅ PASS</td>
+<td>既存のCI/CDパイプラインで自動テスト実行</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Overall Status</strong>: ✅ <strong>PASS</strong> - All gates passed.</p>
+<p><strong>Justifications</strong>: なし - 違反なし。既存の憲章準拠プロジェクトに機能追加するため、すべての原則を自然に満たします。</p>
+<h2 id="project-structure">Project Structure</h2>
+<h3 id="documentation-this-feature">Documentation (this feature)</h3>
+<pre><code class="lang-text">specs/002-list-worktree-branches/
+├── spec.md              # 機能仕様書（完成）
+├── plan.md              # This file (実装計画書)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+│   └── cli-interface.md # CLIコマンドインターフェース仕様
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+</code></pre>
+<h3 id="source-code-repository-root">Source Code (repository root)</h3>
+<pre><code class="lang-text">wt.cli/                          # 既存CLIプロジェクト
+├── Program.cs                   # エントリーポイント（既存）
+├── Commands/                    
+│   ├── Worktree/               # worktreeコマンドグループ（既存）
+│   │   └── CreateCommand.cs    # 既存: 'create' コマンド
+│   └── ListCommand.cs          # 新規: 'list' コマンド
+├── Services/                    
+│   ├── Git/
+│   │   ├── IGitService.cs      # 既存: Gitサービスインターフェース
+│   │   └── GitService.cs       # 拡張: worktree情報取得メソッド追加
+│   └── Worktree/
+│       ├── IWorktreeService.cs # 既存: Worktreeサービスインターフェース
+│       └── WorktreeService.cs  # 拡張: list機能追加
+├── Models/                      
+│   ├── WorktreeInfo.cs         # 新規: Worktree情報モデル
+│   └── BranchInfo.cs           # 新規: ブランチ情報モデル
+└── Formatters/                  
+    ├── IOutputFormatter.cs      # 新規: フォーマッターインターフェース（将来の拡張用）
+    └── TableFormatter.cs        # 新規: テーブル整形実装
+
+wt.tests/                        # 既存テストプロジェクト
+├── Commands/
+│   └── ListCommandTests.cs      # 新規: ListCommandのテスト
+├── Services/
+│   ├── Git/
+│   │   └── GitServiceTests.cs   # 拡張: worktree情報取得のテスト追加
+│   └── Worktree/
+│       └── WorktreeServiceTests.cs # 拡張: list機能のテスト追加
+└── Formatters/
+    └── TableFormatterTests.cs   # 新規: テーブル整形のテスト
+</code></pre>
+<p><strong>Structure Decision</strong>: 既存の単一プロジェクト構造（wt.cli）に機能を追加します。worktreeコマンドグループに新しいListCommandを追加し、既存のGitServiceとWorktreeServiceを拡張してworktree一覧取得機能を実装します。テーブル整形用の新しいユーティリティクラスを追加します。</p>
+<h2 id="complexity-tracking">Complexity Tracking</h2>
+<blockquote>
+<p><strong>Fill ONLY if Constitution Check has violations that must be justified</strong></p>
+</blockquote>
+<p>N/A - すべての憲章チェックが合格しており、違反はありません。</p>
+<table>
+<thead>
+<tr>
+<th>Violation</th>
+<th>Why Needed</th>
+<th>Simpler Alternative Rejected Because</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[e.g., 4th project]</td>
+<td>[current need]</td>
+<td>[why 3 projects insufficient]</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="phase-summary">Phase Summary</h2>
+<h3 id="phase-0-research--complete">Phase 0: Research ✅ Complete</h3>
+<p>すべての技術的不明点を解決しました：</p>
+<ul>
+<li><code>git worktree list --porcelain</code>の出力形式とパース方法</li>
+<li>Worktree作成日時の取得方法（<code>.git/worktrees/&lt;name&gt;/gitdir</code>のタイムスタンプ）</li>
+<li>テーブル整形アプローチ（カスタムTableFormatter実装、依存関係ゼロ）</li>
+<li>Detached HEAD表示方法（短縮コミットハッシュ + &quot;(detached)&quot;）</li>
+<li>エラーハンドリング（存在しないworktreeの警告表示）</li>
+</ul>
+<p>詳細: <a href="research.html">research.md</a></p>
+<h3 id="phase-1-design--contracts--complete">Phase 1: Design &amp; Contracts ✅ Complete</h3>
+<p>以下のドキュメントを作成しました：</p>
+<ol>
+<li><p><strong>data-model.md</strong>: WorktreeInfo、BranchInfoモデルの詳細設計</p>
+<ul>
+<li>不変（immutable）な設計</li>
+<li>バリデーションルール</li>
+<li>表示用メソッド（GetDisplayBranch、GetDisplayStatus）</li>
+</ul>
+</li>
+<li><p><strong>contracts/cli-interface.md</strong>: CLIコマンド仕様</p>
+<ul>
+<li>コマンド構文: <code>wt worktree list</code></li>
+<li>テーブル形式の出力仕様</li>
+<li>Exit code定義</li>
+<li>エラーメッセージ仕様</li>
+</ul>
+</li>
+<li><p><strong>quickstart.md</strong>: 開発者向けクイックスタートガイド</p>
+<ul>
+<li>TDDサイクルの実践手順</li>
+<li>Phase 1〜6の実装ステップ</li>
+<li>テストファーストアプローチ</li>
+</ul>
+</li>
+<li><p><strong>Agent Context更新</strong>: GitHub Copilot用のコンテキストファイル更新完了</p>
+</li>
+</ol>
+<h3 id="constitution-re-check--passed">Constitution Re-check ✅ Passed</h3>
+<p>Phase 1設計完了後の再チェック結果:</p>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>I. Developer Usability</strong></td>
+<td>✅ PASS</td>
+<td>テーブル形式の明確な出力、エラーメッセージも明確</td>
+</tr>
+<tr>
+<td><strong>II. Cross-Platform</strong></td>
+<td>✅ PASS</td>
+<td>.NET 10のクロスプラットフォーム対応を活用</td>
+</tr>
+<tr>
+<td><strong>III. Clean &amp; Secure</strong></td>
+<td>✅ PASS</td>
+<td>入力バリデーション、安全なGit出力パース</td>
+</tr>
+<tr>
+<td><strong>IV. Documentation</strong></td>
+<td>✅ PASS</td>
+<td>すべてのドキュメントを日本語で作成完了</td>
+</tr>
+<tr>
+<td><strong>V. Minimal Dependencies</strong></td>
+<td>✅ PASS</td>
+<td>新規依存関係なし、カスタムTableFormatter実装</td>
+</tr>
+<tr>
+<td><strong>VI. Testing</strong></td>
+<td>✅ PASS</td>
+<td>TDDアプローチ、quickstart.mdに詳細な手順</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Overall</strong>: ✅ <strong>PASS</strong> - All principles maintained after design phase.</p>
+<hr>
+<h2 id="next-steps">Next Steps</h2>
+<p><strong>Phase 2: Task Breakdown</strong> - <code>/speckit.tasks</code>コマンドを実行</p>
+<p>実装フェーズに進むために、以下のタスク分解が必要です：</p>
+<ol>
+<li>WorktreeInfoモデルの実装とテスト</li>
+<li>BranchInfoモデルの実装（将来用）</li>
+<li>GitService.ListWorktreesAsync()の実装とテスト</li>
+<li>TableFormatterの実装とテスト</li>
+<li>ListCommandの実装とテスト</li>
+<li>Program.csへの統合</li>
+<li>統合テストの実装</li>
+<li>ドキュメント更新</li>
+</ol>
+<p>詳細なタスク分解は<code>tasks.md</code>に記載されます（<code>/speckit.tasks</code>コマンドで生成）。</p>
+<hr>
+<h2 id="artifacts-generated">Artifacts Generated</h2>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>Path</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>実装計画書</td>
+<td>plan.md</td>
+<td>✅ Complete</td>
+</tr>
+<tr>
+<td>リサーチドキュメント</td>
+<td>research.md</td>
+<td>✅ Complete</td>
+</tr>
+<tr>
+<td>データモデル</td>
+<td>data-model.md</td>
+<td>✅ Complete</td>
+</tr>
+<tr>
+<td>CLI契約</td>
+<td>contracts/cli-interface.md</td>
+<td>✅ Complete</td>
+</tr>
+<tr>
+<td>クイックスタート</td>
+<td>quickstart.md</td>
+<td>✅ Complete</td>
+</tr>
+<tr>
+<td>タスクリスト</td>
+<td>tasks.md</td>
+<td>⏳ Pending <code>/speckit.tasks</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Plan Status</strong>: ✅ <strong>COMPLETE</strong> - Ready for task breakdown and implementation.</p>
+<p><strong>Branch</strong>: <code>002-list-worktree-branches</code><br>
+<strong>Date</strong>: 2026-01-04<br>
+<strong>Next Command</strong>: <code>/speckit.tasks</code>
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/plan.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Quickstart Guide: Worktree Create Feature | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Quickstart Guide: Worktree Create Feature | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/quickstart.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="quickstart-guide-worktree-create-feature">Quickstart Guide: Worktree Create Feature</h1>
+
+<p><strong>Feature</strong>: 001-create-worktree<br>
+<strong>Date</strong>: 2026-01-03<br>
+<strong>Audience</strong>: Developers implementing the feature</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ol>
+<li>.NET 10 SDK インストール済み</li>
+<li>Git 2.5+ インストール済み</li>
+<li>基本的なC#とGitの知識</li>
+</ol>
+<h2 id="development-setup">Development Setup</h2>
+<h3 id="1-clone--build">1. Clone &amp; Build</h3>
+<pre><code class="lang-bash"># リポジトリのクローン
+git clone https://github.com/your-org/wt.git
+cd wt
+
+# ビルド
+dotnet build
+
+# テスト実行
+dotnet test
+</code></pre>
+<h3 id="2-project-structure">2. Project Structure</h3>
+<pre><code class="lang-text">wt/
+├── wt.cli/                       # メインCLIプロジェクト
+│   ├── Commands/                 # コマンド実装
+│   │   └── WorktreeCreateCommand.cs
+│   ├── Services/                 # ビジネスロジック
+│   │   ├── GitService.cs
+│   │   ├── WorktreeService.cs
+│   │   └── EditorService.cs
+│   ├── Models/                   # データモデル
+│   │   ├── WorktreeInfo.cs
+│   │   ├── BranchInfo.cs
+│   │   ├── EditorConfig.cs
+│   │   ├── CommandResult.cs
+│   │   └── CreateWorktreeOptions.cs
+│   └── Utils/                    # ユーティリティ
+│       ├── PathHelper.cs
+│       ├── ProcessRunner.cs
+│       └── Validators.cs
+└── wt.tests/                     # テストプロジェクト
+    ├── Commands/
+    ├── Services/
+    ├── Models/
+    └── Integration/
+</code></pre>
+<h2 id="implementation-workflow">Implementation Workflow</h2>
+<h3 id="phase-1-core-models-day-1">Phase 1: Core Models (Day 1)</h3>
+<p><strong>Task</strong>: データモデルとエラータイプの実装</p>
+<pre><code class="lang-csharp">// Models/WorktreeInfo.cs
+public record WorktreeInfo(
+    string Path,
+    string BranchName,
+    string BaseBranch,
+    DateTime CreatedAt
+);
+
+// Models/CommandResult.cs
+public record CommandResult&lt;T&gt;(
+    bool IsSuccess,
+    T? Data = default,
+    string? ErrorCode = null,
+    string? ErrorMessage = null,
+    string? Solution = null
+);
+</code></pre>
+<p><strong>Test First</strong>:</p>
+<pre><code class="lang-csharp">[Fact]
+public void WorktreeInfo_ValidPath_ShouldCreate()
+{
+    var info = new WorktreeInfo(
+        &quot;/path/to/worktree&quot;,
+        &quot;feature-x&quot;,
+        &quot;main&quot;,
+        DateTime.Now
+    );
+    
+    info.Path.Should().Be(&quot;/path/to/worktree&quot;);
+}
+</code></pre>
+<h3 id="phase-2-git-service-day-2">Phase 2: Git Service (Day 2)</h3>
+<p><strong>Task</strong>: Git操作のラッパー実装</p>
+<pre><code class="lang-csharp">// Services/GitService.cs
+public interface IGitService
+{
+    Task&lt;CommandResult&lt;bool&gt;&gt; IsGitRepositoryAsync();
+    Task&lt;CommandResult&lt;string&gt;&gt; GetCurrentBranchAsync();
+    Task&lt;CommandResult&lt;bool&gt;&gt; BranchExistsAsync(string branchName);
+    Task&lt;CommandResult&lt;BranchInfo&gt;&gt; CreateBranchAsync(string name, string baseBranch);
+}
+
+public class GitService : IGitService
+{
+    private readonly IProcessRunner _processRunner;
+    
+    public async Task&lt;CommandResult&lt;bool&gt;&gt; IsGitRepositoryAsync()
+    {
+        var result = await _processRunner.RunAsync(
+            &quot;git&quot;, 
+            &quot;rev-parse --git-dir&quot;
+        );
+        
+        return result.ExitCode == 0
+            ? CommandResult&lt;bool&gt;.Success(true)
+            : CommandResult&lt;bool&gt;.Failure(&quot;GIT001&quot;, &quot;Not a Git repository&quot;);
+    }
+}
+</code></pre>
+<p><strong>Test First</strong>:</p>
+<pre><code class="lang-csharp">[Fact]
+public async Task IsGitRepository_WhenInGitRepo_ReturnsTrue()
+{
+    // Arrange
+    _mockProcessRunner
+        .Setup(x =&gt; x.RunAsync(&quot;git&quot;, &quot;rev-parse --git-dir&quot;))
+        .ReturnsAsync(new ProcessResult(0, &quot;&quot;, &quot;&quot;));
+    
+    // Act
+    var result = await _gitService.IsGitRepositoryAsync();
+    
+    // Assert
+    result.IsSuccess.Should().BeTrue();
+    result.Data.Should().BeTrue();
+}
+</code></pre>
+<h3 id="phase-3-worktree-service-day-3">Phase 3: Worktree Service (Day 3)</h3>
+<p><strong>Task</strong>: Worktree作成ロジック</p>
+<pre><code class="lang-csharp">// Services/WorktreeService.cs
+public interface IWorktreeService
+{
+    Task&lt;CommandResult&lt;WorktreeInfo&gt;&gt; CreateWorktreeAsync(
+        CreateWorktreeOptions options
+    );
+}
+
+public class WorktreeService : IWorktreeService
+{
+    private readonly IGitService _gitService;
+    private readonly IPathHelper _pathHelper;
+    
+    public async Task&lt;CommandResult&lt;WorktreeInfo&gt;&gt; CreateWorktreeAsync(
+        CreateWorktreeOptions options)
+    {
+        // 1. バリデーション
+        var validation = ValidateOptions(options);
+        if (!validation.IsSuccess) return validation;
+        
+        // 2. ブランチ作成
+        var branch = await _gitService.CreateBranchAsync(
+            options.BranchName, 
+            options.BaseBranch
+        );
+        if (!branch.IsSuccess) return CommandResult&lt;WorktreeInfo&gt;.Failure(
+            branch.ErrorCode, 
+            branch.ErrorMessage
+        );
+        
+        // 3. Worktree追加
+        var worktreePath = _pathHelper.ResolveWorktreePath(
+            options.Path ?? $&quot;../worktrees/{options.BranchName}&quot;
+        );
+        
+        var result = await _gitService.AddWorktreeAsync(
+            worktreePath, 
+            options.BranchName
+        );
+        
+        if (!result.IsSuccess) return CommandResult&lt;WorktreeInfo&gt;.Failure(
+            result.ErrorCode, 
+            result.ErrorMessage
+        );
+        
+        // 4. 成功レスポンス
+        return CommandResult&lt;WorktreeInfo&gt;.Success(
+            new WorktreeInfo(
+                worktreePath,
+                options.BranchName,
+                options.BaseBranch,
+                DateTime.UtcNow
+            )
+        );
+    }
+}
+</code></pre>
+<h3 id="phase-4-editor-service-day-4">Phase 4: Editor Service (Day 4)</h3>
+<p><strong>Task</strong>: エディター起動機能</p>
+<pre><code class="lang-csharp">// Services/EditorService.cs
+public interface IEditorService
+{
+    Task&lt;CommandResult&lt;bool&gt;&gt; LaunchEditorAsync(
+        EditorType editor, 
+        string path
+    );
+    CommandResult&lt;string&gt; ResolveEditorCommand(EditorType editor);
+}
+
+public class EditorService : IEditorService
+{
+    private static readonly Dictionary&lt;EditorType, string[]&gt; EditorCommands = new()
+    {
+        [EditorType.VSCode] = new[] { &quot;code&quot;, &quot;code-insiders&quot; },
+        [EditorType.Vim] = new[] { &quot;vim&quot; },
+        [EditorType.Emacs] = new[] { &quot;emacs&quot; },
+        [EditorType.Nano] = new[] { &quot;nano&quot; },
+        [EditorType.Idea] = new[] { &quot;idea&quot; }
+    };
+    
+    public async Task&lt;CommandResult&lt;bool&gt;&gt; LaunchEditorAsync(
+        EditorType editor, 
+        string path)
+    {
+        var command = ResolveEditorCommand(editor);
+        if (!command.IsSuccess) return CommandResult&lt;bool&gt;.Failure(
+            command.ErrorCode, 
+            command.ErrorMessage
+        );
+        
+        var result = await _processRunner.RunAsync(
+            command.Data!, 
+            path
+        );
+        
+        return result.ExitCode == 0
+            ? CommandResult&lt;bool&gt;.Success(true)
+            : CommandResult&lt;bool&gt;.Failure(&quot;ED001&quot;, &quot;Failed to launch editor&quot;);
+    }
+}
+</code></pre>
+<h3 id="phase-5-cli-command-day-5">Phase 5: CLI Command (Day 5)</h3>
+<p><strong>Task</strong>: System.CommandLineでCLI統合</p>
+<pre><code class="lang-csharp">// Commands/WorktreeCreateCommand.cs
+public class WorktreeCreateCommand : Command
+{
+    public WorktreeCreateCommand() : base(
+        &quot;create&quot;, 
+        &quot;Create a new worktree with branch&quot;)
+    {
+        var branchNameArg = new Argument&lt;string&gt;(
+            &quot;branch-name&quot;,
+            &quot;Name of the branch to create&quot;
+        );
+        
+        var baseBranchOpt = new Option&lt;string?&gt;(
+            aliases: new[] { &quot;--base&quot;, &quot;-b&quot; },
+            description: &quot;Base branch (default: current branch)&quot;
+        );
+        
+        var pathOpt = new Option&lt;string?&gt;(
+            aliases: new[] { &quot;--path&quot;, &quot;-p&quot; },
+            description: &quot;Worktree path (default: ../worktrees/&lt;branch-name&gt;)&quot;
+        );
+        
+        var editorOpt = new Option&lt;EditorType?&gt;(
+            aliases: new[] { &quot;--editor&quot;, &quot;-e&quot; },
+            description: &quot;Editor to launch after creation&quot;
+        );
+        
+        AddArgument(branchNameArg);
+        AddOption(baseBranchOpt);
+        AddOption(pathOpt);
+        AddOption(editorOpt);
+        
+        this.SetHandler(ExecuteAsync, 
+            branchNameArg, 
+            baseBranchOpt, 
+            pathOpt, 
+            editorOpt
+        );
+    }
+    
+    private async Task&lt;int&gt; ExecuteAsync(
+        string branchName,
+        string? baseBranch,
+        string? path,
+        EditorType? editor)
+    {
+        var options = new CreateWorktreeOptions
+        {
+            BranchName = branchName,
+            BaseBranch = baseBranch ?? await _gitService.GetCurrentBranchAsync(),
+            Path = path,
+            Editor = editor
+        };
+        
+        var result = await _worktreeService.CreateWorktreeAsync(options);
+        
+        if (!result.IsSuccess)
+        {
+            Console.WriteLine($&quot;✗ Error: {result.ErrorMessage}&quot;);
+            Console.WriteLine($&quot;→ Solution: {result.Solution}&quot;);
+            return 1;
+        }
+        
+        Console.WriteLine($&quot;✓ Created branch '{result.Data.BranchName}' from '{result.Data.BaseBranch}'&quot;);
+        Console.WriteLine($&quot;✓ Added worktree at: {result.Data.Path}&quot;);
+        Console.WriteLine($&quot;→ Next: cd {result.Data.Path}&quot;);
+        
+        return 0;
+    }
+}
+</code></pre>
+<h2 id="testing-strategy">Testing Strategy</h2>
+<h3 id="unit-tests-80-coverage-target">Unit Tests (80% coverage target)</h3>
+<pre><code class="lang-csharp">// wt.tests/Services/WorktreeServiceTests.cs
+public class WorktreeServiceTests
+{
+    [Fact]
+    public async Task CreateWorktree_ValidOptions_CreatesSuccessfully()
+    {
+        // Arrange
+        var options = new CreateWorktreeOptions
+        {
+            BranchName = &quot;feature-test&quot;,
+            BaseBranch = &quot;main&quot;,
+            Path = null
+        };
+        
+        // Act
+        var result = await _service.CreateWorktreeAsync(options);
+        
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.BranchName.Should().Be(&quot;feature-test&quot;);
+    }
+    
+    [Theory]
+    [InlineData(&quot;&quot;)]
+    [InlineData(&quot;  &quot;)]
+    [InlineData(&quot;feature..test&quot;)]
+    [InlineData(&quot;feature@{test&quot;)]
+    public async Task CreateWorktree_InvalidBranchName_ReturnsError(
+        string invalidName)
+    {
+        // Arrange
+        var options = new CreateWorktreeOptions 
+        { 
+            BranchName = invalidName 
+        };
+        
+        // Act
+        var result = await _service.CreateWorktreeAsync(options);
+        
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.ErrorCode.Should().Be(&quot;BR001&quot;);
+    }
+}
+</code></pre>
+<h3 id="integration-tests">Integration Tests</h3>
+<pre><code class="lang-csharp">// wt.tests/Integration/WorktreeCreationTests.cs
+public class WorktreeCreationTests : IDisposable
+{
+    private readonly string _testRepoPath;
+    
+    public WorktreeCreationTests()
+    {
+        // テスト用Gitリポジトリを作成
+        _testRepoPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(_testRepoPath);
+        
+        ProcessRunner.Run(&quot;git&quot;, &quot;init&quot;, _testRepoPath);
+        ProcessRunner.Run(&quot;git&quot;, &quot;commit --allow-empty -m 'Initial'&quot;, _testRepoPath);
+    }
+    
+    [Fact]
+    public async Task EndToEnd_CreateWorktree_Success()
+    {
+        // Arrange
+        var service = new WorktreeService(/* ... */);
+        var options = new CreateWorktreeOptions
+        {
+            BranchName = &quot;test-branch&quot;,
+            BaseBranch = &quot;main&quot;,
+            Path = Path.Combine(_testRepoPath, &quot;worktrees&quot;, &quot;test-branch&quot;)
+        };
+        
+        // Act
+        var result = await service.CreateWorktreeAsync(options);
+        
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        Directory.Exists(result.Data.Path).Should().BeTrue();
+    }
+    
+    public void Dispose()
+    {
+        Directory.Delete(_testRepoPath, true);
+    }
+}
+</code></pre>
+<h3 id="e2e-tests">E2E Tests</h3>
+<pre><code class="lang-bash"># wt.tests/E2E/test-worktree-creation.sh
+#!/bin/bash
+
+# Setup
+TEMP_REPO=$(mktemp -d)
+cd &quot;$TEMP_REPO&quot;
+git init
+git commit --allow-empty -m &quot;Initial commit&quot;
+
+# Test 1: Basic creation
+../wt create feature-test
+if [ $? -ne 0 ]; then
+    echo &quot;FAIL: Basic creation&quot;
+    exit 1
+fi
+
+# Test 2: With base branch
+../wt create hotfix --base main
+if [ $? -ne 0 ]; then
+    echo &quot;FAIL: With base branch&quot;
+    exit 1
+fi
+
+# Test 3: Invalid branch name
+../wt create &quot;invalid..name&quot;
+if [ $? -eq 0 ]; then
+    echo &quot;FAIL: Should reject invalid name&quot;
+    exit 1
+fi
+
+echo &quot;PASS: All E2E tests&quot;
+</code></pre>
+<h2 id="development-tips">Development Tips</h2>
+<h3 id="1-test-driven-development">1. Test-Driven Development</h3>
+<pre><code class="lang-bash"># Red: テスト作成（失敗することを確認）
+dotnet test
+
+# Green: 最小限の実装
+# code...
+
+# Refactor: コード品質向上
+# code...
+
+# 確認
+dotnet test
+</code></pre>
+<h3 id="2-debugging">2. Debugging</h3>
+<pre><code class="lang-bash"># デバッグビルド
+dotnet build --configuration Debug
+
+# デバッガーアタッチ
+dotnet run --project wt.cli -- worktree create test-branch
+</code></pre>
+<h3 id="3-local-testing">3. Local Testing</h3>
+<pre><code class="lang-bash"># テスト用リポジトリ作成
+mkdir /tmp/test-repo
+cd /tmp/test-repo
+git init
+git commit --allow-empty -m &quot;Initial&quot;
+
+# wtコマンドをテスト
+/path/to/wt/bin/Debug/net10.0/wt create feature-test
+
+# 結果確認
+git worktree list
+</code></pre>
+<h2 id="common-issues--solutions">Common Issues &amp; Solutions</h2>
+<h3 id="issue-1-git-not-found">Issue 1: Git Not Found</h3>
+<p><strong>Problem</strong>: <code>git</code> コマンドが見つからない</p>
+<p><strong>Solution</strong>:</p>
+<pre><code class="lang-bash"># PATH確認
+echo $PATH
+
+# Gitインストール確認
+which git
+
+# 環境変数設定
+export PATH=&quot;/usr/local/bin:$PATH&quot;
+</code></pre>
+<h3 id="issue-2-permission-denied">Issue 2: Permission Denied</h3>
+<p><strong>Problem</strong>: Worktree作成時にパーミッションエラー</p>
+<p><strong>Solution</strong>:</p>
+<pre><code class="lang-bash"># ディレクトリの権限確認
+ls -la ../worktrees
+
+# 権限変更
+chmod 755 ../worktrees
+</code></pre>
+<h3 id="issue-3-branch-already-exists">Issue 3: Branch Already Exists</h3>
+<p><strong>Problem</strong>: 同名のブランチが既に存在</p>
+<p><strong>Solution</strong>:</p>
+<pre><code class="lang-bash"># --checkout-existingオプションを使用
+wt create feature-x --checkout-existing
+
+# または別の名前を使用
+wt create feature-x-v2
+</code></pre>
+<h2 id="performance-benchmarks">Performance Benchmarks</h2>
+<pre><code class="lang-bash"># ベンチマーク実行
+cd wt.tests
+dotnet run --configuration Release --project Benchmarks
+
+# 期待値:
+# - バリデーション: &lt; 100ms
+# - ブランチ作成: &lt; 1s
+# - Worktree追加: &lt; 2s
+# - Total: &lt; 5s
+</code></pre>
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li><strong>Phase 0完了後</strong>: data-model.mdとresearch.mdをレビュー</li>
+<li><strong>Phase 1開始</strong>: CoreモデルとGitServiceから実装開始</li>
+<li><strong>各Phase完了時</strong>: テストが全てグリーンであることを確認</li>
+<li><strong>Phase 5完了後</strong>: E2Eテストで全シナリオを検証</li>
+</ol>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/standard/commandline/">System.CommandLine Docs</a></li>
+<li><a href="https://git-scm.com/docs/git-worktree">Git Worktree Docs</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/core/testing/">.NET Testing Best Practices</a></li>
+<li><a href="spec.html">Specification Document</a></li>
+<li><a href="data-model.html">Data Model</a></li>
+<li><a href="contracts/cli-interface.html">CLI Interface Contract</a></li>
+</ul>
+<h2 id="contact">Contact</h2>
+<p>質問やフィードバックは Issue または Pull Request でお願いします。</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/quickstart.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

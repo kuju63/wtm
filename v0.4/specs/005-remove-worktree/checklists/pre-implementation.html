@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Pre-Implementation Review Checklist: Remove Git Worktree | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Pre-Implementation Review Checklist: Remove Git Worktree | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/checklists/pre-implementation.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="pre-implementation-review-checklist-remove-git-worktree">Pre-Implementation Review Checklist: Remove Git Worktree</h1>
+
+<p><strong>Purpose</strong>: Validate requirements quality, completeness, and clarity before implementation begins
+<strong>Created</strong>: 2026-01-24
+<strong>Feature</strong>: <a href="../spec.html">spec.md</a> | <a href="../plan.html">plan.md</a> | <a href="../tasks.html">tasks.md</a>
+<strong>Focus</strong>: Full Scope (CLI design, safety validations, error handling, edge cases)</p>
+<p><strong>Note</strong>: This checklist tests the REQUIREMENTS themselves (clarity, completeness, consistency) - not implementation correctness.</p>
+<hr>
+<h2 id="requirement-completeness">Requirement Completeness</h2>
+<ul>
+<li>[x] CHK001 - Are all worktree identifier input formats explicitly defined (name vs path vs branch)? [Completeness, Spec §FR-001]</li>
+<li>[x] CHK002 - Is the working directory deletion behavior specified for all file states (clean, modified, locked)? [Completeness, Spec §FR-003]</li>
+<li>[x] CHK003 - Are the criteria for &quot;main worktree&quot; detection explicitly defined? [Completeness, Spec §FR-005]</li>
+<li>[x] CHK004 - Is &quot;currently checked out in the active session&quot; precisely defined (same terminal, same process, any wt session)? [Completeness, Spec §FR-006]</li>
+<li>[x] CHK005 - Are &quot;uncommitted changes&quot; explicitly defined (staged, unstaged, untracked files)? [Completeness, Spec §FR-007]</li>
+<li>[x] CHK006 - Is the order of operations specified (validate → remove from git → delete directory)? [Completeness, Gap]</li>
+<li>[x] CHK007 - Are requirements defined for handling worktrees on network/remote paths? [Completeness, Edge Case] → FR-016</li>
+</ul>
+<hr>
+<h2 id="requirement-clarity">Requirement Clarity</h2>
+<ul>
+<li>[x] CHK008 - Is &quot;locked worktree&quot; quantified with specific conditions that constitute a lock? [Clarity, Spec §FR-004]</li>
+<li>[x] CHK009 - Is &quot;problematic worktrees&quot; defined with specific error conditions? [Clarity, Spec §FR-004]</li>
+<li>[x] CHK010 - Is &quot;clear error messages&quot; specified with required content (error code, user action)? [Clarity, Spec §FR-008]</li>
+<li>[x] CHK011 - Is the definition of &quot;safely&quot; in User Story 1 measurable? [Clarity, Spec US1]</li>
+<li>[x] CHK012 - Are &quot;clean up&quot; operations in User Story 1 explicitly enumerated? [Clarity, Spec US1]</li>
+<li>[x] CHK013 - Is &quot;forcibly removed&quot; distinguished from normal removal with specific behaviors? [Clarity, Spec US2]</li>
+</ul>
+<hr>
+<h2 id="requirement-consistency">Requirement Consistency</h2>
+<ul>
+<li>[x] CHK014 - Are force flag behaviors consistent between US2 acceptance scenarios and FR-004/FR-007? [Consistency]</li>
+<li>[x] CHK015 - Is the error handling behavior consistent between FR-008 and FR-010 (report failures)? [Consistency]</li>
+<li>[x] CHK016 - Are directory deletion requirements in FR-003 consistent with partial deletion in FR-010? [Consistency]</li>
+<li>[x] CHK017 - Are the assumptions about &quot;standard git worktree conventions&quot; aligned with FR definitions? [Consistency, Assumptions]</li>
+</ul>
+<hr>
+<h2 id="acceptance-criteria-quality">Acceptance Criteria Quality</h2>
+<ul>
+<li>[x] CHK018 - Can &quot;worktree is removed from the git repository&quot; in US1-AS1 be objectively verified? [Measurability]</li>
+<li>[x] CHK019 - Can &quot;working directory is deleted from disk&quot; be verified with specific assertions? [Measurability]</li>
+<li>[x] CHK020 - Is SC-002 (&quot;100% of normal worktree removal operations&quot;) achievable and measurable? [Measurability, SC-002]</li>
+<li>[x] CHK021 - Can SC-004 (&quot;clearly communicate why a removal failed&quot;) be objectively evaluated? [Measurability, SC-004]</li>
+<li>[x] CHK022 - Are the conditions for &quot;first attempt&quot; success in SC-002 defined? [Measurability, SC-002]</li>
+</ul>
+<hr>
+<h2 id="user-story-coverage">User Story Coverage</h2>
+<ul>
+<li>[x] CHK023 - Are requirements defined for both single worktree and multi-worktree repository scenarios? [Coverage]</li>
+<li>[x] CHK024 - Are requirements specified for removing a worktree when other worktrees have uncommitted changes? [Coverage, Interaction]</li>
+<li>[x] CHK025 - Is the behavior specified when the target worktree path no longer exists on disk? [Coverage, Edge Case §1] → FR-012</li>
+<li>[x] CHK026 - Is the behavior specified when git worktree entry exists but directory is already deleted? [Coverage, Edge Case §2] → FR-012</li>
+<li>[x] CHK027 - Are recovery flows defined if removal fails midway (git removed but directory not deleted)? [Coverage, Recovery Flow] → FR-017</li>
+</ul>
+<hr>
+<h2 id="edge-case-coverage">Edge Case Coverage</h2>
+<ul>
+<li>[x] CHK028 - Is behavior defined when developer attempts to remove a non-existent worktree? [Edge Case, Spec Edge Case §1]</li>
+<li>[x] CHK029 - Is behavior defined for removing the worktree the user is currently inside of? [Edge Case, Spec Edge Case §3]</li>
+<li>[x] CHK030 - Are permission error scenarios explicitly documented with expected behavior? [Edge Case, Spec Edge Case §4]</li>
+<li>[x] CHK031 - Is partial deletion (some files locked) behavior fully specified with all outcomes? [Edge Case, Spec Edge Case §5]</li>
+<li>[x] CHK032 - Is behavior defined for worktrees with special characters in path or branch name? [Edge Case, Gap] → FR-013</li>
+<li>[x] CHK033 - Is behavior defined for worktrees on read-only file systems? [Edge Case, Gap] → FR-014</li>
+<li>[x] CHK034 - Is behavior defined for worktrees with symlinked directories? [Edge Case, Gap] → FR-015</li>
+</ul>
+<hr>
+<h2 id="error-handling-requirements">Error Handling Requirements</h2>
+<ul>
+<li>[x] CHK035 - Are all FR-008 error reasons enumerated with required message content? [Completeness, FR-008]</li>
+<li>[x] CHK036 - Is the error message format specified (structured vs free text)? [Clarity, FR-008]</li>
+<li>[x] CHK037 - Are exit codes defined for different failure scenarios? [Gap] → CLI-005</li>
+<li>[x] CHK038 - Is the error reporting format for partial deletion failures specified? [Clarity, FR-010]</li>
+<li>[x] CHK039 - Are error messages for &quot;worktree not found&quot; vs &quot;path not found&quot; distinguished? [Clarity] → FR-011, FR-012</li>
+</ul>
+<hr>
+<h2 id="cliux-requirements">CLI/UX Requirements</h2>
+<ul>
+<li>[x] CHK040 - Is the command syntax explicitly specified (e.g., <code>wt remove &lt;identifier&gt;</code>)? [Completeness, Gap] → CLI-001</li>
+<li>[x] CHK041 - Is the output format specified for both success and failure cases? [Completeness, Gap] → CLI-003</li>
+<li>[x] CHK042 - Are JSON output requirements specified for programmatic consumption? [Completeness, Plan mentions JSON] → CLI-004</li>
+<li>[x] CHK043 - Is the help text content specified for the remove command? [Gap] → CLI-006</li>
+<li>[x] CHK044 - Are the flag names specified (<code>--force</code> vs <code>-f</code>)? [Completeness, Gap] → CLI-002</li>
+<li>[x] CHK045 - Is verbose output mode behavior defined? [Gap, Tasks T039 references --verbose] → CLI-002, NFR-002</li>
+</ul>
+<hr>
+<h2 id="non-functional-requirements">Non-Functional Requirements</h2>
+<ul>
+<li>[x] CHK046 - Are performance requirements specified for removal operations? [NFR, Gap] → Defined in plan.md (sub-second execution)</li>
+<li>[x] CHK047 - Are cross-platform requirements explicitly stated (Windows/Linux/macOS differences)? [NFR, Plan mentions cross-platform] → Defined in plan.md</li>
+<li>[x] CHK048 - Are concurrent operation requirements defined (multiple wt processes)? [NFR, Gap] → NFR-001</li>
+<li>[x] CHK049 - Are logging/audit requirements specified for removal operations? [NFR, Gap] → NFR-002</li>
+</ul>
+<hr>
+<h2 id="dependencies--assumptions">Dependencies &amp; Assumptions</h2>
+<ul>
+<li>[x] CHK050 - Is the assumption &quot;permission to delete working directory&quot; validated with fallback behavior? [Assumption, Spec Assumptions]</li>
+<li>[x] CHK051 - Is the dependency on git CLI explicitly documented with version requirements? [Dependency, Gap] → Out of Scope (project-level prerequisite)</li>
+<li>[x] CHK052 - Are the assumptions about &quot;standard git worktree conventions&quot; enumerated? [Assumption, Spec Assumptions]</li>
+<li>[x] CHK053 - Is the relationship to existing <code>create</code> and <code>list</code> commands documented? [Dependency, Consistency]</li>
+</ul>
+<hr>
+<h2 id="ambiguities--conflicts">Ambiguities &amp; Conflicts</h2>
+<ul>
+<li>[x] CHK054 - Is there ambiguity in what constitutes a &quot;locked&quot; worktree vs &quot;has uncommitted changes&quot;? [Ambiguity]</li>
+<li>[x] CHK055 - Does FR-010 (proceed with removal anyway) conflict with safety goals in FR-007? [Conflict]</li>
+<li>[x] CHK056 - Is the force flag behavior for &quot;locked&quot; vs &quot;uncommitted&quot; scenarios distinguished? [Ambiguity, FR-004 vs FR-007]</li>
+<li>[x] CHK057 - Is &quot;active session&quot; in FR-006 clearly distinguished from &quot;currently inside directory&quot;? [Ambiguity]</li>
+</ul>
+<hr>
+<h2 id="traceability">Traceability</h2>
+<ul>
+<li>[x] CHK058 - Do all functional requirements trace to at least one acceptance scenario? [Traceability]</li>
+<li>[x] CHK059 - Do all edge cases have corresponding functional requirements? [Traceability]</li>
+<li>[x] CHK060 - Do all success criteria have corresponding functional requirements? [Traceability]</li>
+<li>[x] CHK061 - Are clarification decisions traced to the requirements they modified? [Traceability, Clarifications §2026-01-24]</li>
+</ul>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>Check items off as completed: <code>[x]</code></li>
+<li>Add inline comments for findings or concerns</li>
+<li>Reference specific spec sections when identifying issues</li>
+<li>Items marked <code>[Gap]</code> indicate missing requirements that should be addressed</li>
+<li>Items marked <code>[Ambiguity]</code> indicate unclear requirements needing clarification</li>
+<li>Items marked <code>[Conflict]</code> indicate potentially contradictory requirements</li>
+</ul>
+<h3 id="review-summary-2026-01-25">Review Summary (2026-01-25)</h3>
+<p>All 61 checklist items have been reviewed and addressed:</p>
+<ul>
+<li><strong>Gaps resolved by adding new FRs</strong>: FR-012 through FR-017</li>
+<li><strong>CLI requirements added</strong>: CLI-001 through CLI-006 (command syntax, options, output formats, exit codes, help text)</li>
+<li><strong>NFRs added</strong>: NFR-001 (concurrent operations), NFR-002 (logging)</li>
+<li><strong>Out of Scope clarified</strong>: Git CLI version requirements (CHK051) - defined at project level</li>
+<li><strong>Clarifications added</strong>: 10 new clarification entries documenting decisions</li>
+</ul>
+<p>All items now pass. Specification is ready for implementation.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/checklists/pre-implementation.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

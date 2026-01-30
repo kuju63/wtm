@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>機能仕様書: Worktreeとブランチ情報の一覧表示 | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="機能仕様書: Worktreeとブランチ情報の一覧表示 | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="機能仕様書-worktreeとブランチ情報の一覧表示">機能仕様書: Worktreeとブランチ情報の一覧表示</h1>
+
+<p><strong>フィーチャーブランチ</strong>: <code>002-list-worktree-branches</code><br>
+<strong>作成日</strong>: 2026-01-04<br>
+<strong>ステータス</strong>: Draft<br>
+<strong>入力</strong>: ユーザー説明: &quot;ユーザーがworktreeに追加されているブランチを把握するためにworktreeとブランチの一覧を表示することができる。&quot;</p>
+<h2 id="明確化事項">明確化事項</h2>
+<h3 id="セッション-2026-01-04">セッション 2026-01-04</h3>
+<ul>
+<li>Q: P3ユーザーストーリー3で、どの代替出力フォーマット（JSON、CSV等）をサポートすべきか? → A: 初期リリースでは代替フォーマットは未サポート（P3は将来機能に延期）</li>
+<li>Q: detached HEAD状態のworktreeをどのように表示すべきか? → A: 短縮コミットハッシュ + &quot;(detached)&quot; ラベルを表示（例: &quot;abc1234 (detached)&quot;）</li>
+<li>Q: worktreeリストのデフォルトソート順序は? → A: 作成日時順（新しい順）</li>
+<li>Q: ディスク上に存在しないworktreeをどのように扱うべきか? → A: 警告を表示してその項目をスキップし、他の有効なworktreeの表示を継続</li>
+<li>Q: &quot;人間が読みやすい&quot;出力（FR-003）には具体的にどのフォーマットを使用すべきか? → A: パス、ブランチ、ステータスの列を持つテーブル形式</li>
+</ul>
+<h2 id="ユーザーシナリオとテスト-必須">ユーザーシナリオとテスト <em>(必須)</em></h2>
+<!--
+  重要: ユーザーストーリーは重要度順にPRIORITIZE（優先順位付け）すること。
+  各ユーザーストーリー/ジャーニーは独立してテスト可能であること - つまり、そのうちの1つだけを実装しても、
+  価値を提供する実行可能なMVP（Minimum Viable Product）を持つことができる。
+  
+  各ストーリーに優先度（P1、P2、P3等）を割り当て、P1が最も重要。
+  各ストーリーは独立した機能スライスとして以下が可能であること:
+  - 独立して開発可能
+  - 独立してテスト可能
+  - 独立してデプロイ可能
+  - 独立してユーザーにデモ可能
+-->
+<h3 id="ユーザーストーリー1---すべてのworktreeとブランチを表示-優先度-p1">ユーザーストーリー1 - すべてのworktreeとブランチを表示 (優先度: P1)</h3>
+<p>開発者は、作成されたすべてのworktreeと各worktreeでチェックアウトされているブランチの概要を確認する必要がある。これにより、worktreeを切り替えることなく、複数の作業コンテキストを管理できる。</p>
+<p><strong>この優先度の理由</strong>: これは機能のコア機能である - worktreeとブランチを表示する能力は、この機能の目的の基礎となる。</p>
+<p><strong>独立テスト</strong>: すべてのworktreeと現在のブランチを1つのビューにリストするコマンドを実行することでテスト可能。</p>
+<p><strong>受入シナリオ</strong>:</p>
+<ol>
+<li><strong>前提</strong> 開発者が異なるブランチをチェックアウトした複数のworktreeを作成している、<strong>実行</strong> リストコマンドを実行する、<strong>結果</strong> すべてのworktreeとそれに対応するブランチ名を示す構造化された出力が表示される</li>
+<li><strong>前提</strong> ブランチがチェックアウトされたworktreeが存在する、<strong>実行</strong> リストコマンドを実行する、<strong>結果</strong> ブランチ情報がそのworktreeに明確に関連付けられて表示される</li>
+<li><strong>前提</strong> worktreeが作成されていない、<strong>実行</strong> リストコマンドを実行する、<strong>結果</strong> worktreeが利用できないことを示す出力が表示される</li>
+</ol>
+<hr>
+<h3 id="ユーザーストーリー2---人間が読みやすい形式でリストを表示-優先度-p2">ユーザーストーリー2 - 人間が読みやすい形式でリストを表示 (優先度: P2)</h3>
+<p>開発者は、worktreeとブランチ情報が明確で読みやすい形式で表示されることを必要とする。この出力を使用して、現在の開発セットアップを一目で把握できる。</p>
+<p><strong>この優先度の理由</strong>: コマンドラインツールにとってユーザーエクスペリエンスは重要である。コア機能（P1）が動作する一方で、情報を明確に提示することで、開発者が素早く行動できるようにする。</p>
+<p><strong>独立テスト</strong>: 出力形式が人間が読みやすく、worktreeと関連するブランチが明確に分離されていることを検証することでテスト可能。</p>
+<p><strong>受入シナリオ</strong>:</p>
+<ol>
+<li><strong>前提</strong> リストコマンドに表示するデータがある、<strong>実行</strong> コマンドを実行する、<strong>結果</strong> パス、ブランチ、ステータスの列を持つテーブル形式で出力が表示される</li>
+<li><strong>前提</strong> 複数のworktreeが存在する、<strong>実行</strong> リストコマンドを実行する、<strong>結果</strong> 各worktreeがテーブルの別々の行として表示される</li>
+</ol>
+<hr>
+<h3 id="ユーザーストーリー3---代替出力フォーマットのサポート-優先度-p3---将来の拡張">ユーザーストーリー3 - 代替出力フォーマットのサポート (優先度: P3 - 将来の拡張)</h3>
+<p>開発者は、スクリプトや他のツールに適した形式でworktreeとブランチ情報をエクスポートしたい。これにより、自動化や他の開発ワークフローとの統合が可能になる。</p>
+<p><strong>注意</strong>: この機能は将来のリリースに延期される。初期リリースは人間が読みやすい出力のみに焦点を当てる。</p>
+<p><strong>この優先度の理由</strong>: 人間が読みやすい形式（P2）は典型的な対話的使用をカバーするが、代替フォーマットのサポートはパワーユーザーや自動化シナリオを可能にする。ただし、これは初期リリースにとって重要ではない。</p>
+<p><strong>独立テスト</strong>: 他のツールが解析できる代替フォーマットで出力が生成できることを検証することでテスト可能（将来のリリースで実装された場合）。</p>
+<p><strong>受入シナリオ</strong>:</p>
+<ol>
+<li><strong>前提</strong> 開発者が代替出力フォーマットフラグを指定する、<strong>実行</strong> リストコマンドを実行する、<strong>結果</strong> 指定されたフォーマットに従って出力がフォーマットされる（将来機能）</li>
+<li><strong>前提</strong> 出力フォーマットが指定されている、<strong>実行</strong> リストコマンドを実行する、<strong>結果</strong> すべてのworktreeとブランチ情報が代替フォーマット出力に含まれる（将来機能）</li>
+</ol>
+<hr>
+<p>[必要に応じて、優先度を割り当てた追加のユーザーストーリーを追加]</p>
+<h3 id="エッジケース">エッジケース</h3>
+<ul>
+<li>worktreeは存在するがブランチがチェックアウトされていない（detached HEAD）場合はどうなるか? → 短縮コミットハッシュの後に &quot;(detached)&quot; ラベルを表示（例: &quot;abc1234 (detached)&quot;）</li>
+<li>ブランチ名に特殊文字やスペースが含まれている場合はどうなるか?</li>
+<li>ディスク上に存在しないworktreeにアクセスする場合はどうなるか? → 警告メッセージを表示してその項目をスキップし、他の有効なworktreeの表示を継続</li>
+<li>非常に多数のworktreeがある場合はどうなるか（パフォーマンス/可読性）?</li>
+</ul>
+<h2 id="要件-必須">要件 <em>(必須)</em></h2>
+<!--
+  アクション必要: このセクションの内容はプレースホルダーを表します。
+  適切な機能要件を記入してください。
+-->
+<h3 id="機能要件">機能要件</h3>
+<ul>
+<li><strong>FR-001</strong>: システムはすべてのアクティブなworktreeのリストを表示しなければならない</li>
+<li><strong>FR-002</strong>: システムは各worktreeでチェックアウトされている現在のブランチを表示しなければならない</li>
+<li><strong>FR-003</strong>: システムはデフォルトでパス、ブランチ、ステータスの列を持つテーブル形式で出力を表示しなければならない</li>
+<li><strong>FR-004</strong>: システムはブランチがチェックアウトされていないworktree（detached HEAD状態）を、短縮コミットハッシュの後に &quot;(detached)&quot; ラベルを表示することで処理しなければならない</li>
+<li><strong>FR-005</strong>: システムはユーザーがどのworktreeかを識別できるように、ブランチ情報と共にworktreeパスを表示しなければならない</li>
+<li><strong>FR-006</strong>: ユーザーはこの機能をコマンドラインインターフェースを介して呼び出すことができなければならない</li>
+<li><strong>FR-007</strong>: システムはworktreeを作成日順に新しい順でソートして表示しなければならない</li>
+<li><strong>FR-008</strong>: システムはディスク上に存在しないworktreeに対して警告を表示し、残りのworktreeの処理を継続しなければならない</li>
+</ul>
+<h3 id="主要エンティティ">主要エンティティ</h3>
+<ul>
+<li><strong>Worktree</strong>: パス、ブランチ、状態を含むメタデータを持つGit worktreeインスタンス</li>
+<li><strong>Branch</strong>: 名前とworktreeで現在チェックアウトされているかどうかを持つGitブランチ参照</li>
+</ul>
+<h2 id="成功基準-必須">成功基準 <em>(必須)</em></h2>
+<!--
+  アクション必要: 測定可能な成功基準を定義してください。
+  これらは技術に依存せず、測定可能でなければなりません。
+-->
+<h3 id="測定可能な成果">測定可能な成果</h3>
+<ul>
+<li><strong>SC-001</strong>: 3つ以上のworktreeでコマンドを実行する場合、ユーザーは出力を見てから5秒以内にすべてのworktreeとそのブランチを識別できる</li>
+<li><strong>SC-002</strong>: リスト出力は人間が読みやすく、worktreeとブランチに関する情報が明確に分離されている</li>
+<li><strong>SC-003</strong>: パスやブランチ名に特殊文字が含まれるworktreeに対して機能が正しく動作する</li>
+<li><strong>SC-004</strong>: ユーザーは追加のヘルプドキュメントを必要とせずに、worktreeステータスを表示するワークフローを完了できる</li>
+</ul>
+<h2 id="前提条件">前提条件</h2>
+<ul>
+<li>Gitリポジトリはすでに初期化されており、標準のGit worktreeコマンドを使用してworktreeが作成されている</li>
+<li>システムはGitにアクセスでき、git worktree listおよび関連コマンドを実行できる</li>
+<li>デフォルトの出力形式は完全性よりも人間の可読性を優先すべきである（追加のフォーマットは将来の反復で追加可能）</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ADR 0005: Quality Gates and Testing Requirements | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ADR 0005: Quality Gates and Testing Requirements | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/adr/0005-quality-gates-testing-requirements.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adr-0005-quality-gates-and-testing-requirements">ADR 0005: Quality Gates and Testing Requirements</h1>
+
+<p><strong>Status</strong>: Accepted<br>
+<strong>Date</strong>: 2026-01-05<br>
+<strong>Context</strong>: Feature 003 - Automated Binary Release Pipeline<br>
+<strong>Related</strong>: <a href="../../specs/003-automated-release-pipeline/spec.html">spec.md</a>, FR-007, FR-008, T062-T065</p>
+<h2 id="context">Context</h2>
+<p>To ensure code quality and prevent regressions, we need automated quality gates that:</p>
+<ol>
+<li>Run tests on all branches before allowing merge to main</li>
+<li>Report code coverage to Codacy for visibility</li>
+<li>Enforce minimum quality standards</li>
+<li>Balance strictness with developer productivity</li>
+</ol>
+<p>The specification defines:</p>
+<ul>
+<li><strong>FR-007</strong>: All feature/fix branches tested before merge</li>
+<li><strong>FR-008</strong>: Code coverage reported to Codacy</li>
+<li><strong>SC-002</strong>: Target 80% code coverage (aspirational, not blocking)</li>
+</ul>
+<h2 id="decision">Decision</h2>
+<h3 id="test-execution-mandatory-and-blocking">Test Execution: Mandatory and Blocking</h3>
+<p><strong>Rule</strong>: All tests MUST pass before merging to main.</p>
+<p><strong>Implementation</strong>: GitHub branch protection rule + <code>.github/workflows/test.yml</code></p>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="lang-yaml"># Repository Settings → Branches → main → Branch protection rules
+- Require status checks to pass before merging
+- Required status check: &quot;Test and Coverage / Run Tests&quot;
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>❌ <strong>Test failure</strong> → Merge blocked, PR shows red status</li>
+<li>✅ <strong>Test success</strong> → Merge allowed, PR shows green status</li>
+</ul>
+<p><strong>Rationale</strong>:</p>
+<ol>
+<li><strong>Regression Prevention</strong>: Broken code cannot reach main branch</li>
+<li><strong>Quality Assurance</strong>: Every release is backed by passing tests</li>
+<li><strong>Developer Confidence</strong>: Failures caught early in PR review</li>
+<li><strong>Compliance</strong>: Meets FR-007 requirement</li>
+</ol>
+<h3 id="code-coverage-warning-only-non-blocking">Code Coverage: Warning Only (Non-Blocking)</h3>
+<p><strong>Rule</strong>: Code coverage reported to Codacy, but coverage drops do NOT block merge.</p>
+<p><strong>Implementation</strong>: Codacy integration in <code>.github/workflows/test.yml</code></p>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="lang-yaml">- name: Upload coverage to Codacy
+  uses: codacy/codacy-coverage-reporter-action@a38818475bb21847788496e9f0fddaa4e84955ba
+  with:
+    project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+    coverage-reports: ${{ steps.coverage.outputs.coverage-file }}
+  continue-on-error: true  # Coverage upload failure does not block PR
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>📊 <strong>Coverage &lt; 80%</strong> → Codacy comment on PR (warning), merge allowed</li>
+<li>📉 <strong>Coverage drops</strong> → Codacy comment shows decrease, merge allowed</li>
+<li>📈 <strong>Coverage increases</strong> → Codacy comment shows improvement, merge allowed</li>
+<li>❌ <strong>Codacy upload fails</strong> → Warning logged, merge allowed (transient failure tolerance)</li>
+</ul>
+<p><strong>Rationale</strong>:</p>
+<ol>
+<li><strong>Visibility</strong>: Coverage trends visible in Codacy dashboard and PR comments</li>
+<li><strong>Non-Blocking</strong>: Allows pragmatic balance between coverage and velocity</li>
+<li><strong>Aspirational Goal</strong>: 80% is a target, not a hard requirement</li>
+<li><strong>Transient Failure Tolerance</strong>: Codacy API outages do not block development</li>
+<li><strong>Developer Accountability</strong>: Coverage warnings encourage but do not enforce coverage improvements</li>
+</ol>
+<h3 id="quality-gate-policy-summary">Quality Gate Policy Summary</h3>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Status</th>
+<th>Blocks Merge?</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Test Execution</strong></td>
+<td>Required</td>
+<td>✅ Yes</td>
+<td>Prevents regressions, ensures correctness</td>
+</tr>
+<tr>
+<td><strong>Code Coverage</strong></td>
+<td>Informational</td>
+<td>❌ No</td>
+<td>Encourages improvement, tolerates pragmatism</td>
+</tr>
+<tr>
+<td><strong>Coverage Threshold (80%)</strong></td>
+<td>Aspirational</td>
+<td>❌ No</td>
+<td>Goal, not requirement (SC-002)</td>
+</tr>
+<tr>
+<td><strong>Codacy Upload Failure</strong></td>
+<td>Warning</td>
+<td>❌ No</td>
+<td>Transient API failures should not block work</td>
+</tr>
+</tbody>
+</table>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<h3 id="alternative-1-strict-coverage-threshold-80-blocking">Alternative 1: Strict Coverage Threshold (80% Blocking)</h3>
+<p><strong>Approach</strong>: Require 80% code coverage before allowing merge</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Forces high test coverage</li>
+<li>Ensures comprehensive testing</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Blocks pragmatic development (e.g., integration tests vs. unit tests)</li>
+<li>Encourages &quot;gaming the system&quot; (meaningless tests to hit threshold)</li>
+<li>Slows velocity for diminishing returns (80% → 85% may require disproportionate effort)</li>
+<li>Transient failures (Codacy API outage) block all PRs</li>
+</ul>
+<p><strong>Rejected</strong>: Too strict, reduces developer productivity without proportional quality gain.</p>
+<h3 id="alternative-2-no-coverage-reporting">Alternative 2: No Coverage Reporting</h3>
+<p><strong>Approach</strong>: Run tests, but do not report coverage</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Simplest implementation</li>
+<li>No external service dependency</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Violates FR-008 requirement (Codacy integration)</li>
+<li>No visibility into coverage trends</li>
+<li>Cannot track quality improvements over time</li>
+</ul>
+<p><strong>Rejected</strong>: Does not meet specification requirement.</p>
+<h3 id="alternative-3-coverage-threshold-on-main-only">Alternative 3: Coverage Threshold on Main Only</h3>
+<p><strong>Approach</strong>: Enforce 80% coverage only on main branch, not on feature branches</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Allows experimentation on feature branches</li>
+<li>Ensures main branch quality</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Requires post-merge enforcement (revert bad merges)</li>
+<li>Poor developer experience (surprises after merge)</li>
+<li>Defeats purpose of PR review</li>
+</ul>
+<p><strong>Rejected</strong>: Post-merge enforcement is too late.</p>
+<h2 id="consequences">Consequences</h2>
+<h3 id="positive">Positive</h3>
+<ul>
+<li><strong>Regression Prevention</strong>: Broken tests cannot merge to main</li>
+<li><strong>Developer Experience</strong>: Clear pass/fail status in PR checks</li>
+<li><strong>Quality Visibility</strong>: Coverage trends visible in Codacy dashboard</li>
+<li><strong>Pragmatic Balance</strong>: Strict on correctness (tests), lenient on metrics (coverage)</li>
+<li><strong>Resilience</strong>: Transient Codacy failures do not block development</li>
+</ul>
+<h3 id="negative">Negative</h3>
+<ul>
+<li><strong>Coverage Not Enforced</strong>: Projects may drift below 80% coverage without intervention</li>
+<li><strong>Manual Oversight Required</strong>: Team must review Codacy warnings and act on them</li>
+<li><strong>Potential Technical Debt</strong>: Low-coverage code may accumulate over time</li>
+</ul>
+<h3 id="mitigation-strategies">Mitigation Strategies</h3>
+<ol>
+<li><strong>Regular Coverage Reviews</strong>: Monthly review of Codacy dashboard in team meetings</li>
+<li><strong>Coverage Targets in PRs</strong>: Encourage reviewers to request tests for low-coverage changes</li>
+<li><strong>Codacy Quality Goals</strong>: Set Codacy project goal to 80%, track progress</li>
+<li><strong>Documentation</strong>: Document coverage expectations in <code>CONTRIBUTING.md</code></li>
+</ol>
+<h2 id="implementation">Implementation</h2>
+<h3 id="branch-protection-rules-github-repository-settings">Branch Protection Rules (GitHub Repository Settings)</h3>
+<pre><code class="lang-yaml"># Settings → Branches → main → Branch protection rules
+protection:
+  required_status_checks:
+    strict: true  # Require branch to be up to date before merging
+    checks:
+      - &quot;Test and Coverage / Run Tests&quot;  # Required
+  # Note: Codacy checks are NOT required
+</code></pre>
+<h3 id="test-workflow-configuration">Test Workflow Configuration</h3>
+<pre><code class="lang-yaml"># .github/workflows/test.yml
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests with coverage
+        run: |
+          dotnet test wt.sln \
+            --configuration Release \
+            --no-build \
+            --verbosity normal \
+            --collect:&quot;XPlat Code Coverage&quot; \
+            --results-directory ./coverage \
+            --logger &quot;trx;LogFileName=test-results.trx&quot;
+
+      - name: Upload coverage to Codacy
+        uses: codacy/codacy-coverage-reporter-action@a38818475bb21847788496e9f0fddaa4e84955ba
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ${{ steps.coverage.outputs.coverage-file }}
+        continue-on-error: true  # Non-blocking
+
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@bdab7eb6dfb6be17ac3d72352f67e559a72c8db1
+        with:
+          name: Test Results
+          path: '**/TestResults/*.trx'
+          reporter: dotnet-trx
+          fail-on-error: true  # Test failures block merge
+</code></pre>
+<h3 id="release-workflow-quality-gate">Release Workflow Quality Gate</h3>
+<pre><code class="lang-yaml"># .github/workflows/release.yml
+build:
+  name: Build Binaries
+  needs: calculate-version
+  if: needs.calculate-version.outputs.should-release == 'true'
+  # Implicitly depends on test.yml passing (branch protection)
+</code></pre>
+<p><strong>Note</strong>: Release workflow only runs on main branch, which already has passing tests (enforced by branch protection).</p>
+<h2 id="testing-requirements-documentation">Testing Requirements Documentation</h2>
+<h3 id="developer-guide-docsjacontributingmd">Developer Guide (docs/ja/CONTRIBUTING.md)</h3>
+<ul>
+<li><strong>Test Expectations</strong>: All new features must include tests</li>
+<li><strong>Coverage Goal</strong>: Aim for 80% coverage, but not strictly enforced</li>
+<li><strong>Test Types</strong>: Unit tests (required), integration tests (recommended)</li>
+<li><strong>Test Failures</strong>: Must be fixed before merge</li>
+</ul>
+<h3 id="pull-request-template-githubpull_request_templatemd">Pull Request Template (.github/PULL_REQUEST_TEMPLATE.md)</h3>
+<pre><code class="lang-markdown">## Testing Checklist
+
+- [ ] All tests pass locally (`dotnet test`)
+- [ ] New features include unit tests
+- [ ] Coverage is maintained or improved (check Codacy comment)
+- [ ] No test warnings or errors in output
+</code></pre>
+<h2 id="monitoring-and-metrics">Monitoring and Metrics</h2>
+<h3 id="metrics-to-track">Metrics to Track</h3>
+<ol>
+<li><strong>Test Pass Rate</strong>: % of PRs with passing tests (target: 100%)</li>
+<li><strong>Average Coverage</strong>: Project-wide coverage (target: 80%)</li>
+<li><strong>Coverage Trend</strong>: Month-over-month coverage change</li>
+<li><strong>Codacy Upload Success Rate</strong>: % of coverage reports successfully uploaded (target: &gt; 95%)</li>
+</ol>
+<h3 id="alerts">Alerts</h3>
+<ul>
+<li><strong>Test Failure Spike</strong>: &gt; 10% of PRs failing tests → Investigate test flakiness</li>
+<li><strong>Coverage Drop</strong>: &gt; 5% coverage decrease in 1 month → Team review required</li>
+<li><strong>Codacy Upload Failures</strong>: &gt; 20% failures → Check Codacy service health</li>
+</ul>
+<h2 id="documentation">Documentation</h2>
+<ul>
+<li><strong>User Guide</strong>: <a href="../../specs/003-automated-release-pipeline/quickstart.html">quickstart.md</a></li>
+<li><strong>Developer Guide</strong>: <a href="../ja/CONTRIBUTING.md">docs/ja/CONTRIBUTING.md</a> (to be created)</li>
+<li><strong>Testing Guide</strong>: <a href="../../specs/003-automated-release-pipeline/testing-guide.html">specs/003-automated-release-pipeline/testing-guide.md</a> (T070)</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches">GitHub Branch Protection Rules</a></li>
+<li><a href="https://github.com/codacy/codacy-coverage-reporter-action">Codacy Coverage Reporter Action</a></li>
+<li><a href="../../specs/003-automated-release-pipeline/spec.html">FR-007: Test Automation</a></li>
+<li><a href="../../specs/003-automated-release-pipeline/spec.html">FR-008: Coverage Reporting</a></li>
+<li><a href="../../specs/003-automated-release-pipeline/spec.html">SC-002: Coverage Goal</a></li>
+</ul>
+<h2 id="review-schedule">Review Schedule</h2>
+<p>This ADR should be reviewed:</p>
+<ul>
+<li>If test pass rate drops below 90%</li>
+<li>If average coverage drops below 70% (10% below goal)</li>
+<li>If quality gates prove too strict or too lenient</li>
+<li>Quarterly during team retrospectives</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/adr/0005-quality-gates-testing-requirements.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

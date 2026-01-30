@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: GitHub Pages Documentation Publishing | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: GitHub Pages Documentation Publishing | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-github-pages-documentation-publishing">Tasks: GitHub Pages Documentation Publishing</h1>
+
+<p><strong>Input</strong>: Design documents from <code>/specs/001-github-pages-docs/</code>
+<strong>Prerequisites</strong>: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md</p>
+<p><strong>Tests</strong>: No xUnit tests required - documentation validated through build process (DocFX + LinkChecker)</p>
+<p><strong>Organization</strong>: Tasks are grouped by user story to enable independent implementation and testing of each story.</p>
+<h2 id="format-id-p-story-description">Format: <code>[ID] [P?] [Story] Description</code></h2>
+<ul>
+<li><strong>[P]</strong>: Can run in parallel (different files, no dependencies)</li>
+<li><strong>[Story]</strong>: Which user story this task belongs to (e.g., US1, US2, US3)</li>
+<li>Include exact file paths in descriptions</li>
+</ul>
+<h2 id="path-conventions">Path Conventions</h2>
+<p>Project follows single repository structure:</p>
+<ul>
+<li>Documentation source: <code>docs/</code></li>
+<li>CLI project: <code>wt.cli/</code></li>
+<li>Tools: <code>Tools/DocGenerator/</code></li>
+<li>GitHub Actions: <code>.github/workflows/</code></li>
+<li>Build output: <code>_site/</code> (not committed)</li>
+</ul>
+<hr>
+<h2 id="phase-1-setup-shared-infrastructure">Phase 1: Setup (Shared Infrastructure)</h2>
+<p><strong>Purpose</strong>: Enable XML documentation and DocFX configuration</p>
+<ul>
+<li>[x] T001 Enable XML documentation generation in wt.cli/wt.cli.csproj (add GenerateDocumentationFile and DocumentationFile properties)</li>
+<li>[x] T002 [P] Verify docfx.json configuration exists and includes API metadata generation settings</li>
+<li>[x] T003 [P] Create Tools/DocGenerator/ directory and initialize console project with System.CommandLine package</li>
+</ul>
+<p><strong>Checkpoint</strong>: XML docs enabled, DocFX configured, DocGenerator project initialized</p>
+<hr>
+<h2 id="phase-2-foundational-blocking-prerequisites">Phase 2: Foundational (Blocking Prerequisites)</h2>
+<p><strong>Purpose</strong>: Core documentation infrastructure that MUST be complete before ANY user story can be implemented</p>
+<p><strong>⚠️ CRITICAL</strong>: No user story work can begin until this phase is complete</p>
+<ul>
+<li>[x] T004 Implement command documentation generator in Tools/DocGenerator/Program.cs with MarkdownConsole and CommandDocGenerator classes</li>
+<li>[x] T005 Add ConvertCommandToMarkdown method to Tools/DocGenerator/Program.cs for System.CommandLine help text extraction</li>
+<li>[x] T006 [P] Integrate documentation build into .github/workflows/release.yml as build-and-deploy-docs job (runs after create-release job completes)</li>
+<li>[x] T007 [P] Add DocFX installation with caching to .github/workflows/release.yml (dotnet tool install docfx --version ${{ env.DOCFX_VERSION }} --global)</li>
+<li>[x] T008 Add version extraction logic to .github/workflows/release.yml (extract minor version from needs.calculate-version.outputs.version)</li>
+<li>[x] T009 Create .github/scripts/update-version-manifest.py with positional arguments &lt;manifest_path&gt; <version> and automatic publishedDate generation</version></li>
+<li>[x] T010 [P] Configure GitHub Pages deployment in .github/workflows/release.yml using peaceiris/actions-gh-pages@v4 with keep_files: true</li>
+<li>[x] T011 Add XML documentation comments to all public classes, methods, and properties in wt.cli/ (per FR-015 and SC-006)</li>
+</ul>
+<p><strong>Implementation Note</strong>: Originally designed as separate .github/workflows/docs.yml triggered by release.published event, but consolidated into release.yml to avoid GitHub Actions limitation where GITHUB_TOKEN cannot trigger other workflows. This ensures documentation is automatically built and deployed as part of the release process.</p>
+<p><strong>Checkpoint</strong>: Foundation ready - documentation can be generated and deployed automatically</p>
+<hr>
+<h2 id="phase-3-user-story-1---quick-start-installation-priority-p1--mvp">Phase 3: User Story 1 - Quick Start Installation (Priority: P1) 🎯 MVP</h2>
+<p><strong>Goal</strong>: New users can install the tool and start using it within 5 minutes (SC-001)</p>
+<p><strong>Independent Test</strong>: A new user follows docs/installation.md from start to finish, installs the binary, and successfully runs <code>wt --version</code></p>
+<h3 id="implementation-for-user-story-1">Implementation for User Story 1</h3>
+<ul>
+<li>[x] T012 [US1] Create docs/installation.md with system requirements section (Windows 10+, macOS 11+, Linux x64/ARM)</li>
+<li>[x] T013 [US1] Add download section to docs/installation.md with links to release assets for all platforms (wt-win-x64.zip, wt-osx-arm64.tar.gz, wt-linux-x64.tar.gz, wt-linux-arm.tar.gz)</li>
+<li>[x] T014 [P] [US1] Add Windows installation instructions to docs/installation.md (extract, move to Program Files, add to PATH, verify)</li>
+<li>[x] T015 [P] [US1] Add macOS installation instructions to docs/installation.md (extract, move to /usr/local/bin, chmod +x, verify)</li>
+<li>[x] T016 [P] [US1] Add Linux installation instructions to docs/installation.md (extract, move to /usr/local/bin, chmod +x, verify)</li>
+<li>[x] T017 [US1] Add troubleshooting section to docs/installation.md (command not found, permission denied, Git not found)</li>
+<li>[x] T018 [US1] Create docs/guides/quickstart.md with first steps tutorial (create first worktree, basic commands)</li>
+<li>[x] T019 [US1] Update docs/index.md homepage with prominent Installation Guide link and Quick Start call-to-action</li>
+<li>[x] T020 [US1] Update docs/toc.yml to include installation and quickstart in navigation structure</li>
+</ul>
+<p><strong>Checkpoint</strong>: Installation documentation complete - users can install and verify the tool independently</p>
+<hr>
+<h2 id="phase-4-user-story-2---command-reference-lookup-priority-p1">Phase 4: User Story 2 - Command Reference Lookup (Priority: P1)</h2>
+<p><strong>Goal</strong>: Users can find detailed command documentation within 30 seconds (SC-002)</p>
+<p><strong>Independent Test</strong>: A user navigates to Command Reference, searches for a command, and finds complete syntax, parameters, and examples</p>
+<h3 id="implementation-for-user-story-2">Implementation for User Story 2</h3>
+<ul>
+<li>[x] T021 [US2] Run Tools/DocGenerator to generate command documentation markdown files in docs/commands/ directory (auto-generated from System.CommandLine definitions)</li>
+<li>[x] T022 [US2] Create docs/commands/index.md with command overview and category organization</li>
+<li>[x] T023 [P] [US2] Add command examples to docs/commands/create.md for 'create' command (default path, custom path, editor integration)</li>
+<li>[x] T024 [P] [US2] Add command examples to docs/commands/list.md for 'list' command (all worktrees, filtered by branch)</li>
+<li>[x] T025 [P] [US2] Add command examples for remaining commands (manual documentation created)</li>
+<li>[x] T026 [US2] Update docs/toc.yml to include commands section with auto-generated command list</li>
+<li>[x] T027 [US2] Add search functionality configuration to docfx.json (enable DocFX search plugin)</li>
+<li>[x] T028 [US2] Update index.md to include Command Reference section link with search call-to-action</li>
+<li>[x] T029 [US2] Add DocGenerator execution step to .github/workflows/release.yml before DocFX build (dotnet run --project Tools/DocGenerator -- --output docs/)</li>
+</ul>
+<p><strong>Checkpoint</strong>: Command reference complete - all commands documented with examples and searchable</p>
+<hr>
+<h2 id="phase-5-user-story-3---version-specific-documentation-access-priority-p2">Phase 5: User Story 3 - Version-Specific Documentation Access (Priority: P2)</h2>
+<p><strong>Goal</strong>: Users can switch between minor versions to see accurate documentation for their installed version (SC-004, FR-006, FR-007)</p>
+<p><strong>Independent Test</strong>: A user selects a different version from the version switcher, the page reloads showing that version's documentation with updated URL</p>
+<h3 id="implementation-for-user-story-3">Implementation for User Story 3</h3>
+<ul>
+<li>[ ] T030 [US3] Create version-switcher.js JavaScript module with version manifest fetching and dropdown population logic</li>
+<li>[ ] T031 [US3] Add version detection logic to version-switcher.js (extract version from URL path /v{major}.{minor}/)</li>
+<li>[ ] T032 [US3] Add version navigation logic to version-switcher.js (preserve current page path when switching versions)</li>
+<li>[ ] T033 [US3] Create version-switcher.css stylesheet with dropdown styling and current version indicator</li>
+<li>[ ] T034 [US3] Add version switcher HTML to docfx.json template overrides (inject into page header)</li>
+<li>[ ] T035 [US3] Update .github/scripts/update-version-manifest.py to handle first release case (peaceiris action handles existing manifest fetching)</li>
+<li>[ ] T036 [US3] Add new version entry logic to .github/scripts/update-version-manifest.py (update isLatest flags, add new version, sort by version)</li>
+<li>[ ] T037 [US3] Add manifest validation to .github/scripts/update-version-manifest.py (ensure one isLatest, valid JSON schema)</li>
+<li>[x] T038 [US3] Add version-specific directory structure to .github/workflows/release.yml (build to _site/v{major}.{minor}/)</li>
+<li>[x] T039 [US3] Add manifest update step to .github/workflows/release.yml (python .github/scripts/update-version-manifest.py)</li>
+<li>[x] T040 [US3] Add manifest deployment step to .github/workflows/release.yml (copy to root and version directory)</li>
+<li>[ ] T041 [US3] [FR-010] Create redirect page at root (_site/index.html) to automatically redirect to latest version from versions.json</li>
+<li>[ ] T042 [US3] Add version indicator to page footer in docfx.json template (display current version on every page per FR-007)</li>
+</ul>
+<p><strong>Checkpoint</strong>: Version switching functional - users can access documentation for any published minor version</p>
+<hr>
+<h2 id="phase-6-user-story-4---api-reference-for-developers-priority-p2">Phase 6: User Story 4 - API Reference for Developers (Priority: P2)</h2>
+<p><strong>Goal</strong>: Developers can find comprehensive API documentation for all public interfaces (SC-006, FR-005, FR-015)</p>
+<p><strong>Independent Test</strong>: A developer navigates to API Reference, finds a specific class, sees method signatures with XML comments, and successfully integrates it</p>
+<h3 id="implementation-for-user-story-4">Implementation for User Story 4</h3>
+<ul>
+<li>[ ] T043 [US4] Verify wt.cli.csproj has NoWarn configuration to suppress 1591 warnings during development</li>
+<li>[ ] T044 [US4] Configure docfx.json metadata section to extract API documentation from wt.cli XML output</li>
+<li>[ ] T045 [US4] Add API reference section to docs/toc.yml with automatic API navigation structure</li>
+<li>[ ] T046 [US4] Create docs/api/index.md overview page with API integration patterns and examples</li>
+<li>[ ] T047 [US4] Add xref configuration to docfx.json for .NET framework cross-references</li>
+<li>[ ] T048 [US4] Add DocFX metadata generation step to .github/workflows/release.yml (docfx metadata)</li>
+<li>[ ] T049 [US4] Add API documentation build step to .github/workflows/release.yml (docfx build with API metadata)</li>
+<li>[ ] T050 [US4] Update docs/index.md to include API Reference section link for developers</li>
+</ul>
+<p><strong>Checkpoint</strong>: API documentation complete - 100% of public APIs documented and accessible</p>
+<hr>
+<h2 id="phase-7-user-story-5---contributing-to-the-project-priority-p3">Phase 7: User Story 5 - Contributing to the Project (Priority: P3)</h2>
+<p><strong>Goal</strong>: Contributors can set up development environment with 95% success rate (SC-005, FR-004)</p>
+<p><strong>Independent Test</strong>: A new contributor follows docs/contributing.md, sets up environment, runs tests, and submits a PR</p>
+<h3 id="implementation-for-user-story-5">Implementation for User Story 5</h3>
+<ul>
+<li>[ ] T051 [US5] Create docs/contributing.md with development environment setup section (prerequisites: .NET 10 SDK, Git)</li>
+<li>[ ] T052 [US5] Add setup steps to docs/contributing.md (clone, dotnet restore, dotnet build, dotnet test, dotnet run)</li>
+<li>[ ] T053 [US5] Add coding standards section to docs/contributing.md with link to .specify/memory/constitution.md</li>
+<li>[ ] T054 [US5] Add TDD workflow section to docs/contributing.md (write tests first, implement, refactor)</li>
+<li>[ ] T055 [US5] Add pull request process to docs/contributing.md (create branch, write tests, implement, submit PR)</li>
+<li>[ ] T056 [US5] Add issue reporting section to docs/contributing.md (bug report template, feature request template)</li>
+<li>[ ] T057 [US5] Add note distinguishing user installation (no .NET) vs developer setup (.NET SDK required)</li>
+<li>[ ] T058 [US5] Update docs/toc.yml to include contributing guide in navigation</li>
+<li>[ ] T059 [US5] Update docs/index.md to include Contributing section link</li>
+</ul>
+<p><strong>Checkpoint</strong>: Contribution guide complete - new contributors can set up and contribute successfully</p>
+<hr>
+<h2 id="phase-8-polish--cross-cutting-concerns">Phase 8: Polish &amp; Cross-Cutting Concerns</h2>
+<p><strong>Purpose</strong>: Quality improvements and validation</p>
+<ul>
+<li>[ ] T060 [P] Add LinkChecker step to .github/workflows/release.yml for link validation (check internal and external links)</li>
+<li>[ ] T061 [P] Add DocFX build validation with --warningsAsErrors flag to .github/workflows/release.yml</li>
+<li>[ ] T062 [P] Create docs/ja/ directory with Japanese translations for key documentation pages (installation, command overview)</li>
+<li>[ ] T063 [P] Add CODE_OF_CONDUCT.md link to docs/contributing.md</li>
+<li>[ ] T064 Add performance optimization to docfx.json (enable caching, optimize asset loading per SC-007)</li>
+<li>[ ] T065 Add 404 error page to docs/404.md with navigation back to latest version</li>
+<li>[ ] T066 Test complete workflow end-to-end with mock release event</li>
+<li>[ ] T067 Validate documentation loads within 2 seconds on standard broadband (SC-007)</li>
+<li>[ ] T068 Verify all edge cases from spec.md (non-existent version, JavaScript disabled, deprecated versions)</li>
+<li>[ ] T069 Run quickstart.md validation to ensure 4-6 hour implementation estimate is accurate</li>
+</ul>
+<hr>
+<h2 id="dependencies--execution-order">Dependencies &amp; Execution Order</h2>
+<h3 id="phase-dependencies">Phase Dependencies</h3>
+<ul>
+<li><strong>Setup (Phase 1)</strong>: No dependencies - can start immediately</li>
+<li><strong>Foundational (Phase 2)</strong>: Depends on Setup completion - BLOCKS all user stories</li>
+<li><strong>User Stories (Phase 3-7)</strong>: All depend on Foundational phase completion
+<ul>
+<li>User stories can proceed in parallel if team capacity allows</li>
+<li>Or sequentially in priority order: US1 → US2 → US3 → US4 → US5</li>
+</ul>
+</li>
+<li><strong>Polish (Phase 8)</strong>: Depends on desired user stories being complete</li>
+</ul>
+<h3 id="user-story-dependencies">User Story Dependencies</h3>
+<ul>
+<li><strong>User Story 1 (P1)</strong>: Can start after Foundational (Phase 2) - Independent</li>
+<li><strong>User Story 2 (P1)</strong>: Can start after Foundational (Phase 2) - Independent</li>
+<li><strong>User Story 3 (P2)</strong>: Can start after Foundational (Phase 2) - Enhances US1 and US2 but independently testable</li>
+<li><strong>User Story 4 (P2)</strong>: Can start after Foundational (Phase 2) - Independent</li>
+<li><strong>User Story 5 (P3)</strong>: Can start after Foundational (Phase 2) - Independent</li>
+</ul>
+<h3 id="within-each-user-story">Within Each User Story</h3>
+<ul>
+<li>Tasks should be completed in order unless marked [P]</li>
+<li>User story is complete when checkpoint criteria is met</li>
+<li>Each story delivers value independently</li>
+</ul>
+<h3 id="parallel-opportunities">Parallel Opportunities</h3>
+<ul>
+<li><strong>Phase 1</strong>: T002, T003 can run in parallel</li>
+<li><strong>Phase 2</strong>: T006, T007, T010 can run in parallel</li>
+<li><strong>Phase 3 (US1)</strong>: T014, T015, T016 can run in parallel (different platform sections)</li>
+<li><strong>Phase 4 (US2)</strong>: T023, T024, T025 can run in parallel (different command examples)</li>
+<li><strong>Phase 8</strong>: T060, T061, T062, T063 can run in parallel</li>
+</ul>
+<p>Once Foundational phase completes:</p>
+<ul>
+<li><strong>All 5 user stories can be worked on in parallel by different team members</strong></li>
+<li>Each story is independently completable and testable</li>
+</ul>
+<hr>
+<h2 id="parallel-example-user-story-1-installation-guide">Parallel Example: User Story 1 (Installation Guide)</h2>
+<pre><code class="lang-bash"># Launch all platform-specific sections together:
+Task T014: &quot;Add Windows installation instructions to docs/installation.md&quot;
+Task T015: &quot;Add macOS installation instructions to docs/installation.md&quot;  
+Task T016: &quot;Add Linux installation instructions to docs/installation.md&quot;
+
+# These can be written simultaneously by different team members
+# Each section is independent and targets different file regions
+</code></pre>
+<hr>
+<h2 id="parallel-example-user-story-2-command-reference">Parallel Example: User Story 2 (Command Reference)</h2>
+<pre><code class="lang-bash"># Launch all command example tasks together:
+Task T023: &quot;Add command examples for 'create' command&quot;
+Task T024: &quot;Add command examples for 'list' command&quot;
+Task T025: &quot;Add command examples for remaining commands&quot;
+
+# All modify Tools/DocGenerator/Program.cs but in different methods
+# Can be developed in parallel with good coordination
+</code></pre>
+<hr>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="mvp-first-user-stories-1--2-only">MVP First (User Stories 1 &amp; 2 Only)</h3>
+<ol>
+<li>Complete Phase 1: Setup (T001-T003)</li>
+<li>Complete Phase 2: Foundational (T004-T011) - <strong>CRITICAL BLOCKER</strong></li>
+<li>Complete Phase 3: User Story 1 (T012-T020) - Installation Guide</li>
+<li>Complete Phase 4: User Story 2 (T021-T029) - Command Reference</li>
+<li><strong>STOP and VALIDATE</strong>: Test installation and command lookup independently</li>
+<li>Deploy to GitHub Pages and validate with real users</li>
+<li>This is the <strong>minimum viable documentation</strong> (SC-001, SC-002 met)</li>
+</ol>
+<h3 id="incremental-delivery">Incremental Delivery</h3>
+<ol>
+<li><strong>Foundation</strong> (Phases 1-2) → Documentation infrastructure ready</li>
+<li><strong>MVP</strong> (Phases 3-4) → Installation + Commands → Deploy (satisfies P1 requirements)</li>
+<li><strong>Enhanced</strong> (+Phase 5) → Add version switching → Deploy (satisfies FR-006, FR-007)</li>
+<li><strong>Developer Support</strong> (+Phase 6) → Add API docs → Deploy (satisfies FR-005, SC-006)</li>
+<li><strong>Community</strong> (+Phase 7) → Add contribution guide → Deploy (satisfies FR-004, SC-005)</li>
+<li><strong>Polish</strong> (Phase 8) → Quality improvements → Final deployment</li>
+</ol>
+<h3 id="parallel-team-strategy">Parallel Team Strategy</h3>
+<p>With multiple developers:</p>
+<ol>
+<li><strong>Team completes Setup + Foundational together</strong> (critical path)</li>
+<li><strong>Once Foundational is done</strong> (after T011):
+<ul>
+<li>Developer A: User Story 1 (Installation Guide)</li>
+<li>Developer B: User Story 2 (Command Reference)</li>
+<li>Developer C: User Story 3 (Version Switching)</li>
+<li>Developer D: User Story 4 (API Reference)</li>
+<li>Developer E: User Story 5 (Contribution Guide)</li>
+</ul>
+</li>
+<li>Stories complete independently and integrate via GitHub Pages deployment</li>
+</ol>
+<h3 id="single-developer-strategy">Single Developer Strategy</h3>
+<p>Follow sequential priority order:</p>
+<ol>
+<li>Setup → Foundational → US1 → US2 → US3 → US4 → US5 → Polish</li>
+<li>Deploy after US1+US2 for early user feedback</li>
+<li>Deploy again after each additional story</li>
+<li>Estimated total time: 4-6 hours for US1+US2, +1-2 hours per additional story</li>
+</ol>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>No xUnit tests</strong>: Documentation validated through DocFX build and LinkChecker</li>
+<li><strong>Auto-generation</strong>: Command docs and API docs generated automatically (T004-T005, T021, T048-T049)</li>
+<li><strong>Version management</strong>: Python script handles manifest updates (T009, T035-T037)</li>
+<li><strong>Deployment</strong>: GitHub Actions orchestrates entire workflow (T006-T010, T029, T038-T041, T048-T049, T060-T061)</li>
+<li><strong>Constitution compliance</strong>: All gates passed (see plan.md Constitution Check section)</li>
+<li><strong>Performance</strong>: Static site architecture ensures SC-007 (2-second load time)</li>
+<li><strong>Coverage</strong>: API docs cover 100% public APIs per SC-006</li>
+<li><strong>Automation</strong>: Documentation publishes within 10 minutes per SC-003</li>
+</ul>
+<p><strong>Total Tasks</strong>: 69 tasks organized into 8 phases (5 user stories + setup/foundational/polish)</p>
+<p><strong>MVP Scope</strong>: Phases 1-4 (32 tasks) deliver minimum viable documentation
+<strong>Full Scope</strong>: All 8 phases (69 tasks) deliver complete documentation system</p>
+<p><strong>Estimated Time</strong>:</p>
+<ul>
+<li>MVP (US1+US2): 4-6 hours</li>
+<li>Enhanced (+US3): +1-2 hours</li>
+<li>Developer (+US4): +1 hour</li>
+<li>Community (+US5): +1 hour</li>
+<li>Polish: +1 hour</li>
+<li><strong>Total</strong>: 8-11 hours for complete feature</li>
+</ul>
+<p><strong>Parallel Opportunities</strong>: 15+ tasks can run in parallel, reducing total time by 30-40% with multiple developers</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

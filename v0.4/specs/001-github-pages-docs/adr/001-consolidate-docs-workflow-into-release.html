@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ADR 001: Consolidate Documentation Workflow into Release Pipeline | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ADR 001: Consolidate Documentation Workflow into Release Pipeline | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/adr/001-consolidate-docs-workflow-into-release.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adr-001-consolidate-documentation-workflow-into-release-pipeline">ADR 001: Consolidate Documentation Workflow into Release Pipeline</h1>
+
+<p><strong>Status</strong>: Accepted<br>
+<strong>Date</strong>: 2026-01-16<br>
+<strong>Deciders</strong>: Development Team<br>
+<strong>Related Issues</strong>: Bug fix for documentation not deploying on release</p>
+<h2 id="context">Context</h2>
+<p>The original design specified a separate <code>.github/workflows/docs.yml</code> workflow triggered by <code>release.published</code> events. However, this approach encountered a fundamental GitHub Actions limitation:</p>
+<p><strong>GitHub Actions Security Constraint</strong>: When a workflow uses <code>GITHUB_TOKEN</code> to create a release (via <code>softprops/action-gh-release</code>), the release creation does NOT trigger other workflows to prevent recursive workflow execution.</p>
+<p><strong>Impact</strong>: Documentation would never be built and deployed automatically after release creation, defeating the purpose of automated documentation publishing (FR-001).</p>
+<h2 id="decision">Decision</h2>
+<p>We decided to <strong>consolidate the documentation build and deployment into the release workflow</strong> (<code>.github/workflows/release.yml</code>) as a dependent job named <code>build-and-deploy-docs</code>.</p>
+<h3 id="implementation">Implementation</h3>
+<pre><code class="lang-yaml"># In .github/workflows/release.yml
+build-and-deploy-docs:
+  name: Build and Deploy Documentation
+  needs: [calculate-version, create-release]
+  runs-on: ubuntu-latest
+  steps:
+    # ... documentation build steps
+</code></pre>
+<p><strong>Key Changes</strong>:</p>
+<ol>
+<li>Removed separate <code>.github/workflows/docs.yml</code> workflow</li>
+<li>Added <code>build-and-deploy-docs</code> job to <code>release.yml</code></li>
+<li>Job depends on <code>create-release</code> job completion</li>
+<li>Version obtained from <code>needs.calculate-version.outputs.version</code> instead of <code>github.event.release.tag_name</code></li>
+<li>Added caching for NuGet and DocFX to improve performance</li>
+<li>Updated actions to latest versions (checkout@v6, setup-dotnet@v5, cache@v5, gh-pages@v4)</li>
+</ol>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<h3 id="1-use-personal-access-token-pat-instead-of-github_token">1. Use Personal Access Token (PAT) instead of GITHUB_TOKEN</h3>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Would allow separate workflow trigger</li>
+<li>Maintains original design separation</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Requires PAT with write permissions (security concern)</li>
+<li>PAT management overhead (rotation, expiration)</li>
+<li>Violates principle of least privilege</li>
+<li>Not suitable for open source projects (requires organization/user PAT)</li>
+</ul>
+<p><strong>Rejected</strong>: Security and maintenance concerns outweigh architectural purity.</p>
+<h3 id="2-use-workflow_run-trigger">2. Use workflow_run trigger</h3>
+<pre><code class="lang-yaml">on:
+  workflow_run:
+    workflows: [&quot;Release to GitHub&quot;]
+    types: [completed]
+</code></pre>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Maintains workflow separation</li>
+<li>Uses GITHUB_TOKEN</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Introduces delay (wait for release workflow completion)</li>
+<li>More complex error handling (need to check workflow_run conclusion)</li>
+<li>Harder to debug (two separate workflow runs)</li>
+<li>Version information harder to pass between workflows</li>
+</ul>
+<p><strong>Rejected</strong>: Added complexity without clear benefit.</p>
+<h3 id="3-use-repository_dispatch-custom-event">3. Use repository_dispatch custom event</h3>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Maximum flexibility</li>
+<li>Can pass custom payloads</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Requires additional API calls in release workflow</li>
+<li>More code to maintain</li>
+<li>Overkill for simple use case</li>
+</ul>
+<p><strong>Rejected</strong>: Unnecessary complexity.</p>
+<h2 id="consequences">Consequences</h2>
+<h3 id="positive">Positive</h3>
+<ol>
+<li><strong>Works correctly</strong>: Documentation automatically deploys after release</li>
+<li><strong>Simpler architecture</strong>: Single workflow, easier to understand and debug</li>
+<li><strong>Better performance</strong>: Shared caching between release and docs jobs</li>
+<li><strong>Consistent versioning</strong>: Version calculated once, used by both release and docs</li>
+<li><strong>Atomic operation</strong>: Release and docs deployment happen in same workflow run</li>
+<li><strong>No secrets required</strong>: Uses GITHUB_TOKEN throughout</li>
+</ol>
+<h3 id="negative">Negative</h3>
+<ol>
+<li><strong>Tighter coupling</strong>: Documentation deployment is now part of release workflow</li>
+<li><strong>Cannot manually trigger docs rebuild</strong>: Would need to trigger entire release workflow or add separate docs-only workflow for maintenance</li>
+<li><strong>Longer workflow time</strong>: Release workflow now includes documentation build time (adds ~3-5 minutes)</li>
+<li><strong>All-or-nothing</strong>: If docs build fails, entire release workflow fails (can be mitigated with <code>continue-on-error</code>)</li>
+</ol>
+<h3 id="mitigation-strategies">Mitigation Strategies</h3>
+<p>For the negative consequences:</p>
+<ol>
+<li><strong>Manual docs rebuild</strong>: Can add a separate <code>docs-manual.yml</code> workflow with <code>workflow_dispatch</code> trigger for emergency documentation updates without creating a release</li>
+<li><strong>Workflow time</strong>: Mitigated through caching (NuGet, DocFX)</li>
+<li><strong>Build failures</strong>: Documentation build is final step, so release artifacts are already created and published before docs build</li>
+</ol>
+<h2 id="compliance">Compliance</h2>
+<p>This decision aligns with project constitution principles:</p>
+<ul>
+<li><strong>III. Clean &amp; Secure Code</strong>: Reduces complexity by consolidating workflows</li>
+<li><strong>V. Minimal Dependencies</strong>: No additional dependencies or secrets required</li>
+<li><strong>VI. Evidence-Based Development</strong>: Based on empirical testing of GitHub Actions behavior</li>
+</ul>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>This ADR should be referenced in specification contracts to explain the architectural decision</li>
+<li>Future work: Consider adding separate <code>docs-manual.yml</code> for emergency updates</li>
+<li>Monitor workflow execution time; if documentation build becomes bottleneck, revisit separation strategy with PAT approach</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li>GitHub Actions Documentation: <a href="https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow">Triggering a workflow from a workflow</a></li>
+<li>Original spec: <code>specs/001-github-pages-docs/spec.md</code></li>
+<li>Implementation: <code>.github/workflows/release.yml</code></li>
+<li>Bug report: Documentation not deploying on release</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/adr/001-consolidate-docs-workflow-into-release.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

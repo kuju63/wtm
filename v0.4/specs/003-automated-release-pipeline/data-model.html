@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Data Model: Automated Binary Release Pipeline | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Data Model: Automated Binary Release Pipeline | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/data-model.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="data-model-automated-binary-release-pipeline">Data Model: Automated Binary Release Pipeline</h1>
+
+<p><strong>Feature</strong>: <code>003-automated-release-pipeline</code><br>
+<strong>Date</strong>: 2026-01-05<br>
+<strong>Related</strong>: <a href="spec.html">spec.md</a>, <a href="plan.html">plan.md</a></p>
+<p>このドキュメントは、自動化されたバイナリリリースパイプラインのデータモデルを定義します。</p>
+<hr>
+<h2 id="概要">概要</h2>
+<p>リリースパイプラインは、以下の主要エンティティで構成されます:</p>
+<ol>
+<li><strong>Version</strong> - リリースバージョン情報</li>
+<li><strong>Release</strong> - GitHub Release エンティティ</li>
+<li><strong>Binary</strong> - プラットフォーム固有のバイナリファイル</li>
+<li><strong>SBOM</strong> - Software Bill of Materials</li>
+<li><strong>Signature</strong> - デジタル署名情報</li>
+<li><strong>Commit</strong> - Gitコミット履歴</li>
+<li><strong>Build</strong> - ビルドジョブの実行情報</li>
+</ol>
+<hr>
+<h2 id="エンティティ定義">エンティティ定義</h2>
+<h3 id="1-version">1. Version</h3>
+<p>バージョン情報を表現するエンティティ。</p>
+<p><strong>属性</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag</code></td>
+<td>String</td>
+<td>✅</td>
+<td>Gitタグ (プレフィックス付き)</td>
+<td><code>v1.2.3</code></td>
+</tr>
+<tr>
+<td><code>major</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>MAJORバージョン</td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>minor</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>MINORバージョン</td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td><code>patch</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>PATCHバージョン</td>
+<td><code>3</code></td>
+</tr>
+<tr>
+<td><code>prerelease</code></td>
+<td>String</td>
+<td>❌</td>
+<td>プレリリースラベル</td>
+<td><code>alpha.1</code>, <code>beta.2</code></td>
+</tr>
+<tr>
+<td><code>build_metadata</code></td>
+<td>String</td>
+<td>❌</td>
+<td>ビルドメタデータ</td>
+<td><code>20260105</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>バージョン計算ロジック</strong>:</p>
+<pre><code class="lang-text">Input: Commit history since last tag
+Process:
+  1. Parse commits for Conventional Commits types
+  2. Detect BREAKING CHANGE → MAJOR++, MINOR=0, PATCH=0
+  3. Detect feat: → MINOR++, PATCH=0
+  4. Detect fix: → PATCH++
+  5. Otherwise → No version change
+Output: New version tag (e.g., v1.3.0)
+</code></pre>
+<p><strong>関連</strong>:</p>
+<ul>
+<li><code>Release.version</code> (1:1) - リリースに関連付けられたバージョン</li>
+<li><code>Commit.version</code> (N:1) - バージョンに含まれるコミット一覧</li>
+</ul>
+<hr>
+<h3 id="2-release">2. Release</h3>
+<p>GitHub Releaseエンティティ。</p>
+<p><strong>属性</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>GitHub Release ID</td>
+<td><code>12345678</code></td>
+</tr>
+<tr>
+<td><code>tag_name</code></td>
+<td>String</td>
+<td>✅</td>
+<td>リリースタグ</td>
+<td><code>v1.2.3</code></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>String</td>
+<td>✅</td>
+<td>リリース名</td>
+<td><code>v1.2.3</code></td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>String</td>
+<td>✅</td>
+<td>リリースノート (Markdown)</td>
+<td><code>## Features\n- Add feature A</code></td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td>Boolean</td>
+<td>✅</td>
+<td>ドラフト状態</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>prerelease</code></td>
+<td>Boolean</td>
+<td>✅</td>
+<td>プレリリース</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>DateTime</td>
+<td>✅</td>
+<td>作成日時</td>
+<td><code>2026-01-05T12:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>published_at</code></td>
+<td>DateTime</td>
+<td>✅</td>
+<td>公開日時</td>
+<td><code>2026-01-05T12:30:00Z</code></td>
+</tr>
+<tr>
+<td><code>html_url</code></td>
+<td>String</td>
+<td>✅</td>
+<td>GitHub Release URL</td>
+<td><code>https://github.com/kuju63/wt/releases/tag/v1.2.3</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>関連</strong>:</p>
+<ul>
+<li><code>Version</code> (1:1) - バージョン情報</li>
+<li><code>Binary[]</code> (1:N) - リリースに含まれるバイナリファイル</li>
+<li><code>SBOM</code> (1:1) - リリースのSBOM</li>
+<li><code>Signature[]</code> (1:N) - リリースのデジタル署名</li>
+</ul>
+<hr>
+<h3 id="3-binary">3. Binary</h3>
+<p>プラットフォーム固有のバイナリファイル。</p>
+<p><strong>属性</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td>String</td>
+<td>✅</td>
+<td>ファイル名</td>
+<td><code>wt-v1.2.3-linux-x64</code></td>
+</tr>
+<tr>
+<td><code>platform</code></td>
+<td>Enum</td>
+<td>✅</td>
+<td>プラットフォーム</td>
+<td><code>windows</code>, <code>linux</code>, <code>macos</code></td>
+</tr>
+<tr>
+<td><code>architecture</code></td>
+<td>Enum</td>
+<td>✅</td>
+<td>アーキテクチャ</td>
+<td><code>x64</code>, <code>arm64</code>, <code>arm</code></td>
+</tr>
+<tr>
+<td><code>rid</code></td>
+<td>String</td>
+<td>✅</td>
+<td>Runtime Identifier</td>
+<td><code>linux-x64</code>, <code>win-x64</code>, <code>osx-arm64</code></td>
+</tr>
+<tr>
+<td><code>mandatory</code></td>
+<td>Boolean</td>
+<td>✅</td>
+<td>必須プラットフォーム</td>
+<td><code>true</code> (失敗でリリースブロック), <code>false</code> (オプション)</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>ファイルサイズ (bytes)</td>
+<td><code>15728640</code> (15 MB)</td>
+</tr>
+<tr>
+<td><code>sha256</code></td>
+<td>String</td>
+<td>✅</td>
+<td>SHA256ハッシュ値</td>
+<td><code>a3c5d...</code> (64文字)</td>
+</tr>
+<tr>
+<td><code>download_url</code></td>
+<td>String</td>
+<td>✅</td>
+<td>ダウンロードURL</td>
+<td><code>https://github.com/.../wt-v1.2.3-linux-x64</code></td>
+</tr>
+<tr>
+<td><code>download_count</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>ダウンロード数</td>
+<td><code>1234</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>プラットフォーム列挙型</strong>:</p>
+<pre><code class="lang-yaml">Platform:
+  - windows  # MANDATORY
+  - linux    # MANDATORY (x64), OPTIONAL (arm)
+  - macos    # MANDATORY (arm64)
+</code></pre>
+<p><strong>アーキテクチャ列挙型</strong>:</p>
+<pre><code class="lang-yaml">Architecture:
+  - x64    # 64-bit x86
+  - arm64  # 64-bit ARM (Apple Silicon)
+  - arm    # 32-bit ARM (Raspberry Pi等)
+</code></pre>
+<p><strong>関連</strong>:</p>
+<ul>
+<li><code>Release</code> (N:1) - 所属するリリース</li>
+<li><code>Build</code> (1:1) - ビルドジョブ情報</li>
+</ul>
+<hr>
+<h3 id="4-sbom-software-bill-of-materials">4. SBOM (Software Bill of Materials)</h3>
+<p>CycloneDX形式のSBOM。</p>
+<p><strong>属性</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td>String</td>
+<td>✅</td>
+<td>ファイル名</td>
+<td><code>wt-v1.2.3-sbom.json</code></td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td>String</td>
+<td>✅</td>
+<td>SBOM形式</td>
+<td><code>CycloneDX</code></td>
+</tr>
+<tr>
+<td><code>spec_version</code></td>
+<td>String</td>
+<td>✅</td>
+<td>仕様バージョン</td>
+<td><code>1.4</code>, <code>1.5</code></td>
+</tr>
+<tr>
+<td><code>bom_format</code></td>
+<td>String</td>
+<td>✅</td>
+<td>BOMフォーマット</td>
+<td><code>json</code>, <code>xml</code></td>
+</tr>
+<tr>
+<td><code>component_count</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>コンポーネント数</td>
+<td><code>42</code></td>
+</tr>
+<tr>
+<td><code>components</code></td>
+<td>Component[]</td>
+<td>✅</td>
+<td>依存関係リスト</td>
+<td>(下記参照)</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>ファイルサイズ (bytes)</td>
+<td><code>524288</code> (512 KB)</td>
+</tr>
+<tr>
+<td><code>download_url</code></td>
+<td>String</td>
+<td>✅</td>
+<td>ダウンロードURL</td>
+<td><code>https://github.com/.../wt-v1.2.3-sbom.json</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Component (コンポーネント)</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>型</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>String</td>
+<td>パッケージ名</td>
+<td><code>System.CommandLine</code></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>String</td>
+<td>バージョン</td>
+<td><code>2.0.0</code></td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>String</td>
+<td>タイプ</td>
+<td><code>library</code>, <code>framework</code>, <code>application</code></td>
+</tr>
+<tr>
+<td><code>licenses</code></td>
+<td>String[]</td>
+<td>ライセンス</td>
+<td><code>[&quot;MIT&quot;]</code></td>
+</tr>
+<tr>
+<td><code>purl</code></td>
+<td>String</td>
+<td>Package URL</td>
+<td><code>pkg:nuget/System.CommandLine@2.0.0</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>関連</strong>:</p>
+<ul>
+<li><code>Release</code> (N:1) - 所属するリリース</li>
+<li><code>Signature</code> (1:1) - SBOM署名</li>
+</ul>
+<hr>
+<h3 id="5-signature">5. Signature</h3>
+<p>GPGデジタル署名。</p>
+<p><strong>属性</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td>String</td>
+<td>✅</td>
+<td>署名ファイル名</td>
+<td><code>wt-v1.2.3-sbom.json.asc</code></td>
+</tr>
+<tr>
+<td><code>signed_file</code></td>
+<td>String</td>
+<td>✅</td>
+<td>署名対象ファイル</td>
+<td><code>wt-v1.2.3-sbom.json</code></td>
+</tr>
+<tr>
+<td><code>algorithm</code></td>
+<td>String</td>
+<td>✅</td>
+<td>署名アルゴリズム</td>
+<td><code>RSA</code>, <code>DSA</code></td>
+</tr>
+<tr>
+<td><code>key_length</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>鍵長 (bits)</td>
+<td><code>4096</code></td>
+</tr>
+<tr>
+<td><code>fingerprint</code></td>
+<td>String</td>
+<td>✅</td>
+<td>GPG鍵フィンガープリント</td>
+<td><code>ABCD1234...</code> (40文字)</td>
+</tr>
+<tr>
+<td><code>signer</code></td>
+<td>String</td>
+<td>✅</td>
+<td>署名者</td>
+<td><code>Release Bot &lt;release@example.com&gt;</code></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>DateTime</td>
+<td>✅</td>
+<td>署名作成日時</td>
+<td><code>2026-01-05T12:25:00Z</code></td>
+</tr>
+<tr>
+<td><code>download_url</code></td>
+<td>String</td>
+<td>✅</td>
+<td>ダウンロードURL</td>
+<td><code>https://github.com/.../wt-v1.2.3-sbom.json.asc</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>署名対象ファイル</strong>:</p>
+<ul>
+<li><code>wt-v&lt;version&gt;-sbom.json</code> → <code>wt-v&lt;version&gt;-sbom.json.asc</code></li>
+<li><code>SHA256SUMS</code> → <code>SHA256SUMS.asc</code></li>
+</ul>
+<p><strong>関連</strong>:</p>
+<ul>
+<li><code>SBOM</code> (1:1) - 署名されたSBOM</li>
+<li><code>Release</code> (N:1) - 所属するリリース</li>
+</ul>
+<hr>
+<h3 id="6-commit">6. Commit</h3>
+<p>Gitコミット履歴。</p>
+<p><strong>属性</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sha</code></td>
+<td>String</td>
+<td>✅</td>
+<td>コミットSHA</td>
+<td><code>a3c5d1f...</code> (40文字)</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>String</td>
+<td>✅</td>
+<td>コミットメッセージ</td>
+<td><code>feat: add feature A</code></td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>Enum</td>
+<td>✅</td>
+<td>Conventional Commit タイプ</td>
+<td><code>feat</code>, <code>fix</code>, <code>docs</code>, <code>chore</code></td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td>String</td>
+<td>✅</td>
+<td>コミット件名</td>
+<td><code>add feature A</code></td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>String</td>
+<td>❌</td>
+<td>コミット本文</td>
+<td><code>Detailed description...</code></td>
+</tr>
+<tr>
+<td><code>breaking_change</code></td>
+<td>Boolean</td>
+<td>✅</td>
+<td>破壊的変更フラグ</td>
+<td><code>true</code>, <code>false</code></td>
+</tr>
+<tr>
+<td><code>author</code></td>
+<td>String</td>
+<td>✅</td>
+<td>作成者</td>
+<td><code>John Doe &lt;john@example.com&gt;</code></td>
+</tr>
+<tr>
+<td><code>committed_at</code></td>
+<td>DateTime</td>
+<td>✅</td>
+<td>コミット日時</td>
+<td><code>2026-01-04T10:00:00Z</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conventional Commit タイプ列挙型</strong>:</p>
+<pre><code class="lang-yaml">CommitType:
+  - feat         # 新機能 (MINOR bump)
+  - fix          # バグ修正 (PATCH bump)
+  - docs         # ドキュメント (バージョン変更なし)
+  - style        # コードスタイル (バージョン変更なし)
+  - refactor     # リファクタリング (バージョン変更なし)
+  - test         # テスト (バージョン変更なし)
+  - chore        # ビルド/ツール (バージョン変更なし)
+  - BREAKING     # 破壊的変更 (MAJOR bump)
+</code></pre>
+<p><strong>関連</strong>:</p>
+<ul>
+<li><code>Version</code> (N:1) - 所属するバージョン</li>
+<li><code>Release</code> (N:1) - リリースノートに含まれるコミット</li>
+</ul>
+<hr>
+<h3 id="7-build">7. Build</h3>
+<p>GitHub Actionsビルドジョブ情報。</p>
+<p><strong>属性</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run_id</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>GitHub Actions Run ID</td>
+<td><code>12345678</code></td>
+</tr>
+<tr>
+<td><code>job_id</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>Job ID</td>
+<td><code>87654321</code></td>
+</tr>
+<tr>
+<td><code>platform</code></td>
+<td>Enum</td>
+<td>✅</td>
+<td>ビルドプラットフォーム</td>
+<td><code>windows</code>, <code>linux</code>, <code>macos</code></td>
+</tr>
+<tr>
+<td><code>architecture</code></td>
+<td>Enum</td>
+<td>✅</td>
+<td>アーキテクチャ</td>
+<td><code>x64</code>, <code>arm64</code>, <code>arm</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>Enum</td>
+<td>✅</td>
+<td>ビルドステータス</td>
+<td><code>success</code>, <code>failure</code>, <code>cancelled</code></td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td>DateTime</td>
+<td>✅</td>
+<td>開始日時</td>
+<td><code>2026-01-05T12:00:00Z</code></td>
+</tr>
+<tr>
+<td><code>completed_at</code></td>
+<td>DateTime</td>
+<td>✅</td>
+<td>完了日時</td>
+<td><code>2026-01-05T12:10:00Z</code></td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>Integer</td>
+<td>✅</td>
+<td>実行時間 (秒)</td>
+<td><code>600</code> (10分)</td>
+</tr>
+<tr>
+<td><code>runner_os</code></td>
+<td>String</td>
+<td>✅</td>
+<td>Runnerオペレーティングシステム</td>
+<td><code>ubuntu-latest</code>, <code>windows-latest</code>, <code>macos-latest</code></td>
+</tr>
+<tr>
+<td><code>logs_url</code></td>
+<td>String</td>
+<td>✅</td>
+<td>ログURL</td>
+<td><code>https://github.com/kuju63/wt/actions/runs/12345678</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>ビルドステータス列挙型</strong>:</p>
+<pre><code class="lang-yaml">BuildStatus:
+  - queued      # ビルド待機中
+  - in_progress # ビルド実行中
+  - success     # ビルド成功
+  - failure     # ビルド失敗
+  - cancelled   # ビルドキャンセル
+</code></pre>
+<p><strong>関連</strong>:</p>
+<ul>
+<li><code>Binary</code> (1:1) - 生成されたバイナリ</li>
+<li><code>Release</code> (N:1) - 所属するリリース</li>
+</ul>
+<hr>
+<h2 id="エンティティ関係図-er図">エンティティ関係図 (ER図)</h2>
+<pre><code class="lang-mermaid">erDiagram
+    Version ||--|| Release : &quot;has&quot;
+    Release ||--|{ Binary : &quot;contains&quot;
+    Release ||--|| SBOM : &quot;includes&quot;
+    Release ||--|{ Signature : &quot;includes&quot;
+    Release ||--|{ Commit : &quot;generated-from&quot;
+    Binary ||--|| Build : &quot;built-by&quot;
+    SBOM ||--|| Signature : &quot;signed-by&quot;
+    Version ||--|{ Commit : &quot;includes&quot;
+
+    Version {
+        string tag PK
+        int major
+        int minor
+        int patch
+        string prerelease
+    }
+
+    Release {
+        int id PK
+        string tag_name FK
+        string name
+        string body
+        bool draft
+        bool prerelease
+        datetime created_at
+        datetime published_at
+        string html_url
+    }
+
+    Binary {
+        string filename PK
+        enum platform
+        enum architecture
+        string rid
+        bool mandatory
+        int size
+        string sha256
+        string download_url
+        int download_count
+    }
+
+    SBOM {
+        string filename PK
+        string format
+        string spec_version
+        string bom_format
+        int component_count
+        json components
+        int size
+        string download_url
+    }
+
+    Signature {
+        string filename PK
+        string signed_file FK
+        string algorithm
+        int key_length
+        string fingerprint
+        string signer
+        datetime created_at
+        string download_url
+    }
+
+    Commit {
+        string sha PK
+        string message
+        enum type
+        string subject
+        string body
+        bool breaking_change
+        string author
+        datetime committed_at
+    }
+
+    Build {
+        int run_id PK
+        int job_id
+        enum platform
+        enum architecture
+        enum status
+        datetime started_at
+        datetime completed_at
+        int duration
+        string runner_os
+        string logs_url
+    }
+</code></pre>
+<hr>
+<h2 id="データフロー">データフロー</h2>
+<h3 id="リリース作成フロー">リリース作成フロー</h3>
+<pre><code class="lang-mermaid">flowchart TD
+    A[Commit to main] --&gt; B[Calculate Version]
+    B --&gt; C{Version changed?}
+    C --&gt;|No| D[Skip release]
+    C --&gt;|Yes| E[Build Binaries]
+    E --&gt; F[Generate SBOM]
+    F --&gt; G[Generate Checksums]
+    G --&gt; H[Sign Artifacts]
+    H --&gt; I[Generate Release Notes]
+    I --&gt; J[Create Git Tag]
+    J --&gt; K[Create GitHub Release]
+    K --&gt; L[Upload Binaries]
+    L --&gt; M[Upload SBOM]
+    M --&gt; N[Upload Signatures]
+    N --&gt; O[Upload Checksums]
+    O --&gt; P[Release Published]
+</code></pre>
+<h3 id="バージョン計算フロー">バージョン計算フロー</h3>
+<pre><code class="lang-mermaid">flowchart TD
+    A[Get last tag] --&gt; B[Get commits since last tag]
+    B --&gt; C{Parse commits}
+    C --&gt;|BREAKING CHANGE:| D[MAJOR++]
+    C --&gt;|feat:| E[MINOR++]
+    C --&gt;|fix:| F[PATCH++]
+    C --&gt;|docs:, chore:, etc.| G[No version change]
+    D --&gt; H[Generate new tag]
+    E --&gt; H
+    F --&gt; H
+    G --&gt; I[Skip release]
+    H --&gt; J[Create release]
+</code></pre>
+<hr>
+<h2 id="ファイル命名規則">ファイル命名規則</h2>
+<h3 id="バイナリファイル">バイナリファイル</h3>
+<pre><code class="lang-text">wt-&lt;version&gt;-&lt;platform&gt;-&lt;arch&gt;[.&lt;ext&gt;]
+
+Examples:
+- wt-v1.2.3-windows-x64.exe
+- wt-v1.2.3-linux-x64
+- wt-v1.2.3-linux-arm
+- wt-v1.2.3-macos-arm64
+</code></pre>
+<h3 id="sbomファイル">SBOMファイル</h3>
+<pre><code class="lang-text">wt-&lt;version&gt;-sbom.json
+
+Example:
+- wt-v1.2.3-sbom.json
+</code></pre>
+<h3 id="署名ファイル">署名ファイル</h3>
+<pre><code class="lang-text">&lt;original-filename&gt;.asc
+
+Examples:
+- wt-v1.2.3-sbom.json.asc
+- SHA256SUMS.asc
+</code></pre>
+<h3 id="チェックサムファイル">チェックサムファイル</h3>
+<pre><code class="lang-text">SHA256SUMS
+
+Format (inside file):
+&lt;hash&gt;  &lt;filename&gt;
+
+Example:
+a3c5d1f2b4e6...  wt-v1.2.3-linux-x64
+b5d7e2f3c5g8...  wt-v1.2.3-windows-x64.exe
+</code></pre>
+<hr>
+<h2 id="api契約">API契約</h2>
+<h3 id="github-release-api">GitHub Release API</h3>
+<p><strong>Endpoint</strong>: <code>POST /repos/{owner}/{repo}/releases</code></p>
+<p><strong>Request</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;tag_name&quot;: &quot;v1.2.3&quot;,
+  &quot;name&quot;: &quot;v1.2.3&quot;,
+  &quot;body&quot;: &quot;## Features\n- Add feature A\n\n## Bug Fixes\n- Fix bug B&quot;,
+  &quot;draft&quot;: false,
+  &quot;prerelease&quot;: false
+}
+</code></pre>
+<p><strong>Response</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;id&quot;: 12345678,
+  &quot;tag_name&quot;: &quot;v1.2.3&quot;,
+  &quot;name&quot;: &quot;v1.2.3&quot;,
+  &quot;body&quot;: &quot;...&quot;,
+  &quot;draft&quot;: false,
+  &quot;prerelease&quot;: false,
+  &quot;created_at&quot;: &quot;2026-01-05T12:00:00Z&quot;,
+  &quot;published_at&quot;: &quot;2026-01-05T12:30:00Z&quot;,
+  &quot;html_url&quot;: &quot;https://github.com/kuju63/wt/releases/tag/v1.2.3&quot;,
+  &quot;assets&quot;: [...]
+}
+</code></pre>
+<hr>
+<h2 id="ストレージ">ストレージ</h2>
+<h3 id="github-releases-primary-storage">GitHub Releases (Primary Storage)</h3>
+<ul>
+<li><strong>バイナリファイル</strong>: 最大2GB/ファイル, 10GB/リリース</li>
+<li><strong>保存期間</strong>: 無期限 (リリース削除まで)</li>
+<li><strong>アクセス</strong>: Public (認証不要でダウンロード可能)</li>
+</ul>
+<h3 id="git-repository-metadata-storage">Git Repository (Metadata Storage)</h3>
+<ul>
+<li><strong>Gitタグ</strong>: バージョン情報 (<code>v1.2.3</code>)</li>
+<li><strong>コミット履歴</strong>: リリースノート生成元</li>
+<li><strong>ドキュメント</strong>: GPG公開鍵 (<code>docs/GPG_PUBLIC_KEY.asc</code>)</li>
+</ul>
+<h3 id="github-actions-artifacts-temporary-storage">GitHub Actions Artifacts (Temporary Storage)</h3>
+<ul>
+<li><strong>ビルド成果物</strong>: 一時保存 (7日間保持)</li>
+<li><strong>カバレッジレポート</strong>: 一時保存 (7日間保持)</li>
+<li><strong>ログファイル</strong>: 一時保存 (90日間保持)</li>
+</ul>
+<hr>
+<h2 id="セキュリティ考慮事項">セキュリティ考慮事項</h2>
+<h3 id="シークレット管理">シークレット管理</h3>
+<table>
+<thead>
+<tr>
+<th>シークレット</th>
+<th>用途</th>
+<th>保存場所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GITHUB_TOKEN</code></td>
+<td>GitHub API認証</td>
+<td>GitHub Actions (自動生成)</td>
+</tr>
+<tr>
+<td><code>GPG_PRIVATE_KEY</code></td>
+<td>デジタル署名</td>
+<td>GitHub Secrets</td>
+</tr>
+<tr>
+<td><code>GPG_PASSPHRASE</code></td>
+<td>GPG鍵のパスフレーズ</td>
+<td>GitHub Secrets</td>
+</tr>
+<tr>
+<td><code>CODACY_PROJECT_TOKEN</code></td>
+<td>カバレッジ報告</td>
+<td>GitHub Secrets</td>
+</tr>
+</tbody>
+</table>
+<h3 id="署名検証フロー">署名検証フロー</h3>
+<pre><code class="lang-mermaid">flowchart TD
+    A[Download SBOM] --&gt; B[Download SBOM.asc]
+    B --&gt; C[Import GPG public key]
+    C --&gt; D[Verify signature]
+    D --&gt;|Valid| E[Trust SBOM]
+    D --&gt;|Invalid| F[Reject SBOM]
+</code></pre>
+<hr>
+<h2 id="参考資料">参考資料</h2>
+<ul>
+<li><a href="https://semver.org/">Semantic Versioning 2.0.0</a></li>
+<li><a href="https://www.conventionalcommits.org/">Conventional Commits 1.0.0</a></li>
+<li><a href="https://cyclonedx.org/specification/overview/">CycloneDX Specification</a></li>
+<li><a href="https://docs.github.com/en/rest/releases">GitHub Releases API</a></li>
+<li><a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions">GitHub Actions Workflow Syntax</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/data-model.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

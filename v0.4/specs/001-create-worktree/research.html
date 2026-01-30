@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Research: Git Worktree 作成コマンド | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Research: Git Worktree 作成コマンド | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/research.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="research-git-worktree-作成コマンド">Research: Git Worktree 作成コマンド</h1>
+
+<p><strong>Feature</strong>: 001-create-worktree<br>
+<strong>Date</strong>: 2026-01-03<br>
+<strong>Purpose</strong>: 技術選択とベストプラクティスのリサーチ結果</p>
+<h2 id="research-tasks">Research Tasks</h2>
+<p>本フェーズでは、Technical Contextで特定された技術スタックとアプローチの妥当性を検証し、ベストプラクティスを調査しました。</p>
+<h2 id="1-cliフレームワークの選択">1. CLIフレームワークの選択</h2>
+<h3 id="decision-systemcommandline">Decision: System.CommandLine</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Microsoft公式のCLIフレームワーク</li>
+<li>強力なコマンドパース機能とヘルプ生成</li>
+<li>型安全なオプション定義</li>
+<li>.NETエコシステムとの統合</li>
+</ul>
+<p><strong>Alternatives Considered</strong>:</p>
+<ul>
+<li><strong>CommandLineParser</strong>: 成熟しているが、System.CommandLineより機能が少ない</li>
+<li><strong>McMaster.Extensions.CommandLineUtils</strong>: 良い選択肢だが、Microsoftの公式サポートが System.CommandLine に移行</li>
+</ul>
+<p><strong>Best Practices</strong>:</p>
+<ul>
+<li>コマンドとハンドラーを分離（CQRS的アプローチ）</li>
+<li>オプションクラスで型安全性を確保</li>
+<li>ヘルプテキストを詳細に記述</li>
+</ul>
+<h2 id="2-gitコマンド実行パターン">2. Gitコマンド実行パターン</h2>
+<h3 id="decision-systemdiagnosticsprocess--ラッパークラス">Decision: System.Diagnostics.Process + ラッパークラス</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>標準ライブラリで実現可能（依存関係最小化）</li>
+<li>クロスプラットフォーム対応</li>
+<li>テストしやすい抽象化</li>
+</ul>
+<p><strong>Alternatives Considered</strong>:</p>
+<ul>
+<li><strong>LibGit2Sharp</strong>: 強力だが、依存関係が大きい。憲章Vに反する</li>
+<li><strong>Git CLI直接呼び出し</strong>: 抽象化なしではテストが困難</li>
+</ul>
+<p><strong>Best Practices</strong>:</p>
+<ul>
+<li><code>IGitService</code> インターフェースで抽象化</li>
+<li>標準出力/エラー出力を適切にキャプチャ</li>
+<li>タイムアウト設定を実装</li>
+<li>エラーハンドリングを徹底</li>
+</ul>
+<p><strong>Implementation Pattern</strong>:</p>
+<pre><code class="lang-csharp">public interface IGitService
+{
+    Task&lt;GitResult&gt; ExecuteAsync(string command, string[]args, CancellationToken ct);
+    Task&lt;bool&gt; IsGitRepositoryAsync(string path);
+    Task&lt;string&gt; GetCurrentBranchAsync();
+    Task&lt;bool&gt; BranchExistsAsync(string branchName);
+}
+</code></pre>
+<h2 id="3-パス操作の抽象化">3. パス操作の抽象化</h2>
+<h3 id="decision-systemioabstractions">Decision: System.IO.Abstractions</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>クロスプラットフォームのパス操作を抽象化</li>
+<li>テスト時にファイルシステムのモックが容易</li>
+<li>.NET標準のPath/Directory/Fileクラスと互換性</li>
+</ul>
+<p><strong>Best Practices</strong>:</p>
+<ul>
+<li><code>IFileSystem</code> を依存性注入</li>
+<li>パス区切り文字はOSに応じて自動処理</li>
+<li>絶対パスと相対パスの明確な区別</li>
+</ul>
+<p><strong>Path Handling Strategy</strong>:</p>
+<pre><code class="lang-text">入力: branch-name
+デフォルトパス生成: Path.Combine(repoParent, &quot;worktrees&quot;, branch-name)
+カスタムパス: ユーザー指定の絶対パス or カレントディレクトリからの相対パス
+</code></pre>
+<h2 id="4-エディター検出とプリセット">4. エディター検出とプリセット</h2>
+<h3 id="decision-エディタープリセット--path検索">Decision: エディタープリセット + PATH検索</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>一般的なエディターの標準コマンドをプリセットとして定義</li>
+<li>環境変数PATHから実行可能ファイルを検索</li>
+<li>ユーザーカスタムコマンドもサポート</li>
+</ul>
+<p><strong>Editor Presets</strong>:</p>
+<pre><code class="lang-csharp">public static class EditorPresets
+{
+    public static Dictionary&lt;string, EditorConfig&gt; KnownEditors = new()
+    {
+        [&quot;vscode&quot;] = new(&quot;code&quot;, &quot;{path}&quot;),
+        [&quot;vim&quot;] = new(&quot;vim&quot;, &quot;{path}&quot;),
+        [&quot;emacs&quot;] = new(&quot;emacs&quot;, &quot;{path}&quot;),
+        [&quot;nano&quot;] = new(&quot;nano&quot;, &quot;{path}&quot;),
+        [&quot;idea&quot;] = new(&quot;idea&quot;, &quot;{path}&quot;),
+    };
+}
+</code></pre>
+<p><strong>Best Practices</strong>:</p>
+<ul>
+<li>エディターが見つからない場合は警告のみ（worktree作成は継続）</li>
+<li>verboseモードで検索パスを表示</li>
+<li>Windows: .exe拡張子を自動追加</li>
+</ul>
+<h2 id="5-出力フォーマット戦略">5. 出力フォーマット戦略</h2>
+<h3 id="decision-strategyパターン--systemtextjson">Decision: Strategyパターン + System.Text.Json</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>JSON出力には標準の System.Text.Json を使用（追加依存なし）</li>
+<li>人間可読出力は構造化されたテキスト形式</li>
+<li>フォーマッターを切り替え可能</li>
+</ul>
+<p><strong>Output Formats</strong>:</p>
+<pre><code class="lang-json">// JSON format
+{
+  &quot;success&quot;: true,
+  &quot;worktree&quot;: {
+    &quot;path&quot;: &quot;/path/to/worktrees/feature-x&quot;,
+    &quot;branch&quot;: &quot;feature-x&quot;,
+    &quot;baseBranch&quot;: &quot;main&quot;
+  },
+  &quot;editorLaunched&quot;: true
+}
+</code></pre>
+<pre><code class="lang-shell">// Human-readable format
+✓ Created branch 'feature-x' from 'main'
+✓ Added worktree at: /path/to/worktrees/feature-x
+✓ Launched VS Code
+→ Next: cd /path/to/worktrees/feature-x
+</code></pre>
+<h2 id="6-エラーハンドリング戦略">6. エラーハンドリング戦略</h2>
+<h3 id="decision-result-パターン--カスタム例外">Decision: Result パターン + カスタム例外</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Resultパターンで成功/失敗を明示的に表現</li>
+<li>カスタム例外で詳細なエラー情報を提供</li>
+<li>各エラーに解決策を含める</li>
+</ul>
+<p><strong>Error Categories</strong>:</p>
+<ol>
+<li><strong>Git関連</strong>: GitNotFound, NotGitRepository, BranchExists</li>
+<li><strong>ファイルシステム</strong>: PathNotWritable, DiskSpaceLow</li>
+<li><strong>Worktree関連</strong>: WorktreeExists, InvalidBranchName</li>
+<li><strong>エディター関連</strong>: EditorNotFound (警告レベル)</li>
+</ol>
+<p><strong>Best Practices</strong>:</p>
+<ul>
+<li>すべてのエラーメッセージに解決策を含める</li>
+<li>verboseモードでスタックトレースと診断情報を出力</li>
+<li>エラーコードで種類を識別可能にする</li>
+</ul>
+<h2 id="7-テスト戦略">7. テスト戦略</h2>
+<h3 id="decision-xunit--fluentassertions--moq--testcontainers-git">Decision: xUnit + FluentAssertions + Moq + TestContainers (Git)</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>xUnit: 既存プロジェクトで使用中</li>
+<li>FluentAssertions: 読みやすいアサーション</li>
+<li>Moq: インターフェースのモック</li>
+<li>テストでは実際のGitリポジトリを一時的に作成してE2Eテスト</li>
+</ul>
+<p><strong>Test Layers</strong>:</p>
+<ol>
+<li><strong>Unit Tests</strong>: サービス、バリデーター、フォーマッター</li>
+<li><strong>Integration Tests</strong>: Git操作の実際の実行</li>
+<li><strong>E2E Tests</strong>: コマンド全体の動作確認</li>
+</ol>
+<p><strong>Best Practices</strong>:</p>
+<ul>
+<li>Given-When-Then パターン</li>
+<li>各テストは独立して実行可能</li>
+<li>テスト用の一時ディレクトリを使用</li>
+<li>クリーンアップを確実に実行</li>
+</ul>
+<h2 id="8-クロスプラットフォーム対応">8. クロスプラットフォーム対応</h2>
+<h3 id="decision-net-10--条件付きコンパイル">Decision: .NET 10 + 条件付きコンパイル</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>.NET 10はWindows、macOS、Linuxをネイティブサポート</li>
+<li>必要に応じて <code>#if</code> ディレクティブで分岐</li>
+</ul>
+<p><strong>Platform-Specific Considerations</strong>:</p>
+<ul>
+<li><strong>Windows</strong>: パス区切り <code>\</code>、実行ファイル <code>.exe</code></li>
+<li><strong>macOS/Linux</strong>: パス区切り <code>/</code>、実行ファイル拡張子なし</li>
+<li><strong>共通</strong>: System.IO.Abstractionsで抽象化</li>
+</ul>
+<p><strong>Testing Strategy</strong>:</p>
+<ul>
+<li>CI/CDで3プラットフォームでテスト実行</li>
+<li>プラットフォーム固有の動作は個別にテスト</li>
+</ul>
+<h2 id="9-パフォーマンス最適化">9. パフォーマンス最適化</h2>
+<h3 id="decision-非同期パターン--キャンセレーション">Decision: 非同期パターン + キャンセレーション</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Git操作は時間がかかる可能性がある</li>
+<li>async/awaitで非ブロッキング実行</li>
+<li>CancellationTokenでユーザーによる中断をサポート</li>
+</ul>
+<p><strong>Performance Goals</strong> (from Technical Context):</p>
+<ul>
+<li>コマンド実行: &lt; 5秒</li>
+<li>worktree作成 + エディター起動: &lt; 30秒</li>
+<li>メモリ使用: &lt; 100MB</li>
+</ul>
+<p><strong>Optimization Strategies</strong>:</p>
+<ul>
+<li>Git操作の並列化（可能な場合）</li>
+<li>不要なGit情報の取得を避ける</li>
+<li>出力バッファリングの最適化</li>
+</ul>
+<h2 id="10-セキュリティ考慮事項">10. セキュリティ考慮事項</h2>
+<h3 id="decision-入力バリデーション--コマンドインジェクション防止">Decision: 入力バリデーション + コマンドインジェクション防止</h3>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>ブランチ名の厳格なバリデーション</li>
+<li>Gitコマンドのパラメータ化</li>
+<li>パストラバーサル攻撃の防止</li>
+</ul>
+<p><strong>Security Measures</strong>:</p>
+<ol>
+<li>ブランチ名のホワイトリスト検証（英数字、<code>-</code>、<code>_</code>のみ）</li>
+<li>パスのサニタイズ</li>
+<li>ユーザー入力をGitコマンドに直接渡さない</li>
+<li>エディターコマンドのバリデーション</li>
+</ol>
+<h2 id="summary">Summary</h2>
+<p>すべてのリサーチタスクが完了し、技術選択の妥当性が確認されました。Technical Contextで「NEEDS CLARIFICATION」とマークされた項目はすべて解決されています。Phase 1（Design &amp; Contracts）に進む準備が整いました。</p>
+<p><strong>Key Technologies Confirmed</strong>:</p>
+<ul>
+<li>CLI Framework: System.CommandLine</li>
+<li>Git Interaction: System.Diagnostics.Process + カスタムラッパー</li>
+<li>Path Operations: System.IO.Abstractions</li>
+<li>JSON: System.Text.Json</li>
+<li>Testing: xUnit + FluentAssertions + Moq</li>
+</ul>
+<p><strong>No Blockers</strong>: すべての技術選択は憲章の要件を満たしています。</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/research.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

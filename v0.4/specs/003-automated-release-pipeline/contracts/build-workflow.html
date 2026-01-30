@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Contract: Build Workflow | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Contract: Build Workflow | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/contracts/build-workflow.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="contract-build-workflow">Contract: Build Workflow</h1>
+
+<p><strong>Workflow</strong>: <code>.github/workflows/build.yml</code><br>
+<strong>Feature</strong>: 003-automated-release-pipeline<br>
+<strong>Date</strong>: 2026-01-05</p>
+<h2 id="概要">概要</h2>
+<p>マルチプラットフォームバイナリのビルドを並列実行するワークフロー。</p>
+<hr>
+<h2 id="トリガー">トリガー</h2>
+<p><strong>Type</strong>: <code>workflow_call</code> (再利用可能ワークフロー)</p>
+<p><strong>Inputs</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>パラメータ</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>✅</td>
+<td>ビルドするバージョンタグ</td>
+<td><code>v1.2.3</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>パラメータ</th>
+<th>型</th>
+<th>説明</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>build-status</code></td>
+<td>string</td>
+<td>ビルドステータスサマリー</td>
+<td><code>success</code>, <code>partial-failure</code>, <code>failure</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="ジョブ定義">ジョブ定義</h2>
+<h3 id="job-build">Job: <code>build</code></h3>
+<p><strong>Purpose</strong>: 各プラットフォームのバイナリをビルドする</p>
+<p><strong>Strategy</strong>:</p>
+<pre><code class="lang-yaml">strategy:
+  fail-fast: false  # OPTIONALプラットフォームの失敗を許容
+  max-parallel: 4   # 全プラットフォームを並列ビルド
+  matrix:
+    include:
+      - os: windows-latest
+        platform: windows
+        arch: x64
+        rid: win-x64
+        mandatory: true
+        script: build-windows.sh
+        artifact-name: wt-${{ inputs.version }}-windows-x64.exe
+      
+      - os: ubuntu-latest
+        platform: linux
+        arch: x64
+        rid: linux-x64
+        mandatory: true
+        script: build-linux-x64.sh
+        artifact-name: wt-${{ inputs.version }}-linux-x64
+      
+      - os: ubuntu-latest
+        platform: linux
+        arch: arm
+        rid: linux-arm
+        mandatory: false
+        script: build-linux-arm.sh
+        artifact-name: wt-${{ inputs.version }}-linux-arm
+      
+      - os: macos-latest
+        platform: macos
+        arch: arm64
+        rid: osx-arm64
+        mandatory: true
+        script: build-macos-arm64.sh
+        artifact-name: wt-${{ inputs.version }}-macos-arm64
+</code></pre>
+<p><strong>ステップ</strong>:</p>
+<ol>
+<li><p><strong>Checkout repository</strong></p>
+<ul>
+<li>Action: <code>actions/checkout@v4</code></li>
+<li>Purpose: リポジトリコードを取得</li>
+</ul>
+</li>
+<li><p><strong>Setup .NET</strong></p>
+<ul>
+<li>Action: <code>actions/setup-dotnet@v4</code></li>
+<li>Version: <code>10.0.x</code> (最新の.NET 10)</li>
+<li>Purpose: .NET SDKをインストール</li>
+</ul>
+</li>
+<li><p><strong>Restore dependencies</strong></p>
+<ul>
+<li>Command: <code>dotnet restore wt.sln</code></li>
+<li>Purpose: NuGetパッケージを復元</li>
+</ul>
+</li>
+<li><p><strong>Build {platform}-{arch}</strong></p>
+<ul>
+<li>Script: <code>.github/scripts/{matrix.script}</code></li>
+<li>Args: <code>version</code>, <code>rid</code></li>
+<li>Continue on error: <code>!matrix.mandatory</code> (OPTIONALプラットフォームのみ)</li>
+<li>Purpose: プラットフォーム固有のバイナリをビルド</li>
+</ul>
+</li>
+<li><p><strong>Check build result</strong></p>
+<ul>
+<li>Condition: <code>always()</code></li>
+<li>Purpose: MANDATORYプラットフォームの失敗を検出</li>
+<li>Exit code:
+<ul>
+<li><code>1</code> if mandatory platform failed</li>
+<li><code>0</code> if optional platform failed (warning only)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Upload build artifact</strong></p>
+<ul>
+<li>Action: <code>actions/upload-artifact@v4</code></li>
+<li>Condition: <code>steps.build.outcome == 'success'</code></li>
+<li>Artifact name: <code>binary-{platform}-{arch}</code></li>
+<li>Path: <code>release-assets/{artifact-name}</code></li>
+<li>Purpose: ビルド成果物をアップロード</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="プラットフォームマトリックス">プラットフォームマトリックス</h2>
+<h3 id="mandatoryプラットフォーム-失敗でリリースブロック">MANDATORYプラットフォーム (失敗でリリースブロック)</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Arch</th>
+<th>OS</th>
+<th>RID</th>
+<th>Script</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>x64</td>
+<td>windows-latest</td>
+<td>win-x64</td>
+<td>build-windows.sh</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>x64</td>
+<td>ubuntu-latest</td>
+<td>linux-x64</td>
+<td>build-linux-x64.sh</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>arm64</td>
+<td>macos-latest</td>
+<td>osx-arm64</td>
+<td>build-macos-arm64.sh</td>
+</tr>
+</tbody>
+</table>
+<h3 id="optionalプラットフォーム-失敗でも警告のみ">OPTIONALプラットフォーム (失敗でも警告のみ)</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Arch</th>
+<th>OS</th>
+<th>RID</th>
+<th>Script</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux</td>
+<td>arm</td>
+<td>ubuntu-latest</td>
+<td>linux-arm</td>
+<td>build-linux-arm.sh</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="ビルドスクリプト契約">ビルドスクリプト契約</h2>
+<p>各ビルドスクリプト (<code>.github/scripts/build-*.sh</code>) は以下の契約に従う:</p>
+<p><strong>引数</strong>:</p>
+<ol>
+<li><code>$1</code>: バージョンタグ (例: <code>v1.2.3</code>)</li>
+<li><code>$2</code>: Runtime Identifier (例: <code>linux-x64</code>)</li>
+</ol>
+<p><strong>出力</strong>:</p>
+<ul>
+<li>バイナリファイル: <code>release-assets/wt-{version}-{platform}-{arch}[.exe]</code></li>
+<li>Exit code:
+<ul>
+<li><code>0</code>: ビルド成功</li>
+<li><code>1</code>: ビルド失敗</li>
+</ul>
+</li>
+</ul>
+<p><strong>実装例</strong> (<code>build-linux-x64.sh</code>):</p>
+<pre><code class="lang-bash">#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION=$1
+RID=$2
+
+echo &quot;Building for Linux x64...&quot;
+mkdir -p release-assets
+
+dotnet publish wt.cli/wt.cli.csproj \
+  --configuration Release \
+  --runtime &quot;$RID&quot; \
+  --self-contained true \
+  -p:PublishSingleFile=true \
+  -p:IncludeNativeLibrariesForSelfExtract=true \
+  -p:Version=&quot;${VERSION#v}&quot; \
+  --output release-assets/
+
+# Rename binary
+mv release-assets/wt release-assets/wt-${VERSION}-linux-x64
+
+echo &quot;✅ Build completed: release-assets/wt-${VERSION}-linux-x64&quot;
+</code></pre>
+<hr>
+<h2 id="成果物-artifacts">成果物 (Artifacts)</h2>
+<p>ビルド成功後、以下のアーティファクトがアップロードされます:</p>
+<table>
+<thead>
+<tr>
+<th>Artifact Name</th>
+<th>Platform</th>
+<th>Files</th>
+<th>Size (approx)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binary-windows-x64</code></td>
+<td>Windows x64</td>
+<td><code>wt.exe</code></td>
+<td>15-20 MB</td>
+</tr>
+<tr>
+<td><code>binary-linux-x64</code></td>
+<td>Linux x64</td>
+<td><code>wt</code></td>
+<td>15-20 MB</td>
+</tr>
+<tr>
+<td><code>binary-linux-arm</code></td>
+<td>Linux ARM</td>
+<td><code>wt</code></td>
+<td>12-18 MB</td>
+</tr>
+<tr>
+<td><code>binary-macos-arm64</code></td>
+<td>macOS ARM64</td>
+<td><code>wt</code></td>
+<td>15-20 MB</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Retention</strong>: 7日間 (GitHub Actionsデフォルト)</p>
+<hr>
+<h2 id="エラーハンドリング">エラーハンドリング</h2>
+<h3 id="mandatoryプラットフォームの失敗">MANDATORYプラットフォームの失敗</h3>
+<pre><code class="lang-yaml">- name: Check build result
+  if: always()
+  shell: bash
+  run: |
+    if [ &quot;${{ steps.build.outcome }}&quot; == &quot;failure&quot; ]; then
+      if [ &quot;${{ matrix.mandatory }}&quot; == &quot;true&quot; ]; then
+        echo &quot;::error::MANDATORY platform ${{ matrix.platform }}-${{ matrix.arch }} build failed!&quot;
+        exit 1
+      fi
+    fi
+</code></pre>
+<p><strong>動作</strong>:</p>
+<ul>
+<li>MANDATORYプラットフォームが失敗 → ジョブ全体が失敗</li>
+<li>OPTIONALプラットフォームが失敗 → 警告のみ、他のプラットフォームは続行</li>
+</ul>
+<h3 id="optionalプラットフォームの失敗">OPTIONALプラットフォームの失敗</h3>
+<pre><code class="lang-yaml">- name: Build ${{ matrix.platform }}-${{ matrix.arch }}
+  continue-on-error: ${{ !matrix.mandatory }}
+</code></pre>
+<p><strong>動作</strong>:</p>
+<ul>
+<li>Linux ARMビルドが失敗 → 警告ログ、アーティファクトなし、他は続行</li>
+</ul>
+<hr>
+<h2 id="性能要件">性能要件</h2>
+<table>
+<thead>
+<tr>
+<th>指標</th>
+<th>目標</th>
+<th>許容範囲</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>単一プラットフォームビルド時間</td>
+<td>&lt; 10分</td>
+<td>&lt; 15分</td>
+</tr>
+<tr>
+<td>全プラットフォームビルド時間 (並列)</td>
+<td>&lt; 15分</td>
+<td>&lt; 20分</td>
+</tr>
+<tr>
+<td>タイムアウト</td>
+<td>20分/プラットフォーム</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="テスト">テスト</h2>
+<h3 id="ローカルビルドテスト">ローカルビルドテスト</h3>
+<pre><code class="lang-bash"># Linux x64ビルド
+.github/scripts/build-linux-x64.sh &quot;v0.1.0-test&quot; &quot;linux-x64&quot;
+
+# 期待される結果:
+# - release-assets/wt-v0.1.0-test-linux-x64 が生成される
+# - Exit code: 0
+</code></pre>
+<h3 id="ワークフローテスト">ワークフローテスト</h3>
+<pre><code class="lang-bash"># ワークフローを手動実行
+gh workflow run build.yml --ref main
+gh run watch
+</code></pre>
+<hr>
+<h2 id="依存関係">依存関係</h2>
+<p><strong>必要なツール</strong>:</p>
+<ul>
+<li>.NET SDK 10.0.x</li>
+<li>Bash (ビルドスクリプト実行用)</li>
+<li>Git (リポジトリチェックアウト用)</li>
+</ul>
+<p><strong>GitHub Actions</strong>:</p>
+<ul>
+<li><code>actions/checkout@v4</code></li>
+<li><code>actions/setup-dotnet@v4</code></li>
+<li><code>actions/upload-artifact@v4</code></li>
+</ul>
+<hr>
+<h2 id="セキュリティ">セキュリティ</h2>
+<p><strong>権限</strong>:</p>
+<pre><code class="lang-yaml">permissions:
+  contents: read  # リポジトリコードの読み取り
+</code></pre>
+<p><strong>シークレット</strong>: なし (ビルドのみ、署名やアップロードは不要)</p>
+<hr>
+<h2 id="リファレンス">リファレンス</h2>
+<ul>
+<li>ワークフローファイル: <a href="../../../.github/workflows/build.yml">.github/workflows/build.yml</a></li>
+<li>ビルドスクリプト: <a href="../../../.github/scripts/">.github/scripts/</a></li>
+<li>データモデル: <a href="../data-model.html">data-model.md</a></li>
+<li>タスク: <a href="../tasks.html#build-infrastructure-prerequisite-for-us1">tasks.md</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/contracts/build-workflow.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

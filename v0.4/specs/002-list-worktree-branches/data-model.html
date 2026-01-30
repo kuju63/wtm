@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Data Model: Worktreeとブランチ情報 | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Data Model: Worktreeとブランチ情報 | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/data-model.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="data-model-worktreeとブランチ情報">Data Model: Worktreeとブランチ情報</h1>
+
+<p><strong>Phase</strong>: 1 - Design &amp; Contracts<br>
+<strong>Date</strong>: 2026-01-04<br>
+<strong>Feature</strong>: <a href="spec.html">spec.md</a> | <a href="plan.html">plan.md</a> | <a href="research.html">research.md</a></p>
+<h2 id="purpose">Purpose</h2>
+<p>このドキュメントは、worktreeとブランチ一覧表示機能のデータモデルを定義します。仕様書（spec.md）の主要エンティティを具体的なC#クラスとして設計し、プロパティ、バリデーションルール、関係性を明確にします。</p>
+<h2 id="core-entities">Core Entities</h2>
+<h3 id="worktreeinfo">WorktreeInfo</h3>
+<p>worktreeインスタンスの情報を表現するモデル。</p>
+<pre><code class="lang-csharp">namespace Kuju63.WorkTree.CommandLine.Models
+{
+    /// &lt;summary&gt;
+    /// Git worktreeの情報を表現します。
+    /// &lt;/summary&gt;
+    public class WorktreeInfo
+    {
+        /// &lt;summary&gt;
+        /// Worktreeのファイルシステム上のパス
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        /// 絶対パスである必要があります。
+        /// 存在しないパスの場合でも格納可能（警告表示用）。
+        /// &lt;/remarks&gt;
+        public required string Path { get; init; }
+
+        /// &lt;summary&gt;
+        /// チェックアウトされているブランチ名
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        /// Detached HEAD状態の場合は短縮コミットハッシュを含む。
+        /// 例: &quot;main&quot;, &quot;feature/new-feature&quot;, &quot;abc1234&quot;
+        /// &lt;/remarks&gt;
+        public required string Branch { get; init; }
+
+        /// &lt;summary&gt;
+        /// Detached HEAD状態かどうか
+        /// &lt;/summary&gt;
+        public bool IsDetached { get; init; }
+
+        /// &lt;summary&gt;
+        /// 現在のHEADのコミットハッシュ（完全形）
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        /// 40文字の16進数文字列。
+        /// 短縮形が必要な場合はSubstring(0, 7)を使用。
+        /// &lt;/remarks&gt;
+        public required string CommitHash { get; init; }
+
+        /// &lt;summary&gt;
+        /// Worktreeの作成日時
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        /// ローカルタイムゾーン。
+        /// .git/worktrees/&lt;name&gt;/gitdirファイルの作成日時から取得。
+        /// &lt;/remarks&gt;
+        public DateTime CreatedAt { get; init; }
+
+        /// &lt;summary&gt;
+        /// Worktreeがファイルシステム上に存在するか
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        /// Directory.Exists()の結果をキャッシュ。
+        /// falseの場合、警告メッセージを表示する必要がある。
+        /// &lt;/remarks&gt;
+        public bool Exists { get; init; }
+
+        /// &lt;summary&gt;
+        /// 表示用のブランチ文字列を取得します
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;
+        /// 通常のブランチ: ブランチ名
+        /// Detached HEAD: &quot;abc1234 (detached)&quot;
+        /// &lt;/returns&gt;
+        public string GetDisplayBranch()
+        {
+            if (IsDetached)
+            {
+                var shortHash = CommitHash.Length &gt;= 7 
+                    ? CommitHash.Substring(0, 7) 
+                    : CommitHash;
+                return $&quot;{shortHash} (detached)&quot;;
+            }
+            return Branch;
+        }
+
+        /// &lt;summary&gt;
+        /// 表示用のステータス文字列を取得します
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;
+        /// 存在する: &quot;active&quot;
+        /// 存在しない: &quot;missing&quot;
+        /// &lt;/returns&gt;
+        public string GetDisplayStatus()
+        {
+            return Exists ? &quot;active&quot; : &quot;missing&quot;;
+        }
+    }
+}
+</code></pre>
+<h3 id="branchinfo">BranchInfo</h3>
+<p>ブランチ参照の情報を表現するモデル（将来の拡張用）。</p>
+<pre><code class="lang-csharp">namespace Kuju63.WorkTree.CommandLine.Models
+{
+    /// &lt;summary&gt;
+    /// Gitブランチの情報を表現します。
+    /// &lt;/summary&gt;
+    /// &lt;remarks&gt;
+    /// 現在のフェーズでは使用しませんが、将来の拡張（ブランチ一覧表示等）のために定義します。
+    /// &lt;/remarks&gt;
+    public class BranchInfo
+    {
+        /// &lt;summary&gt;
+        /// ブランチ名（refs/heads/を除いた形式）
+        /// &lt;/summary&gt;
+        /// &lt;example&gt;main, feature/new-feature&lt;/example&gt;
+        public required string Name { get; init; }
+
+        /// &lt;summary&gt;
+        /// ブランチのHEADコミットハッシュ
+        /// &lt;/summary&gt;
+        public required string CommitHash { get; init; }
+
+        /// &lt;summary&gt;
+        /// いずれかのworktreeでチェックアウトされているか
+        /// &lt;/summary&gt;
+        public bool IsCheckedOut { get; init; }
+
+        /// &lt;summary&gt;
+        /// チェックアウトしているworktreeのパス（複数の場合は最初の1つ）
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        /// IsCheckedOut=trueの場合のみ有効。
+        /// nullの場合、どのworktreeでもチェックアウトされていない。
+        /// &lt;/remarks&gt;
+        public string? WorktreePath { get; init; }
+    }
+}
+</code></pre>
+<h2 id="validation-rules">Validation Rules</h2>
+<h3 id="worktreeinfo-validation">WorktreeInfo Validation</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Rule</th>
+<th>Error Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Path</td>
+<td>必須、空文字列不可</td>
+<td>&quot;Worktree path is required&quot;</td>
+</tr>
+<tr>
+<td>Path</td>
+<td>絶対パスであること</td>
+<td>&quot;Worktree path must be absolute&quot;</td>
+</tr>
+<tr>
+<td>Branch</td>
+<td>必須、空文字列不可</td>
+<td>&quot;Branch name is required&quot;</td>
+</tr>
+<tr>
+<td>Branch</td>
+<td>有効なGit参照名</td>
+<td>&quot;Invalid branch name format&quot;</td>
+</tr>
+<tr>
+<td>CommitHash</td>
+<td>必須、40文字の16進数</td>
+<td>&quot;Invalid commit hash format&quot;</td>
+</tr>
+<tr>
+<td>CreatedAt</td>
+<td>DateTime.MinValue以外</td>
+<td>&quot;Invalid creation date&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>実装例</strong>:</p>
+<pre><code class="lang-csharp">public static class WorktreeInfoValidator
+{
+    public static ValidationResult Validate(WorktreeInfo info)
+    {
+        var errors = new List&lt;string&gt;();
+
+        if (string.IsNullOrWhiteSpace(info.Path))
+            errors.Add(&quot;Worktree path is required&quot;);
+        else if (!System.IO.Path.IsPathRooted(info.Path))
+            errors.Add(&quot;Worktree path must be absolute&quot;);
+
+        if (string.IsNullOrWhiteSpace(info.Branch))
+            errors.Add(&quot;Branch name is required&quot;);
+
+        if (string.IsNullOrWhiteSpace(info.CommitHash) || 
+            !IsValidCommitHash(info.CommitHash))
+            errors.Add(&quot;Invalid commit hash format&quot;);
+
+        if (info.CreatedAt == DateTime.MinValue)
+            errors.Add(&quot;Invalid creation date&quot;);
+
+        return errors.Count == 0 
+            ? ValidationResult.Success() 
+            : ValidationResult.Failure(errors);
+    }
+
+    private static bool IsValidCommitHash(string hash)
+    {
+        return hash.Length == 40 &amp;&amp; 
+               hash.All(c =&gt; char.IsDigit(c) || (c &gt;= 'a' &amp;&amp; c &lt;= 'f'));
+    }
+}
+</code></pre>
+<h2 id="entity-relationships">Entity Relationships</h2>
+<pre><code class="lang-text">WorktreeInfo (1) --- (0..1) BranchInfo
+  │
+  │ 集約: Worktreeは単一のブランチまたはdetached HEADを持つ
+  │ 方向: WorktreeInfo.Branch → BranchInfo.Name
+  │
+  └─ IsDetached=false の場合のみBranchInfoと関連
+</code></pre>
+<p><strong>注意</strong>: 現在の実装（Phase 1）では、BranchInfoは使用せず、WorktreeInfoのみを使用します。将来、ブランチ一覧機能を追加する際にBranchInfoを活用します。</p>
+<h2 id="state-transitions">State Transitions</h2>
+<p>WorktreeInfoには明示的な状態遷移はありませんが、以下のような不変の状態があります：</p>
+<pre><code class="lang-text">[Created] ─┬─&gt; [Exists=true, IsDetached=false]  通常のブランチ
+           ├─&gt; [Exists=true, IsDetached=true]   Detached HEAD
+           ├─&gt; [Exists=false, IsDetached=false] 削除された（ブランチ）
+           └─&gt; [Exists=false, IsDetached=true]  削除された（Detached）
+</code></pre>
+<p>すべてのWorktreeInfoインスタンスは不変（immutable）です。状態変更は新しいインスタンスの生成により行います。</p>
+<h2 id="data-flow">Data Flow</h2>
+<pre><code class="lang-text">1. GitService.ListWorktreesAsync()
+   ↓ git worktree list --porcelain 実行
+   ↓ ポーセラン出力をパース
+   ↓
+2. WorktreeInfo インスタンス生成
+   ├─ Path: ポーセラン出力の&quot;worktree&quot;行から取得
+   ├─ Branch: &quot;branch&quot;行から取得（detachedの場合は&quot;HEAD&quot;行から）
+   ├─ IsDetached: &quot;detached&quot;行の有無で判定
+   ├─ CommitHash: &quot;HEAD&quot;行から取得
+   ├─ CreatedAt: .git/worktrees/&lt;name&gt;/gitdirのファイルタイムスタンプ
+   └─ Exists: Directory.Exists(Path)の結果
+   ↓
+3. ソート: CreatedAt降順
+   ↓
+4. TableFormatter.Format(worktrees)
+   ↓ テーブル文字列生成
+   ↓
+5. Console出力
+</code></pre>
+<h2 id="persistence">Persistence</h2>
+<p>このモデルはメモリ上のみに存在し、永続化は行いません。すべての情報はGitリポジトリとファイルシステムから動的に取得します。</p>
+<h2 id="serialization">Serialization</h2>
+<p>将来の拡張（P3: 代替出力フォーマット）のために、JSON シリアライゼーションをサポートする設計にします。</p>
+<pre><code class="lang-csharp">// System.Text.Json 互換
+[JsonPropertyName(&quot;path&quot;)]
+public required string Path { get; init; }
+
+[JsonPropertyName(&quot;branch&quot;)]
+public required string Branch { get; init; }
+
+[JsonPropertyName(&quot;is_detached&quot;)]
+public bool IsDetached { get; init; }
+
+[JsonPropertyName(&quot;commit_hash&quot;)]
+public required string CommitHash { get; init; }
+
+[JsonPropertyName(&quot;created_at&quot;)]
+public DateTime CreatedAt { get; init; }
+
+[JsonPropertyName(&quot;exists&quot;)]
+public bool Exists { get; init; }
+</code></pre>
+<p><strong>JSON出力例</strong>:</p>
+<pre><code class="lang-json">[
+  {
+    &quot;path&quot;: &quot;/Users/dev/project/wt&quot;,
+    &quot;branch&quot;: &quot;main&quot;,
+    &quot;is_detached&quot;: false,
+    &quot;commit_hash&quot;: &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+    &quot;created_at&quot;: &quot;2026-01-04T10:30:00+09:00&quot;,
+    &quot;exists&quot;: true
+  },
+  {
+    &quot;path&quot;: &quot;/Users/dev/project/feature-wt&quot;,
+    &quot;branch&quot;: &quot;feature-branch&quot;,
+    &quot;is_detached&quot;: false,
+    &quot;commit_hash&quot;: &quot;def5678901234567890abcdef1234567890abcde&quot;,
+    &quot;created_at&quot;: &quot;2026-01-04T11:00:00+09:00&quot;,
+    &quot;exists&quot;: true
+  }
+]
+</code></pre>
+<h2 id="testing-considerations">Testing Considerations</h2>
+<h3 id="ユニットテスト">ユニットテスト</h3>
+<ul>
+<li><p><code>GetDisplayBranch()</code>メソッドのテスト:</p>
+<ul>
+<li>通常のブランチ名が正しく返される</li>
+<li>Detached HEADの場合、短縮ハッシュ + &quot;(detached)&quot;が返される</li>
+<li>コミットハッシュが7文字未満の場合でも動作する</li>
+</ul>
+</li>
+<li><p><code>GetDisplayStatus()</code>メソッドのテスト:</p>
+<ul>
+<li>Exists=trueの場合 &quot;active&quot;</li>
+<li>Exists=falseの場合 &quot;missing&quot;</li>
+</ul>
+</li>
+<li><p>バリデーションのテスト:</p>
+<ul>
+<li>各プロパティのバリデーションルールが正しく機能する</li>
+<li>複数のエラーが同時に検出される</li>
+</ul>
+</li>
+</ul>
+<h3 id="統合テスト">統合テスト</h3>
+<ul>
+<li>Gitリポジトリから実際にWorktreeInfoを生成するテスト</li>
+<li>存在しないworktreeの検出テスト</li>
+<li>Detached HEAD状態のworktreeの処理テスト</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<p>データモデルは以下の原則に従って設計されています：</p>
+<ul>
+<li><strong>不変性</strong>: すべてのプロパティはinit-onlyで不変</li>
+<li><strong>明示性</strong>: 各プロパティの用途と制約が明確</li>
+<li><strong>拡張性</strong>: 将来の機能追加（JSON出力、ブランチ一覧）に対応可能</li>
+<li><strong>テスト可能性</strong>: バリデーションとビジネスロジックが分離</li>
+<li><strong>型安全性</strong>: required修飾子とnull許容型で安全性を確保</li>
+</ul>
+<p>次のステップ: contracts/cli-interface.mdでCLIインターフェース仕様を定義します。</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/data-model.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

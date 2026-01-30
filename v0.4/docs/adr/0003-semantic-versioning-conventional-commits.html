@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ADR 0003: Semantic Versioning Strategy and Conventional Commits | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ADR 0003: Semantic Versioning Strategy and Conventional Commits | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/adr/0003-semantic-versioning-conventional-commits.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adr-0003-semantic-versioning-strategy-and-conventional-commits">ADR 0003: Semantic Versioning Strategy and Conventional Commits</h1>
+
+<p><strong>Status</strong>: Accepted<br>
+<strong>Date</strong>: 2026-01-05<br>
+<strong>Context</strong>: Feature 003 - Automated Binary Release Pipeline<br>
+<strong>Related</strong>: <a href="../../specs/003-automated-release-pipeline/spec.html">spec.md</a>, <a href="../../specs/003-automated-release-pipeline/research.html">research.md</a></p>
+<h2 id="context">Context</h2>
+<p>To automate the release process, we need a consistent versioning strategy that:</p>
+<ol>
+<li>Automatically determines the next version number based on commit history</li>
+<li>Follows industry-standard semantic versioning principles</li>
+<li>Communicates breaking changes, new features, and bug fixes clearly</li>
+<li>Integrates seamlessly with GitHub Actions workflows</li>
+</ol>
+<h2 id="decision">Decision</h2>
+<h3 id="semantic-versioning-200">Semantic Versioning 2.0.0</h3>
+<p>We will follow <strong>Semantic Versioning 2.0.0</strong> with the format: <strong>MAJOR.MINOR.PATCH</strong></p>
+<p><strong>Example</strong>: <code>v1.2.3</code> where:</p>
+<ul>
+<li><code>MAJOR</code> (1): Incompatible API changes (breaking changes)</li>
+<li><code>MINOR</code> (2): New features (backward-compatible)</li>
+<li><code>PATCH</code> (3): Bug fixes (backward-compatible)</li>
+</ul>
+<h3 id="conventional-commits-100">Conventional Commits 1.0.0</h3>
+<p>All commit messages MUST follow <strong>Conventional Commits 1.0.0</strong> specification.</p>
+<p><strong>Format</strong>: <code>&lt;type&gt;: &lt;subject&gt;</code></p>
+<p><strong>Supported Types</strong>:</p>
+<ul>
+<li><code>feat:</code> - New feature (triggers MINOR version bump)</li>
+<li><code>fix:</code> - Bug fix (triggers PATCH version bump)</li>
+<li><code>BREAKING CHANGE:</code> - Breaking change footer (triggers MAJOR version bump)</li>
+<li><code>docs:</code> - Documentation only (no version bump)</li>
+<li><code>style:</code> - Code style/formatting (no version bump)</li>
+<li><code>refactor:</code> - Code refactoring (no version bump)</li>
+<li><code>test:</code> - Test changes (no version bump)</li>
+<li><code>chore:</code> - Build/tool changes (no version bump)</li>
+</ul>
+<h3 id="version-bump-rules">Version Bump Rules</h3>
+<table>
+<thead>
+<tr>
+<th>Commit Type</th>
+<th>Version Bump</th>
+<th>Example Transition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BREAKING CHANGE:</code> in commit body/footer</td>
+<td>MAJOR</td>
+<td><code>v0.5.2</code> → <code>v1.0.0</code></td>
+</tr>
+<tr>
+<td><code>feat:</code> in commit subject</td>
+<td>MINOR</td>
+<td><code>v0.5.2</code> → <code>v0.6.0</code></td>
+</tr>
+<tr>
+<td><code>fix:</code> in commit subject</td>
+<td>PATCH</td>
+<td><code>v0.5.2</code> → <code>v0.5.3</code></td>
+</tr>
+<tr>
+<td><code>docs:</code>, <code>style:</code>, <code>refactor:</code>, <code>test:</code>, <code>chore:</code></td>
+<td>None</td>
+<td>No release</td>
+</tr>
+</tbody>
+</table>
+<h3 id="implementation-tool">Implementation Tool</h3>
+<p><strong>Tool</strong>: <code>paulhatch/semantic-version</code> GitHub Action (v5.4.0)</p>
+<p><strong>Rationale</strong>:</p>
+<ol>
+<li><strong>Mature</strong>: 1,000+ stars, actively maintained, widely used</li>
+<li><strong>Configurable</strong>: Supports custom patterns for MAJOR/MINOR/PATCH detection</li>
+<li><strong>Commit History Parsing</strong>: Analyzes all commits since last tag</li>
+<li><strong>Git-Native</strong>: No external dependencies, works with standard Git tags</li>
+<li><strong>Deterministic</strong>: Same commits → same version calculation</li>
+<li><strong>GitHub Actions Native</strong>: Seamless integration with workflows</li>
+</ol>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="lang-yaml">- name: Calculate next version
+  uses: paulhatch/semantic-version@a8f8f59fd7f0625188492e945240f12d7ad2dca3 # v5.4.0
+  with:
+    tag_prefix: &quot;v&quot;
+    major_pattern: &quot;(BREAKING CHANGE:|BREAKING:)&quot;
+    minor_pattern: &quot;feat:&quot;
+    version_format: &quot;v${major}.${minor}.${patch}&quot;
+    bump_each_commit: false
+    search_commit_body: true
+</code></pre>
+<h3 id="git-tag-format">Git Tag Format</h3>
+<ul>
+<li><strong>Tag Prefix</strong>: <code>v</code> (e.g., <code>v1.2.3</code>)</li>
+<li><strong>GitHub Release Name</strong>: Same as tag (e.g., <code>v1.2.3</code>)</li>
+<li><strong>Binary File Names</strong>: Include version (e.g., <code>wt-v1.2.3-linux-x64</code>)</li>
+</ul>
+<h3 id="initial-version">Initial Version</h3>
+<ul>
+<li><strong>First Release</strong>: <code>v0.1.0</code> (pre-stable)</li>
+<li><strong>Stable Release</strong>: <code>v1.0.0</code> (production-ready)</li>
+</ul>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<h3 id="alternative-1-manual-versioning">Alternative 1: Manual Versioning</h3>
+<p><strong>Approach</strong>: Developers manually specify version in <code>VERSION</code> file or <code>package.json</code></p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Full control over version numbers</li>
+<li>No dependency on commit message format</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Error-prone (developers forget to update version)</li>
+<li>Merge conflicts on version files</li>
+<li>No automated validation</li>
+<li>Inconsistent versioning across team</li>
+</ul>
+<p><strong>Rejected</strong>: Does not meet automation requirements (FR-006).</p>
+<h3 id="alternative-2-semantic-release-nodejs">Alternative 2: semantic-release (Node.js)</h3>
+<p><strong>Approach</strong>: Use <code>semantic-release</code> NPM package</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Industry standard for Node.js projects</li>
+<li>Rich plugin ecosystem</li>
+<li>Automatic changelog generation</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Requires Node.js runtime (adds dependency to .NET project)</li>
+<li>Complex configuration (<code>.releaserc</code> file)</li>
+<li>Slower execution (npm install + semantic-release run)</li>
+<li>Overkill for simple version calculation</li>
+</ul>
+<p><strong>Rejected</strong>: Adds unnecessary runtime dependency and complexity.</p>
+<h3 id="alternative-3-custom-bash-script">Alternative 3: Custom Bash Script</h3>
+<p><strong>Approach</strong>: Write custom script to parse commits and calculate version</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>No external dependencies</li>
+<li>Full control over logic</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Maintenance burden (testing, edge cases)</li>
+<li>Reinventing the wheel</li>
+<li>Potential for bugs in version calculation</li>
+</ul>
+<p><strong>Rejected</strong>: GitHub Action provides tested, proven solution.</p>
+<h2 id="consequences">Consequences</h2>
+<h3 id="positive">Positive</h3>
+<ul>
+<li><strong>Automation</strong>: Version numbers calculated automatically from commit history</li>
+<li><strong>Consistency</strong>: All team members follow the same versioning rules</li>
+<li><strong>Clarity</strong>: Commit messages clearly communicate the type of change</li>
+<li><strong>Predictability</strong>: Users can understand version impact (MAJOR = breaking, MINOR = features, PATCH = fixes)</li>
+<li><strong>Traceability</strong>: Version history is traceable through Git tags and commit messages</li>
+</ul>
+<h3 id="negative">Negative</h3>
+<ul>
+<li><strong>Learning Curve</strong>: Developers must learn Conventional Commits format</li>
+<li><strong>Strict Discipline</strong>: Invalid commit messages block automated versioning</li>
+<li><strong>Merge Commits</strong>: Squash-and-merge strategy recommended to maintain clean commit history</li>
+<li><strong>No Version Downgrade</strong>: Cannot manually decrease version number (only forward)</li>
+</ul>
+<h3 id="migration-strategy">Migration Strategy</h3>
+<p>For existing projects without Conventional Commits:</p>
+<ol>
+<li><strong>Start Fresh</strong>: First release with new pipeline is <code>v0.1.0</code></li>
+<li><strong>Prefix Requirement</strong>: All new commits must follow Conventional Commits</li>
+<li><strong>Git Hooks</strong>: Add <code>commitlint</code> to validate commit messages locally</li>
+<li><strong>Documentation</strong>: Provide team training on Conventional Commits</li>
+</ol>
+<h2 id="enforcement">Enforcement</h2>
+<h3 id="pre-commit-hook-optional">Pre-Commit Hook (Optional)</h3>
+<pre><code class="lang-bash"># .git/hooks/commit-msg
+#!/bin/sh
+npx --no-install commitlint --edit &quot;$1&quot;
+</code></pre>
+<h3 id="pull-request-validation">Pull Request Validation</h3>
+<p>GitHub Actions workflow validates commit messages:</p>
+<pre><code class="lang-yaml">- name: Validate commit messages
+  run: |
+    git log origin/main..HEAD --pretty=format:%s | \
+      grep -Ev '^(feat|fix|docs|style|refactor|test|chore|BREAKING CHANGE):' &amp;&amp; \
+      { echo &quot;Invalid commit messages found!&quot;; exit 1; } || echo &quot;All commits valid&quot;
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="example-1-feature-addition-minor-bump">Example 1: Feature Addition (MINOR bump)</h3>
+<pre><code class="lang-bash">git commit -m &quot;feat: add support for multiple worktrees&quot;
+# v0.5.2 → v0.6.0
+</code></pre>
+<h3 id="example-2-bug-fix-patch-bump">Example 2: Bug Fix (PATCH bump)</h3>
+<pre><code class="lang-bash">git commit -m &quot;fix: handle special characters in branch names&quot;
+# v0.5.2 → v0.5.3
+</code></pre>
+<h3 id="example-3-breaking-change-major-bump">Example 3: Breaking Change (MAJOR bump)</h3>
+<pre><code class="lang-bash">git commit -m &quot;feat: change CLI argument format
+
+BREAKING CHANGE: All CLI arguments now use kebab-case instead of camelCase.
+Migration guide: docs/migration/v2.0.md&quot;
+# v0.5.2 → v1.0.0
+</code></pre>
+<h3 id="example-4-documentation-no-bump">Example 4: Documentation (No bump)</h3>
+<pre><code class="lang-bash">git commit -m &quot;docs: update installation guide&quot;
+# v0.5.2 → v0.5.2 (no release)
+</code></pre>
+<h2 id="documentation">Documentation</h2>
+<ul>
+<li><strong>Team Guide</strong>: <a href="../ja/CONVENTIONAL_COMMITS.html">docs/ja/CONVENTIONAL_COMMITS.md</a></li>
+<li><strong>User Guide</strong>: <a href="../../specs/003-automated-release-pipeline/quickstart.html">specs/003-automated-release-pipeline/quickstart.md</a></li>
+<li><strong>Enforcement</strong>: Documented in <code>.github/CONTRIBUTING.md</code></li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://semver.org/">Semantic Versioning 2.0.0</a></li>
+<li><a href="https://www.conventionalcommits.org/">Conventional Commits 1.0.0</a></li>
+<li><a href="https://github.com/PaulHatch/semantic-version">paulhatch/semantic-version GitHub Action</a></li>
+<li><a href="https://commitlint.js.org/">commitlint</a></li>
+</ul>
+<h2 id="review-schedule">Review Schedule</h2>
+<p>This ADR should be reviewed:</p>
+<ul>
+<li>Before major version 1.0.0 release</li>
+<li>If versioning strategy proves too restrictive or too lenient</li>
+<li>If Conventional Commits 2.0 is released</li>
+<li>Annually as part of architecture review</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/adr/0003-semantic-versioning-conventional-commits.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

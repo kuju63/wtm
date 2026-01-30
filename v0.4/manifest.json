@@ -1,0 +1,1472 @@
+{
+  "source_base_path": "/home/runner/work/wt/wt",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "AGENTS.md",
+      "output": {
+        ".html": {
+          "relative_path": "AGENTS.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "CHANGELOG.md",
+      "output": {
+        ".html": {
+          "relative_path": "CHANGELOG.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "CLAUDE.md",
+      "output": {
+        ".html": {
+          "relative_path": "CLAUDE.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "CODE_OF_CONDUCT.md",
+      "output": {
+        ".html": {
+          "relative_path": "CODE_OF_CONDUCT.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "CODE_OF_CONDUCT_ja.md",
+      "output": {
+        ".html": {
+          "relative_path": "CODE_OF_CONDUCT_ja.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "README.md",
+      "output": {
+        ".html": {
+          "relative_path": "README.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.ListCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.ListCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Commands.ListCommand",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Commands.ListCommand.yml\" sourcestartlinenumber=\"1\">Command for listing all Git worktrees with their branch information.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.yml\" sourcestartlinenumber=\"1\">Represents a command to create a new Git worktree with a new branch.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.yml\" sourcestartlinenumber=\"1\">Command to remove a git worktree and delete its working directory.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.Worktree.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.Worktree.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Commands.Worktree",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Commands.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Commands",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.yml\" sourcestartlinenumber=\"1\">Defines methods for formatting worktree output in different formats.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Formatters.TableColumn",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.yml\" sourcestartlinenumber=\"1\">Represents a column definition in a table.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Formatters.TableFormatter",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.yml\" sourcestartlinenumber=\"1\">Formats worktree information as a table with Unicode box-drawing characters.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Formatters.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Formatters.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Formatters",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.BranchInfo",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.yml\" sourcestartlinenumber=\"1\">Represents information about a Git branch.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.CommandResult<T>",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.yml\" sourcestartlinenumber=\"1\">Represents the result of a command operation using the Result pattern.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.yml\" sourcestartlinenumber=\"1\">Represents the options for creating a new worktree.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.DeletionFailure",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.yml\" sourcestartlinenumber=\"1\">Represents a file or directory that could not be deleted during worktree removal.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.EditorConfig",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.yml\" sourcestartlinenumber=\"1\">Represents the configuration for a code editor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.EditorType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.EditorType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.EditorType",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.EditorType.yml\" sourcestartlinenumber=\"1\">Specifies the type of code editor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.ErrorCodes",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.yml\" sourcestartlinenumber=\"1\">Defines error codes used throughout the application.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.OutputFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.OutputFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.OutputFormat",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.OutputFormat.yml\" sourcestartlinenumber=\"1\">Specifies the output format for command results.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.RemovalValidationError",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.yml\" sourcestartlinenumber=\"1\">Enumeration of validation errors for worktree removal operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.yml\" sourcestartlinenumber=\"1\">Options for the remove worktree command.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.yml\" sourcestartlinenumber=\"1\">Result data for a worktree removal operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models.WorktreeInfo",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.yml\" sourcestartlinenumber=\"1\">Represents information about a Git worktree.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Models.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Models",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets.yml\" sourcestartlinenumber=\"1\">Provides preset configurations for known code editors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Editor.EditorService",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.yml\" sourcestartlinenumber=\"1\">Provides functionality for launching and managing code editors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.yml\" sourcestartlinenumber=\"1\">Defines methods for launching and managing code editors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Editor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Editor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Editor",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Git.GitService",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.yml\" sourcestartlinenumber=\"1\">Provides functionality for interacting with Git repositories.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Git.IGitService",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.yml\" sourcestartlinenumber=\"1\">Defines methods for interacting with Git repositories.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Git.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Git.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Git",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.yml\" sourcestartlinenumber=\"1\">Defines methods for creating and managing Git worktrees.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.yml\" sourcestartlinenumber=\"1\">Provides functionality for creating and managing Git worktrees.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Worktree.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Services.Worktree.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Services.Worktree",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils.IPathHelper",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils.IProcessRunner",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils.PathHelper",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.yml\" sourcestartlinenumber=\"1\">Provides helper methods for path operations and validation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils.PathValidationResult",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.yml\" sourcestartlinenumber=\"1\">Represents the result of a path validation operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils.ProcessResult",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.yml\" sourcestartlinenumber=\"1\">Represents the result of a process execution.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils.ProcessRunner",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.yml\" sourcestartlinenumber=\"1\">Provides functionality for running external processes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils.ValidationResult",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.yml\" sourcestartlinenumber=\"1\">Represents the result of a validation operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.Validators.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.Validators.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils.Validators",
+      "Summary": "<p sourcefile=\"api/Kuju63.WorkTree.CommandLine.Utils.Validators.yml\" sourcestartlinenumber=\"1\">Provides validation helper methods for various input types.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Kuju63.WorkTree.CommandLine.Utils.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Kuju63.WorkTree.CommandLine.Utils",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/adr/0001-record-clean-secure-requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/adr/0001-record-clean-secure-requirements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/adr/0002-sbom-format-and-signature-choice.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/adr/0002-sbom-format-and-signature-choice.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/adr/0003-semantic-versioning-conventional-commits.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/adr/0003-semantic-versioning-conventional-commits.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/adr/0004-release-workflow-timeout-sla.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/adr/0004-release-workflow-timeout-sla.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/adr/0005-quality-gates-testing-requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/adr/0005-quality-gates-testing-requirements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/adr/0006-force-flag-removal-behavior.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/adr/0006-force-flag-removal-behavior.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/adr/004-sbom-generation.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/adr/004-sbom-generation.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/adr/adr.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/adr/adr.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/commands/create.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/commands/create.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/commands/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/commands/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/commands/list.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/commands/list.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/commands/remove.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/commands/remove.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/coverage-report.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/coverage-report.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/getting-started.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/getting-started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/guides/quickstart.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/guides/quickstart.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/guides/sbom-usage.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/guides/sbom-usage.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/installation.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/installation.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/introduction.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/introduction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/ja/CONVENTIONAL_COMMITS.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/ja/CONVENTIONAL_COMMITS.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/ja/user-guide.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/ja/user-guide.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/toc.html"
+        },
+        ".json": {
+          "relative_path": "docs/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-create-worktree/checklists/requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-create-worktree/checklists/requirements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-create-worktree/contracts/cli-interface.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-create-worktree/contracts/cli-interface.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-create-worktree/data-model.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-create-worktree/data-model.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-create-worktree/plan.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-create-worktree/plan.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-create-worktree/quickstart.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-create-worktree/quickstart.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-create-worktree/research.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-create-worktree/research.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-create-worktree/spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-create-worktree/spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-create-worktree/tasks.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-create-worktree/tasks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/MVP-SUMMARY.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/MVP-SUMMARY.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/adr/001-consolidate-docs-workflow-into-release.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/adr/001-consolidate-docs-workflow-into-release.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/checklists/requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/checklists/requirements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/contracts/docfx-config-contract.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/contracts/docfx-config-contract.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/contracts/github-workflow-contract.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/contracts/github-workflow-contract.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/data-model.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/data-model.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/plan.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/plan.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/quickstart.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/quickstart.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/research.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/research.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/001-github-pages-docs/tasks.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/001-github-pages-docs/tasks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/002-list-worktree-branches/checklists/requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/002-list-worktree-branches/checklists/requirements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/002-list-worktree-branches/contracts/cli-interface.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/002-list-worktree-branches/contracts/cli-interface.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/002-list-worktree-branches/data-model.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/002-list-worktree-branches/data-model.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/002-list-worktree-branches/plan.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/002-list-worktree-branches/plan.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/002-list-worktree-branches/quickstart.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/002-list-worktree-branches/quickstart.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/002-list-worktree-branches/research.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/002-list-worktree-branches/research.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/002-list-worktree-branches/spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/002-list-worktree-branches/spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/002-list-worktree-branches/tasks.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/002-list-worktree-branches/tasks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/checklists/requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/checklists/requirements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/contracts/build-workflow.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/contracts/build-workflow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/contracts/release-workflow.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/contracts/release-workflow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/contracts/test-workflow.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/contracts/test-workflow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/data-model.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/data-model.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/plan.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/plan.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/quickstart.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/quickstart.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/research.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/research.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/tasks.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/tasks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/testing-guide.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/testing-guide.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/003-automated-release-pipeline/troubleshooting.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/003-automated-release-pipeline/troubleshooting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/004-complete-sbom-generation/checklists/requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/004-complete-sbom-generation/checklists/requirements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/004-complete-sbom-generation/contracts/github-dependency-submission-api.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/004-complete-sbom-generation/contracts/github-dependency-submission-api.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/004-complete-sbom-generation/data-model.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/004-complete-sbom-generation/data-model.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/004-complete-sbom-generation/plan.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/004-complete-sbom-generation/plan.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/004-complete-sbom-generation/quickstart.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/004-complete-sbom-generation/quickstart.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/004-complete-sbom-generation/research.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/004-complete-sbom-generation/research.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/004-complete-sbom-generation/spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/004-complete-sbom-generation/spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/004-complete-sbom-generation/tasks.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/004-complete-sbom-generation/tasks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/checklists/pre-implementation.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/checklists/pre-implementation.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/checklists/requirements.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/checklists/requirements.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/contracts/cli-command.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/contracts/cli-command.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/data-model.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/data-model.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/plan.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/plan.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/quickstart.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/quickstart.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/research.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/research.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "specs/005-remove-worktree/tasks.md",
+      "output": {
+        ".html": {
+          "relative_path": "specs/005-remove-worktree/tasks.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

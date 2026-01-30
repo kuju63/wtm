@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Research: GitHub Pages Documentation Publishing | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Research: GitHub Pages Documentation Publishing | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/research.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="research-github-pages-documentation-publishing">Research: GitHub Pages Documentation Publishing</h1>
+
+<p><strong>Feature</strong>: 001-github-pages-docs<br>
+<strong>Date</strong>: 2026-01-15<br>
+<strong>Status</strong>: Complete</p>
+<p>This document consolidates research findings to resolve all &quot;NEEDS CLARIFICATION&quot; items from the Technical Context and Constitution Check sections of the implementation plan.</p>
+<h2 id="research-areas">Research Areas</h2>
+<h3 id="1-docfx-version-and-installation">1. DocFX Version and Installation</h3>
+<p><strong>Decision</strong>: Use DocFX v2.78.4 (latest stable) as .NET global tool</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>DocFX 2.78.4 is the current production release maintained by Microsoft/.NET Foundation</li>
+<li>Includes native support for .NET 10 (via Roslyn 4.13.0 update)</li>
+<li>Global tool installation integrates seamlessly with .NET 10.0 SDK already in use</li>
+<li>Supports modern template system with &quot;default&quot; and &quot;modern&quot; themes</li>
+<li>Native support for C# XML documentation extraction</li>
+<li>Performance improvements: cached MarkdownPipeline, reused YamlDeserializer instances</li>
+</ul>
+<p><strong>Installation Method</strong>:</p>
+<pre><code class="lang-bash">dotnet tool install --global docfx --version 2.78.4
+</code></pre>
+<p><strong>Alternatives Considered</strong>:</p>
+<ul>
+<li><strong>Container-based (Docker)</strong>: More complex CI/CD setup, unnecessary overhead for simple documentation build</li>
+<li><strong>npm-based tools (MkDocs, Docusaurus)</strong>: Cannot generate .NET API documentation from XML comments</li>
+<li><strong>Sphinx</strong>: Python-focused, poor .NET integration, requires additional plugins</li>
+</ul>
+<p><strong>Implementation Requirements</strong>:</p>
+<ul>
+<li>Add <code>&lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;</code> to wt.cli.csproj</li>
+<li>Pin DocFX version 2.78.4 in GitHub Actions workflow to prevent unexpected breaking changes</li>
+<li>Configure <code>docfx.json</code> to output XML documentation from wt.cli project</li>
+</ul>
+<hr>
+<h3 id="2-automatic-command-list-generation">2. Automatic Command List Generation</h3>
+<p><strong>Decision</strong>: Programmatic export of System.CommandLine help text using HelpBuilder and custom IConsole</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>System.CommandLine (already used in wt.cli) provides rich command metadata</li>
+<li>Automatic generation ensures documentation stays synchronized with actual CLI implementation</li>
+<li>Prevents manual maintenance burden and documentation drift</li>
+<li>Supports requirement FR-012 (Command Reference as man page equivalent)</li>
+</ul>
+<p><strong>Implementation Architecture</strong>:</p>
+<h4 id="step-1-create-documentation-generator-tool">Step 1: Create Documentation Generator Tool</h4>
+<pre><code class="lang-csharp">// Tools/DocGenerator/Program.cs
+using System.CommandLine;
+using System.CommandLine.Help;
+using System.CommandLine.IO;
+using System.Text;
+
+class MarkdownConsole : IConsole
+{
+    private readonly StringWriter _out = new StringWriter();
+    public string GetOutput() =&gt; _out.ToString();
+    
+    public IStandardStreamWriter Out =&gt; StandardStreamWriter.Create(_out);
+    public bool IsOutputRedirected =&gt; false;
+    public IStandardStreamWriter Error =&gt; Out;
+    public bool IsErrorRedirected =&gt; false;
+    public bool IsInputRedirected =&gt; false;
+}
+
+class CommandDocGenerator
+{
+    public static void GenerateCommandDocs(RootCommand rootCommand, string outputDir)
+    {
+        // Ensure commands directory exists
+        var commandsDir = Path.Combine(outputDir, &quot;commands&quot;);
+        Directory.CreateDirectory(commandsDir);
+        
+        // Generate overview page
+        var overview = new StringBuilder();
+        overview.AppendLine(&quot;# Command Reference&quot;);
+        overview.AppendLine();
+        overview.AppendLine(&quot;Complete reference for all `wt` commands.&quot;);
+        overview.AppendLine();
+        
+        // Generate individual command pages
+        foreach (var command in rootCommand.Subcommands)
+        {
+            var markdown = ConvertCommandToMarkdown(command);
+            var fileName = $&quot;{command.Name}.md&quot;;
+            File.WriteAllText(Path.Combine(commandsDir, fileName), markdown);
+            
+            overview.AppendLine($&quot;- [`wt {command.Name}`](commands/{command.Name}.md) - {command.Description}&quot;);
+        }
+        
+        File.WriteAllText(Path.Combine(outputDir, &quot;command-reference.md&quot;), overview.ToString());
+        Console.WriteLine($&quot;✅ Generated documentation for {rootCommand.Subcommands.Count} commands&quot;);
+    }
+    
+    private static string ConvertCommandToMarkdown(Command command)
+    {
+        var md = new StringBuilder();
+        
+        // Title and description
+        md.AppendLine($&quot;# wt {command.Name}&quot;);
+        md.AppendLine();
+        md.AppendLine(command.Description);
+        md.AppendLine();
+        
+        // Usage section
+        md.AppendLine(&quot;## Usage&quot;);
+        md.AppendLine();
+        md.AppendLine(&quot;```bash&quot;);
+        md.AppendLine($&quot;wt {command.Name} [options]&quot;);
+        md.AppendLine(&quot;```&quot;);
+        md.AppendLine();
+        
+        // Options section
+        if (command.Options.Any())
+        {
+            md.AppendLine(&quot;## Options&quot;);
+            md.AppendLine();
+            
+            foreach (var option in command.Options)
+            {
+                md.AppendLine($&quot;### `{string.Join(&quot;, &quot;, option.Aliases)}`&quot;);
+                md.AppendLine();
+                md.AppendLine(option.Description);
+                md.AppendLine();
+                
+                if (option.ArgumentHelpName != null)
+                {
+                    md.AppendLine($&quot;**Type:** `{option.ArgumentHelpName}`&quot;);
+                    md.AppendLine();
+                }
+                
+                if (option.IsRequired)
+                {
+                    md.AppendLine(&quot;**Required:** Yes&quot;);
+                    md.AppendLine();
+                }
+            }
+        }
+        
+        // Examples section
+        md.AppendLine(&quot;## Examples&quot;);
+        md.AppendLine();
+        AddExamplesForCommand(md, command.Name);
+        
+        return md.ToString();
+    }
+    
+    private static void AddExamplesForCommand(StringBuilder md, string commandName)
+    {
+        // Define examples per command
+        var examples = commandName switch
+        {
+            &quot;create&quot; =&gt; new[]
+            {
+                (&quot;Create worktree with default path&quot;, &quot;wt create feature-login&quot;),
+                (&quot;Create with custom path&quot;, &quot;wt create feature-login --path /tmp/wt-login&quot;),
+                (&quot;Create and open in VS Code&quot;, &quot;wt create feature-login --editor vscode&quot;)
+            },
+            &quot;list&quot; =&gt; new[]
+            {
+                (&quot;List all worktrees&quot;, &quot;wt list&quot;),
+                (&quot;List in JSON format&quot;, &quot;wt list --json&quot;)
+            },
+            _ =&gt; Array.Empty&lt;(string, string)&gt;()
+        };
+        
+        foreach (var (description, command) in examples)
+        {
+            md.AppendLine($&quot;### {description}&quot;);
+            md.AppendLine();
+            md.AppendLine(&quot;```bash&quot;);
+            md.AppendLine(command);
+            md.AppendLine(&quot;```&quot;);
+            md.AppendLine();
+        }
+    }
+}
+
+// Entry point
+class Program
+{
+    static void Main(string[] args)
+    {
+        if (args.Length == 0)
+        {
+            Console.WriteLine(&quot;Usage: DocGenerator &lt;output-directory&gt;&quot;);
+            return;
+        }
+        
+        var outputDir = args[0];
+        
+        // Import CLI command structure (same as main application)
+        var rootCommand = new RootCommand(&quot;Git worktree manager&quot;);
+        // ... add all subcommands exactly as defined in wt.cli ...
+        
+        CommandDocGenerator.GenerateCommandDocs(rootCommand, outputDir);
+    }
+}
+</code></pre>
+<h4 id="step-2-integrate-into-build-pipeline">Step 2: Integrate into Build Pipeline</h4>
+<pre><code class="lang-yaml"># .github/workflows/docs.yml
+- name: Generate command documentation
+  run: |
+    cd Tools/DocGenerator
+    dotnet run -- ../../docs
+
+- name: Build DocFX documentation
+  run: docfx build docfx.json
+</code></pre>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>✅ <strong>Zero manual maintenance</strong>: CLI changes automatically reflected in docs</li>
+<li>✅ <strong>Consistency guaranteed</strong>: Documentation matches implementation</li>
+<li>✅ <strong>Type safety</strong>: Compilation errors prevent doc/code mismatch</li>
+<li>✅ <strong>Rich metadata</strong>: Full access to System.CommandLine attributes</li>
+</ul>
+<p><strong>Alternatives Considered</strong>:</p>
+<ul>
+<li><strong>Manual markdown files</strong>: High maintenance, prone to drift</li>
+<li><strong>Scraping <code>--help</code> output</strong>: Loses structured metadata</li>
+<li><strong>Third-party tools</strong>: No existing System.CommandLine integration</li>
+</ul>
+<hr>
+<h3 id="3-documentation-testing-strategy">3. Documentation Testing Strategy</h3>
+<p><strong>Decision</strong>: Two-layer testing approach with build-time and link validation</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Catches documentation errors early in deployment pipeline</li>
+<li>No additional test project complexity required</li>
+<li>Focuses on critical failure modes (broken links, build errors)</li>
+</ul>
+<p><strong>Testing Layers</strong>:</p>
+<h4 id="layer-1-build-time-validation">Layer 1: Build-Time Validation</h4>
+<ul>
+<li><strong>Tool</strong>: DocFX's built-in <code>--warningsAsErrors</code> flag</li>
+<li><strong>Validates</strong>:
+<ul>
+<li>Markdown syntax errors</li>
+<li>YAML structure issues</li>
+<li>Internal file reference failures</li>
+<li>Missing cross-references</li>
+</ul>
+</li>
+<li><strong>Execution</strong>: During DocFX build step in deployment workflow</li>
+<li><strong>Implementation</strong>:</li>
+</ul>
+<pre><code class="lang-bash">docfx build docfx.json --warningsAsErrors
+</code></pre>
+<p><strong>Failure Examples</strong>:</p>
+<ul>
+<li>Invalid markdown syntax → Build fails</li>
+<li>Broken internal links (e.g., <code>[text](missing-file.md)</code>) → Build fails</li>
+<li>YAML TOC errors → Build fails</li>
+<li>Missing API XML documentation → Warning promoted to error</li>
+</ul>
+<h4 id="layer-2-link-validation">Layer 2: Link Validation</h4>
+<ul>
+<li><strong>Tool</strong>: LinkChecker (Python-based)</li>
+<li><strong>Validates</strong>:
+<ul>
+<li>All internal links between pages</li>
+<li>Links to API reference pages</li>
+<li>External links (optional - can filter noisy domains)</li>
+<li>Image resources</li>
+</ul>
+</li>
+<li><strong>Execution</strong>: After successful DocFX build, before deployment</li>
+<li><strong>Implementation</strong>:</li>
+</ul>
+<pre><code class="lang-yaml">- name: Validate documentation links
+  run: |
+    pip install linkchecker
+    linkchecker \
+      --check-extern \
+      --ignore-url=&quot;localhost&quot; \
+      --no-warnings \
+      _output/${{ steps.version.outputs.minor }}/
+</code></pre>
+<p><strong>Failure Examples</strong>:</p>
+<ul>
+<li>Broken link to command page → Validation fails</li>
+<li>Missing image file → Validation fails</li>
+<li>Dead external link → Validation fails (configurable)</li>
+</ul>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>✅ <strong>Fast feedback</strong>: Errors caught in deployment pipeline</li>
+<li>✅ <strong>No code changes</strong>: No need to modify test project</li>
+<li>✅ <strong>Comprehensive</strong>: Covers critical documentation quality issues</li>
+<li>✅ <strong>Simple</strong>: Two tools, clear responsibilities</li>
+</ul>
+<p><strong>Alternatives Considered</strong>:</p>
+<ul>
+<li><strong>Manual testing</strong>: Does not scale, violates Constitution VI</li>
+<li><strong>xUnit content tests</strong>: Adds unnecessary complexity for static content</li>
+<li><strong>Full E2E browser testing</strong>: Overkill for static documentation</li>
+<li><strong>Third-party SaaS</strong>: External dependency, security concerns</li>
+</ul>
+<hr>
+<h3 id="4-version-switcher-implementation">4. Version Switcher Implementation</h3>
+<p><strong>Decision</strong>: Custom JavaScript version switcher with separate build outputs per minor version</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>DocFX does not provide native version switching</li>
+<li>Separate builds ensure complete isolation between versions</li>
+<li>JavaScript provides seamless UX without server-side logic</li>
+<li>Matches requirements FR-006 (switch between versions) and FR-014 (minor version level)</li>
+</ul>
+<p><strong>Architecture</strong>:</p>
+<pre><code class="lang-text">GitHub Pages Structure:
+https://username.github.io/wt/
+├── index.html              # Redirect to latest version
+├── v1.0/                   # Complete site for v1.0.x
+│   ├── index.html
+│   ├── installation.html
+│   ├── commands/
+│   ├── api/
+│   └── ...
+├── v1.1/                   # Complete site for v1.1.x
+│   └── ...
+└── version-manifest.json   # Auto-generated list of all versions
+</code></pre>
+<p><strong>Implementation Components</strong>:</p>
+<h4 id="1-version-switcher-ui-custom-docfx-template">1. Version Switcher UI (Custom DocFX Template)</h4>
+<p>Modify DocFX template to inject version selector in navigation bar:</p>
+<pre><code class="lang-html">&lt;!-- templates/partials/navbar.tmpl.partial --&gt;
+&lt;nav class=&quot;navbar&quot;&gt;
+  &lt;!-- Existing navbar content --&gt;
+  
+  &lt;div class=&quot;version-selector&quot;&gt;
+    &lt;label for=&quot;version-switcher&quot;&gt;Version:&lt;/label&gt;
+    &lt;select id=&quot;version-switcher&quot; onchange=&quot;switchVersion(this.value)&quot;&gt;
+      &lt;option&gt;Loading...&lt;/option&gt;
+    &lt;/select&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;script&gt;
+function switchVersion(targetVersion) {
+  // Extract current path without version prefix
+  const currentPath = window.location.pathname;
+  const pathWithoutVersion = currentPath.replace(/\/v\d+\.\d+\//, '/');
+  
+  // Navigate to same page in selected version
+  window.location.href = `/${targetVersion}${pathWithoutVersion}`;
+}
+
+// Load available versions from manifest
+fetch('/version-manifest.json')
+  .then(res =&gt; res.json())
+  .then(data =&gt; {
+    const selector = document.getElementById('version-switcher');
+    selector.innerHTML = ''; // Clear loading text
+    
+    data.versions.forEach(v =&gt; {
+      const option = document.createElement('option');
+      option.value = v.path;
+      option.textContent = v.label;
+      
+      // Pre-select current version based on URL
+      if (window.location.pathname.includes(`/${v.path}/`)) {
+        option.selected = true;
+      }
+      
+      selector.appendChild(option);
+    });
+  })
+  .catch(err =&gt; {
+    console.error('Failed to load versions:', err);
+    document.querySelector('.version-selector').style.display = 'none';
+  });
+&lt;/script&gt;
+</code></pre>
+<h4 id="2-version-manifest-format">2. Version Manifest Format</h4>
+<pre><code class="lang-json">{
+  &quot;versions&quot;: [
+    {
+      &quot;label&quot;: &quot;v1.1 (latest)&quot;,
+      &quot;path&quot;: &quot;v1.1&quot;,
+      &quot;released&quot;: &quot;2026-01-15&quot;,
+      &quot;isLatest&quot;: true
+    },
+    {
+      &quot;label&quot;: &quot;v1.0&quot;,
+      &quot;path&quot;: &quot;v1.0&quot;,
+      &quot;released&quot;: &quot;2026-01-01&quot;,
+      &quot;isLatest&quot;: false
+    }
+  ]
+}
+</code></pre>
+<p><strong>Edge Case Handling</strong>:</p>
+<ul>
+<li><strong>Non-existent page in version</strong>: 404 page shows link to that version's homepage</li>
+<li><strong>JavaScript disabled</strong>: Users can manually edit URL (version visible in path)</li>
+<li><strong>Bookmark stability</strong>: URLs never change (meets SC-006: 2+ years stability)</li>
+<li><strong>SEO optimization</strong>: Each version independently crawlable; <code>&lt;link rel=&quot;canonical&quot;&gt;</code> points to latest</li>
+<li><strong>First-time visitors</strong>: Auto-redirect from root to latest version</li>
+</ul>
+<p><strong>Alternatives Considered</strong>:</p>
+<ul>
+<li><strong>Single site with conditional content</strong>: Complex, risk of version bleed, poor SEO</li>
+<li><strong>Git branches per version</strong>: Manual backporting required, consistency issues</li>
+<li><strong>Third-party hosting (ReadTheDocs)</strong>: External dependency, migration effort, less control</li>
+</ul>
+<hr>
+<h3 id="5-version-manifest-automation">5. Version Manifest Automation</h3>
+<p><strong>Decision</strong>: Automatic generation/update on every GitHub release</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Fully automated - no manual JSON editing required</li>
+<li>Idempotent - safe to re-run for same version</li>
+<li>Persisted in gh-pages branch, versioned history</li>
+<li>Synchronizes with binary releases (requirement FR-001)</li>
+</ul>
+<p><strong>Automation Workflow</strong>:</p>
+<h4 id="step-1-fetch-existing-manifest">Step 1: Fetch Existing Manifest</h4>
+<pre><code class="lang-yaml">- name: Fetch existing version manifest
+  run: |
+    # Attempt to fetch gh-pages branch (may not exist on first release)
+    git fetch origin gh-pages:gh-pages 2&gt;/dev/null || true
+    
+    # Extract existing manifest or create empty structure
+    if git show gh-pages:version-manifest.json &gt; version-manifest.json 2&gt;/dev/null; then
+      echo &quot;✅ Found existing manifest with $(jq '.versions | length' version-manifest.json) versions&quot;
+    else
+      echo '{&quot;versions&quot;:[]}' &gt; version-manifest.json
+      echo &quot;✅ Created new manifest (first release)&quot;
+    fi
+</code></pre>
+<h4 id="step-2-update-manifest-with-new-version">Step 2: Update Manifest with New Version</h4>
+<pre><code class="lang-yaml">- name: Update version manifest
+  run: |
+    VERSION=&quot;${{ steps.version.outputs.minor }}&quot;  # e.g., v1.2
+    RELEASE_DATE=&quot;${{ github.event.release.published_at }}&quot;
+    
+    python3 .github/scripts/update-version-manifest.py \
+      --version &quot;$VERSION&quot; \
+      --date &quot;$RELEASE_DATE&quot; \
+      --input version-manifest.json \
+      --output version-manifest.json
+</code></pre>
+<h4 id="step-3-include-in-deployment">Step 3: Include in Deployment</h4>
+<pre><code class="lang-yaml">- name: Copy manifest to deployment output
+  run: |
+    # Root-level manifest (accessed by all versions)
+    cp version-manifest.json _output/version-manifest.json
+    
+    # Version-specific copy (redundancy/fallback)
+    cp version-manifest.json _output/${{ steps.version.outputs.minor }}/version-manifest.json
+</code></pre>
+<p><strong>Python Script</strong> (<code>.github/scripts/update-version-manifest.py</code>):</p>
+<pre><code class="lang-python">#!/usr/bin/env python3
+&quot;&quot;&quot;
+Update version manifest JSON file with new documentation version.
+Automatically marks new version as &quot;latest&quot; and updates labels.
+&quot;&quot;&quot;
+import json
+import argparse
+import sys
+
+def update_manifest(input_file, output_file, new_version, release_date):
+    &quot;&quot;&quot;Update manifest with new version, marking it as latest.&quot;&quot;&quot;
+    
+    # Read existing manifest
+    try:
+        with open(input_file, 'r') as f:
+            manifest = json.load(f)
+    except FileNotFoundError:
+        manifest = {'versions': []}
+    
+    # Remove &quot;latest&quot; designation from all existing versions
+    for v in manifest['versions']:
+        v['isLatest'] = False
+        v['label'] = v['label'].replace(' (latest)', '')
+    
+    # Check if this version already exists (re-release scenario)
+    existing = next((v for v in manifest['versions'] if v['path'] == new_version), None)
+    
+    if existing:
+        # Update existing version
+        existing['released'] = release_date
+        existing['isLatest'] = True
+        existing['label'] = f&quot;{new_version} (latest)&quot;
+        print(f&quot;✅ Updated existing version: {new_version}&quot;)
+    else:
+        # Add new version at the beginning of the list
+        manifest['versions'].insert(0, {
+            'label': f&quot;{new_version} (latest)&quot;,
+            'path': new_version,
+            'released': release_date,
+            'isLatest': True
+        })
+        print(f&quot;✅ Added new version: {new_version}&quot;)
+    
+    # Sort versions by release date (newest first)
+    manifest['versions'].sort(key=lambda v: v['released'], reverse=True)
+    
+    # Write updated manifest
+    with open(output_file, 'w') as f:
+        json.dump(manifest, f, indent=2, ensure_ascii=False)
+    
+    print(f&quot;   Total versions in manifest: {len(manifest['versions'])}&quot;)
+    return 0
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Update version manifest')
+    parser.add_argument('--version', required=True, help='Version to add (e.g., v1.2)')
+    parser.add_argument('--date', required=True, help='Release date (ISO 8601 format)')
+    parser.add_argument('--input', default='version-manifest.json', help='Input manifest file')
+    parser.add_argument('--output', default='version-manifest.json', help='Output manifest file')
+    args = parser.parse_args()
+    
+    sys.exit(update_manifest(args.input, args.output, args.version, args.date))
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li><strong>First release</strong>: Creates new manifest with single version</li>
+<li><strong>Subsequent releases</strong>: Adds new version, marks as latest</li>
+<li><strong>Re-release</strong>: Updates existing version's date</li>
+<li><strong>Idempotent</strong>: Running twice produces same result</li>
+</ul>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>✅ Zero manual intervention required</li>
+<li>✅ Automatic on every GitHub release</li>
+<li>✅ Idempotent and safe to re-run</li>
+<li>✅ Versioned history in gh-pages branch</li>
+<li>✅ Simple Python script (no external dependencies)</li>
+</ul>
+<p><strong>Result After Deployment</strong>:</p>
+<pre><code class="lang-text">https://username.github.io/wt/
+├── version-manifest.json       ← Updated with new version
+├── v1.0/
+│   ├── (documentation...)
+│   └── version-manifest.json   ← Same content (for redundancy)
+└── v1.1/
+    ├── (documentation...)
+    └── version-manifest.json   ← Same content
+</code></pre>
+<hr>
+<h3 id="6-github-pages-deployment-pattern">6. GitHub Pages Deployment Pattern</h3>
+<p><strong>Decision</strong>: GitHub Actions with <code>actions/deploy-pages@v4</code></p>
+<p><strong>Complete Deployment Workflow</strong>:</p>
+<pre><code class="lang-yaml">name: Deploy Documentation
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Manual version override (e.g., v1.2)'
+        required: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Documentation
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Install DocFX
+        run: dotnet tool install --global docfx --version 2.78.4
+      
+      - name: Generate command documentation
+        run: |
+          cd Tools/DocGenerator
+          dotnet run -- ../../docs
+          cd ../..
+      
+      - name: Build API documentation
+        run: |
+          cd wt.cli
+          dotnet build --configuration Release
+          cd ..
+      
+      - name: Extract version
+        id: version
+        run: |
+          if [ -n &quot;${{ github.event.inputs.version }}&quot; ]; then
+            VERSION=&quot;${{ github.event.inputs.version }}&quot;
+          else
+            TAG=&quot;${{ github.event.release.tag_name }}&quot;
+            VERSION=$(echo $TAG | sed -E 's/v([0-9]+\.[0-9]+).*/v\1/')
+          fi
+          echo &quot;minor=$VERSION&quot; &gt;&gt; $GITHUB_OUTPUT
+          echo &quot;Building documentation for version: $VERSION&quot;
+      
+      - name: Build versioned documentation
+        run: |
+          mkdir -p _output/${{ steps.version.outputs.minor }}
+          docfx build docfx.json --warningsAsErrors -o _output/${{ steps.version.outputs.minor }}
+      
+      - name: Fetch existing version manifest
+        run: |
+          git fetch origin gh-pages:gh-pages 2&gt;/dev/null || true
+          if git show gh-pages:version-manifest.json &gt; version-manifest.json 2&gt;/dev/null; then
+            echo &quot;✅ Existing manifest found&quot;
+          else
+            echo '{&quot;versions&quot;:[]}' &gt; version-manifest.json
+            echo &quot;✅ Created new manifest&quot;
+          fi
+      
+      - name: Update version manifest
+        run: |
+          RELEASE_DATE=&quot;${{ github.event.release.published_at || github.event.head_commit.timestamp }}&quot;
+          
+          python3 .github/scripts/update-version-manifest.py \
+            --version &quot;${{ steps.version.outputs.minor }}&quot; \
+            --date &quot;$RELEASE_DATE&quot;
+          
+          cp version-manifest.json _output/
+          cp version-manifest.json _output/${{ steps.version.outputs.minor }}/
+      
+      - name: Validate documentation links
+        run: |
+          pip install linkchecker
+          linkchecker --check-extern --ignore-url=&quot;localhost&quot; --no-warnings \
+            _output/${{ steps.version.outputs.minor }}/
+      
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_output'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+</code></pre>
+<p><strong>Key Features</strong>:</p>
+<ul>
+<li>✅ <strong>Automatic trigger</strong>: Runs on every GitHub release publication (FR-001)</li>
+<li>✅ <strong>Command generation</strong>: Automatically generates command documentation</li>
+<li>✅ <strong>Version extraction</strong>: Extracts minor version from git tag (v1.2.3 → v1.2)</li>
+<li>✅ <strong>Build validation</strong>: Treats warnings as errors (quality gate)</li>
+<li>✅ <strong>Link validation</strong>: Checks all internal/external links</li>
+<li>✅ <strong>Manifest update</strong>: Automatically updates version manifest</li>
+<li>✅ <strong>OIDC authentication</strong>: No long-lived PAT tokens required</li>
+<li>✅ <strong>Concurrent-safe</strong>: Prevents deployment race conditions</li>
+</ul>
+<p><strong>Configuration Requirements</strong>:</p>
+<ol>
+<li><strong>Enable GitHub Pages</strong>: Repository Settings → Pages → Source: &quot;GitHub Actions&quot;</li>
+<li><strong>Create environment</strong>: Add &quot;github-pages&quot; environment in repository settings</li>
+<li><strong>Add script</strong>: Create <code>.github/scripts/update-version-manifest.py</code> (from section 5)</li>
+<li><strong>Create tool</strong>: Implement <code>Tools/DocGenerator/</code> (from section 2)</li>
+</ol>
+<p><strong>Performance</strong>:</p>
+<ul>
+<li>Estimated build time: 5-8 minutes</li>
+<li><strong>Meets SC-003</strong>: Documentation published within 10 minutes of release</li>
+</ul>
+<p><strong>Alternatives Considered</strong>:</p>
+<ul>
+<li><strong>Manual deployment</strong>: No automation, violates FR-001</li>
+<li><strong>Third-party hosting (Netlify, Vercel)</strong>: External dependency, cost</li>
+<li><strong>Azure Static Web Apps</strong>: Requires Azure account, overkill for docs</li>
+<li><strong>gh-pages branch push</strong>: More complex, no built-in OIDC, manual artifact management</li>
+</ul>
+<hr>
+<h3 id="7-docfx-configuration-best-practices">7. DocFX Configuration Best Practices</h3>
+<p><strong>Enhanced <code>docfx.json</code></strong>:</p>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json&quot;,
+  &quot;metadata&quot;: [
+    {
+      &quot;src&quot;: [
+        {
+          &quot;src&quot;: &quot;./wt.cli&quot;,
+          &quot;files&quot;: [&quot;**/*.csproj&quot;]
+        }
+      ],
+      &quot;output&quot;: &quot;api&quot;,
+      &quot;shouldSkipMarkdeep&quot;: false,
+      &quot;properties&quot;: {
+        &quot;TargetFramework&quot;: &quot;net10.0&quot;
+      }
+    }
+  ],
+  &quot;build&quot;: {
+    &quot;content&quot;: [
+      {
+        &quot;files&quot;: [&quot;**/*.{md,yml}&quot;],
+        &quot;exclude&quot;: [
+          &quot;_site/**&quot;,
+          &quot;obj/**&quot;,
+          &quot;bin/**&quot;,
+          &quot;specs/**&quot;,
+          &quot;.specify/**&quot;,
+          &quot;Tools/**&quot;,
+          &quot;coverage/**&quot;
+        ]
+      }
+    ],
+    &quot;resource&quot;: [
+      {
+        &quot;files&quot;: [&quot;images/**&quot;, &quot;assets/**&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;]
+      }
+    ],
+    &quot;output&quot;: &quot;_site&quot;,
+    &quot;template&quot;: [&quot;default&quot;, &quot;modern&quot;],
+    &quot;globalMetadata&quot;: {
+      &quot;_appName&quot;: &quot;wt&quot;,
+      &quot;_appTitle&quot;: &quot;wt - Git Worktree Manager&quot;,
+      &quot;_appFooter&quot;: &quot;Copyright © 2026 Kuju63. Licensed under MIT.&quot;,
+      &quot;_enableSearch&quot;: true,
+      &quot;_enableNewTab&quot;: true,
+      &quot;_gitHub&quot;: {
+        &quot;repo&quot;: &quot;kuju63/wt&quot;,
+        &quot;branch&quot;: &quot;main&quot;
+      },
+      &quot;_gitContribute&quot;: {
+        &quot;repo&quot;: &quot;kuju63/wt&quot;,
+        &quot;branch&quot;: &quot;main&quot;,
+        &quot;path&quot;: &quot;docs&quot;
+      }
+    },
+    &quot;sitemap&quot;: {
+      &quot;baseUrl&quot;: &quot;https://kuju63.github.io/wt/&quot;,
+      &quot;priority&quot;: 1.0,
+      &quot;changefreq&quot;: &quot;weekly&quot;
+    },
+    &quot;xref&quot;: [
+      &quot;https://learn.microsoft.com/en-us/dotnet/api&quot;
+    ]
+  }
+}
+</code></pre>
+<p><strong>Key Configuration Elements</strong>:</p>
+<ul>
+<li><strong><code>xref</code></strong>: Cross-references to .NET framework documentation (System.CommandLine types link to Microsoft docs)</li>
+<li><strong><code>sitemap</code></strong>: SEO optimization for search engine indexing</li>
+<li><strong><code>_gitContribute</code></strong>: Enables &quot;Edit this page&quot; links for community contributions</li>
+<li><strong><code>excludes</code></strong>: Prevents build errors from non-documentation directories</li>
+<li><strong><code>template</code></strong>: Uses both &quot;default&quot; and &quot;modern&quot; for best compatibility and aesthetics</li>
+</ul>
+<hr>
+<h2 id="summary-of-resolved-clarifications">Summary of Resolved Clarifications</h2>
+<table>
+<thead>
+<tr>
+<th>Original Question</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DocFX version?</td>
+<td>v2.78.4 (latest stable), installed as .NET global tool</td>
+</tr>
+<tr>
+<td>Command list automation?</td>
+<td>System.CommandLine HelpBuilder + custom IConsole, auto-generated markdown</td>
+</tr>
+<tr>
+<td>Version manifest automation?</td>
+<td>Python script in GitHub Actions, updated per release automatically</td>
+</tr>
+<tr>
+<td>Documentation testing?</td>
+<td>Two-layer: DocFX build validation + LinkChecker</td>
+</tr>
+<tr>
+<td>Version switcher?</td>
+<td>Custom JavaScript with version-manifest.json, separate builds per version</td>
+</tr>
+<tr>
+<td>Deployment pattern?</td>
+<td>GitHub Actions <code>deploy-pages@v4</code>, triggered on release publication</td>
+</tr>
+</tbody>
+</table>
+<h2 id="implementation-readiness">Implementation Readiness</h2>
+<p><strong>All &quot;NEEDS CLARIFICATION&quot; items from plan.md have been resolved:</strong></p>
+<ul>
+<li>✅ <strong>DocFX version</strong>: v2.78.4 with .NET 10 support via Roslyn 4.13.0</li>
+<li>✅ <strong>Command automation</strong>: System.CommandLine programmatic export architecture defined</li>
+<li>✅ <strong>Version manifest</strong>: Fully automated Python script, runs on every release</li>
+<li>✅ <strong>Testing</strong>: Two-layer strategy (build validation + link checking)</li>
+<li>✅ <strong>Version switcher</strong>: JavaScript + manifest.json with custom template override</li>
+<li>✅ <strong>Deployment</strong>: Complete GitHub Actions workflow with validation gates</li>
+</ul>
+<h2 id="new-components-required">New Components Required</h2>
+<ol>
+<li><strong>Tools/DocGenerator/</strong> - .NET console app for command documentation generation</li>
+<li><strong>.github/scripts/update-version-manifest.py</strong> - Python script for version manifest updates</li>
+<li><strong>.github/workflows/docs.yml</strong> - Documentation deployment workflow</li>
+<li><strong>templates/partials/navbar.tmpl.partial</strong> - Custom DocFX template for version switcher UI</li>
+<li><strong>wt.cli/wt.cli.csproj</strong> - Add <code>&lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;</code></li>
+</ol>
+<h2 id="testing-strategy-summary">Testing Strategy Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Tool</th>
+<th>What It Validates</th>
+<th>When It Runs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build Validation</td>
+<td>DocFX <code>--warningsAsErrors</code></td>
+<td>Markdown syntax, YAML structure, internal refs</td>
+<td>During build step</td>
+</tr>
+<tr>
+<td>Link Validation</td>
+<td>LinkChecker</td>
+<td>Internal/external links, images</td>
+<td>After build, before deploy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Intentionally excluded</strong>: Content completeness tests (xUnit) - not needed, adds unnecessary complexity</p>
+<p><strong>Next Phase</strong>: Proceed to Phase 1 (Design &amp; Contracts) to generate data-model.md, contracts/, and quickstart.md.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/research.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

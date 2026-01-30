@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Contract: Test Workflow | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Contract: Test Workflow | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/contracts/test-workflow.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="contract-test-workflow">Contract: Test Workflow</h1>
+
+<p><strong>Workflow</strong>: <code>.github/workflows/test.yml</code><br>
+<strong>Feature</strong>: 003-automated-release-pipeline<br>
+<strong>Date</strong>: 2026-01-05</p>
+<h2 id="概要">概要</h2>
+<p>全ブランチでテストを実行し、コードカバレッジをCodacyに報告するワークフロー。</p>
+<hr>
+<h2 id="トリガー">トリガー</h2>
+<h3 id="push-to-branches">Push to branches</h3>
+<pre><code class="lang-yaml">on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'fix/**'
+</code></pre>
+<p><strong>動作</strong>: main, feature, fix ブランチへのプッシュで自動実行</p>
+<h3 id="pull-request-to-main">Pull request to main</h3>
+<pre><code class="lang-yaml">on:
+  pull_request:
+    branches:
+      - main
+</code></pre>
+<p><strong>動作</strong>: mainブランチへのPRで自動実行</p>
+<hr>
+<h2 id="ジョブ定義">ジョブ定義</h2>
+<h3 id="job-test">Job: <code>test</code></h3>
+<p><strong>Purpose</strong>: テストを実行し、カバレッジを報告する</p>
+<p><strong>Runner</strong>: <code>ubuntu-latest</code></p>
+<p><strong>ステップ</strong>:</p>
+<ol>
+<li><p><strong>Checkout repository</strong></p>
+<ul>
+<li>Action: <code>actions/checkout@v4</code></li>
+<li>Purpose: テスト実行のためリポジトリコードを取得</li>
+</ul>
+</li>
+<li><p><strong>Setup .NET</strong></p>
+<ul>
+<li>Action: <code>actions/setup-dotnet@v4</code></li>
+<li>Version: <code>10.0.x</code></li>
+<li>Purpose: .NET SDKをインストール</li>
+</ul>
+</li>
+<li><p><strong>Restore dependencies</strong></p>
+<ul>
+<li>Command: <code>dotnet restore wt.sln</code></li>
+<li>Purpose: NuGetパッケージを復元</li>
+</ul>
+</li>
+<li><p><strong>Build solution</strong></p>
+<ul>
+<li>Command: <code>dotnet build wt.sln --configuration Release --no-restore</code></li>
+<li>Purpose: Releaseモードでビルド</li>
+</ul>
+</li>
+<li><p><strong>Run tests with coverage</strong></p>
+<ul>
+<li><p>Command:</p>
+<pre><code class="lang-bash">dotnet test wt.sln \
+  --configuration Release \
+  --no-build \
+  --verbosity normal \
+  --collect:&quot;XPlat Code Coverage&quot; \
+  --results-directory ./coverage \
+  --logger &quot;trx;LogFileName=test-results.trx&quot;
+</code></pre>
+</li>
+<li><p>Purpose: テストを実行し、カバレッジを収集</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Find coverage file</strong></p>
+<ul>
+<li>Command: <code>find ./coverage -name &quot;coverage.cobertura.xml&quot;</code></li>
+<li>Output: <code>coverage-file</code> (カバレッジファイルのパス)</li>
+<li>Purpose: カバレッジファイルの場所を特定</li>
+</ul>
+</li>
+<li><p><strong>Generate coverage report</strong></p>
+<ul>
+<li>Tool: <code>reportgenerator</code></li>
+<li>Input: <code>coverage.cobertura.xml</code></li>
+<li>Output: <code>./coverage/report/</code> (HTML + TextSummary)</li>
+<li>Purpose: 人間が読めるカバレッジレポートを生成</li>
+</ul>
+</li>
+<li><p><strong>Upload coverage to Codacy</strong></p>
+<ul>
+<li>Action: <code>codacy/codacy-coverage-reporter-action@a38818475bb21847788496e9f0fddaa4e84955ba</code></li>
+<li>Input: <code>coverage.cobertura.xml</code></li>
+<li>Token: <code>${{ secrets.CODACY_PROJECT_TOKEN }}</code></li>
+<li>Continue on error: <code>true</code> (Codacy失敗でもテストは続行)</li>
+<li>Purpose: カバレッジをCodacyに報告</li>
+</ul>
+</li>
+<li><p><strong>Upload test results</strong></p>
+<ul>
+<li>Action: <code>actions/upload-artifact@v4</code></li>
+<li>Condition: <code>always()</code></li>
+<li>Files:
+<ul>
+<li><code>coverage/</code></li>
+<li><code>**/TestResults/**/*.trx</code></li>
+</ul>
+</li>
+<li>Retention: 7日</li>
+<li>Purpose: テスト結果とカバレッジをアーティファクトとして保存</li>
+</ul>
+</li>
+<li><p><strong>Publish test results</strong></p>
+<ul>
+<li>Action: <code>dorny/test-reporter@bdab7eb6dfb6be17ac3d72352f67e559a72c8db1</code> (v2)</li>
+<li>Condition: <code>always()</code></li>
+<li>Reporter: <code>dotnet-trx</code></li>
+<li>Fail on error: <code>true</code> (テスト失敗でジョブ失敗)</li>
+<li>Purpose: PRにテスト結果を表示</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="テスト要件">テスト要件</h2>
+<h3 id="テストタイプ">テストタイプ</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Required</th>
+<th>Tool</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit Tests</td>
+<td>✅ Yes</td>
+<td>xUnit</td>
+<td><code>wt.tests/</code></td>
+</tr>
+<tr>
+<td>Integration Tests</td>
+<td>⚠️ Recommended</td>
+<td>xUnit</td>
+<td><code>wt.tests/Integration/</code></td>
+</tr>
+<tr>
+<td>Coverage Collection</td>
+<td>✅ Yes</td>
+<td>coverlet</td>
+<td>(自動)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="カバレッジ目標">カバレッジ目標</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Enforcement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Line Coverage</td>
+<td>80%</td>
+<td>⚠️ Warning (not blocking)</td>
+</tr>
+<tr>
+<td>Branch Coverage</td>
+<td>70%</td>
+<td>⚠️ Warning (not blocking)</td>
+</tr>
+<tr>
+<td>Method Coverage</td>
+<td>75%</td>
+<td>⚠️ Warning (not blocking)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意</strong>: カバレッジ目標は aspirational goal であり、マージをブロックしません (ADR 0005参照)。</p>
+<hr>
+<h2 id="品質ゲート-quality-gates">品質ゲート (Quality Gates)</h2>
+<h3 id="ブロッキング-merge-blocked">ブロッキング (Merge blocked)</h3>
+<ol>
+<li><strong>テスト失敗</strong> → ❌ マージブロック
+<ul>
+<li>条件: <code>dotnet test</code> が exit code 1 を返す</li>
+<li>理由: 回帰防止</li>
+</ul>
+</li>
+</ol>
+<h3 id="非ブロッキング-warning-only">非ブロッキング (Warning only)</h3>
+<ol>
+<li><p><strong>カバレッジ低下</strong> → ⚠️ 警告のみ</p>
+<ul>
+<li>条件: カバレッジが前回より低下</li>
+<li>理由: 開発速度とのバランス</li>
+</ul>
+</li>
+<li><p><strong>Codacyアップロード失敗</strong> → ⚠️ 警告のみ</p>
+<ul>
+<li>条件: Codacy APIエラー</li>
+<li>理由: 外部サービスの一時的障害を許容</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="カバレッジレポート形式">カバレッジレポート形式</h2>
+<h3 id="cobertura-xml">Cobertura XML</h3>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;coverage line-rate=&quot;0.85&quot; branch-rate=&quot;0.72&quot;&gt;
+  &lt;packages&gt;
+    &lt;package name=&quot;wt.cli&quot; line-rate=&quot;0.85&quot;&gt;
+      &lt;classes&gt;
+        &lt;class name=&quot;Program&quot; line-rate=&quot;1.0&quot;&gt;
+          &lt;lines&gt;
+            &lt;line number=&quot;10&quot; hits=&quot;5&quot; branch=&quot;false&quot;/&gt;
+            &lt;line number=&quot;11&quot; hits=&quot;5&quot; branch=&quot;true&quot; condition-coverage=&quot;75% (3/4)&quot;/&gt;
+          &lt;/lines&gt;
+        &lt;/class&gt;
+      &lt;/classes&gt;
+    &lt;/package&gt;
+  &lt;/packages&gt;
+&lt;/coverage&gt;
+</code></pre>
+<h3 id="github-step-summary">GitHub Step Summary</h3>
+<pre><code class="lang-markdown">### 📊 Coverage Summary
+
+Summary
+  Generated on: 2026-01-05 12:00:00
+  Line coverage: 85.2%
+  Branch coverage: 72.1%
+  Method coverage: 78.5%
+  
+  Assemblies: 2
+  Classes: 25
+  Files: 30
+  Covered lines: 1234
+  Uncovered lines: 215
+  Coverable lines: 1449
+</code></pre>
+<hr>
+<h2 id="codacy連携">Codacy連携</h2>
+<h3 id="プロジェクト設定">プロジェクト設定</h3>
+<ul>
+<li><strong>Organization</strong>: <code>kuju63</code></li>
+<li><strong>Repository</strong>: <code>wt</code></li>
+<li><strong>Token</strong>: <code>${{ secrets.CODACY_PROJECT_TOKEN }}</code></li>
+</ul>
+<h3 id="アップロードフォーマット">アップロードフォーマット</h3>
+<ul>
+<li><strong>Format</strong>: Cobertura XML</li>
+<li><strong>Language</strong>: C#</li>
+<li><strong>Coverage Tool</strong>: coverlet (via <code>dotnet test --collect</code>)</li>
+</ul>
+<h3 id="codacyコメント例-pr">Codacyコメント例 (PR)</h3>
+<pre><code class="lang-markdown">## Codacy Coverage Report
+
+Coverage: 85.2% (+2.5%)
+
+Changes by file:
+- wt.cli/Program.cs: 95% (+5%)
+- wt.cli/Services/GitService.cs: 80% (-3%)
+
+Overall: ✅ Coverage increased
+</code></pre>
+<hr>
+<h2 id="エラーハンドリング">エラーハンドリング</h2>
+<h3 id="テスト失敗">テスト失敗</h3>
+<pre><code class="lang-text">Error: Test failed with exit code 1
+  
+  Failed tests:
+    - wt.tests.GitServiceTests.CreateWorktree_ShouldReturnSuccess
+    - wt.tests.EditorServiceTests.OpenEditor_ShouldLaunchVSCode
+</code></pre>
+<p><strong>動作</strong>: ジョブ失敗、PRマージブロック</p>
+<h3 id="カバレッジファイル未検出">カバレッジファイル未検出</h3>
+<pre><code class="lang-text">Warning: Coverage file not found
+</code></pre>
+<p><strong>動作</strong>: カバレッジアップロードスキップ、テストは続行</p>
+<h3 id="codacyアップロード失敗">Codacyアップロード失敗</h3>
+<pre><code class="lang-text">Warning: Failed to upload coverage to Codacy
+Error: Project token is invalid
+</code></pre>
+<p><strong>動作</strong>: 警告ログ、テストは続行 (continue-on-error: true)</p>
+<hr>
+<h2 id="性能要件">性能要件</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Acceptable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Test execution time</td>
+<td>&lt; 5分</td>
+<td>&lt; 10分</td>
+</tr>
+<tr>
+<td>Coverage collection overhead</td>
+<td>&lt; 20%</td>
+<td>&lt; 30%</td>
+</tr>
+<tr>
+<td>Total workflow time</td>
+<td>&lt; 8分</td>
+<td>&lt; 15分</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="権限">権限</h2>
+<pre><code class="lang-yaml">permissions:
+  contents: read        # リポジトリコード読み取り
+  checks: write         # テスト結果の書き込み
+  pull-requests: write  # PRへのコメント
+</code></pre>
+<hr>
+<h2 id="ブランチプロテクション設定">ブランチプロテクション設定</h2>
+<h3 id="required-status-checks">Required Status Checks</h3>
+<pre><code class="lang-yaml"># GitHub Settings → Branches → main → Branch protection rules
+protection:
+  required_status_checks:
+    strict: true
+    checks:
+      - &quot;Test and Coverage / Run Tests&quot;  # ✅ Required
+</code></pre>
+<p><strong>動作</strong>:</p>
+<ul>
+<li>✅ テスト成功 → PRマージ可能</li>
+<li>❌ テスト失敗 → PRマージブロック</li>
+<li>⚠️ Codacyアップロード失敗 → PRマージ可能 (非ブロッキング)</li>
+</ul>
+<hr>
+<h2 id="テストデータ管理">テストデータ管理</h2>
+<h3 id="テストフィクスチャ">テストフィクスチャ</h3>
+<pre><code class="lang-csharp">// wt.tests/Fixtures/GitFixture.cs
+public class GitFixture : IDisposable
+{
+    public string TempRepoPath { get; }
+    
+    public GitFixture()
+    {
+        TempRepoPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(TempRepoPath);
+        // Initialize git repo
+    }
+    
+    public void Dispose()
+    {
+        if (Directory.Exists(TempRepoPath))
+        {
+            Directory.Delete(TempRepoPath, recursive: true);
+        }
+    }
+}
+</code></pre>
+<h3 id="モック">モック</h3>
+<pre><code class="lang-csharp">// wt.tests/Mocks/MockProcessRunner.cs
+public class MockProcessRunner : IProcessRunner
+{
+    public ProcessResult Run(string command, string args)
+    {
+        return new ProcessResult
+        {
+            ExitCode = 0,
+            Output = &quot;mocked output&quot;,
+            Error = string.Empty
+        };
+    }
+}
+</code></pre>
+<hr>
+<h2 id="ローカルテスト実行">ローカルテスト実行</h2>
+<h3 id="すべてのテストを実行">すべてのテストを実行</h3>
+<pre><code class="lang-bash">dotnet test wt.sln --configuration Release --verbosity normal
+</code></pre>
+<h3 id="カバレッジ付きで実行">カバレッジ付きで実行</h3>
+<pre><code class="lang-bash">dotnet test wt.sln \
+  --configuration Release \
+  --collect:&quot;XPlat Code Coverage&quot; \
+  --results-directory ./coverage
+</code></pre>
+<h3 id="カバレッジレポートを生成">カバレッジレポートを生成</h3>
+<pre><code class="lang-bash">dotnet tool install --global dotnet-reportgenerator-globaltool
+
+reportgenerator \
+  -reports:&quot;./coverage/**/coverage.cobertura.xml&quot; \
+  -targetdir:&quot;./coverage/report&quot; \
+  -reporttypes:&quot;Html;TextSummary&quot;
+
+# HTMLレポートを開く
+open ./coverage/report/index.html
+</code></pre>
+<h3 id="特定のテストを実行">特定のテストを実行</h3>
+<pre><code class="lang-bash">dotnet test wt.tests/GitServiceTests.cs --filter &quot;CreateWorktree&quot;
+</code></pre>
+<hr>
+<h2 id="トラブルシューティング">トラブルシューティング</h2>
+<h3 id="問題-テストが失敗する">問題: テストが失敗する</h3>
+<p><strong>解決</strong>:</p>
+<ol>
+<li><p>ローカルでテストを実行:</p>
+<pre><code class="lang-bash">dotnet test wt.sln --verbosity detailed
+</code></pre>
+</li>
+<li><p>失敗したテストのログを確認:</p>
+<pre><code class="lang-bash">cat TestResults/test-results.trx
+</code></pre>
+</li>
+<li><p>テストを修正してプッシュ</p>
+</li>
+</ol>
+<h3 id="問題-カバレッジが0">問題: カバレッジが0%</h3>
+<p><strong>解決</strong>:</p>
+<ol>
+<li><p>カバレッジファイルを確認:</p>
+<pre><code class="lang-bash">find ./coverage -name &quot;coverage.cobertura.xml&quot;
+cat ./coverage/**/coverage.cobertura.xml
+</code></pre>
+</li>
+<li><p>カバレッジ収集の設定を確認:</p>
+<pre><code class="lang-bash">dotnet test --collect:&quot;XPlat Code Coverage&quot;
+</code></pre>
+</li>
+</ol>
+<h3 id="問題-codacyアップロード失敗">問題: Codacyアップロード失敗</h3>
+<p><strong>解決</strong>:</p>
+<ol>
+<li><p>Codacyトークンを確認:</p>
+<pre><code class="lang-bash">gh secret list | grep CODACY
+</code></pre>
+</li>
+<li><p>トークンを再設定:</p>
+<pre><code class="lang-bash">gh secret set CODACY_PROJECT_TOKEN
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="リファレンス">リファレンス</h2>
+<ul>
+<li>ワークフローファイル: <a href="../../../.github/workflows/test.yml">.github/workflows/test.yml</a></li>
+<li>テストプロジェクト: <a href="../../../wt.tests/">wt.tests/</a></li>
+<li>ADR 0005: <a href="../../../docs/adr/0005-quality-gates-testing-requirements.html">品質ゲート</a></li>
+<li>タスク: <a href="../tasks.html#user-story-4-verify-all-changes-are-tested-with-coverage">tasks.md</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/contracts/test-workflow.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

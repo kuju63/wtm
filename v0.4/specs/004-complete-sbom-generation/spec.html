@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>機能仕様書: リリースパイプラインにおける完全なSBOM生成 | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="機能仕様書: リリースパイプラインにおける完全なSBOM生成 | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/004-complete-sbom-generation/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="機能仕様書-リリースパイプラインにおける完全なsbom生成">機能仕様書: リリースパイプラインにおける完全なSBOM生成</h1>
+
+<p><strong>機能ブランチ</strong>: <code>004-complete-sbom-generation</code><br>
+<strong>作成日</strong>: 2026-01-06<br>
+<strong>ステータス</strong>: ドラフト<br>
+<strong>入力</strong>: ユーザー記述: &quot;SBOMの生成時にプロジェクトのリストアを行っていないため、完全なSBOMが生成されない。現在のリリースパイプラインを変更して、完全な依存関係を含むSBOMを生成できるようにする。これにより、生成物のサプライチェーンの透明性を担保し、ユーザーが生成物の信頼性をチェックできるようにする。&quot;</p>
+<h2 id="clarifications">Clarifications</h2>
+<h3 id="session-2026-01-06">Session 2026-01-06</h3>
+<ul>
+<li>Q: GitHub Dependency Submission APIへの送信が失敗した場合、パイプライン全体を失敗させるべきか？ → A: パイプラインを失敗させる - API送信は必須、失敗時は全体を停止</li>
+<li>Q: SBOM形式はSPDXとCycloneDXのどちらを優先すべきか？ → A: SPDX 2.3+ - Microsoftツールとの互換性、ISO標準</li>
+<li>Q: 大規模ソリューションでのSBOM生成のタイムアウト値はどうすべきか？ → A: 15分タイムアウト - 大規模対応、キャッシング推奨</li>
+<li>Q: 条件付き依存関係（プラットフォーム固有または構成固有）の処理方法は？ → A: すべて含む - 全プラットフォーム/構成の依存関係を含む</li>
+<li>Q: ライセンス情報が利用できない依存関係の処理方法は？ → A: NOASSERTIONマーク - SPDX標準に従い警告記録</li>
+</ul>
+<h2 id="ユーザーシナリオとテスト-必須">ユーザーシナリオとテスト <em>(必須)</em></h2>
+<h3 id="ユーザーストーリー1---完全な依存関係の開示-優先度-p1">ユーザーストーリー1 - 完全な依存関係の開示 (優先度: P1)</h3>
+<p>セキュリティ監査者またはエンドユーザーとして、使用または評価しているソフトウェアのサプライチェーンの整合性を検証し、潜在的なセキュリティ脆弱性を特定できるように、すべてのプロジェクト依存関係を含む完全なソフトウェア部品表（SBOM: Software Bill of Materials）を確認する必要がある。</p>
+<p><strong>この優先度の理由</strong>: これは中心的な要件です。SBOMに完全な依存関係情報がなければ、ユーザーは正確なセキュリティ評価やコンプライアンスチェックを実行できず、SBOM生成の主要な目的が損なわれます。</p>
+<p><strong>独立テスト</strong>: リリースパイプラインからSBOMを生成し、プロジェクトファイルに記載されている実際のプロジェクト依存関係と比較し、すべての依存関係（直接的および推移的）が生成されたSBOMに含まれていることを検証することで完全にテストできます。</p>
+<p><strong>受入シナリオ</strong>:</p>
+<ol>
+<li><strong>前提条件</strong> ビルドのためにリリースパイプラインがトリガーされる、<strong>操作</strong> SBOM生成ステップが実行される、<strong>期待結果</strong> 生成されたSBOMにプロジェクトファイルで宣言されたすべての直接依存関係が含まれている</li>
+<li><strong>前提条件</strong> 推移的依存関係を持つプロジェクト、<strong>操作</strong> SBOMが生成される、<strong>期待結果</strong> SBOMに完全な依存関係チェーンを持つすべての推移的依存関係が含まれている</li>
+<li><strong>前提条件</strong> マルチプロジェクトソリューション、<strong>操作</strong> SBOMが生成される、<strong>期待結果</strong> SBOMにソリューション内のすべてのプロジェクトからの依存関係が含まれている</li>
+<li><strong>前提条件</strong> プラットフォーム固有の依存関係を持つプロジェクト、<strong>操作</strong> SBOMが生成される、<strong>期待結果</strong> SBOMにすべてのターゲットプラットフォームの依存関係が含まれている</li>
+</ol>
+<hr>
+<h3 id="ユーザーストーリー2---sbomの検証-優先度-p2">ユーザーストーリー2 - SBOMの検証 (優先度: P2)</h3>
+<p>DevOpsエンジニアとして、リリース成果物を公開する前に生成されたSBOMが完全かつ正確であることを検証し、ユーザーに信頼できるサプライチェーン情報を提供できるようにする必要がある。</p>
+<p><strong>この優先度の理由</strong>: 検証は重要ですが、生成の次に来るものです。ユーザーはまず完全なSBOMを必要とし、検証は段階的に追加できます。</p>
+<p><strong>独立テスト</strong>: SBOMの内容を復元されたプロジェクト依存関係と比較し、不一致を報告する検証ステップを実装することでテストできます。</p>
+<p><strong>受入シナリオ</strong>:</p>
+<ol>
+<li><strong>前提条件</strong> SBOMが生成されている、<strong>操作</strong> 検証ステップが実行される、<strong>期待結果</strong> すべての依存関係が含まれている場合は成功、依存関係が不足している場合は失敗を報告する</li>
+<li><strong>前提条件</strong> 検証が失敗した場合、<strong>操作</strong> パイプラインログを確認する、<strong>期待結果</strong> 不足または不完全な依存関係が明確にリストされている</li>
+<li><strong>前提条件</strong> 検証が成功した場合、<strong>操作</strong> リリース成果物が公開される、<strong>期待結果</strong> SBOMがリリースパッケージに含まれている</li>
+</ol>
+<hr>
+<h3 id="ユーザーストーリー3---sbom形式の準拠-優先度-p3">ユーザーストーリー3 - SBOM形式の準拠 (優先度: P3)</h3>
+<p>コンプライアンス担当者として、生成されたSBOMが業界標準形式（SPDXやCycloneDXなど）に従っていることで、標準的なツールを使用してSBOMを分析し、セキュリティインフラストラクチャに統合できるようにする必要がある。</p>
+<p><strong>この優先度の理由</strong>: 形式の準拠はツールの相互運用性にとって重要ですが、完全性を確保することよりも重要度は低いです。ほとんどのSBOM生成ツールはすでに標準形式をサポートしています。</p>
+<p><strong>独立テスト</strong>: 生成されたSBOMを公式のSPDXまたはCycloneDXスキーマバリデーターで検証することでテストできます。</p>
+<p><strong>受入シナリオ</strong>:</p>
+<ol>
+<li><strong>前提条件</strong> SBOMが生成される、<strong>操作</strong> SPDX 2.3+スキーマに対して検証される、<strong>期待結果</strong> エラーなしで検証に合格する</li>
+<li><strong>前提条件</strong> SPDX形式のSBOM、<strong>操作</strong> 一般的なSBOM分析ツールに読み込む、<strong>期待結果</strong> ツールがエラーなしで解析および分析できる</li>
+</ol>
+<hr>
+<h3 id="ユーザーストーリー4---githubへのsbom統合-優先度-p2">ユーザーストーリー4 - GitHubへのSBOM統合 (優先度: P2)</h3>
+<p>開発者またはセキュリティ担当者として、生成されたSBOMがGitHubの依存関係グラフに自動的に統合され、DependabotアラートやGitHubのセキュリティ機能を活用できるようにする必要がある。</p>
+<p><strong>この優先度の理由</strong>: GitHubエコシステムとの統合により、セキュリティ脆弱性の自動検出とアラートが可能になり、長期的な保守性が向上します。P2とするのは、基本的なSBOM生成（P1）の後に実装すべき重要な機能だからです。</p>
+<p><strong>独立テスト</strong>: パイプラインがGitHubのDependency Submission APIにSBOMを送信し、GitHubの依存関係グラフでSBOM情報が表示されることを確認することでテストできます。</p>
+<p><strong>受入シナリオ</strong>:</p>
+<ol>
+<li><strong>前提条件</strong> SBOMが生成された後、<strong>操作</strong> Dependency Submission APIにSBOMを送信する、<strong>期待結果</strong> GitHubの依存関係グラフにすべての依存関係が表示される</li>
+<li><strong>前提条件</strong> 脆弱性のある依存関係が含まれている、<strong>操作</strong> SBOMをGitHubに送信する、<strong>期待結果</strong> Dependabotアラートが自動的に生成される</li>
+<li><strong>前提条件</strong> リリースが公開される、<strong>操作</strong> SBOMファイルがリリース成果物として添付される、<strong>期待結果</strong> ユーザーがリリースページからSBOMファイルをダウンロードできる</li>
+<li><strong>前提条件</strong> RenovateがリポジトリにインストールされSBOMが送信されている、<strong>操作</strong> 依存関係の新しいバージョンがリリースされる、<strong>期待結果</strong> Renovateが依存関係グラフの情報を読み取り、バージョンアップのPRを自動作成する</li>
+</ol>
+<hr>
+<h3 id="エッジケース">エッジケース</h3>
+<ul>
+<li>SBOM生成ステップ中にプロジェクトの復元が失敗した場合はどうなるか？
+<ul>
+<li>回答: パイプラインは失敗し、リリースは中止される（FR-004）</li>
+</ul>
+</li>
+<li>システムは条件付き依存関係（プラットフォーム固有または構成固有）をどのように処理するか？
+<ul>
+<li>回答: すべてのターゲットプラットフォームおよびビルド構成に対する依存関係を含む（FR-016）</li>
+</ul>
+</li>
+<li>復元中に依存関係が解決またはダウンロードできない場合はどうなるか？
+<ul>
+<li>回答: パイプラインは失敗し、エラーログに詳細を記録（FR-007）</li>
+</ul>
+</li>
+<li>パイプラインは、タイムアウトせずに多数のプロジェクトと依存関係を持つ大規模なソリューションをどのように処理するか？
+<ul>
+<li>回答: 15分のタイムアウトを設定し、超過した場合は失敗。依存関係キャッシングの使用を推奨（FR-014、FR-015）</li>
+</ul>
+</li>
+<li>プロジェクトに循環依存関係の参照が存在する場合はどうなるか？
+<ul>
+<li>回答: パッケージマネージャーのエラー処理に従い、パイプラインは失敗</li>
+</ul>
+</li>
+<li>GitHub Dependency Submission APIへの送信が失敗した場合、パイプライン全体を失敗させるべきか？
+<ul>
+<li>回答: パイプラインを失敗させる - API送信は必須機能であり、失敗時は全体を停止（FR-011、FR-013）</li>
+</ul>
+</li>
+<li>リリース成果物へのSBOMファイルの添付が失敗した場合はどうなるか？
+<ul>
+<li>回答: パイプラインは失敗し、リリースは中止される（FR-005、FR-012）</li>
+</ul>
+</li>
+<li>プライベートリポジトリとパブリックリポジトリで、依存関係グラフの動作に違いはあるか？
+<ul>
+<li>回答: はい、プライベートリポジトリでは依存関係グラフを手動で有効化する必要がある場合がある（仮定に記載）</li>
+</ul>
+</li>
+</ul>
+<h2 id="要件-必須">要件 <em>(必須)</em></h2>
+<h3 id="機能要件">機能要件</h3>
+<ul>
+<li><strong>FR-001</strong>: リリースパイプラインは、SBOMを生成する前にプロジェクトの依存関係を復元しなければならない</li>
+<li><strong>FR-002</strong>: SBOM生成は、プロジェクトファイルで宣言されたすべての直接依存関係を含まなければならない</li>
+<li><strong>FR-003</strong>: SBOM生成は、復元中に解決されたすべての推移的依存関係を含まなければならない</li>
+<li><strong>FR-004</strong>: リリースパイプラインは、SBOM生成が失敗した場合、完全なサプライチェーン情報のない成果物のリリースを防ぐために失敗しなければならない</li>
+<li><strong>FR-005</strong>: 生成されたSBOMは、個別のファイルとしてリリース成果物に含まれなければならない</li>
+<li><strong>FR-006</strong>: SBOMは、SPDX 2.3+形式に従わなければならない（ISO/IEC 5962:2021準拠）</li>
+<li><strong>FR-007</strong>: パイプラインは、トラブルシューティングのために復元とSBOM生成プロセスの詳細をログに記録しなければならない</li>
+<li><strong>FR-008</strong>: SBOM生成は、マルチプロジェクトソリューションを正しく処理しなければならない</li>
+<li><strong>FR-009</strong>: SBOMは、各依存関係のバージョン情報を含まなければならない</li>
+<li><strong>FR-010</strong>: SBOMは、各依存関係のライセンス情報を含まなければならない（利用できない場合は&quot;NOASSERTION&quot;）</li>
+<li><strong>FR-011</strong>: 生成されたSBOMは、GitHubのDependency Submission APIを使用してGitHubの依存関係グラフに送信しなければならない</li>
+<li><strong>FR-012</strong>: SBOMファイルは、GitHubリリースの成果物として添付しなければならない（ユーザーがダウンロード可能）</li>
+<li><strong>FR-013</strong>: GitHub Dependency Submission APIへの送信が失敗した場合、リリースパイプラインは失敗しなければならない</li>
+<li><strong>FR-014</strong>: SBOM生成プロセス（依存関係の復元と生成）は、15分以内に完了しなければならず、超過した場合はタイムアウトエラーとしてパイプラインを失敗させる</li>
+<li><strong>FR-015</strong>: パイプラインは、依存関係キャッシングを使用して、繰り返しビルドでの復元時間を短縮することが推奨される</li>
+<li><strong>FR-016</strong>: SBOM生成は、すべてのターゲットプラットフォームおよびビルド構成に対する条件付き依存関係を含まなければならない（完全な透明性のため）</li>
+<li><strong>FR-017</strong>: ライセンス情報が利用できない依存関係については、SPDX標準に従い&quot;NOASSERTION&quot;値を使用し、警告をログに記録しなければならない</li>
+<li><strong>FR-018</strong>: GitHubの依存関係グラフに送信されたSBOM情報は、RenovateなどのOSS依存関係管理ツールから読み取り可能でなければならない</li>
+<li><strong>FR-019</strong>: Pull Request作成時にSBOM生成を自動テストする専用ワークフローを提供しなければならない（リリース前の不具合検出のため）</li>
+<li><strong>FR-020</strong>: PR時のSBOMテストは、SPDXフォーマット検証、必須パッケージの存在確認、パフォーマンスベンチマークを含まなければならない</li>
+<li><strong>FR-021</strong>: PR時のSBOMテストワークフローは、GitHub Dependency Submission APIを呼び出してはならない（Dry-runモードのみ、本番依存関係グラフを汚染しないため）</li>
+</ul>
+<h3 id="主要なエンティティ">主要なエンティティ</h3>
+<ul>
+<li><strong>リリースパイプライン</strong>: ソフトウェアリリースをビルド、テスト、公開する自動化されたワークフロー。依存関係の復元とSBOM生成のステップを含む</li>
+<li><strong>SBOM（ソフトウェア部品表）</strong>: すべてのソフトウェアコンポーネント、依存関係、および関連するメタデータ（バージョン、ライセンスなど）をリストする構造化されたドキュメント</li>
+<li><strong>プロジェクト依存関係</strong>: プロジェクトファイル（例: .csproj、package.json）で明示的に宣言された直接依存関係</li>
+<li><strong>推移的依存関係</strong>: 直接依存関係によって必要とされる間接的な依存関係</li>
+<li><strong>リリース成果物</strong>: リリースパイプラインの最終出力。コンパイルされたバイナリ、ドキュメント、およびSBOMを含む</li>
+<li><strong>GitHubの依存関係グラフ</strong>: GitHubが提供する依存関係の可視化機能。SBOM情報を統合し、セキュリティアラートと連携する</li>
+<li><strong>Dependency Submission API</strong>: GitHubにSBOMや依存関係情報を送信するためのREST API。依存関係グラフに統合され、Dependabotアラートとセキュリティ更新を有効にする</li>
+<li><strong>Renovate</strong>: OSSで広く利用される依存関係管理ツール。GitHubの依存関係グラフを読み取り、ライブラリのバージョンアップに対して一貫した自動PR作成を提供する</li>
+</ul>
+<h3 id="仮定">仮定</h3>
+<ul>
+<li>プロジェクトは、依存関係の復元をサポートする標準的なパッケージ管理システムを使用している</li>
+<li>Microsoft SBOM Toolまたは同等のSPDX 2.3+互換ツールがプロジェクトタイプと互換性があり、利用可能であるか、統合可能である</li>
+<li>リリースパイプラインは、復元中に依存関係をダウンロードするためのネットワークアクセスを持っている</li>
+<li>SPDX 2.3+形式は、ユースケースおよびコンプライアンス要件に対して受け入れ可能である</li>
+<li>ライセンス情報はパッケージメタデータで利用可能であるか、合理的に推測できる</li>
+<li>パイプラインインフラストラクチャは、すべての依存関係を復元するための十分なリソース（ディスク容量、メモリ、時間）を持っている</li>
+<li>リポジトリはGitHub上でホストされており、GitHub ActionsまたはGitHub APIへのアクセスが可能である</li>
+<li>適切なGitHubトークン権限（contents: write）がDependency Submission APIの使用に利用可能である</li>
+<li>GitHubの依存関係グラフ機能が、リポジトリで有効化されている（プライベートリポジトリの場合、手動で有効化が必要な場合がある）</li>
+<li>送信されたSBOM情報は、Dependency Submission API経由でGitHubの依存関係グラフに統合され、DependabotおよびRenovateの両方から利用可能である</li>
+</ul>
+<h3 id="依存関係">依存関係</h3>
+<ul>
+<li>既存のリリースパイプラインインフラストラクチャは、新しいビルドステップの追加をサポートしなければならない</li>
+<li>パッケージソース（NuGet、npmなど）は、パイプライン実行中にアクセス可能でなければならない</li>
+<li>SBOM生成ツールは、プロジェクトの技術スタックと互換性がなければならない</li>
+<li>GitHub Dependency Submission APIは、パイプラインから利用可能でなければならない</li>
+<li>GitHubリリース機能は、成果物のアップロードをサポートしていなければならない</li>
+</ul>
+<h2 id="成功基準-必須">成功基準 <em>(必須)</em></h2>
+<h3 id="測定可能な成果">測定可能な成果</h3>
+<ul>
+<li><strong>SC-001</strong>: 生成されたSBOMには、プロジェクト依存関係の100%が含まれている（プロジェクトファイルとロックファイルの内容との比較により検証）</li>
+<li><strong>SC-002</strong>: SBOM生成ステップは、一般的なプロジェクトサイズ（最大50の依存関係を持つソリューション）に対して5分以内に完了する</li>
+<li><strong>SC-003</strong>: 大規模ソリューション（最大200の依存関係）でも15分以内にSBOM生成が完了する</li>
+<li><strong>SC-004</strong>: リリースパイプラインは、手動介入なしで95%のビルドでSBOMを正常に生成および公開する</li>
+<li><strong>SC-005</strong>: ユーザーは、標準的なSBOM検証ツールを使用して、エラーなしで生成されたSBOMを正常に検証できる</li>
+<li><strong>SC-006</strong>: 実装後、完全なSBOMなしで公開されるリリースはゼロである</li>
+<li><strong>SC-007</strong>: GitHubの依存関係グラフには、SBOMから送信されたすべての依存関係が表示される</li>
+<li><strong>SC-008</strong>: 脆弱性のある依存関係に対して、GitHubが自動的にDependabotアラートを生成する</li>
+<li><strong>SC-009</strong>: ユーザーは、GitHubリリースページからSBOMファイルをダウンロードできる</li>
+<li><strong>SC-010</strong>: Renovateがインストールされている場合、SBOM情報を読み取り、依存関係の更新PRを自動作成できる</li>
+<li><strong>SC-011</strong>: Pull Request作成時にSBOM生成テストが自動実行され、リリース前に不具合を検出できる</li>
+<li><strong>SC-012</strong>: PR時のSBOMテストは10分以内に完了し、開発サイクルを妨げない</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/004-complete-sbom-generation/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

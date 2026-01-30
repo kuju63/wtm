@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Installation Guide | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Installation Guide | wt ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/installation.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="installation-guide">Installation Guide</h1>
+
+<p>This guide will help you install the <code>wt</code> command-line tool for Git worktree management.</p>
+<h2 id="system-requirements">System Requirements</h2>
+<p>Before installing <code>wt</code>, ensure your system meets the following requirements:</p>
+<table>
+<thead>
+<tr>
+<th>Operating System</th>
+<th>Minimum Version</th>
+<th>Architecture</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>Windows 10</td>
+<td>x64</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>macOS 11 (Big Sur)</td>
+<td>ARM64 (Apple Silicon)</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>Any modern distribution</td>
+<td>x64, ARM</td>
+</tr>
+</tbody>
+</table>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><strong>Git</strong>: Version 2.25 or later must be installed and available in your PATH
+<ul>
+<li>To verify: <code>git --version</code></li>
+</ul>
+</li>
+<li><strong>Terminal/Command Prompt</strong>: Access to a terminal or command prompt</li>
+</ul>
+<hr>
+<h2 id="download">Download</h2>
+<p>Download the latest release for your platform from the <a href="https://github.com/YOUR_USERNAME/wt/releases">GitHub Releases</a> page.</p>
+<h3 id="available-downloads">Available Downloads</h3>
+<p>Download the latest version from the releases page. Files are named with the version number:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Architecture</th>
+<th>File Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>x64</td>
+<td><code>wt-v{version}-win-x64.zip</code></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>ARM64</td>
+<td><code>wt-v{version}-osx-arm64.tar.gz</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>x64</td>
+<td><code>wt-v{version}-linux-x64.tar.gz</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>ARM</td>
+<td><code>wt-v{version}-linux-arm.tar.gz</code></td>
+</tr>
+</tbody>
+</table>
+<p>Example: For version 0.0.3, the Linux x64 file would be <code>wt-v0.0.3-linux-x64.tar.gz</code></p>
+<hr>
+<h2 id="installation-instructions">Installation Instructions</h2>
+<p>Choose the installation method for your operating system:</p>
+<h3 id="windows-installation">Windows Installation</h3>
+<ol>
+<li><p><strong>Download</strong> the <code>wt-v{version}-win-x64.zip</code> file from the releases page</p>
+</li>
+<li><p><strong>Extract</strong> the archive:</p>
+<ul>
+<li>Right-click the downloaded file and select &quot;Extract All...&quot;</li>
+<li>Choose a destination folder (e.g., <code>C:\Program Files\wt</code>)</li>
+</ul>
+</li>
+<li><p><strong>Add to PATH</strong>:</p>
+<ul>
+<li>Open System Properties → Environment Variables</li>
+<li>Under &quot;System variables&quot;, find and select &quot;Path&quot;</li>
+<li>Click &quot;Edit&quot; and add the folder containing <code>wt.exe</code></li>
+<li>Click &quot;OK&quot; to save</li>
+</ul>
+</li>
+<li><p><strong>Verify installation</strong>:</p>
+<pre><code class="lang-cmd">wt --version
+</code></pre>
+</li>
+</ol>
+<h3 id="macos-installation">macOS Installation</h3>
+<ol>
+<li><p><strong>Download</strong> the <code>wt-v{version}-osx-arm64.tar.gz</code> file from the releases page</p>
+</li>
+<li><p><strong>Extract and install</strong>:</p>
+<pre><code class="lang-bash">tar -xzf wt-v*-osx-arm64.tar.gz
+sudo mv wt /usr/local/bin/
+sudo chmod +x /usr/local/bin/wt
+</code></pre>
+</li>
+<li><p><strong>Verify installation</strong>:</p>
+<pre><code class="lang-bash">wt --version
+</code></pre>
+</li>
+</ol>
+<h3 id="linux-installation">Linux Installation</h3>
+<ol>
+<li><p><strong>Download</strong> the appropriate file for your architecture:</p>
+<ul>
+<li>x64: <code>wt-v{version}-linux-x64.tar.gz</code></li>
+<li>ARM: <code>wt-v{version}-linux-arm.tar.gz</code></li>
+</ul>
+</li>
+<li><p><strong>Extract and install</strong>:</p>
+<pre><code class="lang-bash">tar -xzf wt-v*-linux-*.tar.gz
+sudo mv wt /usr/local/bin/
+sudo chmod +x /usr/local/bin/wt
+</code></pre>
+</li>
+<li><p><strong>Verify installation</strong>:</p>
+<pre><code class="lang-bash">wt --version
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="command-not-found">Command not found</h3>
+<p><strong>Symptom</strong>: After installation, running <code>wt</code> shows &quot;command not found&quot; or similar error.</p>
+<p><strong>Solutions</strong>:</p>
+<ul>
+<li><strong>Windows</strong>: Verify the installation folder is in your PATH. Restart your terminal after modifying PATH.</li>
+<li><strong>macOS/Linux</strong>: Ensure <code>/usr/local/bin</code> is in your PATH. Run <code>echo $PATH</code> to verify.</li>
+<li>Try specifying the full path: <code>/usr/local/bin/wt --version</code></li>
+<li>Restart your terminal or open a new terminal window</li>
+</ul>
+<h3 id="permission-denied">Permission denied</h3>
+<p><strong>Symptom</strong>: Error message saying &quot;permission denied&quot; when trying to run <code>wt</code>.</p>
+<p><strong>Solutions</strong>:</p>
+<ul>
+<li><p><strong>macOS/Linux</strong>: Make the file executable:</p>
+<pre><code class="lang-bash">sudo chmod +x /usr/local/bin/wt
+</code></pre>
+</li>
+<li><p>Verify file ownership: <code>ls -l /usr/local/bin/wt</code></p>
+</li>
+<li><p>Try running with sudo: <code>sudo wt --version</code> (not recommended for regular use)</p>
+</li>
+</ul>
+<h3 id="git-not-found">Git not found</h3>
+<p><strong>Symptom</strong>: <code>wt</code> reports that Git is not installed or cannot be found.</p>
+<p><strong>Solutions</strong>:</p>
+<ul>
+<li>Install Git from <a href="https://git-scm.com">git-scm.com</a></li>
+<li><strong>Windows</strong>: Ensure Git is added to PATH during installation</li>
+<li><strong>macOS</strong>: Install via Homebrew: <code>brew install git</code></li>
+<li><strong>Linux</strong>: Install via package manager: <code>sudo apt install git</code> or <code>sudo yum install git</code></li>
+<li>Verify Git installation: <code>git --version</code></li>
+</ul>
+<h3 id="additional-help">Additional Help</h3>
+<p>If you encounter other issues:</p>
+<ol>
+<li>Check the <a href="https://github.com/YOUR_USERNAME/wt/issues">GitHub Issues</a> for known problems</li>
+<li>Create a new issue with details about your environment and error messages</li>
+<li>Consult the <a href="guides/quickstart.html">Quick Start Guide</a> for usage examples</li>
+</ol>
+<hr>
+<h2 id="next-steps">Next Steps</h2>
+<p>Once installed, check out the <a href="guides/quickstart.html">Quick Start Guide</a> to learn how to use <code>wt</code> effectively.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/installation.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: Complete SBOM Generation in Release Pipeline | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: Complete SBOM Generation in Release Pipeline | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/004-complete-sbom-generation/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-complete-sbom-generation-in-release-pipeline">Tasks: Complete SBOM Generation in Release Pipeline</h1>
+
+<p><strong>Branch</strong>: <code>004-complete-sbom-generation</code><br>
+<strong>Input</strong>: Design documents from <code>/specs/004-complete-sbom-generation/</code><br>
+<strong>Prerequisites</strong>: plan.md ✅, spec.md ✅, research.md ✅, data-model.md ✅, contracts/ ✅</p>
+<h2 id="format-id-p-story-description">Format: <code>[ID] [P?] [Story] Description</code></h2>
+<ul>
+<li><strong>[P]</strong>: Can run in parallel (different files, no dependencies)</li>
+<li><strong>[Story]</strong>: Which user story this task belongs to (e.g., US1, US2, US3, US4)</li>
+<li>Include exact file paths in descriptions</li>
+</ul>
+<hr>
+<h2 id="phase-1-setup-project-initialization">Phase 1: Setup (Project Initialization)</h2>
+<p><strong>Purpose</strong>: Initialize project structure and prerequisite scripts</p>
+<ul>
+<li>[X] T001 Create ADR document for SBOM generation approach in docs/adr/004-sbom-generation.md</li>
+<li>[X] T002 [P] Create SBOM usage guide in docs/guides/sbom-usage.md (copy from specs/004-complete-sbom-generation/quickstart.md)</li>
+<li>[X] T003 [P] Add SBOM section to README.md explaining supply chain transparency</li>
+</ul>
+<hr>
+<h2 id="phase-2-foundational-blocking-prerequisites">Phase 2: Foundational (Blocking Prerequisites)</h2>
+<p><strong>Purpose</strong>: Workflow infrastructure that MUST be complete before user story implementation</p>
+<p><strong>⚠️ CRITICAL</strong>: No user story work can begin until this phase is complete</p>
+<ul>
+<li>[X] T004 Setup NuGet package caching in .github/workflows/release.yml (FR-015)</li>
+<li>[X] T005 Configure workflow permissions (contents: write, id-token: write) in .github/workflows/release.yml (FR-011)</li>
+<li>[X] T006 Add workflow timeout settings (15 minutes) in .github/workflows/release.yml (FR-014)</li>
+</ul>
+<p><strong>Checkpoint</strong>: Foundation ready - user story implementation can now begin</p>
+<hr>
+<h2 id="phase-3-user-story-1---完全な依存関係の開示-priority-p1--mvp">Phase 3: User Story 1 - 完全な依存関係の開示 (Priority: P1) 🎯 MVP</h2>
+<p><strong>Goal</strong>: Generate complete SBOM with all direct and transitive dependencies</p>
+<p><strong>Independent Test</strong>: Compare generated SBOM with project files to verify 100% dependency coverage</p>
+<h3 id="implementation-for-user-story-1">Implementation for User Story 1</h3>
+<ul>
+<li>[X] T007 [US1] Add dependency restore step before SBOM generation in .github/workflows/release.yml (FR-001)</li>
+<li>[X] T008 [US1] Configure dotnet restore with --locked-mode flag in .github/workflows/release.yml (FR-001, FR-002)</li>
+<li>[X] T009 [US1] Add multi-platform restore for all target platforms (win-x64, linux-x64, linux-arm, osx-arm64) in .github/workflows/release.yml (FR-016)</li>
+<li>[X] T010 [US1] Install Microsoft SBOM Tool in workflow in .github/workflows/release.yml (FR-006)</li>
+<li>[X] T011 [US1] Configure SBOM generation with correct parameters (package name, version, namespace) in .github/workflows/release.yml (FR-002, FR-003, FR-008, FR-009)</li>
+<li>[X] T012 [US1] Add error handling for restore failures in .github/workflows/release.yml (FR-004)</li>
+<li>[X] T013 [US1] Add error handling for SBOM generation failures in .github/workflows/release.yml (FR-004)</li>
+<li>[X] T014 [US1] Add detailed logging for restore and SBOM generation steps in .github/workflows/release.yml (FR-007)</li>
+</ul>
+<p><strong>Checkpoint</strong>: User Story 1 complete - SBOM with all dependencies is generated</p>
+<hr>
+<h2 id="phase-4-user-story-2---sbomの検証-priority-p2">Phase 4: User Story 2 - SBOMの検証 (Priority: P2)</h2>
+<p><strong>Goal</strong>: Validate generated SBOM is complete and accurate before release</p>
+<p><strong>Independent Test</strong>: Run SPDX validator and verify all required packages are present</p>
+<h3 id="implementation-for-user-story-2">Implementation for User Story 2</h3>
+<ul>
+<li>[X] T015 [US2] Add SPDX format validation step using jq-based offline validation in .github/workflows/release.yml (FR-006)</li>
+<li>[X] T016 [US2] Add required package verification step in .github/workflows/release.yml (FR-002)</li>
+<li>[X] T017 [US2] Verify System.CommandLine and System.IO.Abstractions are present in SBOM in .github/workflows/release.yml (FR-002)</li>
+<li>[X] T018 [US2] Add package count validation (minimum threshold check) in .github/workflows/release.yml (FR-003)</li>
+<li>[X] T019 [US2] Add validation failure reporting with detailed error messages in .github/workflows/release.yml (FR-007)</li>
+<li>[X] T020 [US2] Configure pipeline to fail on validation errors in .github/workflows/release.yml (FR-004)</li>
+</ul>
+<p><strong>Checkpoint</strong>: User Story 2 complete - SBOM validation ensures quality before release</p>
+<hr>
+<h2 id="phase-5-user-story-4---githubへのsbom統合-priority-p2">Phase 5: User Story 4 - GitHubへのSBOM統合 (Priority: P2)</h2>
+<p><strong>Goal</strong>: Integrate SBOM with GitHub Dependency Graph and enable Dependabot/Renovate</p>
+<p><strong>Independent Test</strong>: Verify dependencies appear in GitHub Dependency Graph and Dependabot alerts are generated</p>
+<h3 id="implementation-for-user-story-4">Implementation for User Story 4</h3>
+<ul>
+<li>[X] T021 [US4] Add GitHub Dependency Submission API integration using actions/dependency-submission@v3 in .github/workflows/release.yml (FR-011, FR-018)</li>
+<li>[X] T022 [US4] Configure SBOM file path and snapshot format (spdx) in .github/workflows/release.yml (FR-011)</li>
+<li>[X] T023 [US4] Add error handling for API submission failures (must fail pipeline) in .github/workflows/release.yml (FR-013)</li>
+<li>[X] T024 [US4] Add SBOM file upload to GitHub Release assets in .github/workflows/release.yml (FR-005, FR-012)</li>
+<li>[X] T025 [US4] Configure SBOM filename format (wt-{version}-sbom.spdx.json) in .github/workflows/release.yml (FR-012)</li>
+<li>[X] T026 [US4] Add error handling for release asset upload failures in .github/workflows/release.yml (FR-004)</li>
+<li>[X] T027 [US4] Add logging for GitHub API interactions in .github/workflows/release.yml (FR-007)</li>
+</ul>
+<p><strong>Checkpoint</strong>: User Story 4 complete - SBOM is integrated with GitHub ecosystem</p>
+<hr>
+<h2 id="phase-6-user-story-3---sbom形式の準拠-priority-p3">Phase 6: User Story 3 - SBOM形式の準拠 (Priority: P3)</h2>
+<p><strong>Goal</strong>: Ensure SBOM complies with SPDX 2.3+ (ISO/IEC 5962:2021) standards</p>
+<p><strong>Independent Test</strong>: Validate SBOM against official SPDX 2.3 schema</p>
+<h3 id="implementation-for-user-story-3">Implementation for User Story 3</h3>
+<ul>
+<li>[X] T028 [US3] Verify Microsoft SBOM Tool generates SPDX 2.3+ format in .github/workflows/release.yml (FR-006)</li>
+<li>[X] T029 [US3] Add SPDX version verification (must be SPDX-2.3) in .github/workflows/release.yml (FR-006)</li>
+<li>[X] T030 [US3] Add dataLicense verification (must be CC0-1.0) in .github/workflows/release.yml (FR-006)</li>
+<li>[X] T031 [US3] Add documentNamespace uniqueness verification in .github/workflows/release.yml (FR-006)</li>
+<li>[X] T032 [US3] Add NOASSERTION handling for missing license information in .github/workflows/release.yml (FR-010, FR-017)</li>
+</ul>
+<p><strong>Checkpoint</strong>: User Story 3 complete - SBOM format is standards-compliant</p>
+<hr>
+<h2 id="phase-7-pr-testing-workflow-quality-assurance">Phase 7: PR Testing Workflow (Quality Assurance)</h2>
+<p><strong>Goal</strong>: Enable early detection of SBOM generation issues before release</p>
+<p><strong>Independent Test</strong>: Create PR and verify SBOM test workflow runs successfully</p>
+<h3 id="implementation-for-pr-testing">Implementation for PR Testing</h3>
+<ul>
+<li>[X] T033 Create PR test workflow file .github/workflows/sbom-test.yml (FR-019)</li>
+<li>[X] T034 Configure PR trigger for workflow (on pull_request to main branch) in .github/workflows/sbom-test.yml (FR-019)</li>
+<li>[X] T035 Add path filters (wt.cli/**, packages.lock.json, workflow files) in .github/workflows/sbom-test.yml (FR-019)</li>
+<li>[X] T036 [P] Add dependency restore step with caching in .github/workflows/sbom-test.yml (FR-001, FR-015, FR-019)</li>
+<li>[X] T037 [P] Add SBOM generation step in .github/workflows/sbom-test.yml (FR-019)</li>
+<li>[X] T038 Add SPDX format validation in .github/workflows/sbom-test.yml (FR-020)</li>
+<li>[X] T039 Add required package verification (System.CommandLine, System.IO.Abstractions) in .github/workflows/sbom-test.yml (FR-020)</li>
+<li>[X] T040 Add package count validation in .github/workflows/sbom-test.yml (FR-020)</li>
+<li>[X] T041 Add performance benchmark (15-minute timeout) in .github/workflows/sbom-test.yml (FR-014, FR-020)</li>
+<li>[X] T042 Add dry-run comment for GitHub API (no actual submission) in .github/workflows/sbom-test.yml (FR-021)</li>
+<li>[X] T043 Add SBOM artifact upload for PR review in .github/workflows/sbom-test.yml (FR-019)</li>
+</ul>
+<p><strong>Checkpoint</strong>: PR testing complete - Issues caught before release</p>
+<hr>
+<h2 id="phase-8-polish--cross-cutting-concerns">Phase 8: Polish &amp; Cross-Cutting Concerns</h2>
+<p><strong>Purpose</strong>: Performance optimization, documentation, and monitoring</p>
+<ul>
+<li>[X] T044 [P] Add performance metrics logging (duration tracking) in .github/workflows/release.yml</li>
+<li>[X] T045 [P] Add cache hit/miss reporting for NuGet packages in .github/workflows/release.yml</li>
+<li>[X] T046 Update documentation with SBOM download instructions in README.md</li>
+<li>[X] T047 Add workflow badges for SBOM test status in README.md</li>
+<li>[X] T048 Create example SBOM file for documentation in docs/examples/sbom.spdx.json</li>
+<li>[X] T049 [P] Add workflow failure notifications (optional) in .github/workflows/release.yml</li>
+<li>[X] T050 Update CHANGELOG.md with SBOM feature description</li>
+</ul>
+<hr>
+<h2 id="dependencies--execution-order">Dependencies &amp; Execution Order</h2>
+<h3 id="user-story-completion-order">User Story Completion Order</h3>
+<pre><code class="lang-mermaid">graph TD
+    Setup[Phase 1: Setup] --&gt; Foundation[Phase 2: Foundation]
+    Foundation --&gt; US1[Phase 3: US1 - 完全な依存関係の開示]
+    US1 --&gt; US2[Phase 4: US2 - SBOMの検証]
+    US1 --&gt; US4[Phase 5: US4 - GitHubへのSBOM統合]
+    US2 --&gt; US3[Phase 6: US3 - SBOM形式の準拠]
+    US4 --&gt; US3
+    US1 --&gt; PR[Phase 7: PR Testing]
+    US2 --&gt; PR
+    US3 --&gt; Polish[Phase 8: Polish]
+    US4 --&gt; Polish
+    PR --&gt; Polish
+</code></pre>
+<h3 id="critical-path">Critical Path</h3>
+<ol>
+<li><strong>Setup (T001-T003)</strong> → 2. <strong>Foundation (T004-T006)</strong> → 3. <strong>US1 Core (T007-T014)</strong> → 4. <strong>US2 Validation (T015-T020)</strong> → 5. <strong>US4 Integration (T021-T027)</strong> → 6. <strong>US3 Compliance (T028-T032)</strong> → 7. <strong>PR Testing (T033-T043)</strong> → 8. <strong>Polish (T044-T050)</strong></li>
+</ol>
+<h3 id="parallel-execution-opportunities">Parallel Execution Opportunities</h3>
+<p><strong>After Foundation (T004-T006):</strong></p>
+<ul>
+<li>T007-T009 (Restore steps) can run independently from documentation tasks</li>
+<li>T010-T011 (SBOM tool setup) can be prepared in parallel</li>
+</ul>
+<p><strong>During US2 (Phase 4):</strong></p>
+<ul>
+<li>T015 (SPDX validation) and T017 (Package verification) can run in parallel</li>
+</ul>
+<p><strong>During Polish (Phase 8):</strong></p>
+<ul>
+<li>T044-T045 (Performance metrics), T048 (Example SBOM), T049 (Notifications) are all independent</li>
+</ul>
+<hr>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="mvp-scope-minimum-viable-product">MVP Scope (Minimum Viable Product)</h3>
+<p><strong>Target</strong>: User Story 1 only</p>
+<ul>
+<li>Phase 1: Setup (T001-T003)</li>
+<li>Phase 2: Foundation (T004-T006)</li>
+<li>Phase 3: US1 (T007-T014)</li>
+</ul>
+<p><strong>Why</strong>: This delivers the core value - complete SBOM generation. Validation, GitHub integration, and testing can be added incrementally.</p>
+<h3 id="incremental-delivery-plan">Incremental Delivery Plan</h3>
+<ol>
+<li><strong>Sprint 1 (MVP)</strong>: T001-T014 - Basic SBOM generation with all dependencies</li>
+<li><strong>Sprint 2</strong>: T015-T020 - Add SBOM validation</li>
+<li><strong>Sprint 3</strong>: T021-T027 - GitHub Dependency Graph integration</li>
+<li><strong>Sprint 4</strong>: T028-T032 - SPDX compliance verification</li>
+<li><strong>Sprint 5</strong>: T033-T043 - PR testing workflow</li>
+<li><strong>Sprint 6</strong>: T044-T050 - Polish and documentation</li>
+</ol>
+<h3 id="task-complexity">Task Complexity</h3>
+<ul>
+<li><strong>Simple (1-2 hours)</strong>: T001-T003, T010, T025, T029-T032, T044-T050</li>
+<li><strong>Medium (3-5 hours)</strong>: T004-T009, T011-T014, T015-T020, T028, T033-T043</li>
+<li><strong>Complex (6+ hours)</strong>: T021-T024, T026-T027</li>
+</ul>
+<p><strong>Total Estimated Effort</strong>: ~35-45 hours</p>
+<hr>
+<h2 id="validation-checklist">Validation Checklist</h2>
+<p>Before marking this feature complete, verify:</p>
+<ul>
+<li>[ ] All direct dependencies appear in generated SBOM</li>
+<li>[ ] All transitive dependencies appear in generated SBOM</li>
+<li>[ ] Platform-specific dependencies for all targets (win-x64, linux-x64, linux-arm, osx-arm64) included</li>
+<li>[ ] SBOM validates against SPDX 2.3 schema</li>
+<li>[ ] SBOM includes version information for all packages</li>
+<li>[ ] SBOM includes license information (or NOASSERTION) for all packages</li>
+<li>[ ] GitHub Dependency Graph displays all dependencies</li>
+<li>[ ] Dependabot alerts are generated for vulnerable dependencies</li>
+<li>[ ] SBOM file is downloadable from GitHub Release assets</li>
+<li>[ ] PR workflow catches SBOM generation failures</li>
+<li>[ ] Pipeline fails if SBOM generation fails</li>
+<li>[ ] Pipeline fails if GitHub API submission fails</li>
+<li>[ ] Pipeline fails if SBOM validation fails</li>
+<li>[ ] Performance: 50 dependencies → &lt;5 minutes</li>
+<li>[ ] Performance: 200 dependencies → &lt;15 minutes</li>
+<li>[ ] NuGet cache reduces restore time by 80% on repeat builds</li>
+<li>[ ] Documentation explains how to download and use SBOM</li>
+<li>[ ] Renovate can read dependency information from GitHub Dependency Graph</li>
+</ul>
+<hr>
+<h2 id="notes">Notes</h2>
+<h3 id="key-design-decisions">Key Design Decisions</h3>
+<ol>
+<li><strong>No source code changes</strong>: All changes are workflow-only</li>
+<li><strong>Microsoft SBOM Tool</strong>: Official tool for .NET projects, SPDX 2.3+ compliant</li>
+<li><strong>Fail-fast</strong>: Any SBOM-related failure stops the release (quality gate)</li>
+<li><strong>PR testing</strong>: Dry-run mode prevents polluting production Dependency Graph</li>
+<li><strong>Multi-platform restore</strong>: Ensures platform-specific dependencies are captured</li>
+</ol>
+<h3 id="technical-risks">Technical Risks</h3>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Large solution timeout (&gt;200 deps)</td>
+<td>15-min timeout + caching + parallel</td>
+</tr>
+<tr>
+<td>GitHub API rate limits</td>
+<td>Unlikely in GitHub Actions (5000/hr)</td>
+</tr>
+<tr>
+<td>Platform-specific dependency leakage</td>
+<td>Restore for all platforms explicitly</td>
+</tr>
+<tr>
+<td>Release failure discovery</td>
+<td>PR testing catches issues early</td>
+</tr>
+<tr>
+<td>Dependency Graph pollution from PRs</td>
+<td>Dry-run mode in sbom-test.yml</td>
+</tr>
+</tbody>
+</table>
+<h3 id="future-enhancements-out-of-scope">Future Enhancements (Out of Scope)</h3>
+<ul>
+<li>SBOM signing with digital signatures</li>
+<li>CycloneDX format support (in addition to SPDX)</li>
+<li>Automated vulnerability scanning in workflow</li>
+<li>SBOM diff between releases</li>
+<li>Historical SBOM archive</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/004-complete-sbom-generation/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

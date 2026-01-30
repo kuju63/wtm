@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Research Phase: Remove Git Worktree Feature | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Research Phase: Remove Git Worktree Feature | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/research.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="research-phase-remove-git-worktree-feature">Research Phase: Remove Git Worktree Feature</h1>
+
+<p><strong>Date</strong>: 2026-01-24 | <strong>Feature</strong>: Remove Git Worktree (005-remove-worktree)</p>
+<h2 id="research-findings">Research Findings</h2>
+<h3 id="1-file-system-operations-architecture">1. File System Operations Architecture</h3>
+<p><strong>Decision</strong>: Use existing <code>System.IO.Abstractions.IFileSystem</code> abstraction layer for all directory deletion operations.</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Already a production dependency in the project (version 22.1.0)</li>
+<li>Provides OS-agnostic directory and file operations</li>
+<li>Enables testability through mocking (System.IO.Abstractions.TestingHelpers)</li>
+<li>Consistent with existing project patterns (PathHelper, etc.)</li>
+</ul>
+<p><strong>Implementation Details</strong>:</p>
+<ul>
+<li><code>IFileSystem.Directory.Delete(path, recursive: true)</code> for recursive directory deletion</li>
+<li>Wraps with try-catch to capture permission/access errors</li>
+<li>Returns detailed failure information for FR-010 (partial deletion reporting)</li>
+</ul>
+<p><strong>Testing Approach</strong>:</p>
+<ul>
+<li>Unit tests: Mock IFileSystem using Moq</li>
+<li>Integration tests: Use System.IO.Abstractions.TestingHelpers.MockFileSystem for isolated testing without touching disk</li>
+<li>E2E tests: Real file system with test-specific temporary directories</li>
+</ul>
+<hr>
+<h3 id="2-git-worktree-metadata-removal">2. Git Worktree Metadata Removal</h3>
+<p><strong>Decision</strong>: Use existing <code>IGitService</code> to delegate git worktree removal via <code>git worktree remove</code> command.</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>GitService already abstracts git command execution</li>
+<li>Standard git command handles all worktree metadata cleanup</li>
+<li>Consistent with existing pattern (CreateCommand uses GitService for validation)</li>
+<li>Avoids reimplementing git's internal state management</li>
+</ul>
+<p><strong>Implementation Details</strong>:</p>
+<ul>
+<li>Call <code>git worktree remove [--force] &lt;path&gt;</code></li>
+<li>GitService returns structured result with success/failure</li>
+<li>Use <code>--force</code> flag when RemoveWorktreeOptions.Force is true</li>
+<li>Git command execution is already cross-platform tested</li>
+</ul>
+<p><strong>Error Handling</strong>:</p>
+<ul>
+<li>Git exit codes indicate specific failure reasons (not found, locked, etc.)</li>
+<li>Parse git stderr to provide user-friendly error messages per FR-008</li>
+</ul>
+<hr>
+<h3 id="3-uncommitted-changes-detection">3. Uncommitted Changes Detection</h3>
+<p><strong>Decision</strong>: Use <code>git status --porcelain &lt;worktree-path&gt;</code> to detect uncommitted changes before removal.</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Cheap operation (no file access); just queries git index</li>
+<li>Prevents data loss by blocking removal of worktrees with modified files</li>
+<li>Allows <code>--force</code> to bypass this check (explicit opt-in by developer)</li>
+<li>Aligns with git's safety-first philosophy</li>
+</ul>
+<p><strong>Implementation Details</strong>:</p>
+<ul>
+<li>GitService method: <code>HasUncommittedChanges(worktreeInfo.Path)</code> returns bool</li>
+<li>Checks untracked files, modified files, staged but uncommitted changes</li>
+<li>Force flag overrides this check (FR-007 behavior)</li>
+<li>No interactive prompt (per clarification Q1)</li>
+</ul>
+<p><strong>Testing Approach</strong>:</p>
+<ul>
+<li>Mock git command to simulate committed/uncommitted states</li>
+<li>Integration test with real worktree containing unsaved changes</li>
+</ul>
+<hr>
+<h3 id="4-worktree-validation-logic">4. Worktree Validation Logic</h3>
+<p><strong>Decision</strong>: Implement worktree validation checks in WorktreeService before initiating removal.</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Centralize business logic in service layer (existing pattern)</li>
+<li>Enables unit testing of validation rules in isolation</li>
+<li>Reusable validation methods (e.g., IsMainWorktree, IsCurrentWorktree)</li>
+<li>Clear separation from command/CLI layer</li>
+</ul>
+<p><strong>Validation Checks</strong> (FR-005, FR-006):</p>
+<ol>
+<li><strong>Main Worktree Protection</strong>: Worktree path == git root's main worktree path → ERROR</li>
+<li><strong>Current Worktree Check</strong>: Worktree == currently-checked-out session → ERROR</li>
+<li><strong>Worktree Existence</strong>: Queried worktree ID/path exists in git → ERROR if not found</li>
+<li><strong>Uncommitted Changes</strong> (FR-007): If not --force, check for modified files → ERROR if present</li>
+</ol>
+<p><strong>Current Worktree Detection</strong>:</p>
+<ul>
+<li>Compare worktree path against <code>git rev-parse --show-toplevel</code> + current session's working directory</li>
+<li>Or use <code>git worktree list --porcelain</code> and match against pwd</li>
+</ul>
+<hr>
+<h3 id="5-partial-deletion-reporting">5. Partial Deletion Reporting</h3>
+<p><strong>Decision</strong>: Capture undeleted files during directory deletion and report them separately; remove worktree metadata regardless.</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Implements FR-010 behavior: pragmatic partial failure handling</li>
+<li>Prioritizes cleaning up git metadata (the main goal)</li>
+<li>Leaves disk cleanup for user manual resolution if needed</li>
+<li>Prevents orphaned worktree entries in git</li>
+</ul>
+<p><strong>Implementation Details</strong>:</p>
+<ul>
+<li>Directory.Delete() attempts recursive deletion; catch UnauthorizedAccessException / IOException</li>
+<li>Collect list of files that couldn't be deleted with their exception messages</li>
+<li>Return structured result: { Success: bool, DeletedCount: int, UndeleteableItems: List&lt;(path, reason)&gt; }</li>
+<li>Output formatted error list per FR-008</li>
+</ul>
+<p><strong>Testing Approach</strong>:</p>
+<ul>
+<li>Mock filesystem: simulate locked file preventing deletion</li>
+<li>Check that removal proceeds and reports the failure</li>
+<li>Verify worktree entry is removed from git despite partial disk failure</li>
+</ul>
+<hr>
+<h3 id="6-error-message-design">6. Error Message Design</h3>
+<p><strong>Decision</strong>: Structured error codes and context-specific user guidance (existing pattern).</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Project already uses ErrorCodes enum (WT001-002, etc.)</li>
+<li>Enables automation (scripts can parse error codes)</li>
+<li>User-friendly suggestions improve developer experience per SC-004</li>
+</ul>
+<p><strong>Error Code Allocation</strong> (extending existing WT codes):</p>
+<ul>
+<li><strong>WT-RM-001</strong>: Worktree not found</li>
+<li><strong>WT-RM-002</strong>: Cannot remove main/current worktree</li>
+<li><strong>WT-RM-003</strong>: Uncommitted changes present (suggest commit/stash or use --force)</li>
+<li><strong>WT-RM-004</strong>: Permission denied during directory deletion (suggest running as admin or manual cleanup)</li>
+<li><strong>WT-RM-005</strong>: Worktree locked by another process (suggest --force or waiting)</li>
+</ul>
+<p><strong>User Guidance Examples</strong>:</p>
+<pre><code>error: Cannot remove worktree 'feature-branch': Current directory is in this worktree
+Suggestion: Use 'cd &lt;parent-repo&gt;' to switch out of the worktree, then retry removal
+</code></pre>
+<hr>
+<h3 id="7-command-line-interface-design">7. Command-Line Interface Design</h3>
+<p><strong>Decision</strong>: Follow existing command pattern (System.CommandLine 2.0) with verb-noun naming.</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Consistent with <code>create</code> and <code>list</code> commands</li>
+<li>Automatic --help generation</li>
+<li>Type-safe argument parsing</li>
+<li>Already familiar to users of existing wt commands</li>
+</ul>
+<p><strong>Command Syntax</strong>:</p>
+<pre><code>wt remove &lt;worktree-id-or-path&gt; [--force] [--verbose] [--output json|human]
+</code></pre>
+<p><strong>Arguments &amp; Options</strong>:</p>
+<ul>
+<li><code>&lt;worktree-id-or-path&gt;</code>: Positional argument (required) — branch name or path</li>
+<li><code>--force, -f</code>: Optional flag (boolean) — bypass uncommitted changes check</li>
+<li><code>--verbose, -v</code>: Optional flag (boolean) — detailed diagnostics</li>
+<li><code>--output, -o</code>: Optional option {human|json} — output format (existing pattern)</li>
+</ul>
+<p><strong>Automatic Help</strong>:</p>
+<pre><code>wt remove &lt;worktree&gt; [options]
+
+Description:
+  Remove a git worktree and delete its working directory from disk.
+
+Arguments:
+  &lt;worktree&gt;                The branch name or worktree path to remove
+
+Options:
+  -f, --force              Force removal even with uncommitted changes or locks
+  -v, --verbose            Show detailed diagnostics
+  -o, --output &lt;format&gt;    Output format: human (default) or json
+  -h, --help               Show help
+</code></pre>
+<hr>
+<h3 id="8-output-formats">8. Output Formats</h3>
+<p><strong>Decision</strong>: Implement human and JSON output following existing TableFormatter pattern.</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Consistent with list/create commands</li>
+<li>Enables automation and scripting (JSON)</li>
+<li>Human-readable by default</li>
+</ul>
+<p><strong>Human Output Example</strong>:</p>
+<pre><code>✓ Worktree 'feature-branch' removed successfully
+  Deleted: /path/to/worktree
+  Metadata: Cleaned from git worktree list
+</code></pre>
+<p><strong>JSON Output Example</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;success&quot;: true,
+  &quot;worktree&quot;: &quot;feature-branch&quot;,
+  &quot;path&quot;: &quot;/path/to/worktree&quot;,
+  &quot;filesDeleted&quot;: 245,
+  &quot;undeleteableItems&quot;: [],
+  &quot;duration&quot;: &quot;0.2s&quot;
+}
+</code></pre>
+<p><strong>Partial Failure Example (JSON)</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;success&quot;: false,
+  &quot;worktree&quot;: &quot;feature-branch&quot;,
+  &quot;path&quot;: &quot;/path/to/worktree&quot;,
+  &quot;worktreeRemoved&quot;: true,
+  &quot;filesDeleted&quot;: 240,
+  &quot;undeleteableItems&quot;: [
+    {&quot;path&quot;: &quot;node_modules/locked-package&quot;, &quot;reason&quot;: &quot;Permission denied&quot;}
+  ],
+  &quot;message&quot;: &quot;Worktree removed but 1 file could not be deleted&quot;
+}
+</code></pre>
+<hr>
+<h2 id="dependency-review">Dependency Review</h2>
+<p>All required functionality is covered by existing dependencies:</p>
+<table>
+<thead>
+<tr>
+<th>Dependency</th>
+<th>Version</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System.CommandLine</td>
+<td>2.0.2</td>
+<td>CLI parsing and command registration (existing)</td>
+</tr>
+<tr>
+<td>System.IO.Abstractions</td>
+<td>22.1.0</td>
+<td>Cross-platform directory deletion (existing)</td>
+</tr>
+<tr>
+<td>xUnit</td>
+<td>2.9.3</td>
+<td>Testing framework (existing)</td>
+</tr>
+<tr>
+<td>Moq</td>
+<td>4.20.72</td>
+<td>Mocking IFileSystem, IGitService (existing)</td>
+</tr>
+<tr>
+<td>System.IO.Abstractions.TestingHelpers</td>
+<td>22.1.0</td>
+<td>MockFileSystem for isolated tests (existing)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>No new dependencies required.</strong></p>
+<hr>
+<h2 id="integration-points">Integration Points</h2>
+<ol>
+<li><strong>GitService</strong>: Extend to detect uncommitted changes; delegate removal to git command</li>
+<li><strong>WorktreeService</strong>: Add RemoveWorktree method with validation logic</li>
+<li><strong>PathHelper</strong>: Use for worktree path resolution and normalization</li>
+<li><strong>Program.cs</strong>: Register RemoveCommand in CLI</li>
+<li><strong>ErrorCodes</strong>: Add WT-RM-001 through WT-RM-005</li>
+<li><strong>Output formatters</strong>: Extend TableFormatter with removal-specific formatting (optional; may use simple text output)</li>
+</ol>
+<hr>
+<h2 id="no-needs-clarification-issues">No NEEDS CLARIFICATION Issues</h2>
+<p>All technical decisions resolved through research. Ready for Phase 1 design.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/research.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

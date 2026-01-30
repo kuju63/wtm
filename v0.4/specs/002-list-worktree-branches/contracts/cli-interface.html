@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>CLI Interface Contract: Worktree List コマンド | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CLI Interface Contract: Worktree List コマンド | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/contracts/cli-interface.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="cli-interface-contract-worktree-list-コマンド">CLI Interface Contract: Worktree List コマンド</h1>
+
+<p><strong>Phase</strong>: 1 - Design &amp; Contracts<br>
+<strong>Date</strong>: 2026-01-04<br>
+<strong>Feature</strong>: <a href="../spec.html">spec.md</a> | <a href="../plan.html">plan.md</a></p>
+<h2 id="purpose">Purpose</h2>
+<p>このドキュメントは、worktree一覧表示コマンドのCLIインターフェース契約を定義します。コマンド構文、引数、オプション、出力形式、エラーコード、動作仕様を明確にします。</p>
+<h2 id="command-structure">Command Structure</h2>
+<h3 id="base-command">Base Command</h3>
+<pre><code class="lang-bash">wt list
+</code></pre>
+<h3 id="aliases">Aliases</h3>
+<p>将来的に以下のエイリアスを検討（初期実装では未サポート）:</p>
+<ul>
+<li><code>wt ls</code></li>
+</ul>
+<h2 id="arguments">Arguments</h2>
+<h3 id="positional-arguments">Positional Arguments</h3>
+<p>なし。このコマンドは引数を取りません。</p>
+<h2 id="options">Options</h2>
+<h3 id="--format--f">--format, -f</h3>
+<p><strong>説明</strong>: 出力フォーマットを指定します（将来の拡張、P3）</p>
+<p><strong>型</strong>: string<br>
+<strong>デフォルト</strong>: <code>table</code><br>
+<strong>許可値</strong>: <code>table</code>, <code>json</code>, <code>csv</code>（初期実装では<code>table</code>のみサポート）</p>
+<p><strong>例</strong>:</p>
+<pre><code class="lang-bash">wt list --format table
+wt list -f json  # 将来の実装
+</code></pre>
+<h3 id="--verbose--v">--verbose, -v</h3>
+<p><strong>説明</strong>: 詳細情報を表示します（将来の拡張）</p>
+<p><strong>型</strong>: flag（boolean）<br>
+<strong>デフォルト</strong>: <code>false</code></p>
+<p><strong>例</strong>:</p>
+<pre><code class="lang-bash">wt list --verbose
+wt list -v
+</code></pre>
+<p>詳細モードでは以下の追加情報を表示:</p>
+<ul>
+<li>完全なコミットハッシュ（40文字）</li>
+<li>最終更新日時</li>
+<li>ブランチのアップストリーム情報</li>
+</ul>
+<p><strong>注意</strong>: 初期実装（P1、P2）では未サポート</p>
+<h2 id="output-formats">Output Formats</h2>
+<h3 id="table-format-デフォルト">Table Format (デフォルト)</h3>
+<pre><code class="lang-text">┌─────────────────────────────────┬──────────────────┬──────────┐
+│ Path                            │ Branch           │ Status   │
+├─────────────────────────────────┼──────────────────┼──────────┤
+│ /Users/dev/project/wt           │ main             │ active   │
+│ /Users/dev/project/feature-wt   │ feature-branch   │ active   │
+│ /Users/dev/project/hotfix-wt    │ abc1234 (detached)│ active  │
+└─────────────────────────────────┴──────────────────┴──────────┘
+</code></pre>
+<p><strong>列の説明</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Path</td>
+<td>Worktreeの絶対パス</td>
+<td><code>/Users/dev/project/wt</code></td>
+</tr>
+<tr>
+<td>Branch</td>
+<td>ブランチ名またはdetached HEAD</td>
+<td><code>main</code>, <code>abc1234 (detached)</code></td>
+</tr>
+<tr>
+<td>Status</td>
+<td>worktreeの状態</td>
+<td><code>active</code>, <code>missing</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>テーブル仕様</strong>:</p>
+<ul>
+<li>ヘッダー行: 列名を表示</li>
+<li>罫線: Unicode Box Drawing文字（┌─┬─┐ ├─┼─┤ └─┴─┘ │）</li>
+<li>列幅: 内容に応じて動的に調整（最小幅: ヘッダー幅）</li>
+<li>配置: すべて左揃え</li>
+<li>ソート: 作成日時の新しい順（最新のworktreeが最初）</li>
+</ul>
+<h3 id="worktree-not-found-case">Worktree Not Found Case</h3>
+<p>worktreeが1つも存在しない場合:</p>
+<pre><code class="lang-text">No worktrees found in this repository.
+</code></pre>
+<h3 id="warning-messages">Warning Messages</h3>
+<p>ディスク上に存在しないworktreeがある場合（FR-008）:</p>
+<pre><code class="lang-text">Warning: Worktree at '/Users/dev/project/missing-wt' does not exist on disk
+┌─────────────────────────────────┬──────────────────┬──────────┐
+│ Path                            │ Branch           │ Status   │
+├─────────────────────────────────┼──────────────────┼──────────┤
+│ /Users/dev/project/wt           │ main             │ active   │
+│ /Users/dev/project/feature-wt   │ feature-branch   │ active   │
+└─────────────────────────────────┴──────────────────┴──────────┘
+</code></pre>
+<p>警告メッセージは標準エラー出力（stderr）に出力し、テーブルは標準出力（stdout）に出力します。</p>
+<h2 id="exit-codes">Exit Codes</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Condition</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Success</td>
+<td>コマンドが正常に完了</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Git not found</td>
+<td>Gitが実行できない（git worktreeコマンド未対応含む）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Not a git repository</td>
+<td>現在のディレクトリがGitリポジトリではない</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Git command failed</td>
+<td><code>git worktree list</code>の実行が失敗</td>
+</tr>
+<tr>
+<td>99</td>
+<td>Unexpected error</td>
+<td>予期しないエラー</td>
+</tr>
+</tbody>
+</table>
+<p><strong>重要</strong>: 警告（存在しないworktree）が発生してもexit code 0を返します。</p>
+<h2 id="error-messages">Error Messages</h2>
+<h3 id="git-not-found">Git Not Found</h3>
+<pre><code class="lang-shell">Error: Git command not found. Please ensure Git is installed and available in PATH.
+</code></pre>
+<p>Exit code: 1</p>
+<h3 id="not-a-git-repository">Not a Git Repository</h3>
+<pre><code class="lang-shell">Error: Not a git repository. Please run this command from within a git repository.
+</code></pre>
+<p>Exit code: 2</p>
+<h3 id="git-command-failed">Git Command Failed</h3>
+<pre><code class="lang-shell">Error: Failed to list worktrees.
+Git output:
+fatal: this operation must be run in a work tree
+
+Run with --verbose for more details.
+</code></pre>
+<p>Exit code: 10</p>
+<h2 id="behavior-specifications">Behavior Specifications</h2>
+<h3 id="pre-conditions">Pre-conditions</h3>
+<ol>
+<li>コマンドはGitリポジトリ内で実行される必要がある</li>
+<li>Git 2.5以上がインストールされている必要がある</li>
+<li><code>git worktree list</code>コマンドが使用可能である必要がある</li>
+</ol>
+<h3 id="execution-flow">Execution Flow</h3>
+<pre><code class="lang-text">1. カレントディレクトリがGitリポジトリか確認
+   ├─ No → Error (exit code 2)
+   └─ Yes → 次へ
+
+2. `git worktree list --porcelain` を実行
+   ├─ 失敗 → Error (exit code 10)
+   └─ 成功 → 次へ
+
+3. ポーセラン出力をパース
+   ├─ worktreeなし → &quot;No worktrees found&quot; メッセージ (exit code 0)
+   └─ worktreeあり → 次へ
+
+4. 各worktreeの情報を収集
+   ├─ パス、ブランチ、detached状態、コミットハッシュ
+   ├─ 作成日時 (.git/worktrees/&lt;name&gt;/gitdir のタイムスタンプ)
+   └─ 存在確認 (Directory.Exists)
+
+5. 作成日時の降順でソート
+
+6. テーブル整形
+   └─ 列幅を動的計算
+
+7. 出力
+   ├─ 警告メッセージ (stderr) - 存在しないworktreeがある場合
+   └─ テーブル (stdout)
+
+8. Exit (code 0)
+</code></pre>
+<h3 id="post-conditions">Post-conditions</h3>
+<ul>
+<li>標準出力にテーブルが表示される</li>
+<li>警告がある場合、標準エラー出力に警告が表示される</li>
+<li>正常終了時のexit codeは0</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<h3 id="基本的な使用例">基本的な使用例</h3>
+<pre><code class="lang-bash">$ wt list
+┌─────────────────────────────────┬──────────────────┬──────────┐
+│ Path                            │ Branch           │ Status   │
+├─────────────────────────────────┼──────────────────┼──────────┤
+│ /Users/dev/project/main-wt      │ main             │ active   │
+│ /Users/dev/project/feature-wt   │ feature-new      │ active   │
+└─────────────────────────────────┴──────────────────┴──────────┘
+</code></pre>
+<h3 id="detached-head状態を含む例">Detached HEAD状態を含む例</h3>
+<pre><code class="lang-bash">$ wt list
+┌─────────────────────────────────┬────────────────────┬──────────┐
+│ Path                            │ Branch             │ Status   │
+├─────────────────────────────────┼────────────────────┼──────────┤
+│ /Users/dev/project/main-wt      │ main               │ active   │
+│ /Users/dev/project/hotfix-wt    │ abc1234 (detached) │ active   │
+└─────────────────────────────────┴────────────────────┴──────────┘
+</code></pre>
+<h3 id="存在しないworktreeがある例">存在しないworktreeがある例</h3>
+<pre><code class="lang-bash">$ wt list
+Warning: Worktree at '/Users/dev/project/deleted-wt' does not exist on disk
+┌─────────────────────────────────┬──────────────────┬──────────┐
+│ Path                            │ Branch           │ Status   │
+├─────────────────────────────────┼──────────────────┼──────────┤
+│ /Users/dev/project/main-wt      │ main             │ active   │
+│ /Users/dev/project/feature-wt   │ feature-new      │ active   │
+└─────────────────────────────────┴──────────────────┴──────────┘
+
+$ echo $?
+0
+</code></pre>
+<h3 id="worktreeが存在しない例">Worktreeが存在しない例</h3>
+<pre><code class="lang-bash">$ wt list
+No worktrees found in this repository.
+
+$ echo $?
+0
+</code></pre>
+<h3 id="エラー例-gitリポジトリではない">エラー例: Gitリポジトリではない</h3>
+<pre><code class="lang-bash">$ cd /tmp
+$ wt list
+Error: Not a git repository. Please run this command from within a git repository.
+
+$ echo $?
+2
+</code></pre>
+<h2 id="implementation-notes">Implementation Notes</h2>
+<h3 id="systemcommandline統合">System.CommandLine統合</h3>
+<pre><code class="lang-csharp">var listCommand = new Command(&quot;list&quot;, &quot;List all worktrees with their branches&quot;);
+
+// 将来のオプション（初期実装では未使用）
+var formatOption = new Option&lt;string&gt;(
+    aliases: new[] { &quot;--format&quot;, &quot;-f&quot; },
+    getDefaultValue: () =&gt; &quot;table&quot;,
+    description: &quot;Output format (table, json, csv)&quot;);
+listCommand.AddOption(formatOption);
+
+listCommand.SetHandler(async (format) =&gt;
+{
+    // ハンドラー実装
+    var service = GetWorktreeService();
+    var worktrees = await service.ListWorktreesAsync();
+    var formatter = new TableFormatter();
+    var output = formatter.Format(worktrees);
+    Console.WriteLine(output);
+}, formatOption);
+</code></pre>
+<h3 id="テーブル整形">テーブル整形</h3>
+<p><code>Formatters/TableFormatter.cs</code>クラスが以下の責務を持ちます:</p>
+<pre><code class="lang-csharp">namespace Kuju63.WorkTree.CommandLine.Formatters;
+
+public class TableFormatter
+{
+    public string Format(IEnumerable&lt;WorktreeInfo&gt; worktrees)
+    {
+        // 1. 列幅の計算
+        // 2. ヘッダー行の生成
+        // 3. 罫線の生成
+        // 4. データ行の生成
+        // 5. 結合して返す
+    }
+
+    private int CalculateColumnWidth(string header, IEnumerable&lt;string&gt; values)
+    {
+        // ヘッダーとすべての値の最大幅を返す
+    }
+
+    private string GenerateSeparator(int[] columnWidths, string left, string mid, string right)
+    {
+        // 罫線を生成（┌─┬─┐ 等）
+    }
+}
+</code></pre>
+<h2 id="testing-strategy">Testing Strategy</h2>
+<h3 id="ユニットテスト">ユニットテスト</h3>
+<ul>
+<li>コマンドハンドラーのテスト（モックサービス使用）</li>
+<li>TableFormatterの各メソッドのテスト</li>
+<li>エラーケースのテスト（Git未検出、非リポジトリ等）</li>
+</ul>
+<h3 id="統合テスト">統合テスト</h3>
+<ul>
+<li>実際のGitリポジトリでのエンドツーエンドテスト</li>
+<li>複数worktreeのシナリオテスト</li>
+<li>Detached HEAD状態のテスト</li>
+<li>存在しないworktreeの警告テスト</li>
+</ul>
+<h3 id="契約テスト">契約テスト</h3>
+<ul>
+<li>出力形式の正確性検証（テーブル罫線、列配置等）</li>
+<li>Exit codeの検証</li>
+<li>エラーメッセージの検証</li>
+</ul>
+<h2 id="compliance">Compliance</h2>
+<p>このCLI契約は以下の仕様要件を満たしています:</p>
+<ul>
+<li><strong>FR-001</strong>: すべてのアクティブなworktreeのリストを表示</li>
+<li><strong>FR-002</strong>: 各worktreeの現在のブランチを表示</li>
+<li><strong>FR-003</strong>: テーブル形式で出力を表示</li>
+<li><strong>FR-004</strong>: Detached HEAD状態を処理</li>
+<li><strong>FR-005</strong>: worktreeパスとブランチ情報を表示</li>
+<li><strong>FR-006</strong>: コマンドラインインターフェースから呼び出し可能</li>
+<li><strong>FR-007</strong>: 作成日時順（新しい順）でソート</li>
+<li><strong>FR-008</strong>: 存在しないworktreeに対して警告を表示し、処理を継続</li>
+</ul>
+<h2 id="future-extensions-p3">Future Extensions (P3)</h2>
+<h3 id="json-format-将来">JSON Format (将来)</h3>
+<pre><code class="lang-bash">$ wt list --format json
+[
+  {
+    &quot;path&quot;: &quot;/Users/dev/project/main-wt&quot;,
+    &quot;branch&quot;: &quot;main&quot;,
+    &quot;is_detached&quot;: false,
+    &quot;commit_hash&quot;: &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+    &quot;created_at&quot;: &quot;2026-01-04T10:30:00+09:00&quot;,
+    &quot;exists&quot;: true
+  }
+]
+</code></pre>
+<h3 id="csv-format-将来">CSV Format (将来)</h3>
+<pre><code class="lang-bash">$ wt list --format csv
+Path,Branch,Status,Created At
+/Users/dev/project/main-wt,main,active,2026-01-04T10:30:00+09:00
+/Users/dev/project/feature-wt,feature-new,active,2026-01-04T11:00:00+09:00
+</code></pre>
+<h2 id="summary">Summary</h2>
+<p>CLI Interface契約は以下の点で明確に定義されています:</p>
+<ul>
+<li><strong>コマンド構文</strong>: シンプルで覚えやすい</li>
+<li><strong>出力形式</strong>: テーブル形式で視覚的に明確</li>
+<li><strong>エラーハンドリング</strong>: 適切なexit codeと明確なエラーメッセージ</li>
+<li><strong>拡張性</strong>: 将来のフォーマット追加に対応可能</li>
+<li><strong>互換性</strong>: System.CommandLineの標準パターンに準拠</li>
+</ul>
+<p>この契約に基づいて、実装とテストを進めることができます。</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/contracts/cli-interface.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Quick Start: 自動化されたバイナリリリースパイプライン | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Quick Start: 自動化されたバイナリリリースパイプライン | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/quickstart.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="quick-start-自動化されたバイナリリリースパイプライン">Quick Start: 自動化されたバイナリリリースパイプライン</h1>
+
+<p><strong>Feature</strong>: <code>003-automated-release-pipeline</code><br>
+<strong>Date</strong>: 2026-01-04<br>
+<strong>Spec</strong>: <a href="spec.html">spec.md</a> | <strong>Plan</strong>: <a href="plan.html">plan.md</a></p>
+<p>このガイドは、自動化されたバイナリリリースパイプラインの使用方法を説明します。</p>
+<hr>
+<h2 id="-リリースバイナリのダウンロード">📦 リリースバイナリのダウンロード</h2>
+<h3 id="ステップ1-github-releasesページにアクセス">ステップ1: GitHub Releasesページにアクセス</h3>
+<ol>
+<li>リポジトリのGitHub Releasesページに移動: <a href="https://github.com/kuju63/wt/releases">https://github.com/kuju63/wt/releases</a></li>
+<li>最新リリースを選択 (例: <code>v1.0.0</code>)</li>
+</ol>
+<h3 id="ステップ2-プラットフォームに適したバイナリをダウンロード">ステップ2: プラットフォームに適したバイナリをダウンロード</h3>
+<p>利用可能なプラットフォーム:</p>
+<ul>
+<li><strong>Windows x64</strong>: <code>wt-v&lt;version&gt;-windows-x64.exe</code></li>
+<li><strong>Linux x64</strong>: <code>wt-v&lt;version&gt;-linux-x64</code></li>
+<li><strong>Linux ARM</strong>: <code>wt-v&lt;version&gt;-linux-arm</code> (オプション)</li>
+<li><strong>macOS ARM64</strong>: <code>wt-v&lt;version&gt;-macos-arm64</code></li>
+</ul>
+<h3 id="ステップ3-バイナリに実行権限を付与-linuxmacos">ステップ3: バイナリに実行権限を付与 (Linux/macOS)</h3>
+<pre><code class="lang-bash">chmod +x wt-v&lt;version&gt;-linux-x64
+# または
+chmod +x wt-v&lt;version&gt;-macos-arm64
+</code></pre>
+<h3 id="ステップ4-バイナリを実行">ステップ4: バイナリを実行</h3>
+<pre><code class="lang-bash"># Linux/macOS
+./wt-v&lt;version&gt;-linux-x64 --version
+
+# Windows (PowerShell)
+.\wt-v&lt;version&gt;-windows-x64.exe --version
+</code></pre>
+<hr>
+<h2 id="-バイナリの整合性検証">🔒 バイナリの整合性検証</h2>
+<h3 id="sha256ハッシュ値の検証">SHA256ハッシュ値の検証</h3>
+<h4 id="ステップ1-チェックサムファイルをダウンロード">ステップ1: チェックサムファイルをダウンロード</h4>
+<p>GitHub Releasesページから以下のファイルをダウンロード:</p>
+<ul>
+<li><code>SHA256SUMS</code></li>
+<li><code>SHA256SUMS.asc</code> (GPG署名)</li>
+</ul>
+<h4 id="ステップ2-gpg署名を検証">ステップ2: GPG署名を検証</h4>
+<pre><code class="lang-bash"># GPG公開鍵をインポート (初回のみ)
+curl -fsSL https://raw.githubusercontent.com/kuju63/wt/main/docs/GPG_PUBLIC_KEY.asc | gpg --import
+
+# 署名を検証
+gpg --verify SHA256SUMS.asc SHA256SUMS
+</code></pre>
+<p>期待される出力:</p>
+<pre><code class="lang-text">gpg: Signature made ...
+gpg: Good signature from &quot;Release Pipeline Bot &lt;release@kuju63.example.com&gt;&quot;
+</code></pre>
+<h4 id="ステップ3-ハッシュ値を検証">ステップ3: ハッシュ値を検証</h4>
+<pre><code class="lang-bash"># Linux/macOS
+sha256sum -c SHA256SUMS --ignore-missing
+
+# macOS (sha256sum がない場合)
+shasum -a 256 -c SHA256SUMS --ignore-missing
+
+# Windows (PowerShell)
+$hash = (Get-FileHash -Algorithm SHA256 wt-v&lt;version&gt;-windows-x64.exe).Hash.ToLower()
+$expected = (Get-Content SHA256SUMS | Select-String &quot;wt-v&lt;version&gt;-windows-x64.exe&quot;).Line.Split()[0]
+if ($hash -eq $expected) { Write-Host &quot;OK: Hash verified&quot; -ForegroundColor Green } else { Write-Host &quot;ERROR: Hash mismatch&quot; -ForegroundColor Red }
+</code></pre>
+<p>期待される出力:</p>
+<pre><code class="lang-text">wt-v1.0.0-linux-x64: OK
+</code></pre>
+<hr>
+<h2 id="-sbom-software-bill-of-materials-の確認">📄 SBOM (Software Bill of Materials) の確認</h2>
+<h3 id="ステップ1-sbomファイルをダウンロード">ステップ1: SBOMファイルをダウンロード</h3>
+<p>GitHub Releasesページから以下のファイルをダウンロード:</p>
+<ul>
+<li><code>wt-v&lt;version&gt;-sbom.json</code> (CycloneDX形式)</li>
+<li><code>wt-v&lt;version&gt;-sbom.json.asc</code> (GPG署名)</li>
+</ul>
+<h3 id="ステップ2-sbom署名を検証">ステップ2: SBOM署名を検証</h3>
+<pre><code class="lang-bash">gpg --verify wt-v&lt;version&gt;-sbom.json.asc wt-v&lt;version&gt;-sbom.json
+</code></pre>
+<h3 id="ステップ3-sbomの内容を確認">ステップ3: SBOMの内容を確認</h3>
+<pre><code class="lang-bash"># 依存関係の一覧を表示
+jq '.components[].name' wt-v&lt;version&gt;-sbom.json
+
+# 依存関係の数を表示
+jq '.components | length' wt-v&lt;version&gt;-sbom.json
+
+# 特定の依存関係を検索
+jq '.components[] | select(.name | contains(&quot;System.CommandLine&quot;))' wt-v&lt;version&gt;-sbom.json
+</code></pre>
+<h3 id="sbom形式">SBOM形式</h3>
+<ul>
+<li><strong>フォーマット</strong>: CycloneDX 1.4 (JSON)</li>
+<li><strong>仕様</strong>: <a href="https://cyclonedx.org/specification/overview/">https://cyclonedx.org/specification/overview/</a></li>
+</ul>
+<hr>
+<h2 id="-リリースの自動作成-開発者向け">🚀 リリースの自動作成 (開発者向け)</h2>
+<h3 id="前提条件">前提条件</h3>
+<ol>
+<li><p><strong>GitHub Secrets の設定</strong> (リポジトリ管理者のみ):</p>
+<ul>
+<li><code>GH_RELEASE_TOKEN</code>: GitHub Personal Access Token (repo権限)</li>
+<li><code>CODACY_PROJECT_TOKEN</code>: Codacyプロジェクトトークン</li>
+<li><code>GPG_PRIVATE_KEY</code>: GPG秘密鍵 (ASCII-armored形式)</li>
+<li><code>GPG_PASSPHRASE</code>: GPG鍵のパスフレーズ</li>
+</ul>
+<p>詳細: <a href="../../.github/SECRETS.md">.github/SECRETS.md</a></p>
+</li>
+<li><p><strong>Conventional Commits規約の遵守</strong>:</p>
+<ul>
+<li>すべてのコミットメッセージは Conventional Commits 規約に従うこと</li>
+<li>詳細: <a href="../../docs/ja/CONVENTIONAL_COMMITS.html">docs/ja/CONVENTIONAL_COMMITS.md</a></li>
+</ul>
+</li>
+</ol>
+<h3 id="リリース作成フロー">リリース作成フロー</h3>
+<h4 id="ステップ1-機能ブランチを作成">ステップ1: 機能ブランチを作成</h4>
+<pre><code class="lang-bash">git checkout -b feature/new-amazing-feature
+</code></pre>
+<h4 id="ステップ2-conventional-commitsでコミット">ステップ2: Conventional Commitsでコミット</h4>
+<pre><code class="lang-bash"># 新機能 (MINOR version bump)
+git commit -m &quot;feat: add support for multiple worktrees&quot;
+
+# バグ修正 (PATCH version bump)
+git commit -m &quot;fix: handle special characters in branch names&quot;
+
+# 破壊的変更 (MAJOR version bump)
+git commit -m &quot;feat: change CLI argument format
+
+BREAKING CHANGE: All CLI arguments now use kebab-case.
+Migration guide: docs/migration/v2.0.md&quot;
+</code></pre>
+<h4 id="ステップ3-プルリクエストを作成">ステップ3: プルリクエストを作成</h4>
+<pre><code class="lang-bash">git push origin feature/new-amazing-feature
+</code></pre>
+<p>GitHub上でPRを作成し、レビューを受ける。</p>
+<h4 id="ステップ4-mainにマージ">ステップ4: mainにマージ</h4>
+<p>PRが承認されたら、mainブランチにマージします。</p>
+<h4 id="ステップ5-自動リリース作成を確認">ステップ5: 自動リリース作成を確認</h4>
+<ol>
+<li>GitHub Actions workflow (<code>release.yml</code>) が自動実行されます</li>
+<li>次のバージョン番号が自動計算されます:
+<ul>
+<li><code>feat:</code> → MINOR bump (0.1.0 → 0.2.0)</li>
+<li><code>fix:</code> → PATCH bump (0.1.0 → 0.1.1)</li>
+<li><code>BREAKING CHANGE:</code> → MAJOR bump (0.1.0 → 1.0.0)</li>
+</ul>
+</li>
+<li>バイナリが全プラットフォーム向けにビルドされます</li>
+<li>SHA256SUMS、SBOM、署名ファイルが生成されます</li>
+<li>リリースノートが自動生成されます</li>
+<li>GitHub Releaseが公開されます</li>
+</ol>
+<p><strong>予想時間</strong>: mainマージから30分以内</p>
+<h3 id="トラブルシューティング">トラブルシューティング</h3>
+<h4 id="問題-リリースが作成されない">問題: リリースが作成されない</h4>
+<p><strong>原因</strong>: Conventional Commits規約に準拠していない、またはバージョン変更が不要なコミット (docs, style等) のみ</p>
+<p><strong>解決策</strong>:</p>
+<ol>
+<li>コミットメッセージを確認: <code>git log</code></li>
+<li><code>feat:</code>, <code>fix:</code>, <code>BREAKING CHANGE:</code> が含まれているか確認</li>
+<li>必要に応じて、<code>git commit --amend</code> で修正</li>
+</ol>
+<h4 id="問題-ビルドが失敗する">問題: ビルドが失敗する</h4>
+<p><strong>原因</strong>: テストが失敗している、またはビルドエラー</p>
+<p><strong>解決策</strong>:</p>
+<ol>
+<li>GitHub Actions のログを確認</li>
+<li>ローカルでテストを実行: <code>dotnet test wt.sln</code></li>
+<li>ローカルでビルドを実行: <code>dotnet build wt.sln --configuration Release</code></li>
+</ol>
+<h4 id="問題-署名ファイルが生成されない">問題: 署名ファイルが生成されない</h4>
+<p><strong>原因</strong>: <code>GPG_PRIVATE_KEY</code> または <code>GPG_PASSPHRASE</code> が設定されていない</p>
+<p><strong>解決策</strong>:</p>
+<ol>
+<li>GitHub リポジトリ設定 &gt; Secrets and variables &gt; Actions を確認</li>
+<li>必要なシークレットが設定されているか確認</li>
+<li>詳細: <a href="../../.github/SECRETS.md">.github/SECRETS.md</a></li>
+</ol>
+<hr>
+<h2 id="-カバレッジレポートの確認">📊 カバレッジレポートの確認</h2>
+<h3 id="codacyでカバレッジを確認">Codacyでカバレッジを確認</h3>
+<ol>
+<li>Codacyプロジェクトダッシュボードにアクセス: <a href="https://app.codacy.com/gh/kuju63/wt">https://app.codacy.com/gh/kuju63/wt</a></li>
+<li>&quot;Coverage&quot; タブを選択</li>
+<li>最新のコミットのカバレッジを確認</li>
+</ol>
+<h3 id="カバレッジ目標">カバレッジ目標</h3>
+<ul>
+<li><strong>プロジェクト全体</strong>: 80%以上</li>
+<li><strong>品質ゲート</strong>: カバレッジが80%未満の場合は警告 (マージはブロックしない)</li>
+</ul>
+<hr>
+<h2 id="-ブランチ保護ルール-リポジトリ管理者向け">🛡️ ブランチ保護ルール (リポジトリ管理者向け)</h2>
+<p>mainブランチを保護するため、以下のルールを設定してください:</p>
+<ol>
+<li>GitHub リポジトリ設定 &gt; Branches &gt; Branch protection rules</li>
+<li>&quot;Add rule&quot; をクリック</li>
+<li>Branch name pattern: <code>main</code></li>
+<li>以下を有効化:
+<ul>
+<li>✅ <strong>Require a pull request before merging</strong></li>
+<li>✅ <strong>Require status checks to pass before merging</strong>
+<ul>
+<li>Required checks:
+<ul>
+<li><code>test</code> (Test and Coverage workflow)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>✅ <strong>Require branches to be up to date before merging</strong></li>
+<li>✅ <strong>Do not allow bypassing the above settings</strong></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="-参考資料">📚 参考資料</h2>
+<ul>
+<li><a href="../../docs/ja/CONVENTIONAL_COMMITS.html">Conventional Commits 規約</a></li>
+<li><a href="../../.github/SECRETS.md">GitHub Secrets 設定ガイド</a></li>
+<li><a href="research.html">技術調査レポート</a></li>
+<li><a href="plan.html">実装計画</a></li>
+<li><a href="spec.html">仕様書</a></li>
+</ul>
+<hr>
+<p><strong>最終更新</strong>: 2026-01-04<br>
+<strong>担当者</strong>: Release Pipeline Team</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/quickstart.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

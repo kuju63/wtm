@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Getting Started | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Getting Started | wt ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/getting-started.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="getting-started">Getting Started</h1>
+
+<p>This guide will help you get started with the <code>wt</code> CLI tool for managing Git worktrees.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>.NET 10.0 SDK or later</li>
+<li>Git 2.5 or later (for <code>git worktree</code> support)</li>
+<li>A Git repository</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<h3 id="build-from-source">Build from Source</h3>
+<pre><code class="lang-bash">git clone https://github.com/kuju63/wt.git
+cd wt
+dotnet build
+</code></pre>
+<h3 id="run-the-tool">Run the Tool</h3>
+<pre><code class="lang-bash">dotnet run --project wt.cli -- &lt;command&gt;
+</code></pre>
+<h3 id="install-globally-optional">Install Globally (Optional)</h3>
+<pre><code class="lang-bash">dotnet pack
+dotnet tool install --global --add-source ./nupkg wt
+</code></pre>
+<h2 id="basic-workflow">Basic Workflow</h2>
+<h3 id="1-create-a-new-worktree">1. Create a New Worktree</h3>
+<p>Create a new worktree for a feature branch:</p>
+<pre><code class="lang-bash">wt create feature-login
+</code></pre>
+<p>This command will:</p>
+<ol>
+<li>Create a new branch <code>feature-login</code> from your current branch</li>
+<li>Create a worktree at <code>../wt-feature-login</code></li>
+<li>Check out the new branch in the worktree</li>
+</ol>
+<h3 id="2-list-all-worktrees">2. List All Worktrees</h3>
+<p>View all worktrees in your repository:</p>
+<pre><code class="lang-bash">wt list
+</code></pre>
+<p>Output example:</p>
+<pre><code class="lang-text">┌─────────────────────────────────┬──────────────────┬─────────┐
+│ Path                            │ Branch           │ Status  │
+├─────────────────────────────────┼──────────────────┼─────────┤
+│ /Users/dev/project/wt           │ main             │ active  │
+│ /Users/dev/project/wt-feature   │ feature-login    │ active  │
+└─────────────────────────────────┴──────────────────┴─────────┘
+</code></pre>
+<p>The list shows:</p>
+<ul>
+<li><strong>Path</strong>: The filesystem path of the worktree</li>
+<li><strong>Branch</strong>: The checked-out branch (or commit hash for detached HEAD)</li>
+<li><strong>Status</strong>: <code>active</code> if the worktree exists, <code>missing</code> if it's registered but not on disk</li>
+</ul>
+<h3 id="3-navigate-to-your-worktree">3. Navigate to Your Worktree</h3>
+<pre><code class="lang-bash">cd ../wt-feature-login
+# Start working on your feature
+</code></pre>
+<h3 id="4-work-with-multiple-features">4. Work with Multiple Features</h3>
+<p>You can create multiple worktrees to work on different features simultaneously:</p>
+<pre><code class="lang-bash">wt create feature-auth
+wt create feature-ui
+wt create bugfix-123 --base main
+wt list
+</code></pre>
+<p>Each worktree is independent, allowing you to switch between features without stashing changes.</p>
+<h2 id="advanced-usage">Advanced Usage</h2>
+<h3 id="custom-worktree-path">Custom Worktree Path</h3>
+<pre><code class="lang-bash">wt create feature-api --path ~/projects/myapp-api
+</code></pre>
+<h3 id="auto-launch-editor">Auto-Launch Editor</h3>
+<pre><code class="lang-bash">wt create feature-ui --editor vscode
+</code></pre>
+<p>Supported editors:</p>
+<ul>
+<li><code>vscode</code> - Visual Studio Code</li>
+<li><code>vim</code> - Vim</li>
+<li><code>emacs</code> - Emacs</li>
+<li><code>nano</code> - Nano</li>
+<li><code>idea</code> - IntelliJ IDEA</li>
+</ul>
+<h3 id="json-output-for-automation">JSON Output for Automation</h3>
+<pre><code class="lang-bash">wt create feature-test --output json
+wt list --format json  # Coming in future release
+</code></pre>
+<h2 id="common-scenarios">Common Scenarios</h2>
+<h3 id="scenario-1-working-on-multiple-features">Scenario 1: Working on Multiple Features</h3>
+<pre><code class="lang-bash"># Main repository for code reviews
+cd ~/projects/myapp
+
+# Feature 1: User authentication
+wt create feature-auth
+cd ../wt-feature-auth
+# ... work on authentication ...
+
+# Feature 2: New UI while auth is in progress
+cd ~/projects/myapp
+wt create feature-ui
+cd ../wt-feature-ui
+# ... work on UI ...
+
+# View all active worktrees
+cd ~/projects/myapp
+wt list
+</code></pre>
+<h3 id="scenario-2-hotfix-on-production">Scenario 2: Hotfix on Production</h3>
+<pre><code class="lang-bash"># Create hotfix from main branch
+wt create hotfix-critical-bug --base main
+
+# Work on the fix in isolation
+cd ../wt-hotfix-critical-bug
+# ... fix the bug ...
+# ... commit and push ...
+</code></pre>
+<h3 id="scenario-3-review-pull-requests">Scenario 3: Review Pull Requests</h3>
+<pre><code class="lang-bash"># Create worktree for PR review
+wt create review-pr-123 --base main
+cd ../wt-review-pr-123
+
+# Fetch and checkout the PR branch
+git fetch origin pull/123/head:pr-123
+git checkout pr-123
+
+# Review the code, test, etc.
+</code></pre>
+<h2 id="tips-and-best-practices">Tips and Best Practices</h2>
+<ol>
+<li><strong>Keep worktrees organized</strong>: Use the default naming convention <code>wt-&lt;branch&gt;</code> for consistency</li>
+<li><strong>List regularly</strong>: Use <code>wt list</code> to see all your worktrees and their status</li>
+<li><strong>Clean up</strong>: Remove worktrees when done with <code>git worktree remove &lt;path&gt;</code></li>
+<li><strong>Missing worktrees</strong>: If <code>wt list</code> shows a worktree as <code>missing</code>, remove it with <code>git worktree prune</code></li>
+<li><strong>Detached HEAD</strong>: Be careful with detached HEAD state - create a branch if you need to keep changes</li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>See <a href="../README.html#command-reference">Command Reference</a> for detailed command options</li>
+<li>Learn about <a href="adr/">Architecture Decision Records</a> for design decisions</li>
+<li>Read the <a href="../api/">API Documentation</a> for programmatic usage</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/getting-started.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

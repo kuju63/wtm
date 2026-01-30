@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>wt - Git Worktree Manager | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="wt - Git Worktree Manager | wt ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="landing" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="wt---git-worktree-manager">wt - Git Worktree Manager</h1>
+
+<p>A modern CLI tool to simplify Git worktree management. Create worktrees with a single command and optionally launch your favorite editor.</p>
+<h2 id="-features">✨ Features</h2>
+<ul>
+<li><strong>Simple worktree creation</strong>: <code>wt create feature-branch</code></li>
+<li><strong>List all worktrees</strong>: Display all worktrees with their branches in a beautiful table</li>
+<li><strong>Smart defaults</strong>: Automatically creates worktrees in <code>../wt-&lt;branch&gt;</code> directory</li>
+<li><strong>Editor integration</strong>: Auto-launch VS Code, Vim, Emacs, or IntelliJ IDEA</li>
+<li><strong>Custom paths</strong>: Specify where to create worktrees</li>
+<li><strong>Multiple output formats</strong>: Human-readable or JSON for automation</li>
+<li><strong>Cross-platform</strong>: Works on macOS, Linux, and Windows</li>
+</ul>
+<hr>
+<h2 id="-quick-start">🚀 Quick Start</h2>
+<h3 id="installation">Installation</h3>
+<p>Get started in minutes! Download the latest release for your platform:</p>
+<p><strong><a href="docs/installation.html">📥 Installation Guide</a></strong></p>
+<h3 id="your-first-worktree">Your First Worktree</h3>
+<pre><code class="lang-bash"># Create a new feature branch worktree
+wt create feature-login
+
+# List all worktrees
+wt list
+</code></pre>
+<p><strong><a href="docs/guides/quickstart.html">📖 Quick Start Guide</a></strong></p>
+<hr>
+<h2 id="-documentation">📚 Documentation</h2>
+<h3 id="for-users">For Users</h3>
+<ul>
+<li><strong><a href="docs/installation.html">Installation Guide</a></strong> - Install <code>wt</code> on your system</li>
+<li><strong><a href="docs/guides/quickstart.html">Quick Start Guide</a></strong> - Get up and running in 5 minutes</li>
+<li><strong><a href="docs/commands/index.html">Command Reference</a></strong> - Detailed command documentation with examples</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Quick Search</strong>: Use the search bar above to find specific commands, options, or topics instantly.</p>
+</blockquote>
+<h3 id="for-developers">For Developers</h3>
+<ul>
+<li><strong><a href="api/index.md">API Reference</a></strong> - Complete API documentation</li>
+<li><strong><a href="docs/contributing.md">Contributing Guide</a></strong> - Help improve <code>wt</code></li>
+</ul>
+<hr>
+<h2 id="-why-use-worktrees">💡 Why Use Worktrees?</h2>
+<p>Git worktrees allow you to have multiple working directories from a single repository:</p>
+<ul>
+<li><strong>Work on multiple features simultaneously</strong> without switching branches</li>
+<li><strong>Review pull requests</strong> without stashing your current work</li>
+<li><strong>Run different versions</strong> side-by-side for testing</li>
+<li><strong>Keep your workspace organized</strong> with parallel directories</li>
+</ul>
+<p><code>wt</code> makes managing worktrees simple and intuitive.</p>
+<hr>
+<h2 id="-example-workflow">🎯 Example Workflow</h2>
+<pre><code class="lang-bash"># Start working on a new feature
+wt create feature-user-auth --editor vscode
+
+# In another terminal, fix a bug
+wt create bugfix-login-timeout --base main
+
+# Check all your worktrees
+wt list
+</code></pre>
+<p>Output:</p>
+<pre><code class="lang-shell">┌─────────────────────────────────┬──────────────────────┬─────────┐
+│ Path                            │ Branch               │ Status  │
+├─────────────────────────────────┼──────────────────────┼─────────┤
+│ /projects/wt                    │ main                 │ active  │
+│ /projects/wt-feature-user-auth  │ feature-user-auth    │ active  │
+│ /projects/wt-bugfix-login       │ bugfix-login-timeout │ active  │
+└─────────────────────────────────┴──────────────────────┴─────────┘
+</code></pre>
+<hr>
+<h2 id="-links">🔗 Links</h2>
+<ul>
+<li><strong><a href="https://github.com/kuju63/wt">GitHub Repository</a></strong></li>
+<li><strong><a href="https://github.com/kuju63/wt/issues">Report an Issue</a></strong></li>
+<li><strong><a href="https://github.com/kuju63/wt/releases">Release Notes</a></strong></li>
+</ul>
+<hr>
+<h2 id="-license">📄 License</h2>
+<p><a href="./LICENSE">MIT License</a></p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

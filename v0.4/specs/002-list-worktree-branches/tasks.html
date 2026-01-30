@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: Worktreeとブランチ情報の一覧表示 | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: Worktreeとブランチ情報の一覧表示 | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-worktreeとブランチ情報の一覧表示">Tasks: Worktreeとブランチ情報の一覧表示</h1>
+
+<p><strong>Input</strong>: Design documents from <code>/specs/002-list-worktree-branches/</code>
+<strong>Prerequisites</strong>: plan.md, spec.md, data-model.md, contracts/cli-interface.md, research.md, quickstart.md</p>
+<h2 id="tdd前提">TDD前提</h2>
+<p><strong>このプロジェクトはTDD (Test-Driven Development)を採用しています。</strong></p>
+<ul>
+<li>各実装タスクは <strong>Red-Green-Refactorサイクル</strong> に従って実施してください
+<ol>
+<li><strong>Red</strong>: テストを先に書き、失敗することを確認</li>
+<li><strong>Green</strong>: テストが通る最小限の実装</li>
+<li><strong>Refactor</strong>: コード品質の向上</li>
+</ol>
+</li>
+<li>詳細なTDDワークフローは <code>quickstart.md</code> を参照してください</li>
+<li>テストタスクは実装タスクに統合されているため、個別には記載していません</li>
+<li>constitution.mdで定義されたテストカバレッジ基準（80%以上）を満たすこと</li>
+</ul>
+<p><strong>Organization</strong>: Tasks are grouped by user story to enable independent implementation and testing of each story.</p>
+<h2 id="format-id-p-story-description">Format: <code>[ID] [P?] [Story] Description</code></h2>
+<ul>
+<li><strong>[P]</strong>: Can run in parallel (different files, no dependencies)</li>
+<li><strong>[Story]</strong>: Which user story this task belongs to (US1, US2, US3)</li>
+<li>Include exact file paths in descriptions</li>
+</ul>
+<h2 id="path-conventions">Path Conventions</h2>
+<p>This is a single CLI project with the following structure:</p>
+<ul>
+<li><code>wt.cli/</code> - Main CLI application source</li>
+<li><code>wt.tests/</code> - Test project</li>
+</ul>
+<hr>
+<h2 id="phase-1-setup-shared-infrastructure">Phase 1: Setup (Shared Infrastructure)</h2>
+<p><strong>Purpose</strong>: Project initialization and basic structure</p>
+<ul>
+<li>[X] T001 Review existing project structure and ensure it matches plan.md</li>
+<li>[X] T002 Verify System.CommandLine 2.0.1 and System.IO.Abstractions 22.1.0 dependencies</li>
+<li>[X] T003 [P] Verify xUnit, Shouldly, and Moq test dependencies are configured</li>
+</ul>
+<hr>
+<h2 id="phase-2-foundational-blocking-prerequisites">Phase 2: Foundational (Blocking Prerequisites)</h2>
+<p><strong>Purpose</strong>: Core infrastructure that MUST be complete before ANY user story can be implemented</p>
+<p><strong>⚠️ CRITICAL</strong>: No user story work can begin until this phase is complete</p>
+<ul>
+<li>[X] T004 Create WorktreeInfo model with all properties and methods in wt.cli/Models/WorktreeInfo.cs</li>
+<li>[X] T005 [P] Create BranchInfo model (future extension placeholder) in wt.cli/Models/BranchInfo.cs</li>
+<li>[X] T006 [P] Create IOutputFormatter interface in wt.cli/Formatters/IOutputFormatter.cs</li>
+<li>[X] T007 Implement TableFormatter class in wt.cli/Formatters/TableFormatter.cs</li>
+<li>[X] T008 Extend IGitService interface to add ListWorktreesAsync method signature</li>
+<li>[X] T009 Implement GitService.ListWorktreesAsync() method to parse <code>git worktree list --porcelain</code> output in wt.cli/Services/Git/GitService.cs</li>
+</ul>
+<p><strong>Checkpoint</strong>: Foundation ready - user story implementation can now begin</p>
+<hr>
+<h2 id="phase-3-user-story-1---すべてのworktreeとブランチを表示-priority-p1--mvp">Phase 3: User Story 1 - すべてのworktreeとブランチを表示 (Priority: P1) 🎯 MVP</h2>
+<p><strong>Goal</strong>: Display all worktrees with their checked-out branches in a structured format</p>
+<p><strong>Independent Test</strong>: Execute the list command and verify all worktrees with their branch names are displayed</p>
+<h3 id="implementation-for-user-story-1">Implementation for User Story 1</h3>
+<ul>
+<li>[X] T010 [US1] Create ListCommand class inheriting from Command in wt.cli/Commands/ListCommand.cs</li>
+<li>[X] T011 [US1] Implement ListCommand constructor with IWorktreeService dependency</li>
+<li>[X] T012 [US1] Implement ListCommand.SetHandler to call WorktreeService and format output</li>
+<li>[X] T013 [US1] Extend IWorktreeService interface to add ListWorktreesAsync method signature</li>
+<li>[X] T014 [US1] Implement WorktreeService.ListWorktreesAsync() to call GitService.ListWorktreesAsync() in wt.cli/Services/Worktree/WorktreeService.cs</li>
+<li>[X] T015 [US1] Add worktree creation time retrieval logic using <code>.git/worktrees/&lt;name&gt;/gitdir</code> file timestamp in WorktreeService</li>
+<li>[X] T016 [US1] Add worktree existence validation using Directory.Exists() in WorktreeService</li>
+<li>[X] T017 [US1] Add sorting by creation date (newest first) in WorktreeService.ListWorktreesAsync()</li>
+<li>[X] T018 [US1] Register ListCommand in Program.cs with dependency injection</li>
+<li>[X] T019 [US1] Add warning message output to stderr for missing worktrees in ListCommand handler</li>
+<li>[X] T020 [US1] Add &quot;No worktrees found&quot; message handling in ListCommand handler</li>
+<li>[X] T021 [US1] Add error handling for Git not found (exit code 1) in ListCommand handler</li>
+<li>[X] T022 [US1] Add error handling for not a Git repository (exit code 2) in ListCommand handler</li>
+<li>[X] T023 [US1] Add error handling for Git command failure (exit code 10) in ListCommand handler</li>
+</ul>
+<p><strong>Checkpoint</strong>: At this point, User Story 1 should be fully functional - <code>wt list</code> command displays all worktrees with branches</p>
+<hr>
+<h2 id="phase-4-user-story-2---人間が読みやすい形式でリストを表示-priority-p2">Phase 4: User Story 2 - 人間が読みやすい形式でリストを表示 (Priority: P2)</h2>
+<p><strong>Goal</strong>: Display worktree and branch information in a clear, human-readable table format</p>
+<p><strong>Independent Test</strong>: Verify output is formatted as a table with Path, Branch, and Status columns</p>
+<h3 id="implementation-for-user-story-2">Implementation for User Story 2</h3>
+<ul>
+<li>[X] T024 [US2] Implement TableFormatter.Format() method to calculate column widths in wt.cli/Formatters/TableFormatter.cs</li>
+<li>[X] T025 [US2] Implement TableFormatter header row generation with Unicode box drawing characters (┌─┬─┐)</li>
+<li>[X] T026 [US2] Implement TableFormatter separator line generation (├─┼─┤)</li>
+<li>[X] T027 [US2] Implement TableFormatter data row generation with proper column alignment</li>
+<li>[X] T028 [US2] Implement TableFormatter footer line generation (└─┴─┘)</li>
+<li>[X] T029 [US2] Update ListCommand to use TableFormatter.Format() for output</li>
+<li>[X] T030 [US2] Ensure table displays Path, Branch (using GetDisplayBranch()), and Status (using GetDisplayStatus()) columns</li>
+<li>[X] T031 [US2] Verify table output handles long paths and branch names correctly with dynamic column widths</li>
+</ul>
+<p><strong>Checkpoint</strong>: At this point, User Stories 1 AND 2 should both work - output is in a clear table format</p>
+<hr>
+<h2 id="phase-5-user-story-3---代替出力フォーマットのサポート-priority-p3">Phase 5: User Story 3 - 代替出力フォーマットのサポート (Priority: P3)</h2>
+<p><strong>Goal</strong>: Support alternative output formats (JSON, CSV) for scripting and automation</p>
+<p><strong>Note</strong>: This feature is deferred to future releases per specification</p>
+<h3 id="implementation-for-user-story-3-future-release">Implementation for User Story 3 (Future Release)</h3>
+<ul>
+<li>[ ] T032 [US3] Add --format option to ListCommand with values: table, json, csv</li>
+<li>[ ] T033 [US3] Create JsonFormatter implementing IOutputFormatter in wt.cli/Formatters/JsonFormatter.cs</li>
+<li>[ ] T034 [US3] Create CsvFormatter implementing IOutputFormatter in wt.cli/Formatters/CsvFormatter.cs</li>
+<li>[ ] T035 [US3] Update ListCommand to select formatter based on --format option</li>
+<li>[ ] T036 [US3] Add JSON serialization support to WorktreeInfo model with JsonPropertyName attributes</li>
+<li>[ ] T037 [US3] Implement JsonFormatter.Format() to output JSON array</li>
+<li>[ ] T038 [US3] Implement CsvFormatter.Format() to output CSV with header row</li>
+</ul>
+<p><strong>Checkpoint</strong>: All user stories completed - alternative formats supported</p>
+<hr>
+<h2 id="phase-6-polish--cross-cutting-concerns">Phase 6: Polish &amp; Cross-Cutting Concerns</h2>
+<p><strong>Purpose</strong>: Improvements that affect multiple user stories</p>
+<ul>
+<li>[X] T039 [P] Update README.md with <code>wt list</code> command documentation</li>
+<li>[X] T040 [P] Add usage examples to getting-started.md documentation</li>
+<li>[ ] T041 [P] Add ADR for table formatting implementation decision (no external dependencies)</li>
+<li>[ ] T042 [P] Add ADR for worktree creation time retrieval approach (filesystem timestamp)</li>
+<li>[X] T043 Code review and refactoring for clarity and maintainability</li>
+<li>[X] T044 Verify all exit codes are correctly implemented (0, 1, 2, 10, 99)</li>
+<li>[X] T045 Verify cross-platform compatibility (Windows path separators, Unicode support)</li>
+<li>[ ] T046 Performance testing with 100 worktrees (should complete within 1 second)</li>
+<li>[ ] T047 Run quickstart.md validation following TDD workflow</li>
+<li>[ ] T048 [P] Update docfx documentation with API documentation for new classes</li>
+</ul>
+<hr>
+<h2 id="dependencies--execution-order">Dependencies &amp; Execution Order</h2>
+<h3 id="phase-dependencies">Phase Dependencies</h3>
+<ul>
+<li><strong>Setup (Phase 1)</strong>: No dependencies - can start immediately</li>
+<li><strong>Foundational (Phase 2)</strong>: Depends on Setup completion - BLOCKS all user stories</li>
+<li><strong>User Story 1 (Phase 3)</strong>: Depends on Foundational (Phase 2) completion</li>
+<li><strong>User Story 2 (Phase 4)</strong>: Depends on User Story 1 (Phase 3) completion - builds on list functionality</li>
+<li><strong>User Story 3 (Phase 5)</strong>: Deferred to future release - not blocking current implementation</li>
+<li><strong>Polish (Phase 6)</strong>: Depends on User Stories 1 and 2 being complete</li>
+</ul>
+<h3 id="user-story-dependencies">User Story Dependencies</h3>
+<ul>
+<li><strong>User Story 1 (P1)</strong>: Can start after Foundational (Phase 2) - No dependencies on other stories</li>
+<li><strong>User Story 2 (P2)</strong>: Depends on User Story 1 - enhances the display format of US1 output</li>
+<li><strong>User Story 3 (P3)</strong>: Deferred to future release - no implementation required for initial MVP</li>
+</ul>
+<h3 id="within-each-user-story">Within Each User Story</h3>
+<p><strong>User Story 1 (Display all worktrees):</strong></p>
+<ol>
+<li>Create ListCommand and WorktreeService integration (T010-T014)</li>
+<li>Add time retrieval and validation (T015-T017)</li>
+<li>Register command and add error handling (T018-T023)</li>
+</ol>
+<p><strong>User Story 2 (Human-readable table format):</strong></p>
+<ol>
+<li>Implement TableFormatter core logic (T024-T028)</li>
+<li>Integrate formatter with ListCommand (T029-T031)</li>
+</ol>
+<h3 id="parallel-opportunities">Parallel Opportunities</h3>
+<ul>
+<li><strong>Within Setup (Phase 1)</strong>: T001, T002, T003 can run in parallel</li>
+<li><strong>Within Foundational (Phase 2)</strong>: T005, T006 can run in parallel after T004 completes</li>
+<li><strong>Within Polish (Phase 6)</strong>: T039, T040, T041, T042, T048 can all run in parallel</li>
+</ul>
+<hr>
+<h2 id="parallel-example-foundational-phase">Parallel Example: Foundational Phase</h2>
+<pre><code class="lang-bash"># After T004 (WorktreeInfo model) is complete, launch these in parallel:
+Task T005: &quot;Create BranchInfo model in wt.cli/Models/BranchInfo.cs&quot;
+Task T006: &quot;Create IOutputFormatter interface in wt.cli/Formatters/IOutputFormatter.cs&quot;
+</code></pre>
+<hr>
+<h2 id="parallel-example-polish-phase">Parallel Example: Polish Phase</h2>
+<pre><code class="lang-bash"># All documentation tasks can run in parallel:
+Task T039: &quot;Update README.md with wt list command documentation&quot;
+Task T040: &quot;Add usage examples to getting-started.md documentation&quot;
+Task T041: &quot;Add ADR for table formatting implementation decision&quot;
+Task T042: &quot;Add ADR for worktree creation time retrieval approach&quot;
+Task T048: &quot;Update docfx documentation with API documentation&quot;
+</code></pre>
+<hr>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="mvp-first-user-story-1--user-story-2">MVP First (User Story 1 + User Story 2)</h3>
+<ol>
+<li>Complete Phase 1: Setup</li>
+<li>Complete Phase 2: Foundational (CRITICAL - blocks all stories)</li>
+<li>Complete Phase 3: User Story 1 (basic listing functionality)</li>
+<li>Complete Phase 4: User Story 2 (table formatting)</li>
+<li><strong>STOP and VALIDATE</strong>: Test <code>wt list</code> command with multiple worktrees</li>
+<li>Deploy/demo MVP</li>
+</ol>
+<h3 id="incremental-delivery">Incremental Delivery</h3>
+<ol>
+<li>Setup + Foundational → Foundation ready</li>
+<li>Add User Story 1 → Basic listing works → Test independently</li>
+<li>Add User Story 2 → Beautiful table format → Test independently → Deploy/Demo (MVP!)</li>
+<li>User Story 3 deferred to future release</li>
+</ol>
+<h3 id="testing-strategy">Testing Strategy</h3>
+<p>While test tasks are not included per specification, follow TDD principles from quickstart.md:</p>
+<ol>
+<li>Write test for each component (Red)</li>
+<li>Implement minimum code to pass test (Green)</li>
+<li>Refactor for quality (Refactor)</li>
+<li>Verify manually with real Git repositories</li>
+</ol>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>[P] tasks = different files, no dependencies, can run in parallel</li>
+<li>[Story] label maps task to specific user story for traceability</li>
+<li>Each user story should be independently testable</li>
+<li>User Story 3 (P3) is deferred to future release - no implementation required for MVP</li>
+<li>Follow TDD workflow from quickstart.md: Red → Green → Refactor</li>
+<li>Commit after each task or logical group</li>
+<li>Stop at checkpoints to validate story independently</li>
+<li>All file paths are relative to repository root</li>
+</ul>
+<hr>
+<h2 id="summary">Summary</h2>
+<ul>
+<li><strong>Total Tasks</strong>: 48 (excluding deferred User Story 3 implementation)</li>
+<li><strong>MVP Tasks</strong>: T001-T031 (31 tasks for User Stories 1 and 2)</li>
+<li><strong>User Story 1 Tasks</strong>: 14 tasks (T010-T023)</li>
+<li><strong>User Story 2 Tasks</strong>: 8 tasks (T024-T031)</li>
+<li><strong>Deferred Tasks</strong>: 7 tasks (T032-T038) for User Story 3</li>
+<li><strong>Parallel Opportunities</strong>: 8 tasks can be parallelized (marked with [P])</li>
+<li><strong>Suggested MVP Scope</strong>: User Stories 1 and 2 (basic listing + table formatting)</li>
+<li><strong>Format Validation</strong>: ✅ All tasks follow checklist format with checkbox, ID, optional labels, and file paths</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

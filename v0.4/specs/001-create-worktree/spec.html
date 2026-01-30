@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Feature Specification: Git Worktree 作成コマンド | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Feature Specification: Git Worktree 作成コマンド | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="feature-specification-git-worktree-作成コマンド">Feature Specification: Git Worktree 作成コマンド</h1>
+
+<p><strong>Feature Branch</strong>: <code>001-create-worktree</code><br>
+<strong>Created</strong>: 2026-01-03<br>
+<strong>Status</strong>: Draft<br>
+<strong>Input</strong>: User description: &quot;ユーザーはコマンドを実行することで新規にブランチ作成するとともにgit worktree への追加を行うことができる。追加後は必要に応じてVSCodeをや任意のエディターを起動できるようにする。ブランチはユーザーからの入力を元にして作成する。ブランチ作成時にgit worktreeへ自動的に追加することで、AIコードエージェントを並列で実行できたり、AIコードエージェントの作業と平行して手作業による開発を行うようにする。特にgit worktreeへの登録はコマンドが複雑であり、これを簡略化することで開発者は本来注力するべき、仕様や実装にリソースを割くことができるようになる。&quot;</p>
+<h2 id="clarifications">Clarifications</h2>
+<h3 id="session-2026-01-03">Session 2026-01-03</h3>
+<ul>
+<li>Q: 新しいブランチを作成する際のベースブランチの決定方法は？ → A: 現在のブランチをベースとし、オプションで指定可能</li>
+<li>Q: デフォルト worktree パスの命名規則は？ → A: <code>../worktrees/&lt;branch-name&gt;</code> - 複数worktreeを1ディレクトリに集約</li>
+<li>Q: VS Code 以外のエディター対応範囲は？ → A: 一般的なエディター（VS Code、vim、emacs、nano、IntelliJ IDEA）のプリセットを提供</li>
+<li>Q: エラーメッセージの詳細度は？ → A: 基本エラー + 解決策の提示 + verbose モードで詳細</li>
+<li>Q: ブランチ名が既に存在する場合の動作は？ → A: エラーで停止 + 既存ブランチをチェックアウトするオプション提示</li>
+</ul>
+<h2 id="user-scenarios--testing-mandatory">User Scenarios &amp; Testing <em>(mandatory)</em></h2>
+<h3 id="user-story-1---git-worktree-作成の基本機能-priority-p1">User Story 1 - Git Worktree 作成の基本機能 (Priority: P1)</h3>
+<p>開発者が新しいブランチ名を指定してコマンドを実行すると、ブランチが作成され、自動的に git worktree として登録される。これにより、開発者は複雑な git worktree コマンドを覚える必要がなく、すぐに並列開発を開始できる。</p>
+<p><strong>Why this priority</strong>: この機能の中核であり、これがなければ他の機能も成立しない。git worktree の複雑なコマンドを抽象化することが最大の価値提供。</p>
+<p><strong>Independent Test</strong>: ブランチ名を指定してコマンドを実行し、worktree が作成されることを確認すれば、この機能は独立してテスト可能。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> 既存のGitリポジトリがある、<strong>When</strong> ユーザーが新しいブランチ名を指定してコマンドを実行する、<strong>Then</strong> 指定したブランチが作成され、worktree ディレクトリが生成される</li>
+<li><strong>Given</strong> worktree が作成された、<strong>When</strong> worktree ディレクトリに移動する、<strong>Then</strong> 指定したブランチにチェックアウトされている</li>
+<li><strong>Given</strong> ユーザーが既存のブランチ名を指定する、<strong>When</strong> コマンドを実行する、<strong>Then</strong> エラーメッセージが表示され、worktree は作成されない</li>
+</ol>
+<hr>
+<h3 id="user-story-2---エディター自動起動機能-priority-p2">User Story 2 - エディター自動起動機能 (Priority: P2)</h3>
+<p>worktree 作成後、開発者がオプションで指定したエディター（VS Code など）を自動起動できる。これにより、worktree 作成からコーディング開始までの手順が1コマンドで完結する。</p>
+<p><strong>Why this priority</strong>: 開発者体験を大幅に向上させるが、P1 の基本機能がなければ意味がない。付加価値として位置づけられる。</p>
+<p><strong>Independent Test</strong>: worktree 作成時にエディター起動オプションを指定し、エディターが自動的に開くことを確認すれば、この機能は独立してテスト可能。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> VS Code がインストールされている、<strong>When</strong> ユーザーが VS Code オプション付きでコマンドを実行する、<strong>Then</strong> worktree が作成され、VS Code が worktree ディレクトリで起動する</li>
+<li><strong>Given</strong> エディターが指定されていない、<strong>When</strong> コマンドを実行する、<strong>Then</strong> worktree のみが作成され、エディターは起動しない</li>
+<li><strong>Given</strong> 指定されたエディターが見つからない、<strong>When</strong> コマンドを実行する、<strong>Then</strong> 警告メッセージが表示されるが、worktree は正常に作成される</li>
+</ol>
+<hr>
+<h3 id="user-story-3---worktree-パスのカスタマイズ-priority-p3">User Story 3 - Worktree パスのカスタマイズ (Priority: P3)</h3>
+<p>開発者が worktree を作成する場所（パス）をカスタマイズできる。デフォルトでは親ディレクトリに作成されるが、特定のプロジェクト構造やディスク容量の制約がある場合に柔軟に対応できる。</p>
+<p><strong>Why this priority</strong>: 一部の開発者には必要だが、デフォルト動作で大半のユースケースをカバーできる。</p>
+<p><strong>Independent Test</strong>: カスタムパスを指定してコマンドを実行し、指定した場所に worktree が作成されることを確認すれば、この機能は独立してテスト可能。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> カスタムパスを指定する、<strong>When</strong> コマンドを実行する、<strong>Then</strong> 指定したパスに worktree が作成される</li>
+<li><strong>Given</strong> 無効なパス（書き込み権限がない等）を指定する、<strong>When</strong> コマンドを実行する、<strong>Then</strong> エラーメッセージが表示され、worktree は作成されない</li>
+<li><strong>Given</strong> パスが指定されていない、<strong>When</strong> コマンドを実行する、<strong>Then</strong> デフォルトパス（親ディレクトリ）に worktree が作成される</li>
+</ol>
+<hr>
+<h3 id="edge-cases">Edge Cases</h3>
+<ul>
+<li><strong>既存のブランチ名を指定した場合</strong>: エラーで停止し、既存ブランチをチェックアウトして worktree を作成するオプション（例：<code>--checkout-existing</code>）を提示する</li>
+<li><strong>既存の worktree と同じ名前を指定した場合</strong>: エラーメッセージを表示し、既存の worktree 一覧を提示する</li>
+<li><strong>Git リポジトリではないディレクトリでコマンドを実行した場合</strong>: 明確なエラーメッセージと解決策を表示する</li>
+<li><strong>ブランチ名に不正な文字が含まれている場合</strong>: Git の命名規則に基づいてバリデーションを行い、エラーメッセージと有効な文字の例を表示する</li>
+<li><strong>ディスク容量が不足している場合</strong>: 作成前にスペースをチェックし、警告を表示する</li>
+<li><strong>ネットワーク共有ディレクトリで実行した場合</strong>: パフォーマンス警告を表示するが、処理は継続する</li>
+<li><strong>指定されたエディターが見つからない場合</strong>: 警告メッセージを表示するが、worktree は正常に作成される（verbose モードで詳細な診断情報を提供）</li>
+</ul>
+<h2 id="requirements-mandatory">Requirements <em>(mandatory)</em></h2>
+<h3 id="functional-requirements">Functional Requirements</h3>
+<ul>
+<li><strong>FR-001</strong>: システムは CLI コマンドとして動作し、ブランチ名を引数として受け取る必要がある</li>
+<li><strong>FR-002</strong>: システムは指定されたブランチ名でGitブランチを作成する必要がある。デフォルトでは現在のブランチをベースとし、オプションでベースブランチを指定可能にする</li>
+<li><strong>FR-003</strong>: システムは作成したブランチを git worktree として自動的に登録する必要がある</li>
+<li><strong>FR-004</strong>: システムは worktree の作成場所をデフォルト（<code>../worktrees/&lt;branch-name&gt;</code>）として、オプションでカスタマイズ可能にする必要がある</li>
+<li><strong>FR-005</strong>: システムはオプションでエディター（VS Code、vim、emacs、nano、IntelliJ IDEA）を自動起動できる必要がある。これらの一般的なエディターのプリセットを提供する</li>
+<li><strong>FR-006</strong>: システムは既存のブランチ名や worktree 名の重複を検出し、エラーで停止する必要がある。その際、既存ブランチをチェックアウトして worktree を作成するオプション（例：<code>--checkout-existing</code>）を提示する</li>
+<li><strong>FR-007</strong>: システムは Git リポジトリの存在を確認し、非 Git ディレクトリでは実行できないようにする必要がある</li>
+<li><strong>FR-008</strong>: システムはブランチ名のバリデーションを行い、Git の命名規則に従わない名前を拒否する必要がある</li>
+<li><strong>FR-009</strong>: システムは処理の進行状況を明確に表示する必要がある（ブランチ作成中、worktree 作成中など）</li>
+<li><strong>FR-010</strong>: システムはエラー発生時に基本エラーメッセージと具体的な解決策を表示する必要がある。verbose モードで詳細なスタックトレースと診断情報を提供する</li>
+<li><strong>FR-011</strong>: システムは人間が読める形式と JSON 形式の両方で出力をサポートする必要がある</li>
+</ul>
+<h3 id="key-entities">Key Entities</h3>
+<ul>
+<li><strong>Branch</strong>: Git ブランチを表現する。名前、ベースブランチ（デフォルトは現在のブランチ、オプションで指定可能）の情報を持つ</li>
+<li><strong>Worktree</strong>: Git worktree を表現する。パス（デフォルト: <code>../worktrees/&lt;branch-name&gt;</code>）、関連するブランチ、作成日時の情報を持つ</li>
+<li><strong>EditorConfig</strong>: エディター設定を表現する。エディター種類（VS Code、vim、emacs、nano、IntelliJ IDEA のプリセット）、起動コマンド、パスの情報を持つ</li>
+</ul>
+<h2 id="success-criteria-mandatory">Success Criteria <em>(mandatory)</em></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes</h3>
+<ul>
+<li><strong>SC-001</strong>: 開発者が worktree 作成コマンドを実行してから作業を開始するまでの時間が 30 秒以内である</li>
+<li><strong>SC-002</strong>: 開発者が git worktree の複雑なコマンド構文を覚える必要がなく、1つの明瞭なコマンドで操作できる</li>
+<li><strong>SC-003</strong>: コマンド実行の 95% 以上が初回で成功する（明確なエラーメッセージによりユーザーが問題を即座に修正できる）</li>
+<li><strong>SC-004</strong>: Windows、macOS、Linux の主要 OS で同じコマンド構文が動作する</li>
+<li><strong>SC-005</strong>: エディター自動起動機能により、worktree 作成から開発開始までの手作業が 1 コマンドに削減される</li>
+</ul>
+<h2 id="assumptions">Assumptions</h2>
+<ol>
+<li><strong>Git のバージョン</strong>: Git 2.5 以上がインストールされていることを前提とする（git worktree サポート開始バージョン）</li>
+<li><strong>デフォルト worktree パス</strong>: <code>../worktrees/&lt;branch-name&gt;</code> をデフォルトとし、複数の worktree を1ディレクトリに集約する</li>
+<li><strong>ベースブランチ</strong>: 新しいブランチは現在のブランチをベースとして作成され、オプションで異なるベースブランチを指定可能</li>
+<li><strong>エディター検出</strong>: 一般的なエディター（VS Code、vim、emacs、nano、IntelliJ IDEA）は標準的なインストールパスで検出可能と仮定する</li>
+<li><strong>ブランチ名規則</strong>: Git の標準的な命名規則（英数字、ハイフン、アンダースコア）に従う</li>
+<li><strong>権限</strong>: ユーザーは worktree 作成先ディレクトリ（デフォルトは <code>../worktrees/</code>）への書き込み権限を持つと仮定する</li>
+<li><strong>既存ブランチ</strong>: 既存のブランチ名を指定した場合はエラーで停止し、既存ブランチをチェックアウトするオプションを提示する</li>
+</ol>
+<h2 id="out-of-scope">Out of Scope</h2>
+<ol>
+<li><strong>既存 worktree の管理機能</strong>: 既存 worktree の削除、リスト表示、切り替えは本機能の範囲外（将来的な拡張として検討可能）</li>
+<li><strong>リモートブランチの自動プッシュ</strong>: 作成したブランチをリモートリポジトリに自動的にプッシュする機能は含まない</li>
+<li><strong>Worktree 間の変更のマージ</strong>: 複数 worktree 間での変更のマージやコンフリクト解決支援は含まない</li>
+<li><strong>IDE の高度な設定</strong>: エディター起動は単純な起動のみで、IDE のプロジェクト設定やワークスペース設定は行わない</li>
+</ol>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

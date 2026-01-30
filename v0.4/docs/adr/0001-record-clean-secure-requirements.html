@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ADR 0001: Add Clean &amp; Secure Code requirements to Constitution | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ADR 0001: Add Clean &amp; Secure Code requirements to Constitution | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/adr/0001-record-clean-secure-requirements.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adr-0001-add-clean--secure-code-requirements-to-constitution">ADR 0001: Add Clean &amp; Secure Code requirements to Constitution</h1>
+
+<p><strong>Status</strong>: Accepted</p>
+<p><strong>Date</strong>: 2026-01-03</p>
+<h2 id="context">Context</h2>
+<p>レビューおよび自動解析ツール（例: SonarC#, Lizard, markdownlint）で検出されるセキュリティ/品質指摘に対して、一貫した運用ルールが必要となった。特に空の catch ブロックや汎用例外の無条件捕捉、外部入力の未検証、秘密情報のハードコード等はセキュリティ・保守性の観点からリスクが高い。</p>
+<h2 id="decision">Decision</h2>
+<p><code>constitution.md</code> の「III. Clean &amp; Secure Code (クリーンでセキュアなコード)」セクションに、以下の要件を追加する決定を行う。</p>
+<ul>
+<li>例外の扱い: 空の <code>catch { }</code> を禁止し、無視する場合は理由をコメントで明記しログに記録すること。</li>
+<li>特定例外の捕捉: 汎用的な <code>Exception</code> の丸抱え捕捉を避けること。</li>
+<li>入力検証: 外部入力は常に検証・正規化を行うこと。</li>
+<li>秘密情報の管理: シークレットマネージャ等の利用を義務化すること。</li>
+<li>最小権限の原則: 実行コンテキストは最小権限で構成すること。</li>
+<li>依存関係の脆弱性対応: 重大/高リスクは72時間以内に対応計画を提示すること。</li>
+<li>重大セキュリティ問題の優先対応: High/Critical はマージ前に解決するか審査で許可を得ること。</li>
+</ul>
+<p>これらはガイドラインとし、例外は ADR に理由を記録して承認すること。</p>
+<h2 id="consequences">Consequences</h2>
+<ul>
+<li>コードレビューと CI における静的解析の重要度が高まるため、レビュープロセスが若干厳格化する。</li>
+<li>一部既存コードは修正（例: 空の catch へのコメント追加、例外の具体化、入力検証追加）が必要となる。</li>
+<li>依存関係管理・セキュリティ対応のフロー整備が必要になる（自動スキャン、通知、対応トラッキング）。</li>
+</ul>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<ul>
+<li>何もしない: リスクが残るため却下。</li>
+<li>すべての警告を blocker として強制する: 過剰負荷となるため段階的運用を採用。</li>
+</ul>
+<h2 id="authors">Authors</h2>
+<ul>
+<li>Jun Kurihara <a href="mailto:lh182051+src@gmail.com">lh182051+src@gmail.com</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/adr/0001-record-clean-secure-requirements.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

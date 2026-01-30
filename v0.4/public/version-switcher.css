@@ -1,0 +1,93 @@
+/**
+ * Version Switcher Styles
+ * Styles for the version dropdown selector
+ */
+
+.version-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--bs-light, #f8f9fa);
+  border-radius: 0.25rem;
+  margin: 1rem 0;
+}
+
+.version-switcher-label {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--bs-secondary, #6c757d);
+  margin: 0;
+}
+
+#version-select {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--bs-body-color, #212529);
+  background-color: var(--bs-body-bg, #fff);
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+#version-select:hover {
+  border-color: var(--bs-primary, #0d6efd);
+}
+
+#version-select:focus {
+  border-color: var(--bs-primary, #0d6efd);
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+}
+
+/* Current version indicator */
+.version-indicator {
+  font-size: 0.75rem;
+  color: var(--bs-success, #198754);
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  background-color: rgb(25 135 84 / 10%);
+  border-radius: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+/* Responsive design */
+@media (width <= 768px) {
+  .version-switcher {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  #version-select {
+    width: 100%;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .version-switcher {
+    background-color: rgb(255 255 255 / 5%);
+  }
+
+  .version-switcher-label {
+    color: rgb(255 255 255 / 70%);
+  }
+
+  #version-select {
+    color: #fff;
+    background-color: rgb(255 255 255 / 10%);
+    border-color: rgb(255 255 255 / 20%);
+  }
+
+  #version-select:hover {
+    border-color: rgb(255 255 255 / 40%);
+  }
+
+  .version-indicator {
+    color: #4ade80;
+    background-color: rgb(74 222 128 / 10%);
+  }
+}

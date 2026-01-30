@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Implementation Plan: GitHub Pages Documentation Publishing | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Implementation Plan: GitHub Pages Documentation Publishing | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/plan.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="implementation-plan-github-pages-documentation-publishing">Implementation Plan: GitHub Pages Documentation Publishing</h1>
+
+<p><strong>Branch</strong>: <code>001-github-pages-docs</code> | <strong>Date</strong>: 2026-01-15 | <strong>Spec</strong>: <a href="spec.html">spec.md</a>
+<strong>Input</strong>: Feature specification from <code>/specs/001-github-pages-docs/spec.md</code></p>
+<p><strong>Note</strong>: This template is filled in by the <code>/speckit.plan</code> command. See <code>.specify/templates/commands/plan.md</code> for the execution workflow.</p>
+<h2 id="summary">Summary</h2>
+<p>Automate the publishing of comprehensive documentation to GitHub Pages synchronized with binary releases. The documentation includes Installation Guide, Command Reference, API Reference, and Contribution Guide with version-specific access at the minor version level (v1.0, v1.1, etc.). The system will use DocFX (already configured) to generate static documentation from markdown files and XML documentation comments, deployed via GitHub Actions to GitHub Pages whenever a new release is created.</p>
+<h2 id="technical-context">Technical Context</h2>
+<p><strong>Language/Version</strong>: C# / .NET 10.0<br>
+<strong>Primary Dependencies</strong>:</p>
+<ul>
+<li>DocFX 2.78.4 (documentation generator, .NET global tool)</li>
+<li>System.CommandLine 2.0.2 (for CLI command documentation extraction)</li>
+<li>GitHub Actions (for CI/CD automation)</li>
+<li>GitHub Pages (for hosting)
+<strong>Storage</strong>: Static files (markdown, generated HTML/CSS/JS)<br>
+<strong>Testing</strong>:</li>
+<li>DocFX build validation with <code>--warningsAsErrors</code> flag</li>
+<li>LinkChecker for link validation<br>
+<strong>Target Platform</strong>: GitHub Pages static hosting (cross-platform access via web browser)
+<strong>Project Type</strong>: Single project with documentation output (static site generator workflow)<br>
+<strong>Performance Goals</strong>:</li>
+<li>Documentation site loads within 2 seconds on standard broadband (per SC-007)</li>
+<li>Build and publish within 10 minutes of release (per SC-003)
+<strong>Constraints</strong>:</li>
+<li>Version-specific URLs must remain stable for 2+ years (architectural constraint via GitHub Pages)</li>
+<li>Must maintain documentation for each minor version independently (per FR-011)</li>
+<li>No backend/database - pure static site architecture
+<strong>Scale/Scope</strong>:</li>
+<li>Initial: 5-10 documentation pages per version</li>
+<li>API Reference: Generated from all public APIs in wt.cli project</li>
+<li>Estimated versions to support simultaneously: 3-5 minor versions</li>
+<li>Documentation format: Markdown source → DocFX → Static HTML</li>
+</ul>
+<h2 id="constitution-check">Constitution Check</h2>
+<p><em>GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.</em></p>
+<h3 id="initial-check-pre-phase-0">Initial Check (Pre-Phase 0)</h3>
+<h4 id="i-developer-usability-cli優先">I. Developer Usability (CLI優先)</h4>
+<p>✅ <strong>PASS</strong> - Documentation enhances CLI usability by providing comprehensive command reference and examples. This feature supports the CLI-first approach rather than replacing it.</p>
+<h4 id="ii-cross-platform-クロスプラットフォーム対応">II. Cross-Platform (クロスプラットフォーム対応)</h4>
+<p>✅ <strong>PASS</strong> - GitHub Pages documentation is accessible from any platform via web browser. DocFX-generated sites are pure HTML/CSS/JS with no platform dependencies.</p>
+<h4 id="iii-clean--secure-code-クリーンでセキュアなコード">III. Clean &amp; Secure Code (クリーンでセキュアなコード)</h4>
+<p>✅ <strong>PASS</strong> - Static documentation poses minimal security risk. No secrets will be embedded in documentation. GitHub Actions workflow will use repository secrets for deployment tokens. All generated content is public-facing and contains no sensitive information.</p>
+<h4 id="iv-documentation-clarity-ドキュメントの明瞭性">IV. Documentation Clarity (ドキュメントの明瞭性)</h4>
+<p>✅ <strong>PASS</strong> - <strong>This feature directly implements this principle.</strong> Documentation will be primarily in Japanese (as specified in constitution) with technical terms in English. Technical decisions about documentation architecture will be recorded as ADRs.</p>
+<h4 id="v-minimal-dependencies-最小限の依存関係">V. Minimal Dependencies (最小限の依存関係)</h4>
+<p>⚠️ <strong>REQUIRES JUSTIFICATION</strong> - Adding DocFX as a documentation dependency.</p>
+<ul>
+<li><strong>Justification</strong>: DocFX is specifically designed for .NET projects and can generate API documentation from XML comments. Alternatives like Sphinx (Python-focused), MkDocs (lacks API generation for .NET), or custom solution (high maintenance burden) are less suitable.</li>
+<li><strong>Risk Mitigation</strong>: DocFX is maintained by Microsoft/.NET Foundation, reducing supply chain risk. We will pin specific versions and monitor for vulnerabilities.</li>
+</ul>
+<h4 id="vi-comprehensive-testing-テストの充実と自動化">VI. Comprehensive Testing (テストの充実と自動化)</h4>
+<p>✅ <strong>PASS (RESOLVED)</strong> - Testing strategy defined in research.md:</p>
+<ul>
+<li>Layer 1: DocFX build-time validation with <code>--warningsAsErrors</code></li>
+<li>Layer 2: LinkChecker for link validation</li>
+<li>No xUnit tests required for static documentation content</li>
+<li>Command documentation generation is part of build pipeline (fails if commands missing)</li>
+</ul>
+<h4 id="vii-quantitative-thresholds-閾値">VII. Quantitative Thresholds (閾値)</h4>
+<p>✅ <strong>PASS</strong> - Documentation build workflow is automation code, not production code. Standard code quality thresholds apply to any custom scripts. Documentation content itself follows clarity and completeness metrics defined in success criteria (SC-001 through SC-007).</p>
+<h3 id="post-design-re-evaluation-after-phase-1">Post-Design Re-Evaluation (After Phase 1)</h3>
+<h4 id="i-developer-usability-cli優先-1">I. Developer Usability (CLI優先)</h4>
+<p>✅ <strong>CONFIRMED</strong> - Design maintains CLI-first focus:</p>
+<ul>
+<li>Command documentation auto-generated from CLI definitions</li>
+<li>No separate documentation maintenance burden</li>
+<li>Users access docs via web (universal accessibility)</li>
+</ul>
+<h4 id="ii-cross-platform-クロスプラットフォーム対応-1">II. Cross-Platform (クロスプラットフォーム対応)</h4>
+<p>✅ <strong>CONFIRMED</strong> - Implementation is platform-agnostic:</p>
+<ul>
+<li>GitHub Pages works on all browsers</li>
+<li>No platform-specific deployment requirements</li>
+<li>DocFX builds on ubuntu-latest runner (Linux)</li>
+</ul>
+<h4 id="iii-clean--secure-code-クリーンでセキュアなコード-1">III. Clean &amp; Secure Code (クリーンでセキュアなコード)</h4>
+<p>✅ <strong>CONFIRMED</strong> - Security measures implemented:</p>
+<ul>
+<li>OIDC authentication (no long-lived tokens)</li>
+<li>Minimal permissions (<code>contents: write</code>, <code>pages: write</code>, <code>id-token: write</code>)</li>
+<li>Python manifest script validates JSON without arbitrary code execution</li>
+<li>No secrets exposed in logs or deployed content</li>
+</ul>
+<h4 id="iv-documentation-clarity-ドキュメントの明瞭性-1">IV. Documentation Clarity (ドキュメントの明瞭性)</h4>
+<p>✅ <strong>CONFIRMED</strong> - Documentation structure supports clarity:</p>
+<ul>
+<li>Installation guide explains no .NET/Git required for end users</li>
+<li>Contribution guide clarifies .NET SDK required for developers only</li>
+<li>Clear separation of user vs. developer documentation</li>
+<li>Version-specific documentation prevents confusion</li>
+</ul>
+<h4 id="v-minimal-dependencies-最小限の依存関係-1">V. Minimal Dependencies (最小限の依存関係)</h4>
+<p>✅ <strong>JUSTIFIED</strong> - Dependency analysis post-design:</p>
+<ul>
+<li>DocFX 2.78.4: Pinned version, Microsoft/.NET Foundation maintained</li>
+<li>LinkChecker: Build-time only, not runtime dependency</li>
+<li>Python 3: Pre-installed on GitHub runners, no additional installation</li>
+<li>System.CommandLine: Already used in wt.cli, no new dependency</li>
+<li><strong>Total new dependencies</strong>: 1 (DocFX) + 1 build-time (LinkChecker)</li>
+<li><strong>Risk level</strong>: LOW - Both are well-maintained tools with established ecosystems</li>
+</ul>
+<h4 id="vi-comprehensive-testing-テストの充実と自動化-1">VI. Comprehensive Testing (テストの充実と自動化)</h4>
+<p>✅ <strong>CONFIRMED</strong> - Two-layer testing strategy validated:</p>
+<ul>
+<li>Build validation catches markdown errors, broken internal links</li>
+<li>Link validation catches broken external links, missing resources</li>
+<li>Command documentation generation failures caught in build pipeline</li>
+<li>Manual testing not required due to automation</li>
+<li><strong>No TDD required</strong>: Documentation is build artifact, not executable code</li>
+</ul>
+<h4 id="vii-quantitative-thresholds-閾値-1">VII. Quantitative Thresholds (閾値)</h4>
+<p>✅ <strong>CONFIRMED</strong> - Custom scripts meet quality standards:</p>
+<ul>
+<li><code>Tools/DocGenerator/Program.cs</code>: Will follow standard C# code quality rules</li>
+<li><code>.github/scripts/update-version-manifest.py</code>: Simple script (&lt;100 LOC), single responsibility</li>
+<li>GitHub Actions YAML: Declarative configuration, no complex logic</li>
+<li><strong>All scripts subject to PR review and linting</strong></li>
+</ul>
+<h3 id="final-verdict">Final Verdict</h3>
+<p><strong>✅ ALL GATES PASSED</strong></p>
+<p><strong>Justifications Accepted</strong>:</p>
+<ol>
+<li>DocFX dependency justified due to .NET-specific API documentation generation needs</li>
+<li>No xUnit tests for static documentation content (validated through build process)</li>
+</ol>
+<p><strong>Action Items for Implementation</strong>:</p>
+<ul>
+<li>Pin DocFX version to 2.78.4 in workflow</li>
+<li>Ensure Python manifest script has input validation</li>
+<li>Add linting for Python script (optional: pylint or black)</li>
+<li>Document dependency justification in ADR (if constitutional amendment process requires)</li>
+</ul>
+<p><strong>Ready to proceed to Phase 2 (Task Generation)</strong></p>
+<h2 id="project-structure">Project Structure</h2>
+<h3 id="documentation-this-feature">Documentation (this feature)</h3>
+<pre><code class="lang-text">specs/005-github-pages-docs/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+│   ├── github-workflow-schema.yml  # GitHub Actions workflow contract
+│   └── docfx-config-schema.json    # DocFX configuration schema
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+</code></pre>
+<h3 id="source-code-repository-root">Source Code (repository root)</h3>
+<pre><code class="lang-text">wt/ (repository root)
+├── .github/
+│   └── workflows/
+│       ├── release.yml          # [MODIFY] Add docs deployment step
+│       └── docs.yml              # [NEW] Dedicated docs build/deploy workflow
+├── docs/                         # [EXISTING] Documentation source
+│   ├── index.md                  # [MODIFY] Enhanced homepage
+│   ├── installation.md           # [NEW] Installation guide
+│   ├── commands/                 # [NEW] Command reference section
+│   │   ├── index.md              # Command overview
+│   │   ├── create.md             # wt create documentation
+│   │   └── list.md               # wt list documentation
+│   ├── api/                      # [AUTO-GENERATED] API reference
+│   ├── contributing.md           # [NEW] Contribution guide
+│   ├── guides/                   # [EXISTING] Extended with new content
+│   │   └── quickstart.md         # [NEW] Quick start guide
+│   ├── ja/                       # [EXISTING] Japanese versions
+│   │   ├── index.md
+│   │   ├── installation.md
+│   │   └── ...
+│   └── toc.yml                   # [MODIFY] Table of contents
+├── wt.cli/
+│   └── wt.cli.csproj             # [VERIFY] XML documentation enabled
+├── docfx.json                    # [EXISTING] DocFX configuration
+├── index.md                      # [EXISTING] Root index
+└── toc.yml                       # [EXISTING] Root ToC
+
+Build Output Structure:
+_site/                            # DocFX build output
+├── v1.0/                         # Version-specific docs
+│   ├── index.html
+│   ├── installation.html
+│   ├── commands/
+│   ├── api/
+│   └── ...
+├── v1.1/                         # Next version
+│   └── ...
+└── index.html                    # Latest version redirect
+</code></pre>
+<p><strong>Structure Decision</strong>: Using single project structure with DocFX documentation generator. The existing <code>docs/</code> directory structure is preserved and extended. DocFX generates static HTML into <code>_site/</code> directory which is deployed to GitHub Pages. Version-specific documentation is organized by creating separate build outputs for each minor version (v1.0/, v1.1/, etc.) within the GitHub Pages branch (gh-pages).</p>
+<h2 id="complexity-tracking">Complexity Tracking</h2>
+<table>
+<thead>
+<tr>
+<th>Violation</th>
+<th>Why Needed</th>
+<th>Simpler Alternative Rejected Because</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adding DocFX dependency</td>
+<td>DocFX provides .NET-native API documentation generation from XML comments and markdown processing with versioning support</td>
+<td>MkDocs: Cannot generate .NET API docs from XML; Sphinx: Python-focused, poor .NET integration; Custom HTML: High maintenance burden and no API extraction capability</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="implementation-summary">Implementation Summary</h2>
+<h3 id="artifacts-generated-phase-1-complete">Artifacts Generated (Phase 1 Complete)</h3>
+<p>✅ <strong>Research Phase (Phase 0)</strong>:</p>
+<ul>
+<li><code>research.md</code> - Comprehensive research on DocFX, testing strategies, version switching, and automation</li>
+</ul>
+<p>✅ <strong>Design Phase (Phase 1)</strong>:</p>
+<ul>
+<li><code>data-model.md</code> - Entity definitions and relationships for documentation system</li>
+<li><code>contracts/github-workflow-contract.md</code> - GitHub Actions workflow specification</li>
+<li><code>contracts/docfx-config-contract.md</code> - DocFX configuration specification</li>
+<li><code>quickstart.md</code> - Step-by-step implementation guide (4-6 hours estimated)</li>
+</ul>
+<p>✅ <strong>Agent Context</strong>:</p>
+<ul>
+<li><code>AGENTS.md</code> - Updated with documentation automation guidance</li>
+</ul>
+<h3 id="key-decisions">Key Decisions</h3>
+<ol>
+<li><strong>DocFX 2.78.4</strong>: Selected for .NET 10 support and native API documentation generation</li>
+<li><strong>Command Automation</strong>: System.CommandLine HelpBuilder for programmatic documentation export</li>
+<li><strong>Testing Strategy</strong>: Two-layer approach (build validation + link checking)</li>
+<li><strong>Version Management</strong>: Python script auto-updates manifest per release</li>
+<li><strong>No xUnit Tests</strong>: Static documentation validated through build process, not unit tests</li>
+</ol>
+<h3 id="dependencies-added">Dependencies Added</h3>
+<table>
+<thead>
+<tr>
+<th>Dependency</th>
+<th>Version</th>
+<th>Type</th>
+<th>Justification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DocFX</td>
+<td>2.78.4</td>
+<td>Build tool</td>
+<td>.NET-native API doc generation, Microsoft/.NET Foundation maintained</td>
+</tr>
+<tr>
+<td>LinkChecker</td>
+<td>latest</td>
+<td>Build tool</td>
+<td>Link validation in CI/CD pipeline</td>
+</tr>
+<tr>
+<td>Python 3</td>
+<td>3.x</td>
+<td>Runtime</td>
+<td>Pre-installed on GitHub runners, manifest management</td>
+</tr>
+</tbody>
+</table>
+<h3 id="architecture-highlights">Architecture Highlights</h3>
+<ul>
+<li><strong>Versioned Structure</strong>: <code>/v{major}.{minor}/</code> directories for each version</li>
+<li><strong>Version Switcher</strong>: JavaScript-based UI with <code>version-manifest.json</code> backend</li>
+<li><strong>Automated Pipeline</strong>: Release trigger → Doc generation → Build → Validate → Deploy</li>
+<li><strong>Zero Manual Maintenance</strong>: Command docs auto-generated from CLI code</li>
+</ul>
+<h3 id="success-criteria-mapping">Success Criteria Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Implementation</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-001 (Auto-publish on release)</td>
+<td>GitHub Actions workflow triggered on <code>release.published</code></td>
+<td>✅ Designed</td>
+</tr>
+<tr>
+<td>FR-002 (Installation guide)</td>
+<td><code>docs/installation.md</code> with platform-specific instructions</td>
+<td>✅ Designed</td>
+</tr>
+<tr>
+<td>FR-003 (Command reference)</td>
+<td>Auto-generated from System.CommandLine via <code>Tools/DocGenerator</code></td>
+<td>✅ Designed</td>
+</tr>
+<tr>
+<td>FR-006 (Version switching)</td>
+<td>JavaScript switcher + version-manifest.json</td>
+<td>✅ Designed</td>
+</tr>
+<tr>
+<td>SC-003 (10 min publish)</td>
+<td>Estimated 5-8 min workflow duration</td>
+<td>✅ Designed</td>
+</tr>
+<tr>
+<td>SC-007 (2 sec load time)</td>
+<td>Static HTML, no backend, CDN via GitHub Pages</td>
+<td>✅ Designed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ready-for-phase-2">Ready for Phase 2</h3>
+<p><strong>All Phase 1 deliverables complete. Proceeding to Phase 2 (Task Generation) is approved.</strong></p>
+<p><strong>Branch</strong>: <code>001-github-pages-docs</code><br>
+<strong>Next Command</strong>: <code>/speckit.tasks</code> to generate implementation tasks from this plan</p>
+<hr>
+<p><strong>Plan Status</strong>: ✅ Complete<br>
+<strong>Last Updated</strong>: 2026-01-16<br>
+<strong>Reviewed By</strong>: AI Planning Agent<br>
+<strong>Approval</strong>: Ready for implementation</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/plan.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

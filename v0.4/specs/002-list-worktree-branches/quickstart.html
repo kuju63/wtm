@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Quickstart: Worktree List 機能の実装 | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Quickstart: Worktree List 機能の実装 | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/quickstart.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="quickstart-worktree-list-機能の実装">Quickstart: Worktree List 機能の実装</h1>
+
+<p><strong>Phase</strong>: 1 - Design &amp; Contracts<br>
+<strong>Date</strong>: 2026-01-04<br>
+<strong>Feature</strong>: <a href="spec.html">spec.md</a> | <a href="plan.html">plan.md</a></p>
+<h2 id="purpose">Purpose</h2>
+<p>このクイックスタートガイドは、worktree一覧表示機能を実装する開発者向けの実践的な手順を提供します。TDDアプローチに従い、テストファーストで実装を進めます。</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>.NET 10 SDK がインストールされていること</li>
+<li>Git 2.5以上がインストールされていること</li>
+<li>既存プロジェクト（wt.cli、wt.tests）がビルド可能であること</li>
+<li>IDE（Visual Studio Code、Visual Studio、Rider等）がセットアップされていること</li>
+</ul>
+<h2 id="development-workflow">Development Workflow</h2>
+<p>このプロジェクトは <strong>TDD（テスト駆動開発）</strong> を採用しています。以下のサイクルに従ってください：</p>
+<pre><code class="lang-text">Red → Green → Refactor
+
+1. Red: テストを書き、失敗を確認
+2. Green: テストをパスする最小限の実装
+3. Refactor: コード品質を向上（テストは常にパス）
+</code></pre>
+<h2 id="phase-1-モデルクラスの実装">Phase 1: モデルクラスの実装</h2>
+<h3 id="step-11-worktreeinfoモデルのテスト作成red">Step 1.1: WorktreeInfoモデルのテスト作成（Red）</h3>
+<p><code>wt.tests/Models/WorktreeInfoTests.cs</code>を作成:</p>
+<pre><code class="lang-csharp">using Shouldly;
+using Kuju63.WorkTree.CommandLine.Models;
+using Xunit;
+
+namespace Kuju63.WorkTree.Tests.Models;
+
+public class WorktreeInfoTests
+{
+    [Fact]
+    public void GetDisplayBranch_NormalBranch_ReturnsBranchName()
+    {
+        // Arrange
+        var worktree = new WorktreeInfo
+        {
+            Path = &quot;/path/to/worktree&quot;,
+            Branch = &quot;main&quot;,
+            IsDetached = false,
+            CommitHash = &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+            CreatedAt = DateTime.Now,
+            Exists = true
+        };
+
+        // Act
+        var result = worktree.GetDisplayBranch();
+
+        // Assert
+        result.ShouldBe(&quot;main&quot;);
+    }
+
+    [Fact]
+    public void GetDisplayBranch_DetachedHead_ReturnsShortHashWithLabel()
+    {
+        // Arrange
+        var worktree = new WorktreeInfo
+        {
+            Path = &quot;/path/to/worktree&quot;,
+            Branch = &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+            IsDetached = true,
+            CommitHash = &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+            CreatedAt = DateTime.Now,
+            Exists = true
+        };
+
+        // Act
+        var result = worktree.GetDisplayBranch();
+
+        // Assert
+        result.ShouldBe(&quot;abc1234 (detached)&quot;);
+    }
+
+    [Fact]
+    public void GetDisplayStatus_ExistingWorktree_ReturnsActive()
+    {
+        // Arrange
+        var worktree = new WorktreeInfo
+        {
+            Path = &quot;/path/to/worktree&quot;,
+            Branch = &quot;main&quot;,
+            IsDetached = false,
+            CommitHash = &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+            CreatedAt = DateTime.Now,
+            Exists = true
+        };
+
+        // Act
+        var result = worktree.GetDisplayStatus();
+
+        // Assert
+        result.ShouldBe(&quot;active&quot;);
+    }
+
+    [Fact]
+    public void GetDisplayStatus_MissingWorktree_ReturnsMissing()
+    {
+        // Arrange
+        var worktree = new WorktreeInfo
+        {
+            Path = &quot;/path/to/worktree&quot;,
+            Branch = &quot;main&quot;,
+            IsDetached = false,
+            CommitHash = &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+            CreatedAt = DateTime.Now,
+            Exists = false
+        };
+
+        // Act
+        var result = worktree.GetDisplayStatus();
+
+        // Assert
+        result.ShouldBe(&quot;missing&quot;);
+    }
+}
+</code></pre>
+<p><strong>テスト実行</strong>: <code>dotnet test</code> → <strong>失敗を確認</strong>（RedフェーズOK）</p>
+<h3 id="step-12-worktreeinfoモデルの実装green">Step 1.2: WorktreeInfoモデルの実装（Green）</h3>
+<p><code>wt.cli/Models/WorktreeInfo.cs</code>を作成:</p>
+<pre><code class="lang-csharp">namespace Kuju63.WorkTree.CommandLine.Models;
+
+/// &lt;summary&gt;
+/// Git worktreeの情報を表現します。
+/// &lt;/summary&gt;
+public class WorktreeInfo
+{
+    public required string Path { get; init; }
+    public required string Branch { get; init; }
+    public bool IsDetached { get; init; }
+    public required string CommitHash { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public bool Exists { get; init; }
+
+    public string GetDisplayBranch()
+    {
+        if (IsDetached)
+        {
+            var shortHash = CommitHash.Length &gt;= 7 
+                ? CommitHash.Substring(0, 7) 
+                : CommitHash;
+            return $&quot;{shortHash} (detached)&quot;;
+        }
+        return Branch;
+    }
+
+    public string GetDisplayStatus()
+    {
+        return Exists ? &quot;active&quot; : &quot;missing&quot;;
+    }
+}
+</code></pre>
+<p><strong>テスト実行</strong>: <code>dotnet test</code> → <strong>成功を確認</strong>（GreenフェーズOK）</p>
+<h3 id="step-13-リファクタリングrefactor">Step 1.3: リファクタリング（Refactor）</h3>
+<ul>
+<li>コードスタイルの確認</li>
+<li>XMLドキュメントコメントの追加</li>
+<li>必要に応じてヘルパーメソッドの抽出</li>
+</ul>
+<p><strong>テスト実行</strong>: <code>dotnet test</code> → <strong>成功を維持</strong></p>
+<h2 id="phase-2-gitserviceの拡張">Phase 2: GitServiceの拡張</h2>
+<h3 id="step-21-gitserviceのテスト追加red">Step 2.1: GitServiceのテスト追加（Red）</h3>
+<p><code>wt.tests/Services/Git/GitServiceTests.cs</code>に追加:</p>
+<pre><code class="lang-csharp">[Fact]
+public async Task ListWorktreesAsync_MultipleWorktrees_ReturnsAllWorktrees()
+{
+    // Arrange
+    var mockProcessRunner = new Mock&lt;IProcessRunner&gt;();
+    mockProcessRunner
+        .Setup(x =&gt; x.RunAsync(&quot;git&quot;, &quot;worktree list --porcelain&quot;, It.IsAny&lt;string&gt;()))
+        .ReturnsAsync(new ProcessResult
+        {
+            ExitCode = 0,
+            Output = @&quot;worktree /path/to/main
+HEAD abc1234567890abcdef1234567890abcdef1234
+branch refs/heads/main
+
+worktree /path/to/feature
+HEAD def5678901234567890abcdef1234567890abcde
+branch refs/heads/feature-branch
+&quot;,
+            Error = string.Empty
+        });
+
+    var service = new GitService(mockProcessRunner.Object);
+
+    // Act
+    var result = await service.ListWorktreesAsync();
+
+    // Assert
+    result.Count().ShouldBe(2);
+    result.First().Path.ShouldBe(&quot;/path/to/main&quot;);
+    result.First().Branch.ShouldBe(&quot;main&quot;);
+}
+</code></pre>
+<p><strong>テスト実行</strong>: <code>dotnet test</code> → <strong>失敗を確認</strong></p>
+<h3 id="step-22-gitserviceの実装green">Step 2.2: GitServiceの実装（Green）</h3>
+<p><code>wt.cli/Services/Git/IGitService.cs</code>にメソッド追加:</p>
+<pre><code class="lang-csharp">Task&lt;IEnumerable&lt;WorktreeInfo&gt;&gt; ListWorktreesAsync();
+</code></pre>
+<p><code>wt.cli/Services/Git/GitService.cs</code>に実装:</p>
+<pre><code class="lang-csharp">public async Task&lt;IEnumerable&lt;WorktreeInfo&gt;&gt; ListWorktreesAsync()
+{
+    var result = await _processRunner.RunAsync(
+        &quot;git&quot;, 
+        &quot;worktree list --porcelain&quot;, 
+        _repositoryPath);
+
+    if (result.ExitCode != 0)
+    {
+        throw new GitException($&quot;Failed to list worktrees: {result.Error}&quot;);
+    }
+
+    return ParseWorktreePorcelain(result.Output);
+}
+
+private IEnumerable&lt;WorktreeInfo&gt; ParseWorktreePorcelain(string output)
+{
+    var worktrees = new List&lt;WorktreeInfo&gt;();
+    var lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+    
+    string? currentPath = null;
+    string? currentHead = null;
+    string? currentBranch = null;
+    bool isDetached = false;
+
+    foreach (var line in lines)
+    {
+        if (line.StartsWith(&quot;worktree &quot;))
+        {
+            // 前のworktreeを保存
+            if (currentPath != null &amp;&amp; currentHead != null)
+            {
+                worktrees.Add(CreateWorktreeInfo(
+                    currentPath, currentHead, currentBranch, isDetached));
+            }
+
+            // 新しいworktree開始
+            currentPath = line.Substring(9).Trim();
+            currentHead = null;
+            currentBranch = null;
+            isDetached = false;
+        }
+        else if (line.StartsWith(&quot;HEAD &quot;))
+        {
+            currentHead = line.Substring(5).Trim();
+        }
+        else if (line.StartsWith(&quot;branch &quot;))
+        {
+            var branchRef = line.Substring(7).Trim();
+            currentBranch = branchRef.Replace(&quot;refs/heads/&quot;, &quot;&quot;);
+        }
+        else if (line == &quot;detached&quot;)
+        {
+            isDetached = true;
+        }
+    }
+
+    // 最後のworktreeを保存
+    if (currentPath != null &amp;&amp; currentHead != null)
+    {
+        worktrees.Add(CreateWorktreeInfo(
+            currentPath, currentHead, currentBranch, isDetached));
+    }
+
+    return worktrees;
+}
+
+private WorktreeInfo CreateWorktreeInfo(
+    string path, string commitHash, string? branch, bool isDetached)
+{
+    var createdAt = GetWorktreeCreationTime(path);
+    var exists = Directory.Exists(path);
+
+    return new WorktreeInfo
+    {
+        Path = path,
+        Branch = branch ?? commitHash.Substring(0, Math.Min(7, commitHash.Length)),
+        IsDetached = isDetached,
+        CommitHash = commitHash,
+        CreatedAt = createdAt,
+        Exists = exists
+    };
+}
+
+private DateTime GetWorktreeCreationTime(string worktreePath)
+{
+    try
+    {
+        // .git/worktrees/&lt;name&gt;/gitdir のタイムスタンプを取得
+        var repoPath = FindGitDirectory();
+        var worktreeName = Path.GetFileName(worktreePath);
+        var gitdirPath = Path.Combine(repoPath, &quot;worktrees&quot;, worktreeName, &quot;gitdir&quot;);
+        
+        if (File.Exists(gitdirPath))
+        {
+            return File.GetCreationTime(gitdirPath);
+        }
+    }
+    catch
+    {
+        // エラー時はデフォルト値
+    }
+
+    return DateTime.MinValue;
+}
+</code></pre>
+<p><strong>テスト実行</strong>: <code>dotnet test</code> → <strong>成功を確認</strong></p>
+<h2 id="phase-3-tableformatterの実装">Phase 3: TableFormatterの実装</h2>
+<h3 id="step-31-tableformatterのテスト作成red">Step 3.1: TableFormatterのテスト作成（Red）</h3>
+<p><code>wt.tests/Formatters/TableFormatterTests.cs</code>を作成:</p>
+<pre><code class="lang-csharp">[Fact]
+public void Format_MultipleWorktrees_ReturnsFormattedTable()
+{
+    // Arrange
+    var worktrees = new List&lt;WorktreeInfo&gt;
+    {
+        new WorktreeInfo
+        {
+            Path = &quot;/path/to/main&quot;,
+            Branch = &quot;main&quot;,
+            IsDetached = false,
+            CommitHash = &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+            CreatedAt = DateTime.Now,
+            Exists = true
+        },
+        new WorktreeInfo
+        {
+            Path = &quot;/path/to/feature&quot;,
+            Branch = &quot;feature&quot;,
+            IsDetached = false,
+            CommitHash = &quot;def5678901234567890abcdef1234567890abcde&quot;,
+            CreatedAt = DateTime.Now.AddMinutes(-10),
+            Exists = true
+        }
+    };
+
+    var formatter = new TableFormatter();
+
+    // Act
+    var result = formatter.Format(worktrees);
+
+    // Assert
+    result.ShouldContain(&quot;Path&quot;);
+    result.ShouldContain(&quot;Branch&quot;);
+    result.ShouldContain(&quot;Status&quot;);
+    result.ShouldContain(&quot;/path/to/main&quot;);
+    result.ShouldContain(&quot;/path/to/feature&quot;);
+    result.ShouldContain(&quot;main&quot;);
+    result.ShouldContain(&quot;feature&quot;);
+}
+</code></pre>
+<p><strong>テスト実行</strong>: <code>dotnet test</code> → <strong>失敗を確認</strong></p>
+<h3 id="step-32-tableformatterの実装green">Step 3.2: TableFormatterの実装（Green）</h3>
+<p><code>wt.cli/Formatters/TableFormatter.cs</code>を作成:</p>
+<pre><code class="lang-csharp">namespace Kuju63.WorkTree.CommandLine.Formatters;
+
+public class TableFormatter
+{
+    public string Format(IEnumerable&lt;WorktreeInfo&gt; worktrees)
+    {
+        var list = worktrees.ToList();
+        if (!list.Any())
+        {
+            return &quot;No worktrees found in this repository.&quot;;
+        }
+
+        // 列データを準備
+        var paths = list.Select(w =&gt; w.Path).ToList();
+        var branches = list.Select(w =&gt; w.GetDisplayBranch()).ToList();
+        var statuses = list.Select(w =&gt; w.GetDisplayStatus()).ToList();
+
+        // 列幅を計算
+        var pathWidth = CalculateColumnWidth(&quot;Path&quot;, paths);
+        var branchWidth = CalculateColumnWidth(&quot;Branch&quot;, branches);
+        var statusWidth = CalculateColumnWidth(&quot;Status&quot;, statuses);
+
+        var widths = new[] { pathWidth, branchWidth, statusWidth };
+
+        // テーブルを構築
+        var sb = new StringBuilder();
+        sb.AppendLine(GenerateSeparator(widths, &quot;┌&quot;, &quot;┬&quot;, &quot;┐&quot;));
+        sb.AppendLine(GenerateRow(new[] { &quot;Path&quot;, &quot;Branch&quot;, &quot;Status&quot; }, widths));
+        sb.AppendLine(GenerateSeparator(widths, &quot;├&quot;, &quot;┼&quot;, &quot;┤&quot;));
+
+        for (int i = 0; i &lt; list.Count; i++)
+        {
+            sb.AppendLine(GenerateRow(
+                new[] { paths[i], branches[i], statuses[i] }, widths));
+        }
+
+        sb.AppendLine(GenerateSeparator(widths, &quot;└&quot;, &quot;┴&quot;, &quot;┘&quot;));
+
+        return sb.ToString().TrimEnd();
+    }
+
+    private int CalculateColumnWidth(string header, List&lt;string&gt; values)
+    {
+        var maxContentWidth = values.Any() ? values.Max(v =&gt; v.Length) : 0;
+        return Math.Max(header.Length, maxContentWidth);
+    }
+
+    private string GenerateSeparator(int[] widths, string left, string mid, string right)
+    {
+        var parts = widths.Select(w =&gt; new string('─', w + 2));
+        return left + string.Join(mid, parts) + right;
+    }
+
+    private string GenerateRow(string[] values, int[] widths)
+    {
+        var parts = values.Select((v, i) =&gt; $&quot; {v.PadRight(widths[i])} &quot;);
+        return &quot;│&quot; + string.Join(&quot;│&quot;, parts) + &quot;│&quot;;
+    }
+}
+</code></pre>
+<p><strong>テスト実行</strong>: <code>dotnet test</code> → <strong>成功を確認</strong></p>
+<h2 id="phase-4-listcommandの実装">Phase 4: ListCommandの実装</h2>
+<h3 id="step-41-listcommandのテスト作成red">Step 4.1: ListCommandのテスト作成（Red）</h3>
+<p><code>wt.tests/Commands/ListCommandTests.cs</code>を作成:</p>
+<pre><code class="lang-csharp">[Fact]
+public async Task Handle_MultipleWorktrees_DisplaysTable()
+{
+    // Arrange
+    var mockService = new Mock&lt;IWorktreeService&gt;();
+    mockService
+        .Setup(x =&gt; x.ListWorktreesAsync())
+        .ReturnsAsync(new List&lt;WorktreeInfo&gt;
+        {
+            new WorktreeInfo
+            {
+                Path = &quot;/path/to/main&quot;,
+                Branch = &quot;main&quot;,
+                IsDetached = false,
+                CommitHash = &quot;abc1234567890abcdef1234567890abcdef1234&quot;,
+                CreatedAt = DateTime.Now,
+                Exists = true
+            }
+        });
+
+    var command = new ListCommand(mockService.Object);
+    var console = new TestConsole();
+
+    // Act
+    var exitCode = await command.InvokeAsync(console);
+
+    // Assert
+    exitCode.ShouldBe(0);
+    console.Out.ToString().ShouldContain(&quot;Path&quot;);
+    console.Out.ToString().ShouldContain(&quot;main&quot;);
+}
+</code></pre>
+<h3 id="step-42-listcommandの実装green">Step 4.2: ListCommandの実装（Green）</h3>
+<p><code>wt.cli/Commands/ListCommand.cs</code>を作成:</p>
+<pre><code class="lang-csharp">using Kuju63.WorkTree.CommandLine.Formatters;
+
+namespace Kuju63.WorkTree.CommandLine.Commands;
+
+public class ListCommand : Command
+{
+    private readonly IWorktreeService _worktreeService;
+
+    public ListCommand(IWorktreeService worktreeService) 
+        : base(&quot;list&quot;, &quot;List all worktrees with their branches&quot;)
+    {
+        _worktreeService = worktreeService;
+        this.SetHandler(HandleAsync);
+    }
+
+    private async Task&lt;int&gt; HandleAsync()
+    {
+        try
+        {
+            var worktrees = await _worktreeService.ListWorktreesAsync();
+            var sortedWorktrees = worktrees
+                .OrderByDescending(w =&gt; w.CreatedAt)
+                .ToList();
+
+            // 警告メッセージ（存在しないworktree）
+            foreach (var worktree in sortedWorktrees.Where(w =&gt; !w.Exists))
+            {
+                Console.Error.WriteLine(
+                    $&quot;Warning: Worktree at '{worktree.Path}' does not exist on disk&quot;);
+            }
+
+            // アクティブなworktreeのみを表示
+            var activeWorktrees = sortedWorktrees.Where(w =&gt; w.Exists).ToList();
+            var formatter = new TableFormatter();
+            var output = formatter.Format(activeWorktrees);
+            
+            Console.WriteLine(output);
+            return 0;
+        }
+        catch (GitException ex)
+        {
+            Console.Error.WriteLine($&quot;Error: {ex.Message}&quot;);
+            return 10;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($&quot;Unexpected error: {ex.Message}&quot;);
+            return 99;
+        }
+    }
+}
+</code></pre>
+<p><strong>テスト実行</strong>: <code>dotnet test</code> → <strong>成功を確認</strong></p>
+<h2 id="phase-5-programcsへの統合">Phase 5: Program.csへの統合</h2>
+<p><code>wt.cli/Program.cs</code>にコマンドを登録:</p>
+<pre><code class="lang-csharp">var rootCommand = new RootCommand(&quot;Git worktree management tool&quot;);
+
+// サービスのセットアップ
+var gitService = new GitService(new ProcessRunner());
+var worktreeService = new WorktreeService(gitService);
+
+// コマンドの追加
+rootCommand.AddCommand(new CreateCommand(worktreeService));
+rootCommand.AddCommand(new ListCommand(worktreeService));  // 新規追加
+
+return await rootCommand.InvokeAsync(args);
+</code></pre>
+<h2 id="phase-6-統合テスト">Phase 6: 統合テスト</h2>
+<p>実際のGitリポジトリでテスト:</p>
+<pre><code class="lang-bash"># Worktreeを作成
+git worktree add ../test-wt test-branch
+
+# コマンドを実行
+dotnet run --project wt.cli -- list
+
+# 期待される出力:
+# ┌─────────────────────┬──────────────┬────────┐
+# │ Path                │ Branch       │ Status │
+# ├─────────────────────┼──────────────┼────────┤
+# │ /path/to/test-wt    │ test-branch  │ active │
+# │ /path/to/main       │ main         │ active │
+# └─────────────────────┴──────────────┴────────┘
+
+# クリーンアップ
+git worktree remove ../test-wt
+</code></pre>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="tddサイクルの厳守">TDDサイクルの厳守</h3>
+<ul>
+<li>常にテストを先に書く（Red）</li>
+<li>最小限の実装でテストをパスさせる（Green）</li>
+<li>リファクタリングでコード品質を向上（Refactor）</li>
+<li>各サイクルでコミット</li>
+</ul>
+<h3 id="テストの粒度">テストの粒度</h3>
+<ul>
+<li>ユニットテスト: 個別のメソッド・クラスのテスト</li>
+<li>統合テスト: サービス間の連携テスト</li>
+<li>E2Eテスト: 実際のGitリポジトリでのテスト</li>
+</ul>
+<h3 id="コミット戦略">コミット戦略</h3>
+<pre><code class="lang-bash"># Red フェーズ
+git add .
+git commit -m &quot;test: add tests for WorktreeInfo model&quot;
+
+# Green フェーズ
+git add .
+git commit -m &quot;feat: implement WorktreeInfo model&quot;
+
+# Refactor フェーズ
+git add .
+git commit -m &quot;refactor: improve WorktreeInfo code quality&quot;
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="テストが失敗する">テストが失敗する</h3>
+<ol>
+<li><code>dotnet test --logger &quot;console;verbosity=detailed&quot;</code>で詳細を確認</li>
+<li>テストのArrange部分を確認（モックの設定等）</li>
+<li>実装が仕様に合っているか確認</li>
+</ol>
+<h3 id="gitコマンドが失敗する">Gitコマンドが失敗する</h3>
+<ol>
+<li>Git 2.5以上がインストールされているか確認</li>
+<li>カレントディレクトリがGitリポジトリか確認</li>
+<li><code>git worktree list --porcelain</code>を手動実行して出力を確認</li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li><code>/speckit.tasks</code>コマンドでタスク分解</li>
+<li>各タスクをTDDサイクルで実装</li>
+<li>コードレビュー</li>
+<li>ドキュメント更新</li>
+</ol>
+<h2 id="summary">Summary</h2>
+<p>このクイックスタートに従うことで:</p>
+<ul>
+<li>TDDアプローチで品質の高いコードを実装</li>
+<li>各フェーズでテストをパスさせながら進行</li>
+<li>仕様書と設計ドキュメントに準拠した実装</li>
+</ul>
+<p>開発を開始する準備が整いました！</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/002-list-worktree-branches/quickstart.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

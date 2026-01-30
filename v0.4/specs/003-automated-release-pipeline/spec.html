@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>機能仕様書: 自動化されたバイナリリリースパイプライン | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="機能仕様書: 自動化されたバイナリリリースパイプライン | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="機能仕様書-自動化されたバイナリリリースパイプライン">機能仕様書: 自動化されたバイナリリリースパイプライン</h1>
+
+<p><strong>機能ブランチ</strong>: <code>001-automated-release-pipeline</code><br>
+<strong>作成日</strong>: 2026-01-04<br>
+<strong>ステータス</strong>: ドラフト<br>
+<strong>Input</strong>: User description: &quot;ユーザーはコンパイル済みのバイナリをGitHub Releaseからダウンロードしてインストールする。このバイナリファイルはテスト済みであり、別途ファイルハッシュやCycloneDXによる依存関係が取得できなければならない。バイナリファイルはWindows、Linux（Redhat系, Debian系）、Macをサポートし、Windowsはx64のみ、Linuxはx64とARM系、Macはaarm64を対象とする。このバイナリのリリースには人手を介してはならず（セキュリティの担保のため）、すべてGitHub Hostedな環境で完結すること。バイナリのリリースタイミングはmainへのマージタイミングとし、一貫したバージョン管理によりユーザーへの変更を保証するものとする。これらの前提としてすべてのブランチは都度テストされる必要があり、カバレッジはCodacyに集約されている必要がある。Codacyには本プロジェクトの品質情報が集約されているため、カバレッジもその指標として扱われる。&quot;</p>
+<h2 id="ユーザーシナリオとテスト-必須">ユーザーシナリオとテスト <em>(必須)</em></h2>
+<!--
+  重要: ユーザーストーリーは重要度順に優先順位付けする必要があります。
+  各ユーザーストーリー/ジャーニーは独立してテスト可能でなければなりません。
+  つまり、そのうちの1つだけを実装しても、価値を提供できる実用最小限の製品（MVP）である必要があります。
+  
+  各ストーリーに優先度（P1、P2、P3など）を割り当て、P1が最も重要です。
+  各ストーリーを、以下のように独立した機能スライスとして考えてください:
+  - 独立して開発可能
+  - 独立してテスト可能
+  - 独立してデプロイ可能
+  - ユーザーに独立してデモンストレーション可能
+-->
+<h3 id="ユーザーストーリー-1---コンパイル済みバイナリのダウンロードとインストール-優先度-p1">ユーザーストーリー 1 - コンパイル済みバイナリのダウンロードとインストール (優先度: P1)</h3>
+<p>エンドユーザーとして、ソースからビルドすることなく、GitHub Releasesから事前コンパイルされテスト済みのバイナリをダウンロードしてシステムにインストールし、アプリケーションをすぐに使い始めたい。</p>
+<p><strong>この優先度の理由</strong>: これは中核的な価値提案です - ユーザーにすぐに使えるバイナリを提供すること。これがなければ、ユーザーはアプリケーションに簡単にアクセスできません。</p>
+<p><strong>独立テスト</strong>: サポートされている任意のプラットフォーム向けリリースバイナリをダウンロードし、ファイルハッシュを検証し、バイナリを実行して正しく動作することを確認することで完全にテストできます。動作するアプリケーションを提供することで即座に価値を提供します。</p>
+<p><strong>受け入れシナリオ</strong>:</p>
+<ol>
+<li><strong>前提条件</strong> GitHub Releasesページにいる、<strong>操作</strong> 最新リリースを選択する、<strong>期待結果</strong> サポートされているすべてのプラットフォーム（Windows x64、Linux x64、Linux ARM、Mac ARM64）のダウンロードリンクが表示される</li>
+<li><strong>前提条件</strong> 自分のプラットフォーム向けのバイナリをダウンロードした、<strong>操作</strong> 提供されたハッシュファイルに対してファイルハッシュを検証する、<strong>期待結果</strong> ハッシュが完全に一致する</li>
+<li><strong>前提条件</strong> バイナリをダウンロードした、<strong>操作</strong> インストールして実行する、<strong>期待結果</strong> アプリケーションが正常に実行されバージョン情報が表示される</li>
+<li><strong>前提条件</strong> Windows x64ユーザーである、<strong>操作</strong> Windowsバイナリをダウンロードする、<strong>期待結果</strong> Windows x64で動作する.exeファイルを受け取る</li>
+<li><strong>前提条件</strong> Linuxユーザー（RedhatまたはDebian）である、<strong>操作</strong> Linuxバイナリをダウンロードする、<strong>期待結果</strong> x64とARMアーキテクチャの両方で動作するバイナリを受け取る</li>
+<li><strong>前提条件</strong> Mac ARM64ユーザーである、<strong>操作</strong> Macバイナリをダウンロードする、<strong>期待結果</strong> ARM64アーキテクチャでネイティブに動作するバイナリを受け取る</li>
+</ol>
+<hr>
+<h3 id="ユーザーストーリー-2---ソフトウェアサプライチェーンセキュリティの検証-優先度-p1">ユーザーストーリー 2 - ソフトウェアサプライチェーンセキュリティの検証 (優先度: P1)</h3>
+<p>セキュリティ意識の高いユーザーとして、CycloneDX SBOMとファイルハッシュを通じてバイナリの依存関係と完全性を検証し、ソフトウェアが信頼でき改ざんされていないことを確認したい。</p>
+<p><strong>この優先度の理由</strong>: セキュリティは企業やセキュリティ意識の高いユーザーにとって重要です。これにより信頼が構築され、セキュリティポリシーへの準拠が可能になります。</p>
+<p><strong>独立テスト</strong>: リリースをダウンロードし、SBOMの可用性を確認し、すべてのチェックサムを検証し、依存関係情報が完全であることを確認することで完全にテストできます。バイナリの機能とは独立してセキュリティの透明性を提供します。</p>
+<p><strong>受け入れシナリオ</strong>:</p>
+<ol>
+<li><strong>前提条件</strong> 新しいリリースが公開された、<strong>操作</strong> リリースアセットにアクセスする、<strong>期待結果</strong> すべての依存関係を一覧表示するCycloneDX SBOMファイル（JSONまたはXML形式）が見つかる</li>
+<li><strong>前提条件</strong> SBOMファイルを持っている、<strong>操作</strong> それを解析する、<strong>期待結果</strong> パッケージ名、バージョン、ライセンスを含む完全な依存関係情報が表示される</li>
+<li><strong>前提条件</strong> 新しいリリースが公開された、<strong>操作</strong> リリースアセットにアクセスする、<strong>期待結果</strong> すべてのバイナリのハッシュを含むチェックサムファイル（例: SHA256SUMS）が見つかる</li>
+<li><strong>前提条件</strong> バイナリとチェックサムファイルをダウンロードした、<strong>操作</strong> ローカルでハッシュを計算する、<strong>期待結果</strong> チェックサムファイル内のハッシュと一致する</li>
+<li><strong>前提条件</strong> ソフトウェアサプライチェーンを監査する必要がある、<strong>操作</strong> SBOMをレビューする、<strong>期待結果</strong> すべてのサードパーティ依存関係とそのセキュリティステータスを特定できる</li>
+</ol>
+<hr>
+<h3 id="ユーザーストーリー-3---mainブランチマージ時の自動リリース受信-優先度-p2">ユーザーストーリー 3 - mainブランチマージ時の自動リリース受信 (優先度: P2)</h3>
+<p>ユーザーとして、変更がmainブランチにマージされたときに新しいリリースが自動的に公開され、一貫したバージョン管理により常に最新の安定版にアクセスできるようにしたい。</p>
+<p><strong>この優先度の理由</strong>: 自動化により適時の更新が保証され、手動エラーが削減されます。一貫したバージョン管理により、ユーザーは変更を追跡し更新を計画できます。</p>
+<p><strong>独立テスト</strong>: mainへの変更をマージし、新しいリリースが自動的に作成されることを確認し、バージョン番号が正しくインクリメントされることを確認し、新しいリリースをダウンロードすることで完全にテストできます。継続的デリバリーの価値を独立して提供します。</p>
+<p><strong>受け入れシナリオ</strong>:</p>
+<ol>
+<li><strong>前提条件</strong> プルリクエストがmainにマージされた、<strong>操作</strong> マージが完了する、<strong>期待結果</strong> 手動介入なしで新しいGitHub Releaseが自動的に作成される</li>
+<li><strong>前提条件</strong> 新しいリリースがトリガーされた、<strong>操作</strong> リリースを確認する、<strong>期待結果</strong> セマンティックバージョニングに従ったバージョン番号（例: v1.2.3）がある</li>
+<li><strong>前提条件</strong> mainへの複数のマージが発生した、<strong>操作</strong> リリースを比較する、<strong>期待結果</strong> バージョン番号が一貫してインクリメントされる（変更タイプに基づいてpatch、minor、またはmajor）</li>
+<li><strong>前提条件</strong> リリースが作成された、<strong>操作</strong> リリースノートをレビューする、<strong>期待結果</strong> 前回のリリース以降に含まれる変更の要約が表示される</li>
+<li><strong>前提条件</strong> リリースを監視している、<strong>操作</strong> 新しいバージョンが公開される、<strong>期待結果</strong> 通知を購読して情報を得られる</li>
+</ol>
+<hr>
+<h3 id="ユーザーストーリー-4---カバレッジ付きですべての変更がテストされることの検証-優先度-p2">ユーザーストーリー 4 - カバレッジ付きですべての変更がテストされることの検証 (優先度: P2)</h3>
+<p>プロジェクトメンテナーとして、リリース前にすべてのブランチがカバレッジレポート付きで自動的にテストされCodacyに報告されることで、品質基準が維持されることを確認したい。</p>
+<p><strong>この優先度の理由</strong>: 品質保証は、リリースされたバイナリへの信頼を維持するために不可欠です。自動テストにより回帰を防ぎます。</p>
+<p><strong>独立テスト</strong>: ブランチを作成し、変更をプッシュし、テストが自動的に実行されることを確認し、カバレッジがCodacyに報告されることを確認し、失敗したテストがリリースをブロックすることを確認することで完全にテストできます。品質保証を独立して提供します。</p>
+<p><strong>受け入れシナリオ</strong>:</p>
+<ol>
+<li><strong>前提条件</strong> 任意のブランチに変更をプッシュした、<strong>操作</strong> プッシュが完了する、<strong>期待結果</strong> すべてのテストが自動的に実行される</li>
+<li><strong>前提条件</strong> テストが完了した、<strong>操作</strong> Codacyを確認する、<strong>期待結果</strong> カバレッジレポートが最新のデータで更新される</li>
+<li><strong>前提条件</strong> ブランチでテストが失敗した、<strong>操作</strong> mainへのマージを試みる、<strong>期待結果</strong> テストが合格するまでマージがブロックされる</li>
+<li><strong>前提条件</strong> カバレッジが閾値を下回った、<strong>操作</strong> プルリクエストをレビューする、<strong>期待結果</strong> カバレッジの低下を示す警告が表示される</li>
+<li><strong>前提条件</strong> すべてのテストが合格しカバレッジが適切である、<strong>操作</strong> mainへのマージが発生する、<strong>期待結果</strong> リリースプロセスが自動的にトリガーされる</li>
+</ol>
+<hr>
+<h3 id="エッジケース">エッジケース</h3>
+<ul>
+<li>リリースプロセス中にビルドが失敗した場合どうなるか？（システムは不完全または失敗したビルドでリリースを作成してはならない）</li>
+<li>システムはプラットフォーム固有のビルド失敗をどのように処理するか？（必須プラットフォームのいずれかが失敗した場合はリリース全体を失敗させる。オプショナルプラットフォームの失敗は警告を生成するがリリースをブロックしない）</li>
+<li>カバレッジレポート中にCodacyが利用できない場合どうなるか?(システムは再試行するか、ビルドをブロックせずに明確なエラーメッセージを提供すべき。カバレッジ報告の失敗のみではリリースをブロックしない)</li>
+<li>複数のマージが同時に発生した場合、バージョン競合はどのように解決されるか？（システムはマージ順序に基づいて順次バージョン管理を使用すべき）</li>
+<li>バイナリ署名やチェックサムが生成できない場合どうなるか？（システムはセキュリティ保証を維持するためにリリースを失敗させるべき）</li>
+<li>システムはGitHubリリースのサイズ制限を超える非常に大きなバイナリをどのように処理するか？（システムは必要に応じてバイナリを圧縮するか複数のアセットに分割すべき）</li>
+<li>ユーザーが間違ったプラットフォーム向けのバイナリをダウンロードした場合どうなるか？（システムはファイル名に明確な命名規則とプラットフォームインジケータを提供すべき。形式: <code>&lt;プロジェクト名&gt;-&lt;バージョン&gt;-&lt;プラットフォーム&gt;-&lt;アーキテクチャ&gt;</code>）</li>
+<li>バージョン番号で破壊的変更はどのように伝えられるか？（システムはメジャーバージョンのインクリメントで破壊的変更を示すセマンティックバージョニングに従うべき）</li>
+</ul>
+<h2 id="要件-必須">要件 <em>(必須)</em></h2>
+<h3 id="機能要件">機能要件</h3>
+<ul>
+<li><strong>FR-001</strong>: システムは変更がmainブランチにマージされたときに自動的にリリース作成をトリガーしなければならない</li>
+<li><strong>FR-002</strong>: システムはサポートされているプラットフォーム向けのバイナリをビルドしなければならない。必須プラットフォーム: Windows (x64)、Linux x64 (Redhat系/Debian系)、Mac (ARM64)。オプショナルプラットフォーム: Linux ARM (Redhat系/Debian系)。必須プラットフォームのビルド失敗はリリースをブロックする</li>
+<li><strong>FR-003</strong>: システムはすべてのバイナリアーティファクトのファイルハッシュ（SHA256）を生成しなければならない</li>
+<li><strong>FR-004</strong>: システムは各バイナリのすべての依存関係を含むCycloneDX SBOM（ソフトウェア部品表）を生成しなければならない</li>
+<li><strong>FR-005</strong>: システムはmainへのマージを許可する前に、すべてのブランチのすべてのテストを実行しなければならない</li>
+<li><strong>FR-006</strong>: システムはすべてのブランチのテストカバレッジをCodacyに報告しなければならない。カバレッジ目標は80%とし、これを下回る場合は警告を表示する</li>
+<li><strong>FR-007</strong>: システムはソースブランチでテストが失敗した場合、mainへのマージをブロックしなければならない。カバレッジ低下のみではマージをブロックしない</li>
+<li><strong>FR-008</strong>: システムはGitHubホステッドランナーのみを使用しなければならない（セルフホステッドランナーは使用不可）</li>
+<li><strong>FR-009</strong>: システムはすべてのビルド、テスト、リリース操作を手動介入なしで実行しなければならない</li>
+<li><strong>FR-010</strong>: システムはすべてのリリースに一貫したセマンティックバージョニングを適用しなければならない。バージョンインクリメントはConventional Commits規約（feat:でminor、fix:でpatch、BREAKING CHANGE:でmajor）に基づいて自動的に決定される</li>
+<li><strong>FR-011</strong>: システムはバイナリ、ハッシュファイル、SBOMファイルをGitHub Releaseアセットとして利用可能にしなければならない。バイナリ命名規則: <code>&lt;プロジェクト名&gt;-&lt;バージョン&gt;-&lt;プラットフォーム&gt;-&lt;アーキテクチャ&gt;</code>（例: wt-v1.2.3-windows-x64.exe, wt-v1.2.3-linux-x64, wt-v1.2.3-linux-arm64, wt-v1.2.3-darwin-arm64）</li>
+<li><strong>FR-011a</strong>: システムはSBOMファイル（JSON）とSHA256SUMSファイルに対してデジタル署名を生成しなければならない。署名ファイル（.sig形式）もGitHub Releaseアセットとして公開される。注：バイナリ自体の署名は技術的制約により除外</li>
+<li><strong>FR-012</strong>: システムはリリースに含まれる前にバイナリがテストされていることを保証しなければならない</li>
+<li><strong>FR-013</strong>: システムは前回のリリース以降の変更を要約したリリースノートを含めなければならない。リリースノートはConventional Commitsから自動生成され、機能追加(feat:)、バグ修正(fix:)、破壊的変更(BREAKING CHANGE:)等のカテゴリ別に整理される</li>
+<li><strong>FR-014</strong>: システムは障害を適切に処理し、ワークフローログに明確なエラーメッセージを提供しなければならない</li>
+<li><strong>FR-015</strong>: システムはすべてのリリースアーティファクトがGitHub Releasesから公開ダウンロード可能であることを保証しなければならない</li>
+</ul>
+<h3 id="主要エンティティ">主要エンティティ</h3>
+<ul>
+<li><strong>バイナリアーティファクト</strong>: 特定のプラットフォーム（Windows x64、Linux x64、Linux ARM、Mac ARM64）向けのコンパイル済み実行可能ファイルで、テスト済みで配布準備完了</li>
+<li><strong>ファイルハッシュ</strong>: 各バイナリアーティファクトのSHA256チェックサムで、完全性の検証と改ざんの検出に使用</li>
+<li><strong>SBOM（ソフトウェア部品表）</strong>: バイナリに含まれるすべての依存関係、バージョン、ライセンスを一覧表示するCycloneDX形式のドキュメント</li>
+<li><strong>リリース</strong>: バイナリアーティファクト、ハッシュファイル、SBOMファイル、リリースノートのバージョン管理されたコレクションで、GitHub Releasesに公開される</li>
+<li><strong>バージョン番号</strong>: リリースを一意に識別し変更の性質を示すセマンティックバージョン識別子（例: v1.2.3）</li>
+<li><strong>カバレッジレポート</strong>: テスト中に収集されCodacyに報告される品質追跡用のテストカバレッジメトリクス</li>
+<li><strong>GitHub Releaseアセット</strong>: ユーザーがダウンロードできるようGitHub Releaseに添付された個別のファイル（バイナリ、ハッシュ、SBOM）</li>
+</ul>
+<h2 id="明確化-clarifications">明確化 <em>(Clarifications)</em></h2>
+<h3 id="セッション-2026-01-04">セッション 2026-01-04</h3>
+<ul>
+<li>Q: セマンティックバージョニング（major.minor.patch）において、システムはどのようにバージョン番号を自動的にインクリメントしますか？ → A: Conventional Commits（feat:, fix:, BREAKING CHANGE:）に基づいて自動判定</li>
+<li>Q: 1つ以上のプラットフォームでビルドが失敗した場合、システムはどのように対応すべきですか？ → A: 必須プラットフォーム（Windows x64、Linux x64、Mac ARM64）は必須、他（Linux ARM）はオプショナル。必須プラットフォームのいずれかが失敗した場合はリリース全体を失敗させる</li>
+<li>Q: テストカバレッジの最小要件は何ですか?この閾値を下回った場合、mainへのマージはブロックされますか? → A: 80%のカバレッジ閾値を目標とし、低下時は警告を表示するがマージはブロックしない。継続的な品質改善を促進する</li>
+<li>Q: リリースノートはどのように生成されますか？ → A: Conventional Commitsから自動生成（feat/fix/BREAKING CHANGE等でカテゴリ分け）</li>
+<li>Q: リリースされるバイナリファイルの命名規則はどのようにしますか？ → A: 詳細形式「プロジェクト名-バージョン-プラットフォーム-アーキテクチャ」（例: wt-v1.2.3-windows-x64.exe, wt-v1.2.3-linux-x64, wt-v1.2.3-darwin-arm64）</li>
+<li>Q: CycloneDX SBOMのフォーマット（JSON/XML）はどちらを使用しますか？ → A: JSON形式を採用。理由：GitHub Actionsとの統合が容易、ユーザーによる自動解析が一般的、ファイルサイズが小さい## 成功基準 <em>(必須)</em></li>
+</ul>
+<h3 id="測定可能な成果">測定可能な成果</h3>
+<ul>
+<li><strong>SC-001</strong>: ユーザーはGitHub Releasesページに移動してから2分以内に自分のプラットフォーム向けの動作するバイナリをダウンロードできる</li>
+<li><strong>SC-002</strong>: 100%のリリースに手動介入なしで完全なファイルハッシュとCycloneDX SBOMファイルが含まれる</li>
+<li><strong>SC-003</strong>: リリースはmainへのマージから30分以内に人間の介入なしで公開される</li>
+<li><strong>SC-004</strong>: すべてのバイナリはリリース前に自動テストに合格し、未テストのバイナリがユーザーに届くことはゼロ</li>
+<li><strong>SC-005</strong>: テストカバレッジはマージ前に100%のブランチに対してCodacyに報告される。プロジェクト全体のカバレッジ目標は80%以上</li>
+<li><strong>SC-006</strong>: 95%のユーザーが提供されたハッシュファイルを使用して最初の試行でバイナリの完全性を正常に検証できる</li>
+<li><strong>SC-007</strong>: バージョン番号はセマンティックバージョニングルールに従ってすべてのリリースで一貫してインクリメントされる</li>
+<li><strong>SC-008</strong>: リリースプロセスでマージから公開まで手動ステップはゼロ</li>
+<li><strong>SC-009</strong>: 必須プラットフォーム（3つのプラットフォーム: Windows x64、Linux x64、Mac ARM64）が100%のリリースでバイナリを受け取る。オプショナルプラットフォーム（Linux ARM）はベストエフォートベースで提供される</li>
+<li><strong>SC-010</strong>: ユーザーはセキュリティ監査とコンプライアンスのためにSBOMファイルを通じて完全な依存関係情報にアクセスできる</li>
+<li><strong>SC-010a</strong>: 100%のリリースでSBOMファイルとSHA256SUMSファイルに検証可能なデジタル署名が含まれ、改ざん検証が可能である</li>
+<li><strong>SC-011</strong>: 失敗したビルドまたはテストはリリース作成を防ぎ、100%の品質ゲートコンプライアンスを維持する</li>
+</ul>
+<h2 id="前提条件と依存関係">前提条件と依存関係</h2>
+<h3 id="前提条件">前提条件</h3>
+<ul>
+<li><strong>A-001</strong>: GitHub Actionsはすべてのプラットフォームビルドを同時に処理するのに十分な計算リソースと同時実行制限を持っている</li>
+<li><strong>A-002</strong>: プロジェクトはConventional Commits規約に従ってコミットメッセージを記述し、セマンティックバージョニング原則を使用している。コミットメッセージ形式: <code>&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</code>(type: feat, fix, docs, style, refactor, test, chore等)。リリースノートはこれらのコミットから自動生成される</li>
+<li><strong>A-003</strong>: サポートされているすべてのプラットフォームは、プラットフォーム固有のソースコードブランチなしで単一のコードベースからビルドできる</li>
+<li><strong>A-004</strong>: すべてのプラットフォームのバイナリサイズはGitHub Releaseアセットのサイズ制限内に収まる（ファイルあたり2GB、リリースあたり10GB）</li>
+<li><strong>A-005</strong>: ユーザーはGitHub Releasesからのファイルダウンロードとチェックサム検証の基本的な知識を持っている</li>
+<li><strong>A-006</strong>: ビルドプロセスはリリース前に確実にテストできる決定論的なバイナリを生成する</li>
+<li><strong>A-007</strong>: CycloneDXツールが利用可能でプロジェクトの依存関係管理システムと互換性がある</li>
+</ul>
+<h3 id="依存関係">依存関係</h3>
+<ul>
+<li><strong>D-001</strong>: GitHub Actionsが適切な権限でリポジトリに対して有効化されている必要がある</li>
+<li><strong>D-002</strong>: GitHub Releases機能がリポジトリで利用可能でアクセス可能である必要がある</li>
+<li><strong>D-003</strong>: Codacyアカウントがカバレッジレポート用にリポジトリで設定され統合されている必要がある</li>
+<li><strong>D-004</strong>: すべてのターゲットプラットフォーム向けのビルドツールとコンパイラがGitHubホステッドランナーで利用可能である必要がある</li>
+<li><strong>D-005</strong>: CycloneDX SBOM生成ツールがプロジェクトの技術スタックで利用可能である必要がある</li>
+<li><strong>D-006</strong>: mainへのマージ前にテスト成功を強制するマージ保護ルールが設定可能である必要がある</li>
+<li><strong>D-007</strong>: リポジトリはmainブランチが安定したリリース可能なコードを表す明確なブランチ戦略を持っている必要がある</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

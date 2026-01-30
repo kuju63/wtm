@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>DocFX Configuration Contract | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="DocFX Configuration Contract | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/contracts/docfx-config-contract.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="docfx-configuration-contract">DocFX Configuration Contract</h1>
+
+<p><strong>File</strong>: <code>docfx.json</code><br>
+<strong>Purpose</strong>: Defines the contract for DocFX configuration to generate documentation from .NET projects and markdown files.</p>
+<h2 id="schema-reference">Schema Reference</h2>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json&quot;
+}
+</code></pre>
+<p><strong>Contract</strong>: MUST reference official DocFX v2 schema for validation.</p>
+<h2 id="metadata-section">Metadata Section</h2>
+<h3 id="purpose">Purpose</h3>
+<p>Extracts API documentation from .NET projects using Roslyn.</p>
+<h3 id="contract">Contract</h3>
+<pre><code class="lang-json">{
+  &quot;metadata&quot;: [
+    {
+      &quot;src&quot;: [
+        {
+          &quot;src&quot;: &quot;./wt.cli&quot;,
+          &quot;files&quot;: [&quot;**/*.csproj&quot;]
+        }
+      ],
+      &quot;output&quot;: &quot;api&quot;,
+      &quot;shouldSkipMarkdeep&quot;: false,
+      &quot;properties&quot;: {
+        &quot;TargetFramework&quot;: &quot;net10.0&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<p><strong>Requirements</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src[].src</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>MUST be valid directory path</td>
+<td>Source project directory</td>
+</tr>
+<tr>
+<td><code>src[].files</code></td>
+<td>array</td>
+<td>Yes</td>
+<td>MUST match at least one <code>.csproj</code> file</td>
+<td>Project files to process</td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>MUST be <code>api</code></td>
+<td>Output directory for generated API docs</td>
+</tr>
+<tr>
+<td><code>shouldSkipMarkdeep</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Default: false</td>
+<td>Enable Markdeep rendering</td>
+</tr>
+<tr>
+<td><code>properties.TargetFramework</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>MUST match project's <code>&lt;TargetFramework&gt;</code></td>
+<td>Framework version for API extraction</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li><code>src</code> directory MUST exist relative to docfx.json</li>
+<li>At least one <code>.csproj</code> file MUST be found</li>
+<li><code>.csproj</code> MUST have <code>&lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;</code></li>
+<li>Build MUST succeed in Release configuration</li>
+<li>API extraction MUST NOT fail on missing XML docs (warnings OK if not using <code>--warningsAsErrors</code>)</li>
+</ul>
+<h2 id="build-section">Build Section</h2>
+<h3 id="content-subsection">Content Subsection</h3>
+<p><strong>Purpose</strong>: Defines documentation source files to include.</p>
+<p><strong>Contract</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;build&quot;: {
+    &quot;content&quot;: [
+      {
+        &quot;files&quot;: [&quot;**/*.{md,yml}&quot;],
+        &quot;exclude&quot;: [
+          &quot;_site/**&quot;,
+          &quot;obj/**&quot;,
+          &quot;bin/**&quot;,
+          &quot;specs/**&quot;,
+          &quot;.specify/**&quot;,
+          &quot;Tools/**&quot;,
+          &quot;coverage/**&quot;
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+<p><strong>Requirements</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>files</code></td>
+<td>array</td>
+<td>Yes</td>
+<td>MUST include markdown and/or YAML</td>
+<td>Content file patterns</td>
+</tr>
+<tr>
+<td><code>exclude</code></td>
+<td>array</td>
+<td>Yes</td>
+<td>MUST exclude build artifacts</td>
+<td>Directories to ignore</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Include Patterns</strong>:</p>
+<ul>
+<li><code>**/*.md</code> - All markdown files (recursive)</li>
+<li><code>**/*.yml</code> - YAML TOC and metadata files</li>
+</ul>
+<p><strong>Exclude Patterns (REQUIRED)</strong>:</p>
+<ul>
+<li><code>_site/**</code> - DocFX output directory</li>
+<li><code>obj/**</code>, <code>bin/**</code> - .NET build artifacts</li>
+<li><code>specs/**</code> - Feature specifications (not user docs)</li>
+<li><code>.specify/**</code> - Spec Kit internal files</li>
+<li><code>Tools/**</code> - Build tools source code</li>
+<li><code>coverage/**</code> - Test coverage reports</li>
+</ul>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>At least one markdown file MUST be found</li>
+<li>Excluded directories MUST NOT be scanned</li>
+<li>Invalid markdown syntax MUST cause build failure with <code>--warningsAsErrors</code></li>
+</ul>
+<h3 id="resource-subsection">Resource Subsection</h3>
+<p><strong>Purpose</strong>: Defines static assets (images, CSS, JS) to copy.</p>
+<p><strong>Contract</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;build&quot;: {
+    &quot;resource&quot;: [
+      {
+        &quot;files&quot;: [&quot;images/**&quot;, &quot;assets/**&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;]
+      }
+    ]
+  }
+}
+</code></pre>
+<p><strong>Requirements</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>files</code></td>
+<td>array</td>
+<td>Yes</td>
+<td>Valid glob patterns</td>
+<td>Asset file patterns</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Include Patterns</strong>:</p>
+<ul>
+<li><code>images/**</code> - Image directory (if exists)</li>
+<li><code>assets/**</code> - General assets directory (if exists)</li>
+<li><code>*.png</code>, <code>*.jpg</code> - Root-level images</li>
+</ul>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>Resources MUST be copied to output without modification</li>
+<li>Missing resources MUST NOT cause build failure (warning only)</li>
+<li>Binary files MUST be copied as-is</li>
+</ul>
+<h3 id="output-and-template">Output and Template</h3>
+<p><strong>Purpose</strong>: Defines output directory and DocFX themes.</p>
+<p><strong>Contract</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;build&quot;: {
+    &quot;output&quot;: &quot;_site&quot;,
+    &quot;template&quot;: [&quot;default&quot;, &quot;modern&quot;]
+  }
+}
+</code></pre>
+<p><strong>Requirements</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>output</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>MUST be valid directory name</td>
+<td>Output directory for generated site</td>
+</tr>
+<tr>
+<td><code>template</code></td>
+<td>array</td>
+<td>Yes</td>
+<td>MUST include at least one valid template</td>
+<td>DocFX themes to apply</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Template Options</strong>:</p>
+<ul>
+<li><code>default</code> - Classic DocFX template</li>
+<li><code>modern</code> - Modern, responsive template</li>
+<li>Custom templates can be added to <code>templates/</code> directory</li>
+</ul>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>Output directory MUST be writable</li>
+<li>Templates MUST exist in DocFX installation or local <code>templates/</code> directory</li>
+<li>Multiple templates are merged (modern overrides default)</li>
+</ul>
+<h3 id="global-metadata">Global Metadata</h3>
+<p><strong>Purpose</strong>: Site-wide metadata injected into all pages.</p>
+<p><strong>Contract</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;build&quot;: {
+    &quot;globalMetadata&quot;: {
+      &quot;_appName&quot;: &quot;wt&quot;,
+      &quot;_appTitle&quot;: &quot;wt - Git Worktree Manager&quot;,
+      &quot;_appFooter&quot;: &quot;Copyright © 2026 Kuju63. Licensed under MIT.&quot;,
+      &quot;_enableSearch&quot;: true,
+      &quot;_enableNewTab&quot;: true,
+      &quot;_gitHub&quot;: {
+        &quot;repo&quot;: &quot;kuju63/wt&quot;,
+        &quot;branch&quot;: &quot;main&quot;
+      },
+      &quot;_gitContribute&quot;: {
+        &quot;repo&quot;: &quot;kuju63/wt&quot;,
+        &quot;branch&quot;: &quot;main&quot;,
+        &quot;path&quot;: &quot;docs&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>Requirements</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_appName</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Non-empty</td>
+<td>Short application name</td>
+</tr>
+<tr>
+<td><code>_appTitle</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Non-empty</td>
+<td>Full application title for <code>&lt;title&gt;</code></td>
+</tr>
+<tr>
+<td><code>_appFooter</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Footer text on all pages</td>
+</tr>
+<tr>
+<td><code>_enableSearch</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td>MUST be true</td>
+<td>Enable client-side search</td>
+</tr>
+<tr>
+<td><code>_enableNewTab</code></td>
+<td>boolean</td>
+<td>No</td>
+<td>Default: false</td>
+<td>Open external links in new tab</td>
+</tr>
+<tr>
+<td><code>_gitHub.repo</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Format: <code>owner/repo</code></td>
+<td>GitHub repository</td>
+</tr>
+<tr>
+<td><code>_gitHub.branch</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Valid branch name</td>
+<td>Default branch for links</td>
+</tr>
+<tr>
+<td><code>_gitContribute.repo</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Format: <code>owner/repo</code></td>
+<td>Same as <code>_gitHub.repo</code></td>
+</tr>
+<tr>
+<td><code>_gitContribute.branch</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Valid branch name</td>
+<td>Branch for &quot;Edit this page&quot; links</td>
+</tr>
+<tr>
+<td><code>_gitContribute.path</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Valid directory path</td>
+<td>Documentation source directory</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>All required fields MUST be present</li>
+<li>GitHub repo links MUST be valid format</li>
+<li>&quot;Edit this page&quot; links MUST point to correct documentation source</li>
+</ul>
+<h3 id="sitemap-configuration">Sitemap Configuration</h3>
+<p><strong>Purpose</strong>: SEO optimization via XML sitemap generation.</p>
+<p><strong>Contract</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;build&quot;: {
+    &quot;sitemap&quot;: {
+      &quot;baseUrl&quot;: &quot;https://kuju63.github.io/wt/&quot;,
+      &quot;priority&quot;: 1.0,
+      &quot;changefreq&quot;: &quot;weekly&quot;
+    }
+  }
+}
+</code></pre>
+<p><strong>Requirements</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>baseUrl</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>MUST be valid HTTPS URL with trailing <code>/</code></td>
+<td>Site base URL for sitemap</td>
+</tr>
+<tr>
+<td><code>priority</code></td>
+<td>number</td>
+<td>No</td>
+<td>Range: 0.0 - 1.0</td>
+<td>Page priority for search engines</td>
+</tr>
+<tr>
+<td><code>changefreq</code></td>
+<td>string</td>
+<td>No</td>
+<td>Valid values: always, hourly, daily, weekly, monthly, yearly, never</td>
+<td>Expected update frequency</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li><code>baseUrl</code> MUST end with <code>/</code></li>
+<li><code>baseUrl</code> MUST use HTTPS protocol</li>
+<li>Sitemap MUST be generated at <code>_site/sitemap.xml</code></li>
+</ul>
+<h3 id="cross-reference-configuration">Cross-Reference Configuration</h3>
+<p><strong>Purpose</strong>: Enable linking to external API documentation.</p>
+<p><strong>Contract</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;build&quot;: {
+    &quot;xref&quot;: [
+      &quot;https://learn.microsoft.com/en-us/dotnet/api&quot;
+    ]
+  }
+}
+</code></pre>
+<p><strong>Requirements</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xref</code></td>
+<td>array</td>
+<td>No</td>
+<td>Valid URLs</td>
+<td>External API reference URLs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>URLs MUST be accessible during build</li>
+<li>Cross-references to .NET types (e.g., <code>System.String</code>) automatically link to Microsoft Docs</li>
+<li>Failed xref lookups produce warnings (not errors)</li>
+</ul>
+<h2 id="complete-example-configuration">Complete Example Configuration</h2>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json&quot;,
+  &quot;metadata&quot;: [
+    {
+      &quot;src&quot;: [
+        {
+          &quot;src&quot;: &quot;./wt.cli&quot;,
+          &quot;files&quot;: [&quot;**/*.csproj&quot;]
+        }
+      ],
+      &quot;output&quot;: &quot;api&quot;,
+      &quot;shouldSkipMarkdeep&quot;: false,
+      &quot;properties&quot;: {
+        &quot;TargetFramework&quot;: &quot;net10.0&quot;
+      }
+    }
+  ],
+  &quot;build&quot;: {
+    &quot;content&quot;: [
+      {
+        &quot;files&quot;: [&quot;**/*.{md,yml}&quot;],
+        &quot;exclude&quot;: [
+          &quot;_site/**&quot;,
+          &quot;obj/**&quot;,
+          &quot;bin/**&quot;,
+          &quot;specs/**&quot;,
+          &quot;.specify/**&quot;,
+          &quot;Tools/**&quot;,
+          &quot;coverage/**&quot;
+        ]
+      }
+    ],
+    &quot;resource&quot;: [
+      {
+        &quot;files&quot;: [&quot;images/**&quot;, &quot;assets/**&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;]
+      }
+    ],
+    &quot;output&quot;: &quot;_site&quot;,
+    &quot;template&quot;: [&quot;default&quot;, &quot;modern&quot;],
+    &quot;globalMetadata&quot;: {
+      &quot;_appName&quot;: &quot;wt&quot;,
+      &quot;_appTitle&quot;: &quot;wt - Git Worktree Manager&quot;,
+      &quot;_appFooter&quot;: &quot;Copyright © 2026 Kuju63. Licensed under MIT.&quot;,
+      &quot;_enableSearch&quot;: true,
+      &quot;_enableNewTab&quot;: true,
+      &quot;_gitHub&quot;: {
+        &quot;repo&quot;: &quot;kuju63/wt&quot;,
+        &quot;branch&quot;: &quot;main&quot;
+      },
+      &quot;_gitContribute&quot;: {
+        &quot;repo&quot;: &quot;kuju63/wt&quot;,
+        &quot;branch&quot;: &quot;main&quot;,
+        &quot;path&quot;: &quot;docs&quot;
+      }
+    },
+    &quot;sitemap&quot;: {
+      &quot;baseUrl&quot;: &quot;https://kuju63.github.io/wt/&quot;,
+      &quot;priority&quot;: 1.0,
+      &quot;changefreq&quot;: &quot;weekly&quot;
+    },
+    &quot;xref&quot;: [
+      &quot;https://learn.microsoft.com/en-us/dotnet/api&quot;
+    ]
+  }
+}
+</code></pre>
+<h2 id="build-command-contract">Build Command Contract</h2>
+<h3 id="standard-build">Standard Build</h3>
+<pre><code class="lang-bash">docfx build docfx.json
+</code></pre>
+<p><strong>Output</strong>:</p>
+<ul>
+<li>Generates site in <code>_site/</code> directory</li>
+<li>Warnings are logged but don't fail build</li>
+</ul>
+<h3 id="strict-build-required-for-cicd">Strict Build (Required for CI/CD)</h3>
+<pre><code class="lang-bash">docfx build docfx.json --warningsAsErrors
+</code></pre>
+<p><strong>Output</strong>:</p>
+<ul>
+<li>Warnings cause build failure (exit code 1)</li>
+<li>Enforces documentation quality</li>
+</ul>
+<h3 id="versioned-build-for-deployment">Versioned Build (For Deployment)</h3>
+<pre><code class="lang-bash">docfx build docfx.json --warningsAsErrors -o _output/v1.2
+</code></pre>
+<p><strong>Output</strong>:</p>
+<ul>
+<li>Generates site in custom output directory</li>
+<li>Used for version-specific documentation</li>
+</ul>
+<h2 id="validation-checklist">Validation Checklist</h2>
+<h3 id="pre-build-validation">Pre-Build Validation</h3>
+<ul>
+<li>✅ <code>docfx.json</code> is valid JSON</li>
+<li>✅ Schema validation passes</li>
+<li>✅ <code>src</code> directory exists</li>
+<li>✅ At least one <code>.csproj</code> found</li>
+<li>✅ <code>.csproj</code> has XML documentation enabled</li>
+<li>✅ All required metadata fields present</li>
+</ul>
+<h3 id="build-validation">Build Validation</h3>
+<ul>
+<li>✅ .NET project builds successfully</li>
+<li>✅ XML documentation generated</li>
+<li>✅ Markdown files found</li>
+<li>✅ No broken internal links</li>
+<li>✅ TOC files (<code>toc.yml</code>) valid</li>
+<li>✅ Templates applied successfully</li>
+</ul>
+<h3 id="post-build-validation">Post-Build Validation</h3>
+<ul>
+<li>✅ <code>_site/</code> directory created</li>
+<li>✅ <code>_site/index.html</code> exists</li>
+<li>✅ <code>_site/api/</code> directory exists (if API docs enabled)</li>
+<li>✅ <code>_site/sitemap.xml</code> exists</li>
+<li>✅ Search index (<code>index.json</code>) generated</li>
+</ul>
+<h2 id="common-issues-and-solutions">Common Issues and Solutions</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Could not find file&quot; error</td>
+<td>Invalid <code>src</code> path</td>
+<td>Verify path relative to <code>docfx.json</code></td>
+</tr>
+<tr>
+<td>No API documentation generated</td>
+<td>XML docs not enabled</td>
+<td>Add <code>&lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;</code> to <code>.csproj</code></td>
+</tr>
+<tr>
+<td>Broken link warnings</td>
+<td>Invalid markdown links</td>
+<td>Check <code>[text](path)</code> syntax and file existence</td>
+</tr>
+<tr>
+<td>Template not found</td>
+<td>Custom template missing</td>
+<td>Ensure template exists in <code>templates/</code> or use built-in</td>
+</tr>
+<tr>
+<td>Cross-reference failures</td>
+<td>External xref URL down</td>
+<td>Check network connectivity, verify URL</td>
+</tr>
+</tbody>
+</table>
+<h2 id="version-compatibility">Version Compatibility</h2>
+<table>
+<thead>
+<tr>
+<th>DocFX Version</th>
+<th>.NET Version</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.78.4</td>
+<td>.NET 10.0</td>
+<td>✅ Supported</td>
+<td>Current version with Roslyn 4.13.0</td>
+</tr>
+<tr>
+<td>2.77.x</td>
+<td>.NET 10.0</td>
+<td>⚠️ Partial</td>
+<td>May lack .NET 10 features</td>
+</tr>
+<tr>
+<td>2.70.x</td>
+<td>.NET 10.0</td>
+<td>❌ Not supported</td>
+<td>Use 2.78.4+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Contract</strong>: MUST use DocFX 2.78.4 or later for .NET 10 support.</p>
+<hr>
+<p><strong>Next</strong>: <code>quickstart.md</code> - Quick start guide for implementing the feature</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/contracts/docfx-config-contract.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

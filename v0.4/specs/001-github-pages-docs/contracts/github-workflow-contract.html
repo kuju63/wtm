@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Documentation Deployment Workflow Contract | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Documentation Deployment Workflow Contract | wt ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/contracts/github-workflow-contract.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="documentation-deployment-workflow-contract">Documentation Deployment Workflow Contract</h1>
+
+<p><strong>File</strong>: <code>.github/workflows/release.yml</code> (build-and-deploy-docs job)<br>
+<strong>Purpose</strong>: Defines the contract for the GitHub Actions workflow job that builds and deploys documentation to GitHub Pages as part of the release pipeline.</p>
+<p><strong>Architecture Decision</strong>: See <a href="../adr/001-consolidate-docs-workflow-into-release.html">ADR 001: Consolidate Documentation Workflow into Release Pipeline</a> for rationale behind integrating documentation build into release workflow instead of separate docs.yml.</p>
+<h2 id="workflow-inputs">Workflow Inputs</h2>
+<h3 id="trigger-events">Trigger Events</h3>
+<pre><code class="lang-yaml"># Part of release.yml workflow
+needs: [calculate-version, create-release]
+</code></pre>
+<p><strong>Contract</strong>:</p>
+<ul>
+<li>MUST trigger after successful release creation</li>
+<li>Version is obtained from <code>needs.calculate-version.outputs.version</code></li>
+<li>Integrated into release pipeline (no separate workflow trigger needed)</li>
+</ul>
+<h2 id="workflow-outputs">Workflow Outputs</h2>
+<h3 id="deployment-url">Deployment URL</h3>
+<pre><code class="lang-yaml">outputs:
+  page_url:
+    description: &quot;URL of deployed documentation&quot;
+    value: ${{ jobs.build-and-deploy.outputs.page_url }}
+</code></pre>
+<p><strong>Contract</strong>:</p>
+<ul>
+<li>MUST output the final GitHub Pages URL</li>
+<li>Format: <code>https://{username}.github.io/{repo}/v{major}.{minor}/</code></li>
+</ul>
+<h2 id="workflow-steps-contract">Workflow Steps Contract</h2>
+<h3 id="step-1-extract-version">Step 1: Extract Version</h3>
+<p><strong>Input</strong>: Version from <code>needs.calculate-version.outputs.version</code> (e.g., <code>v0.1.0</code>, <code>v1.2.3</code>)<br>
+<strong>Output</strong>: Minor version string (e.g., <code>v0.1</code>, <code>v1.2</code>)<br>
+<strong>Contract</strong>:</p>
+<pre><code class="lang-yaml"># MUST extract minor version from calculated version
+- name: Extract version
+  id: version
+  run: |
+    TAG_NAME=&quot;${{ needs.calculate-version.outputs.version }}&quot;
+    # Extract major.minor from tag (e.g., v1.2.3 -&gt; v1.2)
+    VERSION=$(echo $TAG_NAME | grep -oE 'v?[0-9]+\.[0-9]+')
+    echo &quot;version=$VERSION&quot; &gt;&gt; $GITHUB_OUTPUT
+    echo &quot;Extracted version: $VERSION&quot;
+</code></pre>
+<p><strong>Validation</strong>:</p>
+<ul>
+<li>Input version MUST match: <code>v\d+\.\d+\.\d+</code> (semantic versioning)</li>
+<li>Output MUST match: <code>v\d+\.\d+</code></li>
+<li>MUST fail if version format is invalid</li>
+</ul>
+<p><strong>Test Cases</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Input Version</th>
+<th>Expected Output</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v0.1.0</code></td>
+<td><code>v0.1</code></td>
+<td>Initial release</td>
+</tr>
+<tr>
+<td><code>v0.10.5</code></td>
+<td><code>v0.10</code></td>
+<td>Pre-1.0 with higher minor</td>
+</tr>
+<tr>
+<td><code>v1.2.3</code></td>
+<td><code>v1.2</code></td>
+<td>Standard semantic version</td>
+</tr>
+<tr>
+<td><code>v10.15.20</code></td>
+<td><code>v10.15</code></td>
+<td>Large version numbers</td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-2-generate-command-documentation">Step 2: Generate Command Documentation</h3>
+<p><strong>Input</strong>: CLI command definitions from <code>wt.cli</code><br>
+<strong>Output</strong>: Markdown files in <code>docs/commands/</code><br>
+<strong>Contract</strong>:</p>
+<pre><code class="lang-yaml">- name: Generate command documentation
+  run: dotnet run --project Tools/DocGenerator/DocGenerator -- --output docs/commands
+</code></pre>
+<p><strong>Validation</strong>:</p>
+<ul>
+<li>MUST generate one <code>.md</code> file per command in <code>docs/commands/</code></li>
+<li>MUST exit with code 0 on success</li>
+<li>MUST exit with non-zero if generation fails</li>
+</ul>
+<h3 id="step-3-build-documentation">Step 3: Build Documentation</h3>
+<p><strong>Input</strong>: Markdown files, docfx.json, XML docs from wt.cli
+<strong>Output</strong>: Static HTML site in <code>_site/{version}/</code><br>
+<strong>Contract</strong>:</p>
+<pre><code class="lang-yaml">- name: Build documentation
+  run: |
+    docfx metadata
+    docfx build --output _site/${{ steps.version.outputs.version }}
+</code></pre>
+<p><strong>Validation</strong>:</p>
+<ul>
+<li>MUST generate API metadata from XML comments</li>
+<li>MUST output to version-specific directory</li>
+<li>MUST generate HTML/CSS/JS files</li>
+<li>MUST exit with code 0 on success</li>
+</ul>
+<p><strong>Note</strong>: Link validation and <code>--warningsAsErrors</code> flag are deferred to Phase 8 (Polish &amp; Cross-Cutting Concerns) as quality improvements, not MVP requirements.</p>
+<h3 id="step-4-update-version-manifest">Step 4: Update Version Manifest</h3>
+<p><strong>Input</strong>: New version from previous step
+<strong>Output</strong>: Updated <code>versions.json</code> in <code>_site/</code><br>
+<strong>Contract</strong>:</p>
+<pre><code class="lang-yaml">- name: Update version manifest
+  run: |
+    python3 .github/scripts/update-version-manifest.py _site/versions.json ${{ steps.version.outputs.version }}
+    cp _site/versions.json _site/${{ steps.version.outputs.version }}/versions.json
+</code></pre>
+<p><strong>Validation</strong>:</p>
+<ul>
+<li>MUST add new version to manifest</li>
+<li>MUST mark new version as <code>isLatest: true</code></li>
+<li>MUST remove <code>isLatest</code> from all other versions</li>
+<li>MUST sort versions by version string (descending)</li>
+<li>MUST automatically generate publishedDate with UTC timestamp</li>
+<li>MUST be idempotent (re-running updates, doesn't duplicate)</li>
+<li>MUST exit with code 0 on success</li>
+</ul>
+<p><strong>Python Script Contract</strong> (<code>.github/scripts/update-version-manifest.py</code>):</p>
+<pre><code class="lang-python"># MUST accept positional arguments: &lt;manifest_path&gt; &lt;version&gt;
+# Usage: update-version-manifest.py &lt;manifest_path&gt; &lt;version&gt;
+# MUST read existing manifest from path (or create empty if missing)
+# MUST update/add version entry with auto-generated publishedDate
+# MUST write valid JSON output to same path
+# MUST exit 0 on success, non-zero on error
+</code></pre>
+<h3 id="step-5-deploy-to-github-pages">Step 5: Deploy to GitHub Pages</h3>
+<p><strong>Input</strong>: Built site in <code>_site/</code><br>
+<strong>Output</strong>: Deployed documentation on GitHub Pages<br>
+<strong>Contract</strong>:</p>
+<pre><code class="lang-yaml">- name: Deploy to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v4
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir: ./_site
+    keep_files: true
+</code></pre>
+<p><strong>Validation</strong>:</p>
+<ul>
+<li>MUST deploy entire <code>_site</code> directory</li>
+<li>MUST preserve existing version directories (keep_files: true)</li>
+<li>MUST use GITHUB_TOKEN for authentication</li>
+<li>MUST exit with code 0 on successful deployment</li>
+</ul>
+<p><strong>Note</strong>: The peaceiris/actions-gh-pages action handles manifest fetching internally through keep_files: true, eliminating the need for explicit gh-pages branch fetching.
+--no-warnings <br>
+_output/${{ steps.version.outputs.minor }}/</p>
+<pre><code>**Note**: The peaceiris/actions-gh-pages action handles manifest fetching internally through keep_files: true, eliminating the need for explicit gh-pages branch fetching.
+
+## Error Handling
+
+| Error Condition | Required Behavior | Exit Code |
+|-----------------|-------------------|-----------|
+| Invalid version tag format | Fail with clear error message | 1 |
+| Version extraction fails | Stop workflow immediately | 1 |
+| Command doc generation fails | Stop workflow, show error | 1 |
+| DocFX metadata generation fails | Stop workflow, show error | 1 |
+| DocFX build fails | Stop workflow, show build errors | 1 |
+| Version manifest update fails | Stop workflow, show Python error | 1 |
+| GitHub Pages deployment fails | Handled by peaceiris action (auto-retry) | 1 |
+
+**Note**: Link validation and `--warningsAsErrors` are deferred to Phase 8 as quality improvements.
+
+## Performance Requirements
+
+| Metric | Target | Maximum | Success Criteria |
+|--------|--------|---------|------------------|
+| Total workflow duration | &lt;8 minutes | 10 minutes | SC-003 compliance |
+| Command doc generation | &lt;30 seconds | 1 minute | - |
+| DocFX metadata + build | &lt;3 minutes | 5 minutes | Combined step |
+| Manifest update | &lt;10 seconds | 30 seconds | - |
+| Deployment time | &lt;1 minute | 2 minutes | - |
+
+**Note**: Performance targets reflect integrated workflow within release pipeline. Caching (NuGet, DocFX) improves performance significantly.
+
+## Security Requirements
+
+1. **Authentication**:
+   - MUST use OIDC token authentication
+   - MUST NOT use long-lived Personal Access Tokens (PAT)
+
+2. **Permissions**:
+   - MUST use principle of least privilege
+   - Required: `contents: write`, `pages: write`, `id-token: write`
+   - MUST NOT request additional permissions
+
+3. **Secrets**:
+   - MUST NOT expose secrets in workflow logs
+   - MUST NOT log version manifest content (may contain dates/metadata)
+
+4. **Input Validation**:
+   - Python script MUST NOT execute arbitrary code from JSON
+   - Version string MUST be validated before use in paths
+
+## Dependencies
+
+### External Actions
+```yaml
+- actions/checkout@v6
+- actions/setup-dotnet@v5
+- actions/cache@v5
+- peaceiris/actions-gh-pages@v4
+</code></pre>
+<p><strong>Contract</strong>:</p>
+<ul>
+<li>MUST pin to specific major versions (e.g., <code>@v6</code>, not <code>@v6.1.0</code>)</li>
+<li>MUST NOT use <code>@main</code> or <code>@latest</code></li>
+<li>MUST update via Renovate (configured in repository)</li>
+</ul>
+<h3 id="external-tools">External Tools</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Version</th>
+<th>Installation Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>docfx</td>
+<td>2.78.4 (exact)</td>
+<td><code>dotnet tool install --global docfx --version 2.78.4</code></td>
+</tr>
+<tr>
+<td>python3</td>
+<td>3.x</td>
+<td>Pre-installed on ubuntu-latest</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Contract</strong>:</p>
+<ul>
+<li>DocFX version MUST be pinned via DOCFX_VERSION environment variable</li>
+<li>Python 3 MUST be available</li>
+<li>Link validation tools deferred to Phase 8</li>
+</ul>
+<h2 id="concurrency-control">Concurrency Control</h2>
+<pre><code class="lang-yaml">concurrency:
+  group: pages
+  cancel-in-progress: false
+</code></pre>
+<p><strong>Contract</strong>:</p>
+<ul>
+<li>MUST use <code>group: pages</code> to prevent concurrent deploys</li>
+<li>MUST set <code>cancel-in-progress: false</code> to allow queuing</li>
+<li>Multiple releases MUST queue (not run in parallel)</li>
+<li>In-progress deployments MUST complete before next starts</li>
+</ul>
+<h2 id="environment-configuration">Environment Configuration</h2>
+<h3 id="required-environment">Required Environment</h3>
+<pre><code class="lang-yaml">environment:
+  name: github-pages
+  url: ${{ steps.deployment.outputs.page_url }}
+</code></pre>
+<p><strong>Setup Steps</strong>:</p>
+<ol>
+<li>Repository Settings → Environments → New environment</li>
+<li>Name: <code>github-pages</code></li>
+<li>Optional: Add protection rules (approval, wait timer)</li>
+</ol>
+<p><strong>Contract</strong>:</p>
+<ul>
+<li>Environment MUST exist before first workflow run</li>
+<li>Environment MUST have Pages deployment permissions</li>
+<li>Environment URL is automatically set by <code>deploy-pages</code> action</li>
+</ul>
+<h3 id="required-permissions">Required Permissions</h3>
+<pre><code class="lang-yaml">permissions:
+  contents: write  # Fetch gh-pages branch
+  pages: write     # Deploy to GitHub Pages
+  id-token: write  # OIDC authentication
+</code></pre>
+<h2 id="backward-compatibility">Backward Compatibility</h2>
+<ul>
+<li><strong>First Release</strong>: Workflow MUST create gh-pages branch if it doesn't exist</li>
+<li><strong>Existing Versions</strong>: Workflow MUST preserve existing version directories (<code>v1.0/</code>, <code>v1.1/</code>, etc.)</li>
+<li><strong>Manifest Format</strong>: Adding fields OK, removing fields NOT OK</li>
+<li><strong>URL Structure</strong>: Version URLs MUST remain stable (SC-006: 2+ years)</li>
+</ul>
+<h2 id="testing-contract">Testing Contract</h2>
+<h3 id="pre-deployment-validation-checklist">Pre-Deployment Validation Checklist</h3>
+<ul>
+<li>✅ Version extraction produces valid <code>v{major}.{minor}</code> format</li>
+<li>✅ Command documentation generated for all commands</li>
+<li>✅ API build succeeds in Release configuration</li>
+<li>✅ DocFX build succeeds with <code>--warningsAsErrors</code></li>
+<li>✅ Link validation passes (zero broken links)</li>
+<li>✅ Version manifest is valid JSON</li>
+</ul>
+<h3 id="post-deployment-verification-checklist">Post-Deployment Verification Checklist</h3>
+<ul>
+<li>✅ Deployed URL returns HTTP 200</li>
+<li>✅ Version manifest loads successfully</li>
+<li>✅ New version appears in version switcher dropdown</li>
+<li>✅ Version switcher navigation works</li>
+<li>✅ Internal links between pages work</li>
+<li>✅ API reference pages load correctly</li>
+</ul>
+<h2 id="example-workflow-execution">Example Workflow Execution</h2>
+<h3 id="scenario-release-v025">Scenario: Release v0.2.5</h3>
+<pre><code>1. Release published: v0.2.5
+2. Extract version: v0.2
+3. Generate command docs: docs/commands/*.md created
+4. Build API: wt.xml generated
+5. Build DocFX: _output/v0.2/ created with HTML
+6. Fetch manifest: Found with [v0.1]
+7. Update manifest: Add v0.2, mark as latest
+8. Validate links: All OK (0 broken)
+9. Deploy: https://username.github.io/wt/v0.2/
+10. Output: page_url = https://username.github.io/wt/v0.2/
+</code></pre>
+<h3 id="scenario-first-release-v010">Scenario: First Release v0.1.0</h3>
+<pre><code>1. Release published: v0.1.0
+2. Extract version: v0.1
+3. Generate command docs: docs/commands/*.md created
+4. Build API: wt.xml generated
+5. Build DocFX: _output/v0.1/ created
+6. Fetch manifest: None found, create empty {&quot;versions&quot;:[]}
+7. Update manifest: Add v0.1 (first entry, marked latest)
+8. Validate links: All OK
+9. Deploy: Create gh-pages branch, deploy v0.1/
+10. Output: page_url = https://username.github.io/wt/v0.1/
+</code></pre>
+<hr>
+<p><strong>Next</strong>: <code>docfx-config-contract.md</code> - Contract for DocFX configuration</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/contracts/github-workflow-contract.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Research: Automated Binary Release Pipeline | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Research: Automated Binary Release Pipeline | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/research.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="research-automated-binary-release-pipeline">Research: Automated Binary Release Pipeline</h1>
+
+<p><strong>Feature</strong>: <code>003-automated-release-pipeline</code><br>
+<strong>Date</strong>: 2026-01-04<br>
+<strong>Spec</strong>: <a href="spec.html">spec.md</a> | <strong>Plan</strong>: <a href="plan.html">plan.md</a></p>
+<p>このドキュメントは、自動化されたバイナリリリースパイプラインの技術調査結果を記録します。</p>
+<hr>
+<h2 id="1-セマンティックバージョニング決定ログ">1. セマンティックバージョニング決定ログ</h2>
+<h3 id="背景">背景</h3>
+<p>プロジェクトでは、バージョン番号の自動管理が必要です。Conventional Commitsに基づいて、次のバージョン番号を自動計算する仕組みを構築します。</p>
+<h3 id="採用規約">採用規約</h3>
+<ul>
+<li><strong>Semantic Versioning 2.0.0</strong> を採用</li>
+<li>フォーマット: <code>MAJOR.MINOR.PATCH</code> (例: <code>1.2.3</code>)</li>
+<li>プレリリース版: <code>MAJOR.MINOR.PATCH-alpha.1</code> (例: <code>1.0.0-alpha.1</code>)</li>
+</ul>
+<h3 id="バージョンインクリメントルール">バージョンインクリメントルール</h3>
+<table>
+<thead>
+<tr>
+<th>Commit Type</th>
+<th>Version Bump</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BREAKING CHANGE:</code> (footer)</td>
+<td>MAJOR (X.0.0)</td>
+<td>0.5.2 → 1.0.0</td>
+</tr>
+<tr>
+<td><code>feat:</code></td>
+<td>MINOR (0.X.0)</td>
+<td>0.5.2 → 0.6.0</td>
+</tr>
+<tr>
+<td><code>fix:</code></td>
+<td>PATCH (0.0.X)</td>
+<td>0.5.2 → 0.5.3</td>
+</tr>
+<tr>
+<td>その他 (docs, style, refactor, test, chore, ci)</td>
+<td>バージョン変更なし</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="初期バージョン">初期バージョン</h3>
+<ul>
+<li>プロジェクト初回リリース: <code>v0.1.0</code></li>
+<li>初回MAJORリリース (安定版): <code>v1.0.0</code></li>
+</ul>
+<h3 id="バージョンタグ形式">バージョンタグ形式</h3>
+<ul>
+<li>Gitタグ: <code>v1.2.3</code> (プレフィックス <code>v</code> を付ける)</li>
+<li>GitHub Release名: <code>v1.2.3</code></li>
+<li>バイナリファイル名: <code>wt-v1.2.3-windows-x64.exe</code></li>
+</ul>
+<h3 id="実装戦略">実装戦略</h3>
+<ol>
+<li><p><strong>バージョン計算スクリプト</strong> (<code>.github/scripts/calculate-version.sh</code>)</p>
+<ul>
+<li>最新タグを取得: <code>git describe --tags --abbrev=0</code></li>
+<li>前回リリース以降のコミットを解析: <code>git log &lt;last-tag&gt;..HEAD --pretty=format:%s</code></li>
+<li>Conventional Commitsをパース: 正規表現で <code>feat:</code>, <code>fix:</code>, <code>BREAKING CHANGE:</code> を検出</li>
+<li>次のバージョンを計算: MAJOR/MINOR/PATCH インクリメント</li>
+<li>新しいタグを作成: <code>git tag -a v1.2.3 -m &quot;Release v1.2.3&quot;</code></li>
+</ul>
+</li>
+<li><p><strong>タグプッシュとリリース作成</strong></p>
+<ul>
+<li>GitHub Actions workflow (<code>release.yml</code>) でタグをプッシュ</li>
+<li>GitHub Releases APIでリリースを作成</li>
+<li>計算されたバージョンをリリース名とタグに使用</li>
+</ul>
+</li>
+</ol>
+<h3 id="参考資料">参考資料</h3>
+<ul>
+<li><a href="https://semver.org/">Semantic Versioning 2.0.0</a></li>
+<li><a href="https://www.conventionalcommits.org/">Conventional Commits 1.0.0</a></li>
+<li><a href="https://docs.github.com/en/rest/releases">GitHub Releases API</a></li>
+</ul>
+<hr>
+<h2 id="2-cyclonedx統合オプション">2. CycloneDX統合オプション</h2>
+<h3 id="cyclonedx統合の背景">CycloneDX統合の背景</h3>
+<p>Software Bill of Materials (SBOM) を生成し、依存関係の透明性を確保する必要があります。CycloneDX形式を採用します。</p>
+<h3 id="調査対象ツール">調査対象ツール</h3>
+<h4 id="option-1-dotnet-sbom-推奨">Option 1: dotnet-sbom (推奨)</h4>
+<ul>
+<li><p><strong>ツール名</strong>: Microsoft dotnet-sbom</p>
+</li>
+<li><p><strong>リポジトリ</strong>: <a href="https://github.com/microsoft/sbom-tool">https://github.com/microsoft/sbom-tool</a></p>
+</li>
+<li><p><strong>対応言語</strong>: .NET, NuGet, npm, Python, Go, Rust</p>
+</li>
+<li><p><strong>出力形式</strong>: CycloneDX JSON/XML, SPDX</p>
+</li>
+<li><p><strong>インストール</strong>: <code>dotnet tool install --global Microsoft.Sbom.DotNetTool</code></p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-bash">dotnet tool install --global Microsoft.Sbom.DotNetTool
+sbom-tool generate -b /path/to/project -bc /path/to/project -pn wt -pv 1.0.0 -ps kuju63 -nsb https://github.com/kuju63
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>Microsoft公式ツール</li>
+<li>.NETプロジェクトに最適化</li>
+<li>GitHub Actionsとの統合が容易</li>
+<li>CycloneDX 1.4準拠</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>マルチプラットフォームビルドの場合、各ビルドごとにSBOMを生成する必要がある</li>
+<li>集約SBOMの生成には追加ロジックが必要</li>
+</ul>
+</li>
+</ul>
+<h4 id="option-2-cyclonedx-cli">Option 2: CycloneDX CLI</h4>
+<ul>
+<li><p><strong>ツール名</strong>: CycloneDX CLI</p>
+</li>
+<li><p><strong>リポジトリ</strong>: <a href="https://github.com/CycloneDX/cyclonedx-cli">https://github.com/CycloneDX/cyclonedx-cli</a></p>
+</li>
+<li><p><strong>対応言語</strong>: 汎用 (任意のSBOM操作)</p>
+</li>
+<li><p><strong>出力形式</strong>: CycloneDX JSON/XML</p>
+</li>
+<li><p><strong>インストール</strong>: <code>npm install -g @cyclonedx/cyclonedx-cli</code> または GitHub Releasesからバイナリダウンロード</p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-bash">cyclonedx-cli convert --input-file sbom1.json --output-file sbom-cyclonedx.xml --output-format xml
+cyclonedx-cli merge --input-files sbom1.json sbom2.json --output-file merged.json
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>汎用ツール (言語非依存)</li>
+<li>複数SBOMのマージ機能あり</li>
+<li>CycloneDX公式ツール</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>.NET依存関係の自動検出機能なし (別ツールと併用が必要)</li>
+<li>Node.js依存 (GitHub Actionsでのインストール必要)</li>
+</ul>
+</li>
+</ul>
+<h4 id="option-3-syft-anchore">Option 3: Syft (Anchore)</h4>
+<ul>
+<li><p><strong>ツール名</strong>: Syft</p>
+</li>
+<li><p><strong>リポジトリ</strong>: <a href="https://github.com/anchore/syft">https://github.com/anchore/syft</a></p>
+</li>
+<li><p><strong>対応言語</strong>: .NET, Go, Python, Java, JavaScript, Ruby, Rust等</p>
+</li>
+<li><p><strong>出力形式</strong>: CycloneDX JSON/XML, SPDX, Syft JSON</p>
+</li>
+<li><p><strong>インストール</strong>: <code>curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh</code></p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-bash">syft packages dir:/path/to/project -o cyclonedx-json &gt; sbom.json
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>自動依存関係検出</li>
+<li>マルチ言語対応</li>
+<li>高速</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>.NETプロジェクトでは dotnet-sbom ほど詳細な情報を提供しない</li>
+<li>外部依存 (Anchore製品)</li>
+</ul>
+</li>
+</ul>
+<h3 id="決定">決定</h3>
+<p><strong>Option 4: anchore/sbom-action (GitHub Action)</strong> を採用 ← 実装時に変更</p>
+<p>理由:</p>
+<ul>
+<li>より広く使われている（1.5k+ stars）</li>
+<li>セットアップが簡単（dotnet tool installが不要）</li>
+<li>エラーハンドリングが充実</li>
+<li>CycloneDX 1.4準拠</li>
+<li>保守コストの削減</li>
+</ul>
+<h3 id="実装">実装</h3>
+<pre><code class="lang-yaml">- name: Generate SBOM
+  uses: anchore/sbom-action@61119d458adab75f756bc0b9e4bde25725f86a7a # v0.17.2
+  with:
+    path: ./wt.cli
+    format: cyclonedx-json
+    output-file: release-assets/wt-${{ needs.calculate-version.outputs.version }}-sbom.json
+</code></pre>
+<p><strong>セキュリティ</strong>: コミットID指定（<code>61119d45...</code>）でサプライチェーン攻撃を防止</p>
+<p><strong>メリット</strong>: 50行のカスタムスクリプトが4行のAction設定に簡素化</p>
+<h3 id="参考資料-1">参考資料</h3>
+<ul>
+<li><a href="https://cyclonedx.org/specification/overview/">CycloneDX Specification</a></li>
+<li><a href="https://github.com/microsoft/sbom-tool/blob/main/README.md">Microsoft SBOM Tool Documentation</a></li>
+<li><a href="https://www.ntia.gov/report/2021/minimum-elements-software-bill-materials-sbom">NTIA Minimum Elements for SBOM</a></li>
+</ul>
+<hr>
+<h2 id="3-conventional-commitsパーサーオプション">3. Conventional Commitsパーサーオプション</h2>
+<h3 id="背景-1">背景</h3>
+<p>Conventional Commitsメッセージを解析し、バージョンインクリメントを自動決定する必要があります。</p>
+<h3 id="調査対象ツール-1">調査対象ツール</h3>
+<h4 id="option-1-カスタムbashスクリプト-推奨">Option 1: カスタムBashスクリプト (推奨)</h4>
+<ul>
+<li><p><strong>実装</strong>: <code>.github/scripts/calculate-version.sh</code></p>
+</li>
+<li><p><strong>依存</strong>: git, grep, sed (GitHub Actions標準環境に含まれる)</p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-bash">#!/usr/bin/env bash
+LAST_TAG=$(git describe --tags --abbrev=0 2&gt;/dev/null || echo &quot;v0.0.0&quot;)
+COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:%s)
+
+if echo &quot;$COMMITS&quot; | grep -q &quot;BREAKING CHANGE:&quot;; then
+  # MAJOR bump
+  VERSION=&quot;X.0.0&quot;
+elif echo &quot;$COMMITS&quot; | grep -q &quot;^feat&quot;; then
+  # MINOR bump
+  VERSION=&quot;0.X.0&quot;
+elif echo &quot;$COMMITS&quot; | grep -q &quot;^fix&quot;; then
+  # PATCH bump
+  VERSION=&quot;0.0.X&quot;
+else
+  echo &quot;No version bump needed&quot;
+  exit 1
+fi
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>追加依存なし (標準Unixツールのみ)</li>
+<li>GitHub Actionsで直接実行可能</li>
+<li>カスタマイズが容易</li>
+<li>デバッグが簡単</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>複雑なパース (スコープ、複数行body等) は実装が煩雑</li>
+<li>テストが必要</li>
+</ul>
+</li>
+</ul>
+<h4 id="option-2-semantic-release">Option 2: semantic-release</h4>
+<ul>
+<li><p><strong>ツール名</strong>: semantic-release</p>
+</li>
+<li><p><strong>リポジトリ</strong>: <a href="https://github.com/semantic-release/semantic-release">https://github.com/semantic-release/semantic-release</a></p>
+</li>
+<li><p><strong>依存</strong>: Node.js, npm</p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-bash">npm install -g semantic-release
+npx semantic-release
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>Conventional Commits完全対応</li>
+<li>プラグインエコシステム豊富</li>
+<li>GitHub Releasesへの自動公開機能</li>
+<li>リリースノート自動生成</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>Node.js依存 (追加のランタイムが必要)</li>
+<li>設定が複雑 (.releaserc ファイル必要)</li>
+<li>ビルドプロセスとの統合が必要</li>
+</ul>
+</li>
+</ul>
+<h4 id="option-3-commitlint--standard-version">Option 3: commitlint + standard-version</h4>
+<ul>
+<li><p><strong>ツール名</strong>: commitlint + standard-version</p>
+</li>
+<li><p><strong>リポジトリ</strong>:</p>
+<ul>
+<li><a href="https://github.com/conventional-changelog/commitlint">https://github.com/conventional-changelog/commitlint</a></li>
+<li><a href="https://github.com/conventional-changelog/standard-version">https://github.com/conventional-changelog/standard-version</a></li>
+</ul>
+</li>
+<li><p><strong>依存</strong>: Node.js, npm</p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-bash">npm install -g @commitlint/cli @commitlint/config-conventional standard-version
+npx commitlint --from HEAD~1 --to HEAD
+npx standard-version
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>commitlint: コミットメッセージバリデーション</li>
+<li>standard-version: バージョンインクリメント + CHANGELOG生成</li>
+<li>Conventional Commits標準対応</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>Node.js依存</li>
+<li>2つのツールを組み合わせる必要がある</li>
+<li>GitHub Actions統合には追加設定が必要</li>
+</ul>
+</li>
+</ul>
+<h3 id="決定-1">決定</h3>
+<p><strong>Option 4: paulhatch/semantic-version (GitHub Action)</strong> を採用 ← 実装時に変更</p>
+<p>理由:</p>
+<ul>
+<li>コミュニティメンテナンス（7.3k+ stars）による保守性向上</li>
+<li>信頼性が高く、広く使われている実績</li>
+<li>カスタムスクリプトの保守コストを削減</li>
+<li>エラーハンドリングが充実</li>
+<li>Conventional Commits完全対応</li>
+</ul>
+<h3 id="実装-1">実装</h3>
+<pre><code class="lang-yaml">- name: Calculate next version
+  id: version
+  uses: paulhatch/semantic-version@a8f8f59fd7f0625188492e945240f12d7ad2dca3 # v5.4.0
+  with:
+    tag_prefix: &quot;v&quot;
+    major_pattern: &quot;(BREAKING CHANGE:|BREAKING:)&quot;
+    minor_pattern: &quot;feat:&quot;
+    version_format: &quot;v${major}.${minor}.${patch}&quot;
+    bump_each_commit: false
+    search_commit_body: true
+</code></pre>
+<p><strong>セキュリティ</strong>: コミットID指定（<code>a8f8f59f...</code>）でサプライチェーン攻撃を防止</p>
+<h3 id="参考資料-2">参考資料</h3>
+<ul>
+<li><a href="https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html">Bash Parameter Expansion</a></li>
+<li><a href="https://git-scm.com/docs/git-log#_pretty_formats">Git Log Formatting</a></li>
+<li><a href="https://github.com/fsaintjacques/semver-tool">Semantic Versioning Parser in Bash</a></li>
+</ul>
+<hr>
+<h2 id="4-github-actions並行性制限">4. GitHub Actions並行性制限</h2>
+<h3 id="背景-2">背景</h3>
+<p>複数プラットフォーム向けビルドを並行実行する際、GitHub Actionsの並行性制限を考慮する必要があります。</p>
+<h3 id="調査結果">調査結果</h3>
+<h4 id="github-hostedランナーの制限">GitHub-hostedランナーの制限</h4>
+<p><strong>Freeプラン (Public repositories)</strong>:</p>
+<ul>
+<li>並行ジョブ数: 20ジョブ</li>
+<li>macOSランナー: 5並行ジョブ</li>
+<li>月間実行時間: 無制限</li>
+<li>ストレージ: 500MB</li>
+</ul>
+<p><strong>Proプラン</strong>:</p>
+<ul>
+<li>並行ジョブ数: 40ジョブ</li>
+<li>macOSランナー: 5並行ジョブ</li>
+<li>月間実行時間: 3,000分 (Linux/Windows), 600分 (macOS)</li>
+</ul>
+<p><strong>Enterpriseプラン</strong>:</p>
+<ul>
+<li>並行ジョブ数: 180ジョブ</li>
+<li>macOSランナー: 50並行ジョブ</li>
+<li>月間実行時間: 50,000分 (Linux/Windows), 10,000分 (macOS)</li>
+</ul>
+<h4 id="ビルドマトリックス設計">ビルドマトリックス設計</h4>
+<p>このプロジェクトでは、以下のプラットフォームを並行ビルドします:</p>
+<ol>
+<li>Windows x64 (MANDATORY)</li>
+<li>Linux x64 (MANDATORY)</li>
+<li>Linux ARM (OPTIONAL)</li>
+<li>Mac ARM64 (MANDATORY)</li>
+</ol>
+<p><strong>並行ジョブ数</strong>: 4ジョブ (Freeプランの制限内)</p>
+<p><strong>ビルドマトリックス設定</strong> (<code>.github/workflows/build.yml</code>):</p>
+<pre><code class="lang-yaml">strategy:
+  fail-fast: false  # OPTIONAL platformが失敗してもMANDATORYは続行
+  matrix:
+    include:
+      - os: windows-latest
+        platform: windows
+        arch: x64
+        rid: win-x64
+        mandatory: true
+      - os: ubuntu-latest
+        platform: linux
+        arch: x64
+        rid: linux-x64
+        mandatory: true
+      - os: ubuntu-latest
+        platform: linux
+        arch: arm
+        rid: linux-arm
+        mandatory: false  # OPTIONAL
+      - os: macos-latest
+        platform: macos
+        arch: arm64
+        rid: osx-arm64
+        mandatory: true
+</code></pre>
+<h3 id="実行時間予測">実行時間予測</h3>
+<p>各プラットフォームのビルド時間 (概算):</p>
+<ul>
+<li>Windows x64: 5-7分 (.NETビルド + テスト)</li>
+<li>Linux x64: 4-6分</li>
+<li>Linux ARM: 6-8分 (クロスコンパイル)</li>
+<li>Mac ARM64: 5-7分</li>
+</ul>
+<p>並行実行により、最も遅いビルド (Linux ARM: 8分) に合わせて完了。</p>
+<p><strong>リリース全体の実行時間目標</strong>: 30分以内 (ビルド + SBOM + ハッシュ + リリース公開)</p>
+<h3 id="参考資料-3">参考資料</h3>
+<ul>
+<li><a href="https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration">GitHub Actions: Usage limits</a></li>
+<li><a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix">GitHub Actions: Matrix strategies</a></li>
+</ul>
+<hr>
+<h2 id="5-codacy統合ステータス">5. Codacy統合ステータス</h2>
+<h3 id="背景-3">背景</h3>
+<p>テストカバレッジをCodacyに報告し、PRで品質ゲートを表示する必要があります。</p>
+<h3 id="現在のcodacy統合状況">現在のCodacy統合状況</h3>
+<ul>
+<li><strong>Codacyプロジェクト</strong>: 既に設定済み</li>
+<li><strong>カバレッジアップロード</strong>: 未設定 (これから実装)</li>
+<li><strong>品質ゲート</strong>: 未設定 (これから実装)</li>
+</ul>
+<h3 id="codacy-coverage-reporter">Codacy Coverage Reporter</h3>
+<p><strong>ツール名</strong>: Codacy Coverage Reporter<br>
+<strong>リポジトリ</strong>: <a href="https://github.com/codacy/codacy-coverage-reporter">https://github.com/codacy/codacy-coverage-reporter</a><br>
+<strong>インストール</strong>: GitHub Actions Marketplaceから利用可能</p>
+<h4 id="使用例-githubworkflowstestyml">使用例 (.github/workflows/test.yml)</h4>
+<pre><code class="lang-yaml">- name: Upload coverage to Codacy
+  uses: codacy/codacy-coverage-reporter-action@v1
+  with:
+    project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+    coverage-reports: coverage/cobertura.xml
+</code></pre>
+<h4 id="カバレッジフォーマット">カバレッジフォーマット</h4>
+<p>.NETプロジェクトでは、<strong>Cobertura XML形式</strong>を使用:</p>
+<pre><code class="lang-bash">dotnet test --collect:&quot;XPlat Code Coverage&quot; --results-directory ./coverage
+</code></pre>
+<p>出力ファイル: <code>coverage/**/coverage.cobertura.xml</code></p>
+<h3 id="codacy品質ゲート設定">Codacy品質ゲート設定</h3>
+<p>Codacyダッシュボードで以下を設定:</p>
+<ol>
+<li><strong>カバレッジ閾値</strong>: 80% (プロジェクト全体)</li>
+<li><strong>PR品質ゲート</strong>:
+<ul>
+<li>カバレッジが閾値を下回る場合: <strong>警告</strong> (マージはブロックしない)</li>
+<li>テストが失敗する場合: <strong>エラー</strong> (マージをブロック)</li>
+</ul>
+</li>
+<li><strong>通知設定</strong>:
+<ul>
+<li>PRコメントでカバレッジ変化を表示</li>
+<li>Slackへの通知 (オプション)</li>
+</ul>
+</li>
+</ol>
+<h3 id="ワークフロー統合">ワークフロー統合</h3>
+<ol>
+<li><strong>test.yml</strong>: 全ブランチでテスト実行、カバレッジ収集、Codacyアップロード</li>
+<li><strong>release.yml</strong>: mainマージ時、test.ymlが成功した場合のみリリース作成</li>
+<li><strong>ブランチ保護ルール</strong>: <code>test.yml</code> workflowの成功をmainマージの必須条件に設定</li>
+</ol>
+<h3 id="参考資料-4">参考資料</h3>
+<ul>
+<li><a href="https://github.com/codacy/codacy-coverage-reporter">Codacy Coverage Reporter</a></li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage">dotnet test coverage options</a></li>
+</ul>
+<hr>
+<h2 id="6-プラットフォーム固有コンパイラ可用性">6. プラットフォーム固有コンパイラ可用性</h2>
+<h3 id="背景-4">背景</h3>
+<p>GitHub-hosted runnersで各プラットフォーム向けビルドが可能か確認する必要があります。</p>
+<h3 id="github-hosted-runners環境">GitHub-hosted runners環境</h3>
+<h4 id="ubuntu-latest-linux">Ubuntu Latest (linux)</h4>
+<ul>
+<li><strong>OS</strong>: Ubuntu 22.04</li>
+<li><strong>.NET SDK</strong>: .NET 6.0, 7.0, 8.0 プリインストール</li>
+<li><strong>クロスコンパイル</strong>: Linux x64ネイティブビルド可能、ARM向けクロスコンパイルも可能</li>
+<li><strong>利用可能ツール</strong>: gcc, clang, make, cmake, git, curl, wget</li>
+</ul>
+<p><strong>ビルドコマンド</strong>:</p>
+<pre><code class="lang-bash">dotnet publish -c Release -r linux-x64 --self-contained
+dotnet publish -c Release -r linux-arm --self-contained
+</code></pre>
+<h4 id="windows-latest-windows">Windows Latest (windows)</h4>
+<ul>
+<li><strong>OS</strong>: Windows Server 2022</li>
+<li><strong>.NET SDK</strong>: .NET 6.0, 7.0, 8.0 プリインストール</li>
+<li><strong>ビルドツール</strong>: MSBuild, Visual Studio Build Tools</li>
+<li><strong>利用可能ツール</strong>: git, PowerShell, Chocolatey</li>
+</ul>
+<p><strong>ビルドコマンド</strong>:</p>
+<pre><code class="lang-powershell">dotnet publish -c Release -r win-x64 --self-contained
+</code></pre>
+<h4 id="macos-latest-macos">macOS Latest (macos)</h4>
+<ul>
+<li><strong>OS</strong>: macOS 14 (Sonoma)</li>
+<li><strong>.NET SDK</strong>: .NET 6.0, 7.0, 8.0 プリインストール</li>
+<li><strong>アーキテクチャ</strong>: ARM64 (Apple Silicon)</li>
+<li><strong>利用可能ツール</strong>: Xcode, Homebrew, git</li>
+</ul>
+<p><strong>ビルドコマンド</strong>:</p>
+<pre><code class="lang-bash">dotnet publish -c Release -r osx-arm64 --self-contained
+</code></pre>
+<h3 id="netランタイム識別子-rid">.NETランタイム識別子 (RID)</h3>
+<table>
+<thead>
+<tr>
+<th>プラットフォーム</th>
+<th>RID</th>
+<th>ランナー</th>
+<th>ビルド可否</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows x64</td>
+<td><code>win-x64</code></td>
+<td><code>windows-latest</code></td>
+<td>✅ ネイティブ</td>
+</tr>
+<tr>
+<td>Linux x64</td>
+<td><code>linux-x64</code></td>
+<td><code>ubuntu-latest</code></td>
+<td>✅ ネイティブ</td>
+</tr>
+<tr>
+<td>Linux ARM</td>
+<td><code>linux-arm</code></td>
+<td><code>ubuntu-latest</code></td>
+<td>✅ クロスコンパイル</td>
+</tr>
+<tr>
+<td>macOS ARM64</td>
+<td><code>osx-arm64</code></td>
+<td><code>macos-latest</code></td>
+<td>✅ ネイティブ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="追加依存関係">追加依存関係</h3>
+<p>特になし。.NET SDKが全てのランナーにプリインストールされているため、追加のセットアップは不要。</p>
+<h3 id="参考資料-5">参考資料</h3>
+<ul>
+<li><a href="https://github.com/actions/runner-images">GitHub Actions: Runner Images</a></li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/core/rid-catalog">.NET RID Catalog</a></li>
+</ul>
+<hr>
+<h2 id="7-デジタル署名ツール選定">7. デジタル署名ツール選定</h2>
+<h3 id="背景-5">背景</h3>
+<p>SBOM と SHA256SUMS ファイルにデジタル署名を付与し、改ざん検証を可能にする必要があります (FR-011)。</p>
+<h3 id="調査対象ツール-2">調査対象ツール</h3>
+<h4 id="option-1-gpg-gnu-privacy-guard">Option 1: GPG (GNU Privacy Guard)</h4>
+<ul>
+<li><p><strong>ツール名</strong>: GPG</p>
+</li>
+<li><p><strong>バージョン</strong>: 2.x</p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-bash">gpg --armor --detach-sign --default-key YOUR_KEY_ID sbom.json
+# 生成: sbom.json.asc
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>業界標準ツール</li>
+<li>GitHub Actions環境にプリインストール</li>
+<li>OpenPGP準拠</li>
+<li>公開鍵の配布が容易</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>秘密鍵の管理が必要</li>
+<li>パスフレーズ入力が必要 (自動化時は環境変数で対応)</li>
+</ul>
+</li>
+</ul>
+<h4 id="option-2-cosign-sigstore">Option 2: Cosign (Sigstore)</h4>
+<ul>
+<li><p><strong>ツール名</strong>: Cosign</p>
+</li>
+<li><p><strong>リポジトリ</strong>: <a href="https://github.com/sigstore/cosign">https://github.com/sigstore/cosign</a></p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-bash">cosign sign-blob --key cosign.key sbom.json &gt; sbom.json.sig
+cosign verify-blob --key cosign.pub --signature sbom.json.sig sbom.json
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>モダンな署名ツール</li>
+<li>Keyless署名対応 (OIDC認証)</li>
+<li>コンテナイメージ署名にも使用可能</li>
+<li>透明性ログ (Rekor) 統合</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>GitHub Actions環境に手動インストールが必要</li>
+<li>比較的新しいツール (学習コストあり)</li>
+<li>GPGほど広く普及していない</li>
+</ul>
+</li>
+</ul>
+<h4 id="option-3-github-actions-native-attestation">Option 3: GitHub Actions Native Attestation</h4>
+<ul>
+<li><p><strong>ツール名</strong>: GitHub Actions Attestation (Beta)</p>
+</li>
+<li><p><strong>使用例</strong>:</p>
+<pre><code class="lang-yaml">- name: Attest Build Provenance
+  uses: actions/attest-build-provenance@v1
+  with:
+    subject-path: 'wt-v1.0.0-windows-x64.exe'
+</code></pre>
+</li>
+<li><p><strong>メリット</strong>:</p>
+<ul>
+<li>GitHub公式機能</li>
+<li>追加ツール不要</li>
+<li>自動的に検証可能</li>
+<li>ビルドプロベナンス情報も含む</li>
+</ul>
+</li>
+<li><p><strong>デメリット</strong>:</p>
+<ul>
+<li>Beta機能 (安定性未知)</li>
+<li>GitHub外での検証が困難</li>
+<li>SBOMファイル自体の署名には適さない (バイナリのみ)</li>
+</ul>
+</li>
+</ul>
+<h3 id="決定-2">決定</h3>
+<p>Option 1: GPG を採用</p>
+<p>理由:</p>
+<ul>
+<li>GitHub Actions環境に標準でインストール済み</li>
+<li>業界標準で広く認知されている</li>
+<li>SBOM と SHA256SUMS の両方に署名可能</li>
+<li>公開鍵を簡単に配布・検証できる</li>
+</ul>
+<h3 id="実装計画">実装計画</h3>
+<ol>
+<li><p><strong>GPG鍵ペア生成</strong> (ローカル作業)</p>
+<pre><code class="lang-bash">gpg --full-generate-key
+# 鍵タイプ: RSA and RSA (default)
+# 鍵サイズ: 4096
+# 有効期限: 2年
+# 名前: Release Pipeline Bot
+# メール: release@kuju63.example.com
+</code></pre>
+</li>
+<li><p><strong>秘密鍵のエクスポートとシークレット設定</strong></p>
+<pre><code class="lang-bash">gpg --armor --export-secret-keys YOUR_KEY_ID
+# 出力を SECRETS.md に従って GitHub Secrets に設定
+</code></pre>
+</li>
+<li><p><strong>署名スクリプト作成</strong> (<code>.github/scripts/sign-artifacts.sh</code>)</p>
+<pre><code class="lang-bash">#!/usr/bin/env bash
+echo &quot;$GPG_PRIVATE_KEY&quot; | gpg --batch --import
+echo &quot;$GPG_PASSPHRASE&quot; | gpg --batch --yes --passphrase-fd 0 --armor --detach-sign sbom.json
+echo &quot;$GPG_PASSPHRASE&quot; | gpg --batch --yes --passphrase-fd 0 --armor --detach-sign SHA256SUMS
+# 生成: sbom.json.asc, SHA256SUMS.asc
+</code></pre>
+</li>
+<li><p><strong>公開鍵の配布</strong></p>
+<ul>
+<li><code>docs/GPG_PUBLIC_KEY.asc</code> としてリポジトリに保存</li>
+<li>GitHub Releaseの説明に公開鍵のフィンガープリントを記載</li>
+</ul>
+</li>
+<li><p><strong>検証方法のドキュメント化</strong> (<code>quickstart.md</code>)</p>
+<pre><code class="lang-bash"># 公開鍵のインポート
+gpg --import docs/GPG_PUBLIC_KEY.asc
+
+# 署名の検証
+gpg --verify sbom.json.asc sbom.json
+gpg --verify SHA256SUMS.asc SHA256SUMS
+</code></pre>
+</li>
+</ol>
+<h3 id="参考資料-6">参考資料</h3>
+<ul>
+<li><a href="https://www.gnupg.org/documentation/manuals/gnupg/">GPG Manual</a></li>
+<li><a href="https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key">GitHub: Managing GPG keys</a></li>
+<li><a href="https://docs.sigstore.dev/cosign/overview/">Sigstore Cosign</a></li>
+</ul>
+<hr>
+<h2 id="まとめ">まとめ</h2>
+<table>
+<thead>
+<tr>
+<th>技術決定項目</th>
+<th>選択ツール/手法</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>セマンティックバージョニング</td>
+<td><strong>paulhatch/semantic-version</strong> (Action)</td>
+<td>コミュニティメンテ、保守コスト削減、7.3k+ stars</td>
+</tr>
+<tr>
+<td>CycloneDX統合</td>
+<td><strong>anchore/sbom-action</strong> (Action)</td>
+<td>セットアップ簡単、1.5k+ stars、保守コスト削減</td>
+</tr>
+<tr>
+<td>Conventional Commitsパーサー</td>
+<td>paulhatch/semantic-version内蔵</td>
+<td>Action統合済み、追加実装不要</td>
+</tr>
+<tr>
+<td>並行ビルド</td>
+<td>GitHub Actionsマトリックス (<strong>max-parallel: 4</strong>)</td>
+<td><strong>全4プラットフォーム並列実行保証、70-75%高速化</strong></td>
+</tr>
+<tr>
+<td>カバレッジ報告</td>
+<td>Codacy Coverage Reporter (コミットID指定)</td>
+<td>既存Codacy統合活用、PR品質ゲート</td>
+</tr>
+<tr>
+<td>デジタル署名</td>
+<td>GPG 2.x</td>
+<td>業界標準、プリインストール、広く普及</td>
+</tr>
+<tr>
+<td><strong>セキュリティ強化</strong></td>
+<td><strong>全サードパーティActionコミットID指定</strong></td>
+<td><strong>サプライチェーン攻撃防止、不変参照</strong></td>
+</tr>
+<tr>
+<td><strong>認証</strong></td>
+<td><strong>GITHUB_TOKEN (自動提供)</strong></td>
+<td><strong>Personal Access Token不要、安全</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="実装時の主要変更点">実装時の主要変更点</h3>
+<ol>
+<li><strong>バージョン計算</strong>: カスタムスクリプト削除 → <code>paulhatch/semantic-version@a8f8f59f</code> 採用</li>
+<li><strong>SBOM生成</strong>: カスタムスクリプト削除 → <code>anchore/sbom-action@61119d45</code> 採用</li>
+<li><strong>セキュリティ</strong>: 全サードパーティActions（5つ）をコミットID指定に変更
+<ul>
+<li>paulhatch/semantic-version@a8f8f59f (v5.4.0)</li>
+<li>anchore/sbom-action@61119d45 (v0.17.2)</li>
+<li>codacy/codacy-coverage-reporter-action@a3881847</li>
+<li>dorny/test-reporter@bdab7eb6 (v2)</li>
+<li>softprops/action-gh-release@a06a81a0 (v2)</li>
+</ul>
+</li>
+<li><strong>並列化</strong>: build.ymlに<code>max-parallel: 4</code>追加で全プラットフォーム同時ビルド保証</li>
+<li><strong>認証</strong>: GH_RELEASE_TOKEN削除、GITHUB_TOKEN（自動提供）使用</li>
+<li><strong>ドキュメント</strong>: CONVENTIONAL_COMMITS.mdを<code>.github/</code>から<code>docs/ja/</code>に移動</li>
+</ol>
+<p>全ての技術調査と実装が完了しました。</p>
+<hr>
+<p><strong>最終更新</strong>: 2026-01-05<br>
+<strong>担当者</strong>: Release Pipeline Team</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/research.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>wt - Git Worktree 作成ツール ユーザーガイド | wt </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="wt - Git Worktree 作成ツール ユーザーガイド | wt ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/ja/user-guide.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wt">
+            wt
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="wt---git-worktree-作成ツール-ユーザーガイド">wt - Git Worktree 作成ツール ユーザーガイド</h1>
+
+<p><strong>バージョン</strong>: 1.0.0<br>
+<strong>最終更新</strong>: 2026-01-03</p>
+<h2 id="目次">目次</h2>
+<ol>
+<li><a href="#%E6%A6%82%E8%A6%81">概要</a></li>
+<li><a href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">インストール</a></li>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E7%9A%84%E3%81%AA%E4%BD%BF%E3%81%84%E6%96%B9">基本的な使い方</a></li>
+<li><a href="#%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9">コマンドリファレンス</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E4%BE%8B">使用例</a></li>
+<li><a href="#%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0">トラブルシューティング</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+<h2 id="概要">概要</h2>
+<p><code>wt</code> は Git worktree の作成を簡単にする CLI ツールです。複雑な Git コマンドを覚える必要なく、ブランチ名を指定するだけで、新しいブランチの作成と worktree の追加を一度に実行できます。</p>
+<h3 id="主な機能">主な機能</h3>
+<ul>
+<li><strong>シンプルなコマンド</strong>: <code>wt create &lt;ブランチ名&gt;</code> だけで worktree を作成</li>
+<li><strong>自動ブランチ作成</strong>: 指定したブランチが存在しない場合は自動的に作成</li>
+<li><strong>エディター起動</strong>: worktree 作成後、指定したエディターを自動起動（オプション）</li>
+<li><strong>カスタムパス</strong>: worktree の作成場所を自由に指定可能</li>
+<li><strong>エラーメッセージ</strong>: わかりやすいエラーメッセージと解決策を表示</li>
+<li><strong>クロスプラットフォーム</strong>: Windows、macOS、Linux で動作</li>
+</ul>
+<h2 id="インストール">インストール</h2>
+<h3 id="前提条件">前提条件</h3>
+<ul>
+<li>Git 2.5 以上</li>
+<li>.NET 10 Runtime</li>
+</ul>
+<h3 id="インストール手順">インストール手順</h3>
+<h4 id="macos--linux">macOS / Linux</h4>
+<pre><code class="lang-bash"># リポジトリをクローン
+git clone https://github.com/your-org/wt.git
+cd wt
+
+# ビルド
+dotnet build -c Release
+
+# インストール（オプション）
+sudo cp wt.cli/bin/Release/net10.0/wt.cli /usr/local/bin/wt
+sudo chmod +x /usr/local/bin/wt
+</code></pre>
+<h4 id="windows">Windows</h4>
+<pre><code class="lang-powershell"># リポジトリをクローン
+git clone https://github.com/your-org/wt.git
+cd wt
+
+# ビルド
+dotnet build -c Release
+
+# インストール（オプション）
+# wt.cli/bin/Release/net10.0/wt.cli.exe を PATH に追加
+</code></pre>
+<h3 id="インストール確認">インストール確認</h3>
+<pre><code class="lang-bash">wt --help
+</code></pre>
+<p>正常にインストールされていれば、ヘルプメッセージが表示されます。</p>
+<h2 id="基本的な使い方">基本的な使い方</h2>
+<h3 id="最もシンプルな使い方">最もシンプルな使い方</h3>
+<pre><code class="lang-bash">wt create &lt;ブランチ名&gt;
+</code></pre>
+<p>これだけで、以下が自動的に実行されます：</p>
+<ol>
+<li>現在のブランチをベースに新しいブランチを作成</li>
+<li><code>../worktrees/&lt;ブランチ名&gt;</code> に worktree を追加</li>
+<li>作成された worktree のパスを表示</li>
+</ol>
+<h3 id="例">例</h3>
+<pre><code class="lang-bash"># feature-login という名前のブランチと worktree を作成
+wt create feature-login
+</code></pre>
+<p>実行結果：</p>
+<pre><code class="lang-shell">✓ Created branch 'feature-login' from 'main'
+✓ Added worktree at: /Users/yourname/projects/worktrees/feature-login
+→ Next: cd /Users/yourname/projects/worktrees/feature-login
+</code></pre>
+<h2 id="コマンドリファレンス">コマンドリファレンス</h2>
+<h3 id="コマンド構文">コマンド構文</h3>
+<pre><code class="lang-bash">wt create &lt;ブランチ名&gt; [オプション]
+</code></pre>
+<h3 id="必須引数">必須引数</h3>
+<h4 id="ブランチ名"><code>&lt;ブランチ名&gt;</code></h4>
+<p>作成する新しいブランチの名前を指定します。</p>
+<ul>
+<li><strong>制約</strong>: Git の命名規則に準拠（英数字、<code>-</code>、<code>_</code>、<code>/</code> のみ）</li>
+<li><strong>例</strong>: <code>feature-login</code>, <code>bugfix/issue-123</code>, <code>user_story_1</code></li>
+</ul>
+<h3 id="オプション">オプション</h3>
+<h4 id="--base--b-ベースブランチ"><code>--base, -b &lt;ベースブランチ&gt;</code></h4>
+<p>新しいブランチを作成する際のベースとなるブランチを指定します。</p>
+<ul>
+<li><strong>デフォルト</strong>: 現在のブランチ</li>
+<li><strong>例</strong>: <code>--base main</code>, <code>-b develop</code></li>
+</ul>
+<pre><code class="lang-bash">wt create hotfix-urgent --base production
+</code></pre>
+<h4 id="--path--p-パス"><code>--path, -p &lt;パス&gt;</code></h4>
+<p>worktree を作成する場所を指定します。</p>
+<ul>
+<li><strong>デフォルト</strong>: <code>../worktrees/&lt;ブランチ名&gt;</code></li>
+<li><strong>指定可能</strong>: 絶対パスまたは相対パス</li>
+<li><strong>例</strong>: <code>--path ~/projects/my-feature</code>, <code>-p /tmp/test-worktree</code></li>
+</ul>
+<pre><code class="lang-bash">wt create experiment --path ~/experiments/test-feature
+</code></pre>
+<h4 id="--editor--e-エディター"><code>--editor, -e &lt;エディター&gt;</code></h4>
+<p>worktree 作成後に自動起動するエディターを指定します。</p>
+<ul>
+<li><strong>指定可能な値</strong>: <code>vscode</code>, <code>vim</code>, <code>emacs</code>, <code>nano</code>, <code>idea</code></li>
+<li><strong>デフォルト</strong>: なし（エディターを起動しない）</li>
+<li><strong>例</strong>: <code>--editor vscode</code>, <code>-e vim</code></li>
+</ul>
+<pre><code class="lang-bash">wt create feature-ui --editor vscode
+</code></pre>
+<h4 id="--checkout-existing"><code>--checkout-existing</code></h4>
+<p>既存のブランチが存在する場合、そのブランチをチェックアウトします。</p>
+<ul>
+<li><strong>型</strong>: フラグ（値なし）</li>
+<li><strong>デフォルト</strong>: false（エラーを表示）</li>
+</ul>
+<pre><code class="lang-bash">wt create existing-branch --checkout-existing
+</code></pre>
+<h4 id="--output--o-形式"><code>--output, -o &lt;形式&gt;</code></h4>
+<p>出力形式を指定します。</p>
+<ul>
+<li><strong>指定可能な値</strong>: <code>human</code>（人間可読）、<code>json</code>（JSON形式）</li>
+<li><strong>デフォルト</strong>: <code>human</code></li>
+<li><strong>例</strong>: <code>--output json</code>, <code>-o json</code></li>
+</ul>
+<pre><code class="lang-bash">wt create api-v2 --output json
+</code></pre>
+<h4 id="--verbose--v"><code>--verbose, -v</code></h4>
+<p>詳細な診断情報を出力します。</p>
+<ul>
+<li><strong>型</strong>: フラグ（値なし）</li>
+<li><strong>デフォルト</strong>: false</li>
+</ul>
+<pre><code class="lang-bash">wt create debug-test --verbose
+</code></pre>
+<h4 id="--help--h"><code>--help, -h</code></h4>
+<p>ヘルプメッセージを表示します。</p>
+<pre><code class="lang-bash">wt --help
+wt create --help
+</code></pre>
+<h2 id="使用例">使用例</h2>
+<h3 id="例1-基本的な-worktree-作成">例1: 基本的な worktree 作成</h3>
+<p>現在のブランチをベースに、デフォルトの場所に worktree を作成します。</p>
+<pre><code class="lang-bash">wt create feature-authentication
+</code></pre>
+<p><strong>実行結果:</strong></p>
+<pre><code class="lang-shell">✓ Created branch 'feature-authentication' from 'main'
+✓ Added worktree at: /Users/dev/projects/worktrees/feature-authentication
+→ Next: cd /Users/dev/projects/worktrees/feature-authentication
+</code></pre>
+<h3 id="例2-ベースブランチを指定">例2: ベースブランチを指定</h3>
+<p><code>develop</code> ブランチをベースに worktree を作成します。</p>
+<pre><code class="lang-bash">wt create feature-payment --base develop
+</code></pre>
+<h3 id="例3-エディターを自動起動">例3: エディターを自動起動</h3>
+<p>worktree 作成後、VS Code を自動起動します。</p>
+<pre><code class="lang-bash">wt create feature-dashboard --editor vscode
+</code></pre>
+<p><strong>実行結果:</strong></p>
+<pre><code class="lang-shell">✓ Created branch 'feature-dashboard' from 'main'
+✓ Added worktree at: /Users/dev/projects/worktrees/feature-dashboard
+✓ Launched VS Code
+</code></pre>
+<h3 id="例4-カスタムパスに作成">例4: カスタムパスに作成</h3>
+<p>ホームディレクトリ配下の任意の場所に worktree を作成します。</p>
+<pre><code class="lang-bash">wt create experiment --path ~/experiments/feature-x
+</code></pre>
+<h3 id="例5-既存ブランチをチェックアウト">例5: 既存ブランチをチェックアウト</h3>
+<p>既に存在するブランチで worktree を作成します。</p>
+<pre><code class="lang-bash">wt create existing-feature --checkout-existing
+</code></pre>
+<h3 id="例6-json-形式で出力">例6: JSON 形式で出力</h3>
+<p>スクリプトから利用しやすい JSON 形式で結果を出力します。</p>
+<pre><code class="lang-bash">wt create api-endpoint --output json
+</code></pre>
+<p><strong>実行結果:</strong></p>
+<pre><code class="lang-json">{
+  &quot;success&quot;: true,
+  &quot;worktree&quot;: {
+    &quot;path&quot;: &quot;/Users/dev/projects/worktrees/api-endpoint&quot;,
+    &quot;branch&quot;: &quot;api-endpoint&quot;,
+    &quot;baseBranch&quot;: &quot;main&quot;,
+    &quot;createdAt&quot;: &quot;2026-01-03T14:30:00Z&quot;
+  },
+  &quot;editorLaunched&quot;: false
+}
+</code></pre>
+<h3 id="例7-詳細情報を表示">例7: 詳細情報を表示</h3>
+<p>トラブルシューティング用に詳細な実行ログを出力します。</p>
+<pre><code class="lang-bash">wt create test-branch --verbose
+</code></pre>
+<p><strong>実行結果:</strong></p>
+<pre><code class="lang-shell">[DEBUG] Checking for Git repository...
+[DEBUG] Found Git repository at: /Users/dev/projects/my-repo
+[DEBUG] Current branch: main
+[DEBUG] Checking if branch 'test-branch' exists...
+[DEBUG] Branch 'test-branch' does not exist
+[DEBUG] Creating branch 'test-branch' from 'main'...
+[DEBUG] Executing: git branch test-branch main
+[DEBUG] Creating worktree at: /Users/dev/projects/worktrees/test-branch
+[DEBUG] Executing: git worktree add /Users/dev/projects/worktrees/test-branch test-branch
+✓ Created branch 'test-branch' from 'main'
+✓ Added worktree at: /Users/dev/projects/worktrees/test-branch
+→ Next: cd /Users/dev/projects/worktrees/test-branch
+</code></pre>
+<h3 id="例8-複数オプションを組み合わせ">例8: 複数オプションを組み合わせ</h3>
+<p>ベースブランチ、カスタムパス、エディター起動を同時に指定します。</p>
+<pre><code class="lang-bash">wt create hotfix-urgent --base production --path ~/hotfixes/urgent --editor vim
+</code></pre>
+<h2 id="トラブルシューティング">トラブルシューティング</h2>
+<h3 id="エラー-git-が見つかりません">エラー: Git が見つかりません</h3>
+<p><strong>エラーメッセージ:</strong></p>
+<pre><code class="lang-shell">✗ Error: Git not found in PATH
+→ Solution: Install Git 2.5 or later and ensure it's in your PATH
+</code></pre>
+<p><strong>解決方法:</strong></p>
+<ol>
+<li><p>Git をインストールします</p>
+<ul>
+<li>macOS: <code>brew install git</code></li>
+<li>Ubuntu/Debian: <code>sudo apt install git</code></li>
+<li>Windows: <a href="https://git-scm.com/">git-scm.com</a> からインストーラーをダウンロード</li>
+</ul>
+</li>
+<li><p>Git が PATH に含まれていることを確認</p>
+<pre><code class="lang-bash">git --version
+</code></pre>
+</li>
+</ol>
+<h3 id="エラー-git-リポジトリではありません">エラー: Git リポジトリではありません</h3>
+<p><strong>エラーメッセージ:</strong></p>
+<pre><code class="lang-shell">✗ Error: Not a Git repository
+→ Solution: Run this command from within a Git repository, or run 'git init' to create one
+</code></pre>
+<p><strong>解決方法:</strong></p>
+<ol>
+<li><p>Git リポジトリ内で実行していることを確認</p>
+<pre><code class="lang-bash">git status
+</code></pre>
+</li>
+<li><p>まだリポジトリでない場合は初期化</p>
+<pre><code class="lang-bash">git init
+</code></pre>
+</li>
+</ol>
+<h3 id="エラー-ブランチが既に存在します">エラー: ブランチが既に存在します</h3>
+<p><strong>エラーメッセージ:</strong></p>
+<pre><code class="lang-shell">✗ Error: Branch 'feature-x' already exists
+→ Solution: Use --checkout-existing to checkout the existing branch, or choose a different branch name
+</code></pre>
+<p><strong>解決方法:</strong></p>
+<p>オプション1: 既存ブランチをチェックアウト</p>
+<pre><code class="lang-bash">wt create feature-x --checkout-existing
+</code></pre>
+<p>オプション2: 別のブランチ名を使用</p>
+<pre><code class="lang-bash">wt create feature-x-v2
+</code></pre>
+<h3 id="エラー-無効なブランチ名">エラー: 無効なブランチ名</h3>
+<p><strong>エラーメッセージ:</strong></p>
+<pre><code class="lang-shell">✗ Error: Invalid branch name '-invalid'
+→ Solution: Branch names must start with alphanumeric character and contain only alphanumeric, '-', '_', '/' characters
+</code></pre>
+<p><strong>解決方法:</strong></p>
+<p>Git の命名規則に従ったブランチ名を使用してください：</p>
+<ul>
+<li>✅ 正しい例: <code>feature-login</code>, <code>bugfix/issue-123</code>, <code>user_story_1</code></li>
+<li>❌ 間違った例: <code>-invalid</code>, <code>feature..test</code>, <code>branch name</code> (スペース含む)</li>
+</ul>
+<h3 id="エラー-パスに書き込み権限がありません">エラー: パスに書き込み権限がありません</h3>
+<p><strong>エラーメッセージ:</strong></p>
+<pre><code class="lang-shell">✗ Error: No write permission to path '/protected/directory'
+→ Solution: Choose a different path or check directory permissions
+</code></pre>
+<p><strong>解決方法:</strong></p>
+<ol>
+<li><p>書き込み可能な別のパスを指定</p>
+<pre><code class="lang-bash">wt create test-branch --path ~/projects/worktrees/test-branch
+</code></pre>
+</li>
+<li><p>ディレクトリの権限を確認・修正</p>
+<pre><code class="lang-bash">ls -ld /protected/directory
+chmod u+w /protected/directory  # 必要に応じて
+</code></pre>
+</li>
+</ol>
+<h3 id="エラー-エディターが見つかりません">エラー: エディターが見つかりません</h3>
+<p><strong>エラーメッセージ:</strong></p>
+<pre><code class="lang-shell">⚠ Warning: Editor 'vscode' not found in PATH
+✓ Created branch 'test' from 'main'
+✓ Added worktree at: /Users/dev/projects/worktrees/test
+</code></pre>
+<p><strong>注意</strong>: これは警告のみで、worktree の作成は正常に完了しています。</p>
+<p><strong>解決方法:</strong></p>
+<ol>
+<li><p>エディターが PATH に含まれているか確認</p>
+<pre><code class="lang-bash">which code  # VS Code の場合
+which vim   # Vim の場合
+</code></pre>
+</li>
+<li><p>VS Code の場合は PATH に追加</p>
+<ul>
+<li>VS Code を開く</li>
+<li>Command Palette (Cmd+Shift+P または Ctrl+Shift+P) を開く</li>
+<li>&quot;Shell Command: Install 'code' command in PATH&quot; を実行</li>
+</ul>
+</li>
+</ol>
+<h3 id="エラー-ディスク容量不足">エラー: ディスク容量不足</h3>
+<p><strong>エラーメッセージ:</strong></p>
+<pre><code class="lang-shell">✗ Error: Insufficient disk space
+→ Solution: Free up disk space or choose a different location with more available space
+</code></pre>
+<p><strong>解決方法:</strong></p>
+<ol>
+<li><p>ディスク容量を確認</p>
+<pre><code class="lang-bash">df -h
+</code></pre>
+</li>
+<li><p>不要なファイルを削除してスペースを確保</p>
+</li>
+<li><p>別のディスクにパスを指定</p>
+<pre><code class="lang-bash">wt create test --path /mnt/external/worktrees/test
+</code></pre>
+</li>
+</ol>
+<h2 id="faq">FAQ</h2>
+<h3 id="q1-worktree-を削除するにはどうすればよいですか">Q1: worktree を削除するにはどうすればよいですか？</h3>
+<p>A: Git の標準コマンドを使用します。</p>
+<pre><code class="lang-bash"># worktree を削除
+git worktree remove &lt;worktree-path&gt;
+
+# または、ディレクトリを直接削除
+rm -rf &lt;worktree-path&gt;
+git worktree prune  # クリーンアップ
+</code></pre>
+<h3 id="q2-作成した-worktree-の一覧を確認できますか">Q2: 作成した worktree の一覧を確認できますか？</h3>
+<p>A: Git の標準コマンドで確認できます。</p>
+<pre><code class="lang-bash">git worktree list
+</code></pre>
+<h3 id="q3-デフォルトのエディターを設定できますか">Q3: デフォルトのエディターを設定できますか？</h3>
+<p>A: 現在のバージョンでは、デフォルトのエディター設定機能はありません。毎回 <code>--editor</code> オプションで指定する必要があります。</p>
+<p>将来のバージョンで設定ファイル機能を追加予定です。</p>
+<h3 id="q4-複数の-worktree-を同時に作成できますか">Q4: 複数の worktree を同時に作成できますか？</h3>
+<p>A: 現在のバージョンでは、一度に1つの worktree しか作成できません。</p>
+<p>複数作成する場合は、コマンドを繰り返し実行してください：</p>
+<pre><code class="lang-bash">wt create feature-1
+wt create feature-2
+wt create feature-3
+</code></pre>
+<h3 id="q5-worktree-のパスのデフォルト値を変更できますか">Q5: worktree のパスのデフォルト値を変更できますか？</h3>
+<p>A: 現在のバージョンでは、デフォルトパス (<code>../worktrees/&lt;ブランチ名&gt;</code>) は固定です。</p>
+<p>毎回カスタムパスを指定する場合は、シェルエイリアスを使用すると便利です：</p>
+<pre><code class="lang-bash"># ~/.bashrc または ~/.zshrc に追加
+alias wtc='wt create --path ~/my-worktrees'
+</code></pre>
+<p>使用例：</p>
+<pre><code class="lang-bash">wtc feature-login  # ~/my-worktrees/feature-login に作成される
+</code></pre>
+<h3 id="q6-windows-でパス区切り文字はどうなりますか">Q6: Windows でパス区切り文字はどうなりますか？</h3>
+<p>A: <code>wt</code> は自動的にプラットフォームに応じた適切なパス区切り文字を使用します。</p>
+<ul>
+<li>Windows: <code>\</code> (バックスラッシュ)</li>
+<li>macOS/Linux: <code>/</code> (スラッシュ)</li>
+</ul>
+<p>ユーザーはどちらを指定しても正常に動作します。</p>
+<h3 id="q7-リモートブランチから-worktree-を作成できますか">Q7: リモートブランチから worktree を作成できますか？</h3>
+<p>A: 現在のバージョンでは、ローカルブランチのみサポートしています。</p>
+<p>リモートブランチから作成する場合は、まずローカルにチェックアウトしてから使用してください：</p>
+<pre><code class="lang-bash">git checkout -b feature-remote origin/feature-remote
+wt create feature-remote --checkout-existing
+</code></pre>
+<h3 id="q8-cicd-パイプラインで使用できますか">Q8: CI/CD パイプラインで使用できますか？</h3>
+<p>A: はい、<code>--output json</code> オプションを使用すると、スクリプトから扱いやすくなります。</p>
+<pre><code class="lang-bash">result=$(wt create test-branch --output json)
+echo $result | jq '.worktree.path'
+</code></pre>
+<h3 id="q9-worktree-内で別の-worktree-を作成できますか">Q9: worktree 内で別の worktree を作成できますか？</h3>
+<p>A: 技術的には可能ですが、推奨しません。</p>
+<p>worktree は常にメインリポジトリから作成することをお勧めします。</p>
+<h3 id="q10-ライセンスは何ですか">Q10: ライセンスは何ですか？</h3>
+<p>A: このプロジェクトは MIT ライセンスの下で公開されています。</p>
+<p>詳細は <a href="../../LICENSE">LICENSE</a> ファイルを参照してください。</p>
+<h2 id="サポート">サポート</h2>
+<p>問題が解決しない場合は、以下の方法でサポートを受けることができます：</p>
+<ol>
+<li><strong>GitHub Issues</strong>: <a href="https://github.com/kuju63/wt/issues">Issues ページ</a> でバグ報告や機能リクエストを投稿</li>
+<li><strong>ドキュメント</strong>: <a href="../../README.html">README.md</a> を参照</li>
+<li><strong>コミュニティ</strong>: GitHub Discussions で質問</li>
+</ol>
+<h2 id="関連リンク">関連リンク</h2>
+<ul>
+<li><a href="https://git-scm.com/docs/git-worktree">Git Worktree 公式ドキュメント</a></li>
+<li><a href="https://github.com/kuju63/wt">GitHub リポジトリ</a></li>
+</ul>
+<hr>
+<p><strong>最終更新</strong>: 2026-01-03<br>
+<strong>バージョン</strong>: 1.0.0</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/ja/user-guide.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

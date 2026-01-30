@@ -15,16 +15,15 @@ namespace Kuju63.WorkTree.Tests.Services.Worktree;
 public class WorktreeServiceRemoveTests
 {
     private readonly Mock<IGitService> _mockGitService;
-    private readonly Mock<IPathHelper> _mockPathHelper;
     private readonly MockFileSystem _mockFileSystem;
     private readonly WorktreeService _worktreeService;
 
     public WorktreeServiceRemoveTests()
     {
         _mockGitService = new Mock<IGitService>();
-        _mockPathHelper = new Mock<IPathHelper>();
+        var mockPathHelper = new Mock<IPathHelper>();
         _mockFileSystem = new MockFileSystem();
-        _worktreeService = new WorktreeService(_mockGitService.Object, _mockPathHelper.Object);
+        _worktreeService = new WorktreeService(_mockGitService.Object, mockPathHelper.Object);
     }
 
     #region ValidateForRemovalAsync Tests

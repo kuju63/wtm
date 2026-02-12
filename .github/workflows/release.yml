@@ -506,6 +506,12 @@ jobs:
           docfx metadata
           docfx build --output _site/${{ steps.version.outputs.version }}
       
+      - name: Fetch existing version manifest from gh-pages
+        run: |
+          mkdir -p _site
+          git fetch origin gh-pages:gh-pages 2>/dev/null || true
+          git show gh-pages:versions.json > _site/versions.json 2>/dev/null || echo '{"versions": []}' > _site/versions.json
+
       - name: Update version manifest
         run: |
           python3 .github/scripts/update-version-manifest.py _site/versions.json ${{ steps.version.outputs.version }}

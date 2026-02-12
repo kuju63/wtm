@@ -138,6 +138,9 @@ release-assets/
 _manifest/
 sbom-test.spdx.json
 
+# Python
+__pycache__/
+
 .env
 .mcp.json
 .serena/

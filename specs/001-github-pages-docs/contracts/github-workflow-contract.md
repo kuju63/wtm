@@ -110,10 +110,37 @@ outputs:
 
 **Note**: Link validation and `--warningsAsErrors` flag are deferred to Phase 8 (Polish & Cross-Cutting Concerns) as quality improvements, not MVP requirements.
 
-### Step 4: Update Version Manifest
+### Step 4: Fetch Existing Version Manifest
 
-**Input**: New version from previous step
-**Output**: Updated `versions.json` in `_site/`  
+**Input**: `gh-pages` branch (may not exist on first release)
+**Output**: Existing `versions.json` placed at `_site/versions.json`
+**Contract**:
+
+```yaml
+- name: Fetch existing version manifest from gh-pages
+  run: |
+    mkdir -p _site
+    git fetch origin gh-pages:gh-pages 2>/dev/null || true
+    git show gh-pages:versions.json > _site/versions.json 2>/dev/null || echo '{"versions": []}' > _site/versions.json
+```
+
+**Validation**:
+
+- MUST attempt to fetch `versions.json` from `gh-pages` branch
+- MUST gracefully handle missing `gh-pages` branch (first release scenario)
+- MUST gracefully handle missing `versions.json` on `gh-pages` branch
+- MUST create empty manifest `{"versions": []}` when no existing manifest is found
+- MUST place the fetched or empty manifest at `_site/versions.json` before the update step
+
+**Rationale**:
+
+- The `peaceiris/actions-gh-pages` action's `keep_files: true` option only preserves existing files on `gh-pages` during deployment. It does NOT make previously deployed files available in the build workspace.
+- Without this explicit fetch step, the Python update script always starts from an empty manifest, causing previous version entries to be lost.
+
+### Step 5: Update Version Manifest
+
+**Input**: Existing manifest from Step 4, new version from Step 1
+**Output**: Updated `versions.json` in `_site/`
 **Contract**:
 
 ```yaml
@@ -130,7 +157,8 @@ outputs:
 - MUST remove `isLatest` from all other versions
 - MUST sort versions by version string (descending)
 - MUST automatically generate publishedDate with UTC timestamp
-- MUST be idempotent (re-running updates, doesn't duplicate)
+- MUST be idempotent (re-running with the same version updates the existing entry instead of creating a duplicate)
+- MUST preserve all existing version entries from the fetched manifest
 - MUST exit with code 0 on success
 
 **Python Script Contract** (`.github/scripts/update-version-manifest.py`):
@@ -139,12 +167,15 @@ outputs:
 # MUST accept positional arguments: <manifest_path> <version>
 # Usage: update-version-manifest.py <manifest_path> <version>
 # MUST read existing manifest from path (or create empty if missing)
+# MUST check for duplicate version entries before adding
+# MUST update existing entry (publishedDate, isLatest) if version already exists
+# MUST add new entry only if version does not already exist
 # MUST update/add version entry with auto-generated publishedDate
 # MUST write valid JSON output to same path
 # MUST exit 0 on success, non-zero on error
 ```
 
-### Step 5: Deploy to GitHub Pages
+### Step 6: Deploy to GitHub Pages
 
 **Input**: Built site in `_site/`  
 **Output**: Deployed documentation on GitHub Pages  
@@ -162,16 +193,11 @@ outputs:
 **Validation**:
 
 - MUST deploy entire `_site` directory
-- MUST preserve existing version directories (keep_files: true)
+- MUST preserve existing version directories (`keep_files: true`)
 - MUST use GITHUB_TOKEN for authentication
 - MUST exit with code 0 on successful deployment
 
-**Note**: The peaceiris/actions-gh-pages action handles manifest fetching internally through keep_files: true, eliminating the need for explicit gh-pages branch fetching.
-      --no-warnings \
-      _output/${{ steps.version.outputs.minor }}/
-
-```
-**Note**: The peaceiris/actions-gh-pages action handles manifest fetching internally through keep_files: true, eliminating the need for explicit gh-pages branch fetching.
+**Note**: The `keep_files: true` option preserves existing files on the `gh-pages` branch during deployment (e.g., previously deployed version directories). However, it does NOT make those files available in the build workspace. The explicit fetch step (Step 4) is required to retrieve the existing `versions.json` before the update step.
 
 ## Error Handling
 
@@ -182,6 +208,8 @@ outputs:
 | Command doc generation fails | Stop workflow, show error | 1 |
 | DocFX metadata generation fails | Stop workflow, show error | 1 |
 | DocFX build fails | Stop workflow, show build errors | 1 |
+| gh-pages branch not found | Non-fatal: fall back to empty manifest `{"versions": []}` | 0 |
+| versions.json not found on gh-pages | Non-fatal: fall back to empty manifest `{"versions": []}` | 0 |
 | Version manifest update fails | Stop workflow, show Python error | 1 |
 | GitHub Pages deployment fails | Handled by peaceiris action (auto-retry) | 1 |
 

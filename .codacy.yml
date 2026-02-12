@@ -18,6 +18,9 @@ exclude_paths:
   - "TestResults/**"
   - "**/TestResults/**"
 
+  # Coverage reports (generated)
+  - "coverage/**"
+
   # NuGet packages
   - "packages/**"
   - ".nuget/**"
@@ -27,6 +30,9 @@ exclude_paths:
   - ".vscode/**"
   - "*.user"
   - "*.suo"
+
+  # DocFX template assets (browser JS)
+  - "template/public/**"
 
   # Generated files
   - "**/*.Designer.cs"

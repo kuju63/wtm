@@ -121,6 +121,9 @@ Thumbs.db
 .env*
 !.env.example
 
+# MCP / local integration env files
+codacy.env
+
 # Logs
 *.log
 *.log.*

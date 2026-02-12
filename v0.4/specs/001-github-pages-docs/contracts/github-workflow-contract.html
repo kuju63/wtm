@@ -182,9 +182,32 @@ needs: [calculate-version, create-release]
 <li>MUST exit with code 0 on success</li>
 </ul>
 <p><strong>Note</strong>: Link validation and <code>--warningsAsErrors</code> flag are deferred to Phase 8 (Polish &amp; Cross-Cutting Concerns) as quality improvements, not MVP requirements.</p>
-<h3 id="step-4-update-version-manifest">Step 4: Update Version Manifest</h3>
-<p><strong>Input</strong>: New version from previous step
-<strong>Output</strong>: Updated <code>versions.json</code> in <code>_site/</code><br>
+<h3 id="step-4-fetch-existing-version-manifest">Step 4: Fetch Existing Version Manifest</h3>
+<p><strong>Input</strong>: <code>gh-pages</code> branch (may not exist on first release)
+<strong>Output</strong>: Existing <code>versions.json</code> placed at <code>_site/versions.json</code>
+<strong>Contract</strong>:</p>
+<pre><code class="lang-yaml">- name: Fetch existing version manifest from gh-pages
+  run: |
+    mkdir -p _site
+    git fetch origin gh-pages:gh-pages 2&gt;/dev/null || true
+    git show gh-pages:versions.json &gt; _site/versions.json 2&gt;/dev/null || echo '{&quot;versions&quot;: []}' &gt; _site/versions.json
+</code></pre>
+<p><strong>Validation</strong>:</p>
+<ul>
+<li>MUST attempt to fetch <code>versions.json</code> from <code>gh-pages</code> branch</li>
+<li>MUST gracefully handle missing <code>gh-pages</code> branch (first release scenario)</li>
+<li>MUST gracefully handle missing <code>versions.json</code> on <code>gh-pages</code> branch</li>
+<li>MUST create empty manifest <code>{&quot;versions&quot;: []}</code> when no existing manifest is found</li>
+<li>MUST place the fetched or empty manifest at <code>_site/versions.json</code> before the update step</li>
+</ul>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>The <code>peaceiris/actions-gh-pages</code> action's <code>keep_files: true</code> option only preserves existing files on <code>gh-pages</code> during deployment. It does NOT make previously deployed files available in the build workspace.</li>
+<li>Without this explicit fetch step, the Python update script always starts from an empty manifest, causing previous version entries to be lost.</li>
+</ul>
+<h3 id="step-5-update-version-manifest">Step 5: Update Version Manifest</h3>
+<p><strong>Input</strong>: Existing manifest from Step 4, new version from Step 1
+<strong>Output</strong>: Updated <code>versions.json</code> in <code>_site/</code>
 <strong>Contract</strong>:</p>
 <pre><code class="lang-yaml">- name: Update version manifest
   run: |
@@ -198,18 +221,22 @@ needs: [calculate-version, create-release]
 <li>MUST remove <code>isLatest</code> from all other versions</li>
 <li>MUST sort versions by version string (descending)</li>
 <li>MUST automatically generate publishedDate with UTC timestamp</li>
-<li>MUST be idempotent (re-running updates, doesn't duplicate)</li>
+<li>MUST be idempotent (re-running with the same version updates the existing entry instead of creating a duplicate)</li>
+<li>MUST preserve all existing version entries from the fetched manifest</li>
 <li>MUST exit with code 0 on success</li>
 </ul>
 <p><strong>Python Script Contract</strong> (<code>.github/scripts/update-version-manifest.py</code>):</p>
 <pre><code class="lang-python"># MUST accept positional arguments: &lt;manifest_path&gt; &lt;version&gt;
 # Usage: update-version-manifest.py &lt;manifest_path&gt; &lt;version&gt;
 # MUST read existing manifest from path (or create empty if missing)
+# MUST check for duplicate version entries before adding
+# MUST update existing entry (publishedDate, isLatest) if version already exists
+# MUST add new entry only if version does not already exist
 # MUST update/add version entry with auto-generated publishedDate
 # MUST write valid JSON output to same path
 # MUST exit 0 on success, non-zero on error
 </code></pre>
-<h3 id="step-5-deploy-to-github-pages">Step 5: Deploy to GitHub Pages</h3>
+<h3 id="step-6-deploy-to-github-pages">Step 6: Deploy to GitHub Pages</h3>
 <p><strong>Input</strong>: Built site in <code>_site/</code><br>
 <strong>Output</strong>: Deployed documentation on GitHub Pages<br>
 <strong>Contract</strong>:</p>
@@ -223,65 +250,144 @@ needs: [calculate-version, create-release]
 <p><strong>Validation</strong>:</p>
 <ul>
 <li>MUST deploy entire <code>_site</code> directory</li>
-<li>MUST preserve existing version directories (keep_files: true)</li>
+<li>MUST preserve existing version directories (<code>keep_files: true</code>)</li>
 <li>MUST use GITHUB_TOKEN for authentication</li>
 <li>MUST exit with code 0 on successful deployment</li>
 </ul>
-<p><strong>Note</strong>: The peaceiris/actions-gh-pages action handles manifest fetching internally through keep_files: true, eliminating the need for explicit gh-pages branch fetching.
---no-warnings <br>
-_output/${{ steps.version.outputs.minor }}/</p>
-<pre><code>**Note**: The peaceiris/actions-gh-pages action handles manifest fetching internally through keep_files: true, eliminating the need for explicit gh-pages branch fetching.
-
-## Error Handling
-
-| Error Condition | Required Behavior | Exit Code |
-|-----------------|-------------------|-----------|
-| Invalid version tag format | Fail with clear error message | 1 |
-| Version extraction fails | Stop workflow immediately | 1 |
-| Command doc generation fails | Stop workflow, show error | 1 |
-| DocFX metadata generation fails | Stop workflow, show error | 1 |
-| DocFX build fails | Stop workflow, show build errors | 1 |
-| Version manifest update fails | Stop workflow, show Python error | 1 |
-| GitHub Pages deployment fails | Handled by peaceiris action (auto-retry) | 1 |
-
-**Note**: Link validation and `--warningsAsErrors` are deferred to Phase 8 as quality improvements.
-
-## Performance Requirements
-
-| Metric | Target | Maximum | Success Criteria |
-|--------|--------|---------|------------------|
-| Total workflow duration | &lt;8 minutes | 10 minutes | SC-003 compliance |
-| Command doc generation | &lt;30 seconds | 1 minute | - |
-| DocFX metadata + build | &lt;3 minutes | 5 minutes | Combined step |
-| Manifest update | &lt;10 seconds | 30 seconds | - |
-| Deployment time | &lt;1 minute | 2 minutes | - |
-
-**Note**: Performance targets reflect integrated workflow within release pipeline. Caching (NuGet, DocFX) improves performance significantly.
-
-## Security Requirements
-
-1. **Authentication**:
-   - MUST use OIDC token authentication
-   - MUST NOT use long-lived Personal Access Tokens (PAT)
-
-2. **Permissions**:
-   - MUST use principle of least privilege
-   - Required: `contents: write`, `pages: write`, `id-token: write`
-   - MUST NOT request additional permissions
-
-3. **Secrets**:
-   - MUST NOT expose secrets in workflow logs
-   - MUST NOT log version manifest content (may contain dates/metadata)
-
-4. **Input Validation**:
-   - Python script MUST NOT execute arbitrary code from JSON
-   - Version string MUST be validated before use in paths
-
-## Dependencies
-
-### External Actions
-```yaml
-- actions/checkout@v6
+<p><strong>Note</strong>: The <code>keep_files: true</code> option preserves existing files on the <code>gh-pages</code> branch during deployment (e.g., previously deployed version directories). However, it does NOT make those files available in the build workspace. The explicit fetch step (Step 4) is required to retrieve the existing <code>versions.json</code> before the update step.</p>
+<h2 id="error-handling">Error Handling</h2>
+<table>
+<thead>
+<tr>
+<th>Error Condition</th>
+<th>Required Behavior</th>
+<th>Exit Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Invalid version tag format</td>
+<td>Fail with clear error message</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Version extraction fails</td>
+<td>Stop workflow immediately</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Command doc generation fails</td>
+<td>Stop workflow, show error</td>
+<td>1</td>
+</tr>
+<tr>
+<td>DocFX metadata generation fails</td>
+<td>Stop workflow, show error</td>
+<td>1</td>
+</tr>
+<tr>
+<td>DocFX build fails</td>
+<td>Stop workflow, show build errors</td>
+<td>1</td>
+</tr>
+<tr>
+<td>gh-pages branch not found</td>
+<td>Non-fatal: fall back to empty manifest <code>{&quot;versions&quot;: []}</code></td>
+<td>0</td>
+</tr>
+<tr>
+<td>versions.json not found on gh-pages</td>
+<td>Non-fatal: fall back to empty manifest <code>{&quot;versions&quot;: []}</code></td>
+<td>0</td>
+</tr>
+<tr>
+<td>Version manifest update fails</td>
+<td>Stop workflow, show Python error</td>
+<td>1</td>
+</tr>
+<tr>
+<td>GitHub Pages deployment fails</td>
+<td>Handled by peaceiris action (auto-retry)</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note</strong>: Link validation and <code>--warningsAsErrors</code> are deferred to Phase 8 as quality improvements.</p>
+<h2 id="performance-requirements">Performance Requirements</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Maximum</th>
+<th>Success Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total workflow duration</td>
+<td>&lt;8 minutes</td>
+<td>10 minutes</td>
+<td>SC-003 compliance</td>
+</tr>
+<tr>
+<td>Command doc generation</td>
+<td>&lt;30 seconds</td>
+<td>1 minute</td>
+<td>-</td>
+</tr>
+<tr>
+<td>DocFX metadata + build</td>
+<td>&lt;3 minutes</td>
+<td>5 minutes</td>
+<td>Combined step</td>
+</tr>
+<tr>
+<td>Manifest update</td>
+<td>&lt;10 seconds</td>
+<td>30 seconds</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Deployment time</td>
+<td>&lt;1 minute</td>
+<td>2 minutes</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note</strong>: Performance targets reflect integrated workflow within release pipeline. Caching (NuGet, DocFX) improves performance significantly.</p>
+<h2 id="security-requirements">Security Requirements</h2>
+<ol>
+<li><p><strong>Authentication</strong>:</p>
+<ul>
+<li>MUST use OIDC token authentication</li>
+<li>MUST NOT use long-lived Personal Access Tokens (PAT)</li>
+</ul>
+</li>
+<li><p><strong>Permissions</strong>:</p>
+<ul>
+<li>MUST use principle of least privilege</li>
+<li>Required: <code>contents: write</code>, <code>pages: write</code>, <code>id-token: write</code></li>
+<li>MUST NOT request additional permissions</li>
+</ul>
+</li>
+<li><p><strong>Secrets</strong>:</p>
+<ul>
+<li>MUST NOT expose secrets in workflow logs</li>
+<li>MUST NOT log version manifest content (may contain dates/metadata)</li>
+</ul>
+</li>
+<li><p><strong>Input Validation</strong>:</p>
+<ul>
+<li>Python script MUST NOT execute arbitrary code from JSON</li>
+<li>Version string MUST be validated before use in paths</li>
+</ul>
+</li>
+</ol>
+<h2 id="dependencies">Dependencies</h2>
+<h3 id="external-actions">External Actions</h3>
+<pre><code class="lang-yaml">- actions/checkout@v6
 - actions/setup-dotnet@v5
 - actions/cache@v5
 - peaceiris/actions-gh-pages@v4

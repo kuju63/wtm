@@ -203,7 +203,11 @@ jobs:
       - name: Generate checksums
         run: |
           chmod +x .github/scripts/generate-checksums.sh
-          .github/scripts/generate-checksums.sh release-assets/
+          .github/scripts/generate-checksums.sh release-assets/ || {
+            echo "::error::Failed to generate hash files"
+            echo "::error::This is a critical failure - release cannot proceed without hash files"
+            exit 1
+          }
 
       # Phase 3: US1 - Complete Dependency Disclosure
       - name: Restore dependencies (all platforms)
@@ -435,6 +439,7 @@ jobs:
             release-assets/wt-*-windows-*.exe
             release-assets/wt-*-linux-*
             release-assets/wt-*-macos-*
+            release-assets/*.sha256
             release-assets/wt-*-sbom.spdx.json
             release-assets/wt-*-sbom.spdx.json.asc
             release-assets/SHA256SUMS

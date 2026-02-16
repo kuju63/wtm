@@ -39,6 +39,39 @@ Example: For version 0.0.3, the Linux x64 file would be `wt-v0.0.3-linux-x64.tar
 
 ---
 
+## Verifying Downloads
+
+**Important**: Before installing, we strongly recommend verifying the integrity of downloaded files using SHA256 checksums. This ensures the files have not been corrupted or tampered with during download.
+
+### Quick Verification
+
+Each release includes:
+- **SHA256SUMS**: Combined hash file for all binaries
+- **Individual `.sha256` files**: One per binary (e.g., `wt-v1.0.0-windows-x64.exe.sha256`)
+
+**Verify on Windows (PowerShell):**
+```powershell
+$hash = (Get-FileHash .\wt-v1.0.0-windows-x64.exe).Hash
+$expected = (Get-Content .\wt-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]
+$hash -eq $expected  # Should return True
+```
+
+**Verify on Linux:**
+```bash
+sha256sum -c wt-v1.0.0-linux-x64.sha256
+# Output: wt-v1.0.0-linux-x64: OK
+```
+
+**Verify on macOS:**
+```bash
+shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
+# Output: wt-v1.0.0-macos-arm64: OK
+```
+
+For detailed verification instructions, troubleshooting, and security best practices, see the [Release Verification Guide](release-verification.md).
+
+---
+
 ## Installation Instructions
 
 Choose the installation method for your operating system:
@@ -155,4 +188,8 @@ If you encounter other issues:
 
 ## Next Steps
 
-Once installed, check out the [Quick Start Guide](guides/quickstart.md) to learn how to use `wt` effectively.
+Once installed:
+
+1. **Verify your installation** worked correctly: `wt --version`
+2. **Learn verification best practices**: [Release Verification Guide](release-verification.md) (recommended for security-conscious users)
+3. **Start using `wt`**: Check out the [Quick Start Guide](guides/quickstart.md) to learn how to use `wt` effectively

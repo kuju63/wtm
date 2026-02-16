@@ -19,11 +19,11 @@
 
 **Purpose**: Verify prerequisites and understand existing implementation
 
-- [ ] T001 Review current release workflow in .github/workflows/release.yml to understand existing hash generation
-- [ ] T002 [P] Review existing hash generation script in .github/scripts/generate-checksums.sh
-- [ ] T003 [P] Review existing release notes generation script in .github/scripts/generate-release-notes.sh
-- [ ] T004 [P] Review research findings in specs/006-release-hash-files/research.md for format requirements
-- [ ] T005 [P] Review data model in specs/006-release-hash-files/data-model.md for file format specifications
+- [X] T001 Review current release workflow in .github/workflows/release.yml to understand existing hash generation
+- [X] T002 [P] Review existing hash generation script in .github/scripts/generate-checksums.sh
+- [X] T003 [P] Review existing release notes generation script in .github/scripts/generate-release-notes.sh
+- [X] T004 [P] Review research findings in specs/006-release-hash-files/research.md for format requirements
+- [X] T005 [P] Review data model in specs/006-release-hash-files/data-model.md for file format specifications
 
 ---
 
@@ -50,12 +50,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T006 [P] [US1] Modify .github/scripts/generate-checksums.sh to generate individual .sha256 files in addition to SHA256SUMS
-- [ ] T007 [P] [US1] Add input validation to .github/scripts/generate-checksums.sh to ensure all binaries exist before hash generation
-- [ ] T008 [US1] Update .github/workflows/release.yml to upload individual .sha256 files in the "Create GitHub Release" step (update files: section)
-- [ ] T009 [US1] Add error handling to .github/workflows/release.yml to fail workflow if .sha256 file generation fails (FR-005)
-- [ ] T010 [P] [US1] Create .github/workflows/verify-hashes.yml workflow to test hash generation on pull requests
-- [ ] T011 [US1] Test verify-hashes.yml workflow locally or in a test PR to ensure it validates hash file format and completeness
+- [X] T006 [P] [US1] Modify .github/scripts/generate-checksums.sh to generate individual .sha256 files in addition to SHA256SUMS
+- [X] T007 [P] [US1] Add input validation to .github/scripts/generate-checksums.sh to ensure all binaries exist before hash generation
+- [X] T008 [US1] Update .github/workflows/release.yml to upload individual .sha256 files in the "Create GitHub Release" step (update files: section)
+- [X] T009 [US1] Add error handling to .github/workflows/release.yml to fail workflow if .sha256 file generation fails (FR-005)
+- [X] T010 [P] [US1] Create .github/workflows/verify-hashes.yml workflow to test hash generation on pull requests
+- [X] T011 [US1] Test verify-hashes.yml workflow locally or in a test PR to ensure it validates hash file format and completeness
 
 **Checkpoint**: Individual `.sha256` files should be generated and uploaded for each binary artifact in releases
 
@@ -74,11 +74,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T012 [P] [US2] Copy specs/006-release-hash-files/quickstart.md to docs/release-verification.md
-- [ ] T013 [P] [US2] Add "Verifying Downloads" section to docs/user-guide.md with link to release-verification.md
-- [ ] T014 [US2] Update docs/user-guide.md with quick reference for hash verification commands (Windows, Linux, macOS)
-- [ ] T015 [P] [US2] Add verification examples to docs/release-verification.md showing actual hash file content examples
-- [ ] T016 [US2] Review and test documentation on all three platforms (Windows PowerShell, Linux sha256sum, macOS shasum)
+- [X] T012 [P] [US2] Copy specs/006-release-hash-files/quickstart.md to docs/release-verification.md
+- [X] T013 [P] [US2] Add "Verifying Downloads" section to docs/user-guide.md with link to release-verification.md
+- [X] T014 [US2] Update docs/user-guide.md with quick reference for hash verification commands (Windows, Linux, macOS)
+- [X] T015 [P] [US2] Add verification examples to docs/release-verification.md showing actual hash file content examples
+- [X] T016 [US2] Review and test documentation on all three platforms (Windows PowerShell, Linux sha256sum, macOS shasum)
 
 **Checkpoint**: Users have clear, platform-specific documentation for verifying downloads
 
@@ -97,12 +97,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] Modify .github/scripts/generate-release-notes.sh to read SHA256SUMS file and extract hash values
-- [ ] T018 [US3] Add "Checksums" section to release notes template in .github/scripts/generate-release-notes.sh
-- [ ] T019 [US3] Include verification instructions for Windows, Linux, and macOS in release notes template
-- [ ] T020 [US3] Format hash values as code block in release notes for easy copy-paste
-- [ ] T021 [US3] Add download links to SHA256SUMS and individual .sha256 files in release notes
-- [ ] T022 [US3] Test release notes generation locally to verify hash table formatting and links
+- [X] T017 [US3] Modify .github/scripts/generate-release-notes.sh to read SHA256SUMS file and extract hash values
+- [X] T018 [US3] Add "Checksums" section to release notes template in .github/scripts/generate-release-notes.sh
+- [X] T019 [US3] Include verification instructions for Windows, Linux, and macOS in release notes template
+- [X] T020 [US3] Format hash values as code block in release notes for easy copy-paste
+- [X] T021 [US3] Add download links to SHA256SUMS and individual .sha256 files in release notes
+- [X] T022 [US3] Test release notes generation locally to verify hash table formatting and links
 
 **Checkpoint**: Release notes include checksums section with verification instructions
 
@@ -112,14 +112,14 @@
 
 **Purpose**: Final validation and documentation improvements
 
-- [ ] T023 [P] Add comments to .github/scripts/generate-checksums.sh explaining individual .sha256 file generation logic
-- [ ] T024 [P] Add comments to .github/scripts/generate-release-notes.sh explaining hash table generation
-- [ ] T025 [P] Update CLAUDE.md to document new hash file generation workflow (if needed)
-- [ ] T026 [P] Add hash file generation example to project README or release documentation
-- [ ] T027 Run end-to-end test: trigger release workflow and verify all hash files are generated and documented correctly
-- [ ] T028 Validate hash file format compliance using regex from data-model.md (two spaces separator)
-- [ ] T029 [P] Review all documentation for consistency and accuracy
-- [ ] T030 Create ADR (Architecture Decision Record) documenting the decision to use GNU/Linux format and provide both SHA256SUMS and individual .sha256 files
+- [X] T023 [P] Add comments to .github/scripts/generate-checksums.sh explaining individual .sha256 file generation logic
+- [X] T024 [P] Add comments to .github/scripts/generate-release-notes.sh explaining hash table generation
+- [X] T025 [P] Update CLAUDE.md to document new hash file generation workflow (if needed)
+- [X] T026 [P] Add hash file generation example to project README or release documentation
+- [X] T027 Run end-to-end test: trigger release workflow and verify all hash files are generated and documented correctly
+- [X] T028 Validate hash file format compliance using regex from data-model.md (two spaces separator)
+- [X] T029 [P] Review all documentation for consistency and accuracy
+- [X] T030 Create ADR (Architecture Decision Record) documenting the decision to use GNU/Linux format and provide both SHA256SUMS and individual .sha256 files
 
 ---
 

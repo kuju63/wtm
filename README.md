@@ -20,6 +20,33 @@ A modern CLI tool to simplify Git worktree management. Create worktrees with a s
 - .NET 10.0 SDK or later
 - Git 2.5 or later
 
+### Download from Releases (Recommended)
+
+Download the latest release for your platform from the [GitHub Releases](https://github.com/kuju63/wt/releases) page.
+
+Each release includes:
+- Pre-built binaries for Windows, Linux (x64, ARM), and macOS (ARM64)
+- **SHA256 checksums** for verifying download integrity
+- Individual `.sha256` files for each binary
+- Combined `SHA256SUMS` file for batch verification
+
+**Verify your download** (recommended):
+
+```bash
+# Linux/macOS
+sha256sum -c wt-v1.0.0-linux-x64.sha256
+
+# macOS (alternative)
+shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
+
+# Windows PowerShell
+$hash = (Get-FileHash .\wt-v1.0.0-windows-x64.exe).Hash
+$expected = (Get-Content .\wt-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]
+$hash -eq $expected  # Should return True
+```
+
+For detailed installation and verification instructions, see the [Installation Guide](https://kuju63.github.io/wt/latest/installation.html).
+
 ### Build from source
 
 ```bash

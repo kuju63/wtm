@@ -46,7 +46,7 @@ echo "$BINARIES"
 echo ""
 
 # Generate combined SHA256SUMS file
-> SHA256SUMS  # Create empty file
+: > SHA256SUMS  # Create empty file
 
 # Track success/failure for individual .sha256 file generation
 FAILED_FILES=()
@@ -105,5 +105,5 @@ echo "========================================="
 echo ""
 echo "Individual .sha256 files:"
 echo "========================================="
-ls -lh *.sha256
+ls -lh -- *.sha256
 echo "========================================="

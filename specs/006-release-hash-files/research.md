@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-14
 **Feature**: Release Binary Hash Files
-**Branch**: 001-release-hash-files
+**Branch**: 006-release-hash-files
 
 ## Overview
 

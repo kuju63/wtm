@@ -1,7 +1,7 @@
 # Data Model: Release Binary Hash Files
 
 **Feature**: Release Binary Hash Files
-**Branch**: 001-release-hash-files
+**Branch**: 006-release-hash-files
 **Date**: 2026-02-14
 
 ## Overview

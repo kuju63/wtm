@@ -1,7 +1,7 @@
 # Implementation Plan: Release Binary Hash Files
 
-**Branch**: `001-release-hash-files` | **Date**: 2026-02-14 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `/specs/001-release-hash-files/spec.md`
+**Branch**: `006-release-hash-files` | **Date**: 2026-02-14 | **Spec**: [spec.md](./spec.md)
+**Input**: Feature specification from `/specs/006-release-hash-files/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
@@ -79,7 +79,7 @@ Re-evaluated after completing research.md, data-model.md, and quickstart.md:
 ### Documentation (this feature)
 
 ```text
-specs/001-release-hash-files/
+specs/006-release-hash-files/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)

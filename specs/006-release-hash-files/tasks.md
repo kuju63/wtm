@@ -1,6 +1,6 @@
 # Tasks: Release Binary Hash Files
 
-**Input**: Design documents from `/specs/001-release-hash-files/`
+**Input**: Design documents from `/specs/006-release-hash-files/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
@@ -22,8 +22,8 @@
 - [ ] T001 Review current release workflow in .github/workflows/release.yml to understand existing hash generation
 - [ ] T002 [P] Review existing hash generation script in .github/scripts/generate-checksums.sh
 - [ ] T003 [P] Review existing release notes generation script in .github/scripts/generate-release-notes.sh
-- [ ] T004 [P] Review research findings in specs/001-release-hash-files/research.md for format requirements
-- [ ] T005 [P] Review data model in specs/001-release-hash-files/data-model.md for file format specifications
+- [ ] T004 [P] Review research findings in specs/006-release-hash-files/research.md for format requirements
+- [ ] T005 [P] Review data model in specs/006-release-hash-files/data-model.md for file format specifications
 
 ---
 
@@ -74,7 +74,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] T012 [P] [US2] Copy specs/001-release-hash-files/quickstart.md to docs/release-verification.md
+- [ ] T012 [P] [US2] Copy specs/006-release-hash-files/quickstart.md to docs/release-verification.md
 - [ ] T013 [P] [US2] Add "Verifying Downloads" section to docs/user-guide.md with link to release-verification.md
 - [ ] T014 [US2] Update docs/user-guide.md with quick reference for hash verification commands (Windows, Linux, macOS)
 - [ ] T015 [P] [US2] Add verification examples to docs/release-verification.md showing actual hash file content examples

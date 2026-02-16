@@ -1,6 +1,6 @@
 # Feature Specification: Release Binary Hash Files
 
-**Feature Branch**: `001-release-hash-files`
+**Feature Branch**: `006-release-hash-files`
 **Created**: 2026-02-14
 **Status**: Draft
 **Input**: User description: "リリースファイル毎の整合性チェックを可能とするためにすべてのリリースバイナリはハッシュファイルを必要とするようにする。"

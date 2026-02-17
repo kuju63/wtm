@@ -81,13 +81,23 @@ RELEASE_NOTES="${RELEASE_NOTES}- **Linux x64**: \`wt-${NEW_VERSION}-linux-x64\`\
 RELEASE_NOTES="${RELEASE_NOTES}- **Linux ARM**: \`wt-${NEW_VERSION}-linux-arm\` (optional)\n"
 RELEASE_NOTES="${RELEASE_NOTES}- **macOS ARM64**: \`wt-${NEW_VERSION}-macos-arm64\`\n\n"
 
-# Add security verification
+# Add checksums section
+RELEASE_NOTES="${RELEASE_NOTES}## 📋 Checksums\n\n"
+
+# Read and display SHA256SUMS content if available
+if [ -f "release-assets/SHA256SUMS" ]; then
+  RELEASE_NOTES="${RELEASE_NOTES}\`\`\`text\n"
+  while IFS= read -r line; do
+    RELEASE_NOTES="${RELEASE_NOTES}${line}\n"
+  done < release-assets/SHA256SUMS
+  RELEASE_NOTES="${RELEASE_NOTES}\`\`\`\n\n"
+fi
+
+RELEASE_NOTES="${RELEASE_NOTES}See the [Release Verification Guide](https://kuju63.github.io/wt/latest/release-verification.html) for verification instructions.\n\n"
+
+# Add security section
 RELEASE_NOTES="${RELEASE_NOTES}## 🔒 Security\n\n"
-RELEASE_NOTES="${RELEASE_NOTES}Verify the integrity of downloaded binaries:\n\n"
-RELEASE_NOTES="${RELEASE_NOTES}1. Download \`SHA256SUMS\` and \`SHA256SUMS.asc\` (GPG signature)\n"
-RELEASE_NOTES="${RELEASE_NOTES}2. Verify the signature: \`gpg --verify SHA256SUMS.asc SHA256SUMS\`\n"
-RELEASE_NOTES="${RELEASE_NOTES}3. Check the hash: \`sha256sum -c SHA256SUMS\`\n\n"
-RELEASE_NOTES="${RELEASE_NOTES}Software Bill of Materials (SBOM) is available as \`wt-${NEW_VERSION}-sbom.json\`\n\n"
+RELEASE_NOTES="${RELEASE_NOTES}Software Bill of Materials (SBOM) is available as \`wt-${NEW_VERSION}-sbom.spdx.json\`\n\n"
 
 # Add footer
 RELEASE_NOTES="${RELEASE_NOTES}---\n\n"

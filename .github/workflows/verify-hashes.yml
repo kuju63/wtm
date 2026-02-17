@@ -1,0 +1,211 @@
+---
+name: Verify Hash File Generation
+
+on:
+  pull_request:
+    paths:
+      - '.github/scripts/generate-checksums.sh'
+      - '.github/workflows/release.yml'
+      - '.github/workflows/verify-hashes.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-hash-generation:
+    name: Verify Hash File Generation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Create test binaries
+        run: |
+          mkdir -p test-artifacts
+
+          # Create test binary files with known content
+          echo "Test Windows binary" > test-artifacts/wt-v0.0.0-test-windows-x64.exe
+          echo "Test Linux x64 binary" > test-artifacts/wt-v0.0.0-test-linux-x64
+          echo "Test Linux ARM binary" > test-artifacts/wt-v0.0.0-test-linux-arm
+          echo "Test macOS ARM64 binary" > test-artifacts/wt-v0.0.0-test-macos-arm64
+
+      - name: Generate checksums
+        run: |
+          chmod +x .github/scripts/generate-checksums.sh
+          .github/scripts/generate-checksums.sh test-artifacts/
+
+      - name: Verify SHA256SUMS file exists
+        run: |
+          if [ ! -f test-artifacts/SHA256SUMS ]; then
+            echo "::error::SHA256SUMS file not found"
+            exit 1
+          fi
+          echo "✅ SHA256SUMS file exists"
+
+      - name: Verify individual .sha256 files exist
+        run: |
+          cd test-artifacts
+          MISSING_FILES=()
+
+          for binary in wt-v0.0.0-test-windows-x64.exe wt-v0.0.0-test-linux-x64 wt-v0.0.0-test-linux-arm wt-v0.0.0-test-macos-arm64; do
+            if [ ! -f "${binary}.sha256" ]; then
+              MISSING_FILES+=("${binary}.sha256")
+            fi
+          done
+
+          if [ ${#MISSING_FILES[@]} -gt 0 ]; then
+            echo "::error::Missing .sha256 files:"
+            for file in "${MISSING_FILES[@]}"; do
+              echo "::error::  - $file"
+            done
+            exit 1
+          fi
+
+          echo "✅ All individual .sha256 files exist"
+
+      - name: Verify hash format (64 hex characters)
+        run: |
+          cd test-artifacts
+          INVALID_HASHES=()
+
+          # Check SHA256SUMS
+          while IFS= read -r line; do
+            HASH=$(echo "$line" | awk '{print $1}')
+            if ! echo "$HASH" | grep -qE '^[a-fA-F0-9]{64}$'; then
+              INVALID_HASHES+=("SHA256SUMS: $HASH")
+            fi
+          done < SHA256SUMS
+
+          # Check individual .sha256 files
+          for sha_file in *.sha256; do
+            HASH=$(cat "$sha_file" | awk '{print $1}')
+            if ! echo "$HASH" | grep -qE '^[a-fA-F0-9]{64}$'; then
+              INVALID_HASHES+=("$sha_file: $HASH")
+            fi
+          done
+
+          if [ ${#INVALID_HASHES[@]} -gt 0 ]; then
+            echo "::error::Invalid hash format (expected 64 hex characters):"
+            for hash in "${INVALID_HASHES[@]}"; do
+              echo "::error::  - $hash"
+            done
+            exit 1
+          fi
+
+          echo "✅ All hashes have valid format (64 hex characters)"
+
+      - name: Verify file format (two spaces separator)
+        run: |
+          cd test-artifacts
+          INVALID_FORMAT=()
+
+          # Check SHA256SUMS
+          while IFS= read -r line; do
+            # Verify two spaces separator
+            if ! echo "$line" | grep -qE '^[a-fA-F0-9]{64}  .+$'; then
+              INVALID_FORMAT+=("SHA256SUMS: $line")
+            fi
+          done < SHA256SUMS
+
+          # Check individual .sha256 files
+          for sha_file in *.sha256; do
+            line=$(cat "$sha_file")
+            if ! echo "$line" | grep -qE '^[a-fA-F0-9]{64}  .+$'; then
+              INVALID_FORMAT+=("$sha_file: $line")
+            fi
+          done
+
+          if [ ${#INVALID_FORMAT[@]} -gt 0 ]; then
+            echo "::error::Invalid file format (expected '<hash>  <filename>' with two spaces):"
+            for format in "${INVALID_FORMAT[@]}"; do
+              echo "::error::  - $format"
+            done
+            exit 1
+          fi
+
+          echo "✅ All files use correct format (two spaces separator)"
+
+      - name: Verify hash consistency (individual vs combined)
+        run: |
+          cd test-artifacts
+          MISMATCHES=()
+
+          for binary in wt-v0.0.0-test-windows-x64.exe wt-v0.0.0-test-linux-x64 wt-v0.0.0-test-linux-arm wt-v0.0.0-test-macos-arm64; do
+            # Get hash from individual .sha256 file
+            INDIVIDUAL_HASH=$(cat "${binary}.sha256" | awk '{print $1}')
+
+            # Get hash from SHA256SUMS
+            COMBINED_HASH=$(grep "$binary" SHA256SUMS | awk '{print $1}')
+
+            if [ "$INDIVIDUAL_HASH" != "$COMBINED_HASH" ]; then
+              MISMATCHES+=("$binary: individual=$INDIVIDUAL_HASH, combined=$COMBINED_HASH")
+            fi
+          done
+
+          if [ ${#MISMATCHES[@]} -gt 0 ]; then
+            echo "::error::Hash mismatch between individual .sha256 files and SHA256SUMS:"
+            for mismatch in "${MISMATCHES[@]}"; do
+              echo "::error::  - $mismatch"
+            done
+            exit 1
+          fi
+
+          echo "✅ Hash values consistent between individual and combined files"
+
+      - name: Verify hash correctness
+        run: |
+          cd test-artifacts
+
+          # Verify using sha256sum -c
+          sha256sum -c SHA256SUMS || {
+            echo "::error::Hash verification failed using SHA256SUMS"
+            exit 1
+          }
+
+          # Verify individual .sha256 files
+          for sha_file in *.sha256; do
+            sha256sum -c "$sha_file" || {
+              echo "::error::Hash verification failed for $sha_file"
+              exit 1
+            }
+          done
+
+          echo "✅ All hash values are correct (verified with sha256sum -c)"
+
+      - name: Verify SHA256SUMS completeness
+        run: |
+          cd test-artifacts
+
+          # Count binaries
+          BINARY_COUNT=$(find . -type f \( -name "wt-*-windows-*.exe" -o -name "wt-*-linux-*" -o -name "wt-*-macos-*" \) ! -name "*.sha256" | wc -l)
+
+          # Count entries in SHA256SUMS
+          SHA256SUMS_COUNT=$(wc -l < SHA256SUMS)
+
+          if [ "$BINARY_COUNT" -ne "$SHA256SUMS_COUNT" ]; then
+            echo "::error::SHA256SUMS is incomplete:"
+            echo "::error::  Binary files: $BINARY_COUNT"
+            echo "::error::  SHA256SUMS entries: $SHA256SUMS_COUNT"
+            exit 1
+          fi
+
+          echo "✅ SHA256SUMS contains entries for all binaries ($BINARY_COUNT entries)"
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "========================================="
+          echo "✅ All hash file validation checks passed"
+          echo "========================================="
+          echo ""
+          echo "Verified:"
+          echo "  - SHA256SUMS file exists"
+          echo "  - Individual .sha256 files exist for all binaries"
+          echo "  - Hash format is valid (64 hex characters)"
+          echo "  - File format uses two spaces separator"
+          echo "  - Hash values are consistent across files"
+          echo "  - Hash values are correct (verified with sha256sum)"
+          echo "  - SHA256SUMS is complete (all binaries included)"
+          echo ""
+          echo "========================================="

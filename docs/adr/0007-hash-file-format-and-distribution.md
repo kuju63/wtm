@@ -15,6 +15,7 @@ Users need to verify the integrity of downloaded binaries to ensure they have no
 4. Provides a good user experience without requiring specialized tools
 
 The feature must support three user stories:
+
 - **US1**: Automated hash generation on release
 - **US2**: User-side integrity verification
 - **US3**: Hash documentation in release notes
@@ -30,16 +31,19 @@ We chose the **GNU/Linux standard format** for both individual `.sha256` files a
 ```
 
 **Key characteristics**:
+
 - Exactly **two spaces** between hash and filename (not one space)
 - 64 hexadecimal characters (SHA256 hash)
 - Filename includes relative path if applicable
 
 **Example individual file** (`wt-v1.0.0-windows-x64.exe.sha256`):
+
 ```text
 a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-windows-x64.exe
 ```
 
 **Example combined file** (`SHA256SUMS`):
+
 ```text
 a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-linux-x64
 b2c3d4e5f6a78901234567890123456789012345678901234567890123456789  wt-v1.0.0-macos-arm64
@@ -56,6 +60,7 @@ We provide **both** individual `.sha256` files and a combined `SHA256SUMS` file:
 | **SHA256SUMS** | All hashes in one file | Batch verification, CI/CD automation |
 
 **Release assets structure**:
+
 ```
 wt-v1.0.0-windows-x64.exe
 wt-v1.0.0-windows-x64.exe.sha256  (NEW)
@@ -84,6 +89,7 @@ See the [Release Verification Guide](link) for verification instructions.
 ```
 
 **Rationale**:
+
 - Users can quickly view hashes without downloading separate files
 - Code block preserves formatting for copy-paste
 - Link to verification guide keeps release notes concise
@@ -96,10 +102,12 @@ See the [Release Verification Guide](link) for verification instructions.
 **Approach**: Individual files contain only the hash value (no filename)
 
 **Pros**:
+
 - Simpler file structure
 - Smaller file size
 
 **Cons**:
+
 - Cannot use automated verification tools (`sha256sum -c`, `shasum -a 256 -c`)
 - Users must manually compare hash values
 - Not compatible with standard Linux/macOS workflows
@@ -111,15 +119,18 @@ See the [Release Verification Guide](link) for verification instructions.
 **Approach**: Use BSD-style format: `SHA256 (filename) = hash`
 
 **Example**:
+
 ```text
 SHA256 (wt-v1.0.0-windows-x64.exe) = a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd
 ```
 
 **Pros**:
+
 - Self-documenting format
 - Human-readable
 
 **Cons**:
+
 - Not the default format for `sha256sum` (Linux)
 - Requires `-r` flag for macOS `shasum`
 - Less common in industry (Node.js, Terraform use GNU format)
@@ -131,11 +142,13 @@ SHA256 (wt-v1.0.0-windows-x64.exe) = a1b2c3d4e5f67890123456789012345678901234567
 **Approach**: Provide only the combined `SHA256SUMS` file
 
 **Pros**:
+
 - Simpler release workflow
 - Fewer files to upload
 - Standard practice for many Linux distributions
 
 **Cons**:
+
 - Users downloading a single binary must download `SHA256SUMS` and parse it
 - Some package managers expect individual hash files
 - Less convenient for single-file verification
@@ -147,10 +160,12 @@ SHA256 (wt-v1.0.0-windows-x64.exe) = a1b2c3d4e5f67890123456789012345678901234567
 **Approach**: Provide only individual `.sha256` files
 
 **Pros**:
+
 - Convenient for single-file downloads
 - Cleaner directory structure
 
 **Cons**:
+
 - No batch verification workflow
 - Difficult for CI/CD to verify all downloads at once
 - Breaks existing workflows expecting `SHA256SUMS`
@@ -162,10 +177,12 @@ SHA256 (wt-v1.0.0-windows-x64.exe) = a1b2c3d4e5f67890123456789012345678901234567
 **Approach**: Display hashes only in release notes, no separate files
 
 **Pros**:
+
 - Minimal file overhead
 - Users can view hashes immediately
 
 **Cons**:
+
 - Cannot use automated verification tools
 - Manual copy-paste from web page is error-prone
 - No programmatic verification in CI/CD
@@ -213,18 +230,21 @@ SHA256 (wt-v1.0.0-windows-x64.exe) = a1b2c3d4e5f67890123456789012345678901234567
 ### User Workflows
 
 **Linux**:
+
 ```bash
 sha256sum -c wt-v1.0.0-linux-x64.sha256
 # Or batch: sha256sum -c SHA256SUMS
 ```
 
 **macOS**:
+
 ```bash
 shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
 # Or batch: shasum -a 256 -c SHA256SUMS
 ```
 
 **Windows PowerShell**:
+
 ```powershell
 $hash = (Get-FileHash .\wt-v1.0.0-windows-x64.exe).Hash
 $expected = (Get-Content .\wt-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]

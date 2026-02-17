@@ -25,6 +25,7 @@ Files can be corrupted during download or maliciously tampered with. Verifying S
 Download the binary and hash file for your platform from the GitHub Releases page.
 
 **Required files**:
+
 1. Binary file (e.g., `wt-v1.0.0-windows-x64.exe`)
 2. Hash file (e.g., `wt-v1.0.0-windows-x64.exe.sha256`)
 
@@ -81,9 +82,11 @@ Get-Content SHA256SUMS | ForEach-Object {
 ```
 
 **Example individual .sha256 file content** (`wt-v1.0.0-windows-x64.exe.sha256`):
+
 ```text
 a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-windows-x64.exe
 ```
+
 Note: Two spaces separate the hash and filename.
 
 ---
@@ -103,11 +106,13 @@ sha256sum -c wt-v1.0.0-linux-x64.sha256
 ```
 
 **Success output**:
+
 ```
 wt-v1.0.0-linux-x64: OK
 ```
 
 **Failure output**:
+
 ```
 wt-v1.0.0-linux-x64: FAILED
 sha256sum: WARNING: 1 computed checksum did NOT match
@@ -122,6 +127,7 @@ sha256sum -c SHA256SUMS
 ```
 
 **Success output**:
+
 ```
 wt-v1.0.0-linux-x64: OK
 wt-v1.0.0-linux-arm: OK
@@ -130,12 +136,14 @@ wt-v1.0.0-macos-arm64: OK
 ```
 
 **Example SHA256SUMS file content**:
+
 ```text
 a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-linux-x64
 b2c3d4e5f6a78901234567890123456789012345678901234567890123456789  wt-v1.0.0-linux-arm
 c3d4e5f6a7b89012345678901234567890123456789012345678901234567890  wt-v1.0.0-macos-arm64
 d4e5f6a7b8c90123456789012345678901234567890123456789012345678901  wt-v1.0.0-windows-x64.exe
 ```
+
 Note: Each line contains a hash (64 characters), two spaces, and the filename.
 
 ### Verify Specific File from SHA256SUMS
@@ -163,11 +171,13 @@ shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
 ```
 
 **Success output**:
+
 ```
 wt-v1.0.0-macos-arm64: OK
 ```
 
 **Failure output**:
+
 ```
 wt-v1.0.0-macos-arm64: FAILED
 shasum: WARNING: 1 computed checksum did NOT match
@@ -210,12 +220,14 @@ cat wt-v1.0.0-macos-arm64.sha256
 **Cause**: Binary and hash file are not in the same directory
 
 **Solution**:
+
 - Place both files in the same folder
 - Or specify absolute paths to the files
 
 ### Command Not Found Error
 
 **Linux**:
+
 ```bash
 # Debian/Ubuntu
 sudo apt-get install coreutils
@@ -225,6 +237,7 @@ sudo dnf install coreutils
 ```
 
 **macOS**:
+
 ```bash
 # Install GNU coreutils (if you want to use sha256sum instead of shasum)
 brew install coreutils
@@ -240,6 +253,7 @@ gsha256sum -c wt-v1.0.0-macos-arm64.sha256
 ### Q: What's the difference between SHA256SUMS and individual .sha256 files?
 
 **A**:
+
 - **SHA256SUMS**: Contains hashes for all binaries in one file. Convenient for verifying multiple files at once.
 - **Individual .sha256 files**: One hash file per binary. Convenient for downloading and verifying a single binary.
 
@@ -248,6 +262,7 @@ Both contain the same hash values, and you can choose whichever method you prefe
 ### Q: Is hash verification required?
 
 **A**: Not required, but strongly recommended, especially when:
+
 - Using in enterprise or production environments
 - Security is critical for your use case
 - Downloading from unofficial mirrors
@@ -269,15 +284,18 @@ For GPG verification details, see the project's SECURITY.md or documentation.
 After successful verification:
 
 1. **Move the binary to an appropriate location**:
+
    - Linux/macOS: `/usr/local/bin/` or `~/.local/bin/`
    - Windows: `C:\Program Files\wt\` or a directory in your PATH
 
 2. **Grant execute permissions** (Linux/macOS):
+
    ```bash
    chmod +x wt-v1.0.0-linux-x64
    ```
 
 3. **Start using the wt tool**:
+
    ```bash
    wt --version
    wt --help

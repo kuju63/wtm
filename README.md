@@ -25,6 +25,7 @@ A modern CLI tool to simplify Git worktree management. Create worktrees with a s
 Download the latest release for your platform from the [GitHub Releases](https://github.com/kuju63/wt/releases) page.
 
 Each release includes:
+
 - Pre-built binaries for Windows, Linux (x64, ARM), and macOS (ARM64)
 - **SHA256 checksums** for verifying download integrity
 - Individual `.sha256` files for each binary

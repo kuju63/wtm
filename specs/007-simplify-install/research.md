@@ -9,12 +9,14 @@
 **Decision**: リリースワークフローの `build-and-deploy-docs` ジョブにスクリプトコピーステップを追加し、`_site/` に配置してデプロイする
 
 **Rationale**:
+
 - `docfx.json` の `build.resource` に `scripts/**` を追加する代替案もあるが、DocFXはコード以外のファイルを意図的に変換してしまうリスクがある
 - ワークフロー内で `cp scripts/install.sh _site/install.sh` を実行する方が確実かつシンプル
 - 既存の `peaceiris/actions-gh-pages@v4` デプロイステップ（`keep_files: true`）との親和性が高い
 - 結果URL: `https://kuju63.github.io/wt/install.sh` / `https://kuju63.github.io/wt/install.ps1`
 
 **Alternatives considered**:
+
 - DocFX resourceとして追加: ビルド成果物に含まれるが、DocFXがファイルを解析しようとするリスク
 - 独立したGitHub Pagesワークフロー: 複雑さが増すため却下
 - GitHub Releases資産のみで配信: バージョン非依存の安定URLが実現できないため却下
@@ -62,6 +64,7 @@ esac
 **重要**: macOS ARM64は `uname -m` で `arm64` を返す（`aarch64` ではない）。
 
 **Alternatives considered**:
+
 - `$OSTYPE` 変数: bash限定であり、dash/sh環境では使用不可
 - `/etc/os-release`: ディストリビューション検出には有用だが、バイナリ選択には不要
 
@@ -81,6 +84,7 @@ LATEST_VERSION=$(curl -fsSL \
 **Rationale**: `jq` を依存関係に追加せず、`grep` + `sed` で実装することで標準ツールのみに依存
 
 **Alternatives considered**:
+
 - `jq` を使用: 追加依存が発生するため却下（最小依存の原則）
 - `python3 -c`: 利用可能な場合は代替手段として使用可能だが標準化が困難
 
@@ -128,11 +132,13 @@ fi
 ### 7. インストール先ディレクトリ
 
 **Decision**:
+
 - Unix デフォルト: `~/.local/bin` (sudo不要)
 - Windows デフォルト: `$env:LOCALAPPDATA\Programs\wt`
 - `--prefix DIR` オプションでカスタマイズ可能
 
 **PATH案内**:
+
 ```bash
 if ! echo "$PATH" | tr ':' '\n' | grep -qx "$INSTALL_DIR"; then
   echo "Add to PATH: export PATH=\"${INSTALL_DIR}:\$PATH\""
@@ -229,5 +235,6 @@ handle_existing_install() {
 **`--force` フラグの受け渡し**: `curl | sh -s -- --force` のように `--` の後に渡す。
 
 **Alternatives considered**:
+
 - `tty` コマンド: POSIX標準だが `[ -t 0 ]` より可搬性が若干低い
 - `/dev/tty` から読み込む: TTY判定なしに stdin を TTY に切り替える方法だが、存在しない環境でエラー

@@ -97,6 +97,7 @@ README.md                         # 変更: Quick Install セクション追加
 ### Phase 2: ワークフロー変更
 
 `release.yml` に以下を追加：
+
 1. `create-release` ジョブ: `Create GitHub Release` ステップの `files:` に `scripts/install.sh` / `scripts/install.ps1` を追加
 2. `build-and-deploy-docs` ジョブ: "Build documentation" と "Deploy to GitHub Pages" の間に `cp scripts/install.sh _site/install.sh` / `cp scripts/install.ps1 _site/install.ps1` ステップを追加
 

@@ -28,3 +28,7 @@
 - [x] User scenarios cover primary flows
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
+
+## Notes
+
+- 2026-02-21: 上書き確認要件を追加。User Story 6（既存バイナリの上書き確認）、FR-016〜018（TTY確認・`--force`・非インタラクティブ挙動）、Edge Cases を更新した

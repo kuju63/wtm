@@ -114,11 +114,3 @@ docfx build docfx.json
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
 
-## Active Technologies
-
-- YAML (GitHub Actions workflows), Bash/PowerShell (hash generation scripts) + GitHub Actions, sha256sum (Linux/macOS), Get-FileHash (Windows PowerShell) (006-release-hash-files)
-- GitHub Releases (release assets storage) (006-release-hash-files)
-
-## Recent Changes
-
-- 006-release-hash-files: Added YAML (GitHub Actions workflows), Bash/PowerShell (hash generation scripts) + GitHub Actions, sha256sum (Linux/macOS), Get-FileHash (Windows PowerShell)

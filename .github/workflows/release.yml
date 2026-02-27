@@ -437,8 +437,9 @@ jobs:
           prerelease: false
           files: |
             release-assets/wtm-*-windows-*.exe
-            release-assets/wtm-*-linux-*
-            release-assets/wtm-*-macos-*
+            release-assets/wtm-*-linux-x64
+            release-assets/wtm-*-linux-arm
+            release-assets/wtm-*-macos-arm64
             release-assets/*.sha256
             release-assets/wtm-*-sbom.spdx.json
             release-assets/wtm-*-sbom.spdx.json.asc

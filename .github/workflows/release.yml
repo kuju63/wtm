@@ -172,30 +172,30 @@ jobs:
       - name: Organize binaries
         run: |
           mkdir -p release-assets
-          find artifacts/ -type f \( -name "wt.exe" -o -name "wt" \) -exec cp {} release-assets/ \;
+          find artifacts/ -type f \( -name "wtm.exe" -o -name "wtm" \) -exec cp {} release-assets/ \;
 
           # Rename binaries to standard format
           cd release-assets
           VERSION="${{ needs.calculate-version.outputs.version }}"
 
           # Windows
-          if [ -f "wt.exe" ]; then
-            mv wt.exe "wt-${VERSION}-windows-x64.exe"
+          if [ -f "wtm.exe" ]; then
+            mv wtm.exe "wtm-${VERSION}-windows-x64.exe"
           fi
 
           # Linux x64
           if [ -d "../artifacts/binary-linux-x64" ]; then
-            cp ../artifacts/binary-linux-x64/wt "wt-${VERSION}-linux-x64"
+            cp ../artifacts/binary-linux-x64/wtm "wtm-${VERSION}-linux-x64"
           fi
 
           # Linux ARM
           if [ -d "../artifacts/binary-linux-arm" ]; then
-            cp ../artifacts/binary-linux-arm/wt "wt-${VERSION}-linux-arm"
+            cp ../artifacts/binary-linux-arm/wtm "wtm-${VERSION}-linux-arm"
           fi
 
           # macOS ARM64
           if [ -d "../artifacts/binary-macos-arm64" ]; then
-            cp ../artifacts/binary-macos-arm64/wt "wt-${VERSION}-macos-arm64"
+            cp ../artifacts/binary-macos-arm64/wtm "wtm-${VERSION}-macos-arm64"
           fi
 
           ls -lh
@@ -246,7 +246,7 @@ jobs:
             --package-supplier "Organization: kuju63" \
             --namespace-base "https://github.com/${{ github.repository }}/sbom/${{ needs.calculate-version.outputs.version }}" \
             --manifest-info "SPDX:2.2" \
-            --target-path "release-assets/wt-${{ needs.calculate-version.outputs.version }}-sbom.spdx.json" \
+            --target-path "release-assets/wtm-${{ needs.calculate-version.outputs.version }}-sbom.spdx.json" \
             --validation-output "${{ github.workspace }}/sbom-validation.json"
 
       - name: Log SBOM metadata
@@ -262,7 +262,7 @@ jobs:
           echo "::group::Verifying required packages"
           set -e
 
-          # Required packages for wt CLI
+          # Required packages for wtm CLI
           REQUIRED_PACKAGES=(
             "System.CommandLine"
             "System.IO.Abstractions"
@@ -325,7 +325,7 @@ jobs:
           echo "   - OR we implement manual SPDX → Dependency Graph format conversion"
           echo ""
           echo "⚠️  For now, SBOM is available as a release asset for manual analysis"
-          echo "::notice::SBOM available at: https://github.com/${{ github.repository }}/releases/download/${{ needs.calculate-version.outputs.version }}/wt-${{ needs.calculate-version.outputs.version }}-sbom.spdx.json"
+          echo "::notice::SBOM available at: https://github.com/${{ github.repository }}/releases/download/${{ needs.calculate-version.outputs.version }}/wtm-${{ needs.calculate-version.outputs.version }}-sbom.spdx.json"
           echo "::endgroup::"
         continue-on-error: true  # Don't fail pipeline if submission is not yet implemented
 
@@ -337,7 +337,7 @@ jobs:
           # Check if submission step completed
           if [ "${{ steps.dependency-submission.outcome }}" == "success" ]; then
             echo "✅ Dependency Graph submission noted"
-            echo "::notice::SBOM is available as release asset: wt-${{ needs.calculate-version.outputs.version }}-sbom.spdx.json"
+            echo "::notice::SBOM is available as release asset: wtm-${{ needs.calculate-version.outputs.version }}-sbom.spdx.json"
           else
             echo "ℹ️  Dependency Graph submission skipped (feature pending)"
             echo "::notice::SBOM is available as release asset for manual analysis"
@@ -436,12 +436,12 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release-assets/wt-*-windows-*.exe
-            release-assets/wt-*-linux-*
-            release-assets/wt-*-macos-*
+            release-assets/wtm-*-windows-*.exe
+            release-assets/wtm-*-linux-*
+            release-assets/wtm-*-macos-*
             release-assets/*.sha256
-            release-assets/wt-*-sbom.spdx.json
-            release-assets/wt-*-sbom.spdx.json.asc
+            release-assets/wtm-*-sbom.spdx.json
+            release-assets/wtm-*-sbom.spdx.json.asc
             release-assets/SHA256SUMS
             release-assets/SHA256SUMS.asc
         env:

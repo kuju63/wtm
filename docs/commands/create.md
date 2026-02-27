@@ -1,11 +1,11 @@
-# wt create
+# wtm create
 
 Create a new worktree with a new branch
 
 ## Syntax
 
 ```bash
-wt create <branch> [options]
+wtm create <branch> [options]
 ```
 
 ## Arguments

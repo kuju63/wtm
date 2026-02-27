@@ -32,12 +32,12 @@ fi
 cd "$ARTIFACTS_DIR"
 
 # Find all binary files
-BINARIES=$(find . -type f \( -name "wt-*-windows-*.exe" -o -name "wt-*-linux-*" -o -name "wt-*-macos-*" \) ! -name "*.sha256" ! -name "SHA256SUMS*")
+BINARIES=$(find . -type f \( -name "wtm-*-windows-*.exe" -o -name "wtm-*-linux-*" -o -name "wtm-*-macos-*" \) ! -name "*.sha256" ! -name "SHA256SUMS*")
 
 # Input validation: Check if any binaries were found
 if [ -z "$BINARIES" ]; then
   echo "❌ ERROR: No binary files found in $ARTIFACTS_DIR"
-  echo "Expected file patterns: wt-*-windows-*.exe, wt-*-linux-*, wt-*-macos-*"
+  echo "Expected file patterns: wtm-*-windows-*.exe, wtm-*-linux-*, wtm-*-macos-*"
   exit 1
 fi
 

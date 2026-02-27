@@ -1,10 +1,10 @@
 # Command Reference
 
-Complete reference documentation for all `wt` commands.
+Complete reference documentation for all `wtm` commands.
 
 ## Overview
 
-`wt` provides a simple command-line interface for managing Git worktrees. All commands follow a consistent pattern and provide helpful error messages.
+`wtm` provides a simple command-line interface for managing Git worktrees. All commands follow a consistent pattern and provide helpful error messages.
 
 ## Available Commands
 
@@ -21,16 +21,16 @@ Complete reference documentation for all `wt` commands.
 
 ```bash
 # Basic usage
-wt create feature-login
+wtm create feature-login
 
 # With options
-wt create feature-auth --base main --editor vscode
+wtm create feature-auth --base main --editor vscode
 ```
 
 ### List worktrees
 
 ```bash
-wt list
+wtm list
 ```
 
 ## Common Options
@@ -69,7 +69,7 @@ Commands that produce structured output support multiple formats:
 Example:
 
 ```bash
-wt create feature-api --output json | jq '.worktree.path'
+wtm create feature-api --output json | jq '.worktree.path'
 ```
 
 ## Getting Help
@@ -79,14 +79,14 @@ wt create feature-api --output json | jq '.worktree.path'
 Get help for any command:
 
 ```bash
-wt --help
-wt create --help
-wt list --help
+wtm --help
+wtm create --help
+wtm list --help
 ```
 
 ### Documentation
 
-- [Installation Guide](../installation.md) - Install `wt` on your system
+- [Installation Guide](../installation.md) - Install `wtm` on your system
 - [Quick Start Guide](../guides/quickstart.md) - Get started in 5 minutes
 - [GitHub Repository](https://github.com/kuju63/wt) - Source code and issues
 
@@ -95,7 +95,7 @@ wt list --help
 ### Starting a new feature
 
 ```bash
-wt create feature-user-auth --base main --editor vscode
+wtm create feature-user-auth --base main --editor vscode
 cd ../wt-feature-user-auth
 # Work on your feature...
 ```
@@ -103,7 +103,7 @@ cd ../wt-feature-user-auth
 ### Bug fix workflow
 
 ```bash
-wt create bugfix-login-timeout --base main
+wtm create bugfix-login-timeout --base main
 cd ../wt-bugfix-login-timeout
 # Fix the bug...
 ```
@@ -112,7 +112,7 @@ cd ../wt-bugfix-login-timeout
 
 ```bash
 # Create worktree from pull request branch
-wt create pr-123 --base origin/pr-123
+wtm create pr-123 --base origin/pr-123
 cd ../wt-pr-123
 # Review code...
 ```
@@ -120,7 +120,7 @@ cd ../wt-pr-123
 ### Checking worktree status
 
 ```bash
-wt list
+wtm list
 ```
 
 ## Tips and Best Practices

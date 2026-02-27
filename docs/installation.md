@@ -1,10 +1,10 @@
 # Installation Guide
 
-This guide will help you install the `wt` command-line tool for Git worktree management.
+This guide will help you install the `wtm` command-line tool for Git worktree management.
 
 ## System Requirements
 
-Before installing `wt`, ensure your system meets the following requirements:
+Before installing `wtm`, ensure your system meets the following requirements:
 
 | Operating System | Minimum Version | Architecture |
 |-----------------|-----------------|--------------|
@@ -30,12 +30,12 @@ Download the latest version from the releases page. Files are named with the ver
 
 | Platform | Architecture | File Pattern |
 |----------|-------------|--------------|
-| Windows  | x64         | `wt-v{version}-win-x64.zip` |
-| macOS    | ARM64       | `wt-v{version}-osx-arm64.tar.gz` |
-| Linux    | x64         | `wt-v{version}-linux-x64.tar.gz` |
-| Linux    | ARM         | `wt-v{version}-linux-arm.tar.gz` |
+| Windows  | x64         | `wtm-v{version}-win-x64.zip` |
+| macOS    | ARM64       | `wtm-v{version}-osx-arm64.tar.gz` |
+| Linux    | x64         | `wtm-v{version}-linux-x64.tar.gz` |
+| Linux    | ARM         | `wtm-v{version}-linux-arm.tar.gz` |
 
-Example: For version 0.0.3, the Linux x64 file would be `wt-v0.0.3-linux-x64.tar.gz`
+Example: For version 0.0.3, the Linux x64 file would be `wtm-v0.0.3-linux-x64.tar.gz`
 
 ---
 
@@ -48,28 +48,28 @@ Example: For version 0.0.3, the Linux x64 file would be `wt-v0.0.3-linux-x64.tar
 Each release includes:
 
 - **SHA256SUMS**: Combined hash file for all binaries
-- **Individual `.sha256` files**: One per binary (e.g., `wt-v1.0.0-windows-x64.exe.sha256`)
+- **Individual `.sha256` files**: One per binary (e.g., `wtm-v1.0.0-windows-x64.exe.sha256`)
 
 **Verify on Windows (PowerShell):**
 
 ```powershell
-$hash = (Get-FileHash .\wt-v1.0.0-windows-x64.exe).Hash
-$expected = (Get-Content .\wt-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]
+$hash = (Get-FileHash .\wtm-v1.0.0-windows-x64.exe).Hash
+$expected = (Get-Content .\wtm-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]
 $hash -eq $expected  # Should return True
 ```
 
 **Verify on Linux:**
 
 ```bash
-sha256sum -c wt-v1.0.0-linux-x64.sha256
-# Output: wt-v1.0.0-linux-x64: OK
+sha256sum -c wtm-v1.0.0-linux-x64.sha256
+# Output: wtm-v1.0.0-linux-x64: OK
 ```
 
 **Verify on macOS:**
 
 ```bash
-shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
-# Output: wt-v1.0.0-macos-arm64: OK
+shasum -a 256 -c wtm-v1.0.0-macos-arm64.sha256
+# Output: wtm-v1.0.0-macos-arm64: OK
 ```
 
 For detailed verification instructions, troubleshooting, and security best practices, see the [Release Verification Guide](release-verification.md).
@@ -82,60 +82,60 @@ Choose the installation method for your operating system:
 
 ### Windows Installation
 
-1. **Download** the `wt-v{version}-win-x64.zip` file from the releases page
+1. **Download** the `wtm-v{version}-win-x64.zip` file from the releases page
 
 2. **Extract** the archive:
    - Right-click the downloaded file and select "Extract All..."
-   - Choose a destination folder (e.g., `C:\Program Files\wt`)
+   - Choose a destination folder (e.g., `C:\Program Files\wtm`)
 
 3. **Add to PATH**:
    - Open System Properties → Environment Variables
    - Under "System variables", find and select "Path"
-   - Click "Edit" and add the folder containing `wt.exe`
+   - Click "Edit" and add the folder containing `wtm.exe`
    - Click "OK" to save
 
 4. **Verify installation**:
 
    ```cmd
-   wt --version
+   wtm --version
    ```
 
 ### macOS Installation
 
-1. **Download** the `wt-v{version}-osx-arm64.tar.gz` file from the releases page
+1. **Download** the `wtm-v{version}-osx-arm64.tar.gz` file from the releases page
 
 2. **Extract and install**:
 
    ```bash
-   tar -xzf wt-v*-osx-arm64.tar.gz
-   sudo mv wt /usr/local/bin/
-   sudo chmod +x /usr/local/bin/wt
+   tar -xzf wtm-v*-osx-arm64.tar.gz
+   sudo mv wtm /usr/local/bin/
+   sudo chmod +x /usr/local/bin/wtm
    ```
 
 3. **Verify installation**:
 
    ```bash
-   wt --version
+   wtm --version
    ```
 
 ### Linux Installation
 
 1. **Download** the appropriate file for your architecture:
-   - x64: `wt-v{version}-linux-x64.tar.gz`
-   - ARM: `wt-v{version}-linux-arm.tar.gz`
+   - x64: `wtm-v{version}-linux-x64.tar.gz`
+   - ARM: `wtm-v{version}-linux-arm.tar.gz`
 
 2. **Extract and install**:
 
    ```bash
-   tar -xzf wt-v*-linux-*.tar.gz
-   sudo mv wt /usr/local/bin/
-   sudo chmod +x /usr/local/bin/wt
+   tar -xzf wtm-v*-linux-*.tar.gz
+   sudo mv wtm /usr/local/bin/
+   sudo chmod +x /usr/local/bin/wtm
    ```
 
 3. **Verify installation**:
 
    ```bash
-   wt --version
+   wtm --version
    ```
 
 ---
@@ -144,33 +144,33 @@ Choose the installation method for your operating system:
 
 ### Command not found
 
-**Symptom**: After installation, running `wt` shows "command not found" or similar error.
+**Symptom**: After installation, running `wtm` shows "command not found" or similar error.
 
 **Solutions**:
 
 - **Windows**: Verify the installation folder is in your PATH. Restart your terminal after modifying PATH.
 - **macOS/Linux**: Ensure `/usr/local/bin` is in your PATH. Run `echo $PATH` to verify.
-- Try specifying the full path: `/usr/local/bin/wt --version`
+- Try specifying the full path: `/usr/local/bin/wtm --version`
 - Restart your terminal or open a new terminal window
 
 ### Permission denied
 
-**Symptom**: Error message saying "permission denied" when trying to run `wt`.
+**Symptom**: Error message saying "permission denied" when trying to run `wtm`.
 
 **Solutions**:
 
 - **macOS/Linux**: Make the file executable:
 
   ```bash
-  sudo chmod +x /usr/local/bin/wt
+  sudo chmod +x /usr/local/bin/wtm
   ```
 
-- Verify file ownership: `ls -l /usr/local/bin/wt`
-- Try running with sudo: `sudo wt --version` (not recommended for regular use)
+- Verify file ownership: `ls -l /usr/local/bin/wtm`
+- Try running with sudo: `sudo wtm --version` (not recommended for regular use)
 
 ### Git not found
 
-**Symptom**: `wt` reports that Git is not installed or cannot be found.
+**Symptom**: `wtm` reports that Git is not installed or cannot be found.
 
 **Solutions**:
 
@@ -194,6 +194,6 @@ If you encounter other issues:
 
 Once installed:
 
-1. **Verify your installation** worked correctly: `wt --version`
+1. **Verify your installation** worked correctly: `wtm --version`
 2. **Learn verification best practices**: [Release Verification Guide](release-verification.md) (recommended for security-conscious users)
-3. **Start using `wt`**: Check out the [Quick Start Guide](guides/quickstart.md) to learn how to use `wt` effectively
+3. **Start using `wtm`**: Check out the [Quick Start Guide](guides/quickstart.md) to learn how to use `wtm` effectively

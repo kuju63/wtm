@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>CLI Command Rename (wt → New Unique Name) | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CLI Command Rename (wt → New Unique Name) | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/008-rename-command/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="cli-command-rename-wt--new-unique-name">CLI Command Rename (wt → New Unique Name)</h1>
+
+<p><strong>Feature Branch</strong>: <code>008-rename-command</code>
+<strong>Created</strong>: <code>2026-02-25</code>
+<strong>Status</strong>: Draft</p>
+<h2 id="user-scenarios--testing-mandatory">User Scenarios &amp; Testing <em>(mandatory)</em></h2>
+<h3 id="user-story-1---windows-ユーザーのコマンド競合解消-priority-p1">User Story 1 - Windows ユーザーのコマンド競合解消 (Priority: P1)</h3>
+<p><code>wt</code> コマンドが Windows Terminal のコマンドと同名であるため、Windows 環境ではワークツリー管理ツールが起動できない。コマンド名を一意な名前に変更することで、この競合を解消する。</p>
+<p><strong>Why this priority</strong>: Windows ユーザーがツールをまったく使用できないという根本的な問題であり、最優先で解決すべきである。</p>
+<p><strong>Independent Test</strong>: Windows Terminal がインストールされた環境で新コマンド名を実行し、ワークツリー管理ツールが起動することを確認することで独立してテスト可能。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> Windows Terminal がインストールされている環境, <strong>When</strong> 新しいコマンド名（例: <code>wtm</code>）を実行する, <strong>Then</strong> Windows Terminal ではなくワークツリー管理ツールが起動する</li>
+<li><strong>Given</strong> 旧バイナリ（<code>wt</code>）がインストールされた環境, <strong>When</strong> 新バージョンをインストールする, <strong>Then</strong> 新コマンド名でワークツリー管理ツールが使用できる</li>
+</ol>
+<hr>
+<h3 id="user-story-2---コマンド名の一意性検証-priority-p2">User Story 2 - コマンド名の一意性検証 (Priority: P2)</h3>
+<p>新コマンド名が Homebrew・winget および Windows・macOS・Linux の組み込みコマンドと競合しないことを確認し、すべてのプラットフォームで安全に使用できるコマンド名を選定する。</p>
+<p><strong>Why this priority</strong>: コマンド名の一意性検証を経て初めて、安全に名前変更を実施できる。US-001 の前提条件となる調査タスク。</p>
+<p><strong>Independent Test</strong>: <code>wtm</code> を Homebrew・winget で検索し、各OS の組み込みコマンドリストと照合することで独立して検証可能。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> <code>wtm</code> を候補名とする, <strong>When</strong> Homebrew および winget で <code>wtm</code> を検索する, <strong>Then</strong> 競合するパッケージが存在しない</li>
+<li><strong>Given</strong> 候補名が既存パッケージと競合する, <strong>When</strong> 一意性検証を実施する, <strong>Then</strong> 候補名を却下し、代替名を選定する</li>
+<li><strong>Given</strong> <code>wtm</code> を候補名とする, <strong>When</strong> Windows・macOS・Linux の組み込み・標準配布コマンドと照合する, <strong>Then</strong> いずれのプラットフォームにおいても競合が存在しない</li>
+</ol>
+<hr>
+<h3 id="edge-cases">Edge Cases</h3>
+<ul>
+<li>旧 <code>wt</code> と新コマンドバイナリが同一マシンに共存する場合、PATH の優先順位によって意図しないコマンドが実行される可能性がある</li>
+</ul>
+<h2 id="requirements-mandatory">Requirements <em>(mandatory)</em></h2>
+<h3 id="functional-requirements">Functional Requirements</h3>
+<ul>
+<li><strong>FR-001</strong>: コマンド名を <code>wt</code> から新しい一意の名前に変更する</li>
+<li><strong>FR-002</strong>: 新コマンド名が Homebrew に未登録であること</li>
+<li><strong>FR-003</strong>: 新コマンド名が winget に未登録であること</li>
+<li><strong>FR-004</strong>: 新コマンド名が Windows・macOS・Linux の組み込みコマンドと競合しないこと</li>
+<li><strong>FR-005</strong>: ユーザー向けドキュメントをすべて新コマンド名で更新する</li>
+<li><strong>FR-006</strong>: ビルド・パッケージング設定を新コマンド名で更新する</li>
+<li><strong>FR-007</strong>: 既存機能をすべて維持する（機能退行なし）</li>
+<li><strong>FR-008</strong>: CI/CD・リリーススクリプト内の旧コマンド名参照を更新する</li>
+</ul>
+<h2 id="success-criteria-mandatory">Success Criteria <em>(mandatory)</em></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes</h3>
+<ul>
+<li><strong>SC-001</strong>: Windows 環境で新コマンド名実行時に Windows Terminal が起動しない</li>
+<li><strong>SC-002</strong>: 採用時点で Homebrew・winget に競合パッケージが存在しない</li>
+<li><strong>SC-003</strong>: ユーザー向けドキュメント内の旧コマンド名参照が 100% 置換済みである</li>
+<li><strong>SC-004</strong>: 既存 CLI 機能すべてが新コマンド名で動作し、機能退行がゼロである</li>
+</ul>
+<h2 id="assumptions">Assumptions</h2>
+<ul>
+<li>新名の有力候補は <code>wtm</code>（Worktree Manager）だが、採用前に一意性検証を行う</li>
+<li>後方互換性エイリアス（<code>wt</code> → 新名）は不要（Breaking Change として扱う）</li>
+<li>リポジトリ名（<code>wt</code>）は変更しない</li>
+<li>dotnet ツール ID およびパッケージ名も新コマンド名に合わせて更新する</li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>Homebrew フォーミュラ・winget マニフェスト（存在する場合）の更新</li>
+<li>CI/CD ワークフロー、GitHub Actions、リリーススクリプトの更新</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/008-rename-command/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

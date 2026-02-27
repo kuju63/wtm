@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Feature Specification: Release Binary Hash Files | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Feature Specification: Release Binary Hash Files | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/006-release-hash-files/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="feature-specification-release-binary-hash-files">Feature Specification: Release Binary Hash Files</h1>
+
+<p><strong>Feature Branch</strong>: <code>006-release-hash-files</code>
+<strong>Created</strong>: 2026-02-14
+<strong>Status</strong>: Draft
+<strong>Input</strong>: User description: &quot;リリースファイル毎の整合性チェックを可能とするためにすべてのリリースバイナリはハッシュファイルを必要とするようにする。&quot;</p>
+<h2 id="user-scenarios--testing-mandatory">User Scenarios &amp; Testing <em>(mandatory)</em></h2>
+<h3 id="user-story-1---automated-hash-generation-on-release-priority-p1">User Story 1 - Automated Hash Generation on Release (Priority: P1)</h3>
+<p>As a release manager, when I create a new release, the system automatically generates hash files for all binary artifacts so that users can verify file integrity without manual intervention.</p>
+<p><strong>Why this priority</strong>: This is the foundation of the integrity verification feature. Without automatic hash generation, the feature cannot exist. This ensures every release has verifiable checksums from day one.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating a release and verifying that hash files are generated for each binary artifact in the release assets.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a release workflow is triggered, <strong>When</strong> binary artifacts are built and published, <strong>Then</strong> a corresponding SHA256 hash file is generated for each binary file</li>
+<li><strong>Given</strong> multiple binary artifacts (e.g., Windows, Linux, macOS builds), <strong>When</strong> the release is published, <strong>Then</strong> each artifact has its own hash file with naming pattern <code>&lt;artifact-name&gt;.sha256</code></li>
+<li><strong>Given</strong> a release is created, <strong>When</strong> hash generation completes, <strong>Then</strong> all hash files are included in the release assets alongside their corresponding binaries</li>
+</ol>
+<hr>
+<h3 id="user-story-2---user-side-integrity-verification-priority-p2">User Story 2 - User-Side Integrity Verification (Priority: P2)</h3>
+<p>As an end user who downloads release binaries, I can verify the integrity of downloaded files using provided hash files to ensure the files have not been corrupted or tampered with during download.</p>
+<p><strong>Why this priority</strong>: This provides the actual value to end users - the ability to verify their downloads. It depends on P1 (hash generation) but is independently testable once hash files exist.</p>
+<p><strong>Independent Test</strong>: Can be tested by downloading a binary and its hash file, then running a hash verification command to confirm the files match.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a user downloads a binary and its corresponding <code>.sha256</code> file, <strong>When</strong> the user runs a hash verification tool (e.g., <code>sha256sum -c &lt;file&gt;.sha256</code>), <strong>Then</strong> the verification succeeds if the binary is intact</li>
+<li><strong>Given</strong> a binary file is corrupted or modified after download, <strong>When</strong> the user verifies the hash, <strong>Then</strong> the verification fails and indicates a mismatch</li>
+<li><strong>Given</strong> a user wants to verify a download, <strong>When</strong> they access the release page, <strong>Then</strong> hash files are clearly visible in the release assets list</li>
+</ol>
+<hr>
+<h3 id="user-story-3---hash-documentation-in-release-notes-priority-p3">User Story 3 - Hash Documentation in Release Notes (Priority: P3)</h3>
+<p>As a security-conscious user, I can view hash values directly in the release notes or documentation to quickly verify downloads without needing to download separate hash files.</p>
+<p><strong>Why this priority</strong>: This is a convenience enhancement that improves user experience but is not strictly necessary. Users can still verify integrity using hash files from P1 and P2.</p>
+<p><strong>Independent Test</strong>: Can be tested by viewing release notes and confirming that hash values are displayed in a readable format (e.g., table or code block).</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a release is published, <strong>When</strong> a user views the release notes, <strong>Then</strong> a table or section lists all artifacts with their SHA256 hash values</li>
+<li><strong>Given</strong> hash values are displayed in release notes, <strong>When</strong> a user copies a hash value, <strong>Then</strong> the format is clean and ready for command-line verification tools (no extra whitespace or formatting characters)</li>
+</ol>
+<hr>
+<h3 id="edge-cases">Edge Cases</h3>
+<ul>
+<li>What happens when hash file generation fails during release creation?
+<ul>
+<li>System should fail the release workflow and notify the release manager</li>
+<li>No release should be published without complete hash coverage</li>
+</ul>
+</li>
+<li>How does the system handle binary artifacts that are added manually after initial release?
+<ul>
+<li>If binaries are added post-release, hash files must be generated and added manually or via re-triggering automation</li>
+</ul>
+</li>
+<li>What happens if a user downloads a hash file but not the corresponding binary, or vice versa?
+<ul>
+<li>Release assets should clearly pair binaries and hash files (e.g., via naming convention or grouping)</li>
+</ul>
+</li>
+<li>How does the system handle hash file naming conflicts?
+<ul>
+<li>Use consistent, predictable naming: <code>&lt;binary-name&gt;.&lt;extension&gt;.sha256</code> (e.g., <code>wt-win-x64.exe.sha256</code>)</li>
+</ul>
+</li>
+</ul>
+<h2 id="requirements-mandatory">Requirements <em>(mandatory)</em></h2>
+<h3 id="functional-requirements">Functional Requirements</h3>
+<ul>
+<li><strong>FR-001</strong>: System MUST generate a SHA256 hash file for every binary artifact during the release process</li>
+<li><strong>FR-002</strong>: Hash files MUST use the naming pattern <code>&lt;artifact-name&gt;.sha256</code> to maintain clear association with source binaries</li>
+<li><strong>FR-003</strong>: Hash files MUST contain the SHA256 checksum followed by the filename in the format expected by standard verification tools (e.g., <code>sha256sum</code>)</li>
+<li><strong>FR-004</strong>: System MUST include all generated hash files as release assets alongside their corresponding binaries</li>
+<li><strong>FR-005</strong>: System MUST fail the release workflow if hash generation fails for any artifact, preventing incomplete releases</li>
+<li><strong>FR-006</strong>: Hash values MUST be displayed in release notes in a user-friendly format (e.g., markdown table or code block)</li>
+<li><strong>FR-007</strong>: System MUST support generation of hash files for all binary formats (executables, archives, installers)</li>
+<li><strong>FR-008</strong>: Hash file content MUST be compatible with standard verification tools (<code>sha256sum</code>, <code>shasum</code>, PowerShell <code>Get-FileHash</code>)</li>
+</ul>
+<h3 id="key-entities">Key Entities</h3>
+<ul>
+<li><strong>Binary Artifact</strong>: A compiled executable or archive file included in a release (e.g., <code>wt-win-x64.exe</code>, <code>wt-linux-x64.tar.gz</code>)
+<ul>
+<li>Attributes: filename, size, platform target, file format</li>
+<li>Relationship: Each binary has exactly one corresponding hash file</li>
+</ul>
+</li>
+<li><strong>Hash File</strong>: A text file containing the SHA256 checksum of a binary artifact
+<ul>
+<li>Attributes: filename (derived from binary), hash value (64-character hexadecimal string), algorithm (SHA256)</li>
+<li>Format: <code>&lt;hash&gt; &lt;filename&gt;</code> (standard SHA256 checksum file format)</li>
+<li>Relationship: Each hash file corresponds to exactly one binary artifact</li>
+</ul>
+</li>
+</ul>
+<h2 id="success-criteria-mandatory">Success Criteria <em>(mandatory)</em></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes</h3>
+<ul>
+<li><strong>SC-001</strong>: 100% of binary artifacts in every release have corresponding SHA256 hash files available in release assets</li>
+<li><strong>SC-002</strong>: Users can successfully verify binary integrity using standard verification methods without additional processing or formatting</li>
+<li><strong>SC-003</strong>: Release workflow fails automatically if hash generation fails for any artifact, ensuring zero releases are published without complete hash coverage</li>
+<li><strong>SC-004</strong>: Hash values are visible in release notes within 5 minutes of release publication, allowing users to verify downloads immediately</li>
+<li><strong>SC-005</strong>: No support requests related to &quot;how to verify download integrity&quot; after hash files are implemented (establishes clear, self-service verification method)</li>
+</ul>
+<h2 id="assumptions">Assumptions</h2>
+<ul>
+<li><strong>Hash Algorithm</strong>: SHA256 is chosen as the industry-standard algorithm offering strong security while maintaining broad tool support</li>
+<li><strong>Hash File Format</strong>: Standard SHA256 checksum format (<code>&lt;hash&gt; &lt;filename&gt;</code>) ensures compatibility with existing verification tools across all platforms</li>
+<li><strong>Release Platform</strong>: Assumes releases are published via GitHub Releases or similar platform that supports multiple assets per release</li>
+<li><strong>Verification Responsibility</strong>: Users are responsible for performing verification using their platform's native tools; the system only provides hash files and documentation</li>
+<li><strong>Automation Context</strong>: Hash generation occurs during automated CI/CD release workflow (e.g., GitHub Actions) rather than manual processes</li>
+<li><strong>Artifact Scope</strong>: Hash files are required for all binary distribution formats (executables, archives, installers) but not for source code archives (which have Git commit hashes)</li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>CI/CD pipeline must support running hash generation commands (e.g., <code>sha256sum</code>, PowerShell <code>Get-FileHash</code>)</li>
+<li>Release workflow must support uploading multiple assets (binaries + hash files)</li>
+<li>Release notes generation process must support programmatic insertion of hash values (e.g., via template or script)</li>
+</ul>
+<h2 id="out-of-scope">Out of Scope</h2>
+<ul>
+<li>Support for hash algorithms other than SHA256 (MD5, SHA1, SHA512) - can be added in future if needed</li>
+<li>Automatic verification on user's machine (this feature only provides hash files; users must verify manually)</li>
+<li>GPG/PGP signature files for cryptographic signing (separate security feature)</li>
+<li>Hash verification UI or desktop application (command-line verification only)</li>
+<li>Historical hash file generation for past releases (only applies to new releases going forward)</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/006-release-hash-files/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

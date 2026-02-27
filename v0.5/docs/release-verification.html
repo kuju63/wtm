@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Release Verification Guide | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Release Verification Guide | wtm ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/release-verification.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="release-verification-guide">Release Verification Guide</h1>
+
+<p><strong>Feature</strong>: Release Binary Hash Files
+<strong>Audience</strong>: End users of the wtm tool
+<strong>Last Updated</strong>: 2026-02-17</p>
+<h2 id="overview">Overview</h2>
+<p>After downloading the wtm tool, you can verify that the files have not been corrupted or tampered with by checking their SHA256 hashes. This guide explains how to verify downloads on each platform.</p>
+<hr>
+<h2 id="why-verify-downloads">Why Verify Downloads?</h2>
+<p>Files can be corrupted during download or maliciously tampered with. Verifying SHA256 hashes allows you to:</p>
+<ul>
+<li>✅ Confirm the file matches the official release exactly</li>
+<li>✅ Detect corruption during download</li>
+<li>✅ Protect against malicious tampering</li>
+</ul>
+<hr>
+<h2 id="download">Download</h2>
+<p>Download the binary and hash file for your platform from the GitHub Releases page.</p>
+<p><strong>Required files</strong>:</p>
+<ol>
+<li>Binary file (e.g., <code>wtm-v1.0.0-windows-x64.exe</code>)</li>
+<li>Hash file (e.g., <code>wtm-v1.0.0-windows-x64.exe.sha256</code>)</li>
+</ol>
+<p>Or:</p>
+<ol>
+<li>Multiple binary files</li>
+<li><code>SHA256SUMS</code> file (contains hashes for all binaries)</li>
+</ol>
+<hr>
+<h2 id="windows-verification">Windows Verification</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>PowerShell 5.1 or later (included with Windows 10/11)</li>
+</ul>
+<h3 id="verify-with-individual-hash-file">Verify with Individual Hash File</h3>
+<p>Open PowerShell in the same folder as the downloaded binary and run:</p>
+<pre><code class="lang-powershell"># Calculate hash of downloaded file
+$hash = (Get-FileHash .\wtm-v1.0.0-windows-x64.exe -Algorithm SHA256).Hash
+
+# Read expected hash from .sha256 file
+$expected = (Get-Content .\wtm-v1.0.0-windows-x64.exe.sha256).Split(&quot; &quot;)[0]
+
+# Compare
+if ($hash -eq $expected) {
+    Write-Host &quot;✓ Hash verified: File is authentic&quot; -ForegroundColor Green
+} else {
+    Write-Host &quot;✗ Hash mismatch: File is corrupted or tampered&quot; -ForegroundColor Red
+}
+</code></pre>
+<h3 id="batch-verification-with-sha256sums">Batch Verification with SHA256SUMS</h3>
+<p>To verify multiple binaries:</p>
+<pre><code class="lang-powershell">Get-Content SHA256SUMS | ForEach-Object {
+    $expected, $file = $_ -split '  '
+    if (Test-Path $file) {
+        $actual = (Get-FileHash $file -Algorithm SHA256).Hash
+        if ($actual -eq $expected) {
+            Write-Host &quot;✓ $file&quot; -ForegroundColor Green
+        } else {
+            Write-Host &quot;✗ $file - Hash mismatch!&quot; -ForegroundColor Red
+        }
+    } else {
+        Write-Host &quot;- $file - File not found&quot; -ForegroundColor Yellow
+    }
+}
+</code></pre>
+<p><strong>Example individual .sha256 file content</strong> (<code>wtm-v1.0.0-windows-x64.exe.sha256</code>):</p>
+<pre><code class="lang-text">a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wtm-v1.0.0-windows-x64.exe
+</code></pre>
+<p>Note: Two spaces separate the hash and filename.</p>
+<hr>
+<h2 id="linux-verification">Linux Verification</h2>
+<h3 id="prerequisites-1">Prerequisites</h3>
+<ul>
+<li><code>sha256sum</code> command (included in most Linux distributions)</li>
+</ul>
+<h3 id="verify-with-individual-hash-file-1">Verify with Individual Hash File</h3>
+<p>Run this command in the same directory as the downloaded binary:</p>
+<pre><code class="lang-bash">sha256sum -c wtm-v1.0.0-linux-x64.sha256
+</code></pre>
+<p><strong>Success output</strong>:</p>
+<pre><code>wtm-v1.0.0-linux-x64: OK
+</code></pre>
+<p><strong>Failure output</strong>:</p>
+<pre><code>wtm-v1.0.0-linux-x64: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+</code></pre>
+<h3 id="batch-verification-with-sha256sums-1">Batch Verification with SHA256SUMS</h3>
+<p>To verify multiple binaries at once:</p>
+<pre><code class="lang-bash">sha256sum -c SHA256SUMS
+</code></pre>
+<p><strong>Success output</strong>:</p>
+<pre><code>wtm-v1.0.0-linux-x64: OK
+wtm-v1.0.0-linux-arm: OK
+wtm-v1.0.0-windows-x64.exe: OK
+wtm-v1.0.0-macos-arm64: OK
+</code></pre>
+<p><strong>Example SHA256SUMS file content</strong>:</p>
+<pre><code class="lang-text">a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wtm-v1.0.0-linux-x64
+b2c3d4e5f6a78901234567890123456789012345678901234567890123456789  wtm-v1.0.0-linux-arm
+c3d4e5f6a7b89012345678901234567890123456789012345678901234567890  wtm-v1.0.0-macos-arm64
+d4e5f6a7b8c90123456789012345678901234567890123456789012345678901  wtm-v1.0.0-windows-x64.exe
+</code></pre>
+<p>Note: Each line contains a hash (64 characters), two spaces, and the filename.</p>
+<h3 id="verify-specific-file-from-sha256sums">Verify Specific File from SHA256SUMS</h3>
+<p>To verify only a specific file:</p>
+<pre><code class="lang-bash">grep wtm-v1.0.0-linux-x64 SHA256SUMS | sha256sum -c
+</code></pre>
+<hr>
+<h2 id="macos-verification">macOS Verification</h2>
+<h3 id="prerequisites-2">Prerequisites</h3>
+<ul>
+<li><code>shasum</code> command (included with macOS)</li>
+</ul>
+<h3 id="verify-with-individual-hash-file-2">Verify with Individual Hash File</h3>
+<p>Run this command in the same directory as the downloaded binary:</p>
+<pre><code class="lang-bash">shasum -a 256 -c wtm-v1.0.0-macos-arm64.sha256
+</code></pre>
+<p><strong>Success output</strong>:</p>
+<pre><code>wtm-v1.0.0-macos-arm64: OK
+</code></pre>
+<p><strong>Failure output</strong>:</p>
+<pre><code>wtm-v1.0.0-macos-arm64: FAILED
+shasum: WARNING: 1 computed checksum did NOT match
+</code></pre>
+<h3 id="batch-verification-with-sha256sums-2">Batch Verification with SHA256SUMS</h3>
+<p>To verify multiple binaries at once:</p>
+<pre><code class="lang-bash">shasum -a 256 -c SHA256SUMS
+</code></pre>
+<h3 id="alternative-method-using-openssl">Alternative Method: Using openssl</h3>
+<pre><code class="lang-bash"># Calculate hash
+openssl sha256 wtm-v1.0.0-macos-arm64
+
+# Output example:
+# SHA256(wtm-v1.0.0-macos-arm64)= a1b2c3d4e5f6...
+
+# Manually compare with hash file content
+cat wtm-v1.0.0-macos-arm64.sha256
+</code></pre>
+<hr>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="hash-mismatch">Hash Mismatch</h3>
+<ol>
+<li><strong>Re-download the file</strong>: It may have been corrupted during download</li>
+<li><strong>Re-download the hash file</strong>: The hash file itself may be corrupted</li>
+<li><strong>Download from official releases page</strong>: Ensure you're downloading from a trusted source</li>
+<li><strong>If still mismatched</strong>: Report the issue on GitHub Issues</li>
+</ol>
+<h3 id="file-not-found-error">File Not Found Error</h3>
+<p><strong>Cause</strong>: Binary and hash file are not in the same directory</p>
+<p><strong>Solution</strong>:</p>
+<ul>
+<li>Place both files in the same folder</li>
+<li>Or specify absolute paths to the files</li>
+</ul>
+<h3 id="command-not-found-error">Command Not Found Error</h3>
+<p><strong>Linux</strong>:</p>
+<pre><code class="lang-bash"># Debian/Ubuntu
+sudo apt-get install coreutils
+
+# Fedora/RHEL
+sudo dnf install coreutils
+</code></pre>
+<p><strong>macOS</strong>:</p>
+<pre><code class="lang-bash"># Install GNU coreutils (if you want to use sha256sum instead of shasum)
+brew install coreutils
+
+# Use gsha256sum instead of sha256sum
+gsha256sum -c wtm-v1.0.0-macos-arm64.sha256
+</code></pre>
+<hr>
+<h2 id="frequently-asked-questions">Frequently Asked Questions</h2>
+<h3 id="q-whats-the-difference-between-sha256sums-and-individual-sha256-files">Q: What's the difference between SHA256SUMS and individual .sha256 files?</h3>
+<p><strong>A</strong>:</p>
+<ul>
+<li><strong>SHA256SUMS</strong>: Contains hashes for all binaries in one file. Convenient for verifying multiple files at once.</li>
+<li><strong>Individual .sha256 files</strong>: One hash file per binary. Convenient for downloading and verifying a single binary.</li>
+</ul>
+<p>Both contain the same hash values, and you can choose whichever method you prefer.</p>
+<h3 id="q-is-hash-verification-required">Q: Is hash verification required?</h3>
+<p><strong>A</strong>: Not required, but strongly recommended, especially when:</p>
+<ul>
+<li>Using in enterprise or production environments</li>
+<li>Security is critical for your use case</li>
+<li>Downloading from unofficial mirrors</li>
+</ul>
+<h3 id="q-what-is-the-sha256sumsasc-file">Q: What is the SHA256SUMS.asc file?</h3>
+<p><strong>A</strong>: This is a GPG signature for the SHA256SUMS file. It provides advanced security verification. You can use a GPG public key to verify the signature, ensuring the hash file itself hasn't been tampered with.</p>
+<p>For GPG verification details, see the project's SECURITY.md or documentation.</p>
+<h3 id="q-are-hash-values-case-sensitive">Q: Are hash values case-sensitive?</h3>
+<p><strong>A</strong>: No, SHA256 hash comparisons are case-insensitive. <code>A1B2C3...</code> and <code>a1b2c3...</code> are treated as the same hash.</p>
+<hr>
+<h2 id="next-steps">Next Steps</h2>
+<p>After successful verification:</p>
+<ol>
+<li><p><strong>Move the binary to an appropriate location</strong>:</p>
+<ul>
+<li>Linux/macOS: <code>/usr/local/bin/</code> or <code>~/.local/bin/</code></li>
+<li>Windows: <code>C:\Program Files\wt\</code> or a directory in your PATH</li>
+</ul>
+</li>
+<li><p><strong>Grant execute permissions</strong> (Linux/macOS):</p>
+<pre><code class="lang-bash">chmod +x wtm-v1.0.0-linux-x64
+</code></pre>
+</li>
+<li><p><strong>Start using the wtm tool</strong>:</p>
+<pre><code class="lang-bash">wtm --version
+wtm --help
+</code></pre>
+</li>
+</ol>
+<p>For detailed usage instructions, see the <a href="installation.html">Installation Guide</a>.</p>
+<hr>
+<h2 id="related-resources">Related Resources</h2>
+<ul>
+<li><a href="https://github.com/kuju63/wt/releases">GitHub Releases Page</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SHA-2">What is SHA256?</a></li>
+<li><a href="https://help.ubuntu.com/community/HowToSHA256SUM">File Integrity Verification Best Practices</a></li>
+<li><a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-filehash">PowerShell Get-FileHash Documentation</a></li>
+</ul>
+<hr>
+<p><strong>Need Help?</strong> Please ask questions or report bugs on <a href="https://github.com/kuju63/wt/issues">GitHub Issues</a>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/release-verification.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

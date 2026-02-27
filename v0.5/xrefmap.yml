@@ -1,0 +1,2454 @@
+### YamlMime:XRefMap
+sorted: true
+references:
+- uid: Kuju63.WorkTree.CommandLine.Commands
+  name: Kuju63.WorkTree.CommandLine.Commands
+  href: api/Kuju63.WorkTree.CommandLine.Commands.html
+  commentId: N:Kuju63.WorkTree.CommandLine.Commands
+  fullName: Kuju63.WorkTree.CommandLine.Commands
+  nameWithType: Kuju63.WorkTree.CommandLine.Commands
+- uid: Kuju63.WorkTree.CommandLine.Commands.ListCommand
+  name: ListCommand
+  href: api/Kuju63.WorkTree.CommandLine.Commands.ListCommand.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Commands.ListCommand
+  fullName: Kuju63.WorkTree.CommandLine.Commands.ListCommand
+  nameWithType: ListCommand
+- uid: Kuju63.WorkTree.CommandLine.Commands.ListCommand.#ctor(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService,Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter)
+  name: ListCommand(IWorktreeService, IOutputFormatter)
+  href: api/Kuju63.WorkTree.CommandLine.Commands.ListCommand.html#Kuju63_WorkTree_CommandLine_Commands_ListCommand__ctor_Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_Kuju63_WorkTree_CommandLine_Formatters_IOutputFormatter_
+  commentId: M:Kuju63.WorkTree.CommandLine.Commands.ListCommand.#ctor(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService,Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter)
+  name.vb: New(IWorktreeService, IOutputFormatter)
+  fullName: Kuju63.WorkTree.CommandLine.Commands.ListCommand.ListCommand(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService, Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Commands.ListCommand.New(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService, Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter)
+  nameWithType: ListCommand.ListCommand(IWorktreeService, IOutputFormatter)
+  nameWithType.vb: ListCommand.New(IWorktreeService, IOutputFormatter)
+- uid: Kuju63.WorkTree.CommandLine.Commands.ListCommand.#ctor*
+  name: ListCommand
+  href: api/Kuju63.WorkTree.CommandLine.Commands.ListCommand.html#Kuju63_WorkTree_CommandLine_Commands_ListCommand__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Commands.ListCommand.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Commands.ListCommand.ListCommand
+  fullName.vb: Kuju63.WorkTree.CommandLine.Commands.ListCommand.New
+  nameWithType: ListCommand.ListCommand
+  nameWithType.vb: ListCommand.New
+- uid: Kuju63.WorkTree.CommandLine.Commands.Worktree
+  name: Kuju63.WorkTree.CommandLine.Commands.Worktree
+  href: api/Kuju63.WorkTree.CommandLine.Commands.Worktree.html
+  commentId: N:Kuju63.WorkTree.CommandLine.Commands.Worktree
+  fullName: Kuju63.WorkTree.CommandLine.Commands.Worktree
+  nameWithType: Kuju63.WorkTree.CommandLine.Commands.Worktree
+- uid: Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand
+  name: CreateCommand
+  href: api/Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand
+  fullName: Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand
+  nameWithType: CreateCommand
+- uid: Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.#ctor(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService)
+  name: CreateCommand(IWorktreeService)
+  href: api/Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.html#Kuju63_WorkTree_CommandLine_Commands_Worktree_CreateCommand__ctor_Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_
+  commentId: M:Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.#ctor(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService)
+  name.vb: New(IWorktreeService)
+  fullName: Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.CreateCommand(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.New(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService)
+  nameWithType: CreateCommand.CreateCommand(IWorktreeService)
+  nameWithType.vb: CreateCommand.New(IWorktreeService)
+- uid: Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.#ctor*
+  name: CreateCommand
+  href: api/Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.html#Kuju63_WorkTree_CommandLine_Commands_Worktree_CreateCommand__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.CreateCommand
+  fullName.vb: Kuju63.WorkTree.CommandLine.Commands.Worktree.CreateCommand.New
+  nameWithType: CreateCommand.CreateCommand
+  nameWithType.vb: CreateCommand.New
+- uid: Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand
+  name: RemoveCommand
+  href: api/Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand
+  fullName: Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand
+  nameWithType: RemoveCommand
+- uid: Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.#ctor(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService)
+  name: RemoveCommand(IWorktreeService)
+  href: api/Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.html#Kuju63_WorkTree_CommandLine_Commands_Worktree_RemoveCommand__ctor_Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_
+  commentId: M:Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.#ctor(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService)
+  name.vb: New(IWorktreeService)
+  fullName: Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.RemoveCommand(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.New(Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService)
+  nameWithType: RemoveCommand.RemoveCommand(IWorktreeService)
+  nameWithType.vb: RemoveCommand.New(IWorktreeService)
+- uid: Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.#ctor*
+  name: RemoveCommand
+  href: api/Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.html#Kuju63_WorkTree_CommandLine_Commands_Worktree_RemoveCommand__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.RemoveCommand
+  fullName.vb: Kuju63.WorkTree.CommandLine.Commands.Worktree.RemoveCommand.New
+  nameWithType: RemoveCommand.RemoveCommand
+  nameWithType.vb: RemoveCommand.New
+- uid: Kuju63.WorkTree.CommandLine.Formatters
+  name: Kuju63.WorkTree.CommandLine.Formatters
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.html
+  commentId: N:Kuju63.WorkTree.CommandLine.Formatters
+  fullName: Kuju63.WorkTree.CommandLine.Formatters
+  nameWithType: Kuju63.WorkTree.CommandLine.Formatters
+- uid: Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter
+  name: IOutputFormatter
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter
+  nameWithType: IOutputFormatter
+- uid: Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.Format(System.Collections.Generic.IEnumerable{Kuju63.WorkTree.CommandLine.Models.WorktreeInfo})
+  name: Format(IEnumerable<WorktreeInfo>)
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.html#Kuju63_WorkTree_CommandLine_Formatters_IOutputFormatter_Format_System_Collections_Generic_IEnumerable_Kuju63_WorkTree_CommandLine_Models_WorktreeInfo__
+  commentId: M:Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.Format(System.Collections.Generic.IEnumerable{Kuju63.WorkTree.CommandLine.Models.WorktreeInfo})
+  name.vb: Format(IEnumerable(Of WorktreeInfo))
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.Format(System.Collections.Generic.IEnumerable<Kuju63.WorkTree.CommandLine.Models.WorktreeInfo>)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.Format(System.Collections.Generic.IEnumerable(Of Kuju63.WorkTree.CommandLine.Models.WorktreeInfo))
+  nameWithType: IOutputFormatter.Format(IEnumerable<WorktreeInfo>)
+  nameWithType.vb: IOutputFormatter.Format(IEnumerable(Of WorktreeInfo))
+- uid: Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.Format*
+  name: Format
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.html#Kuju63_WorkTree_CommandLine_Formatters_IOutputFormatter_Format_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.Format
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.IOutputFormatter.Format
+  nameWithType: IOutputFormatter.Format
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableColumn
+  name: TableColumn
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Formatters.TableColumn
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableColumn
+  nameWithType: TableColumn
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.#ctor(System.String,System.Func{Kuju63.WorkTree.CommandLine.Models.WorktreeInfo,System.String})
+  name: TableColumn(string, Func<WorktreeInfo, string>)
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.html#Kuju63_WorkTree_CommandLine_Formatters_TableColumn__ctor_System_String_System_Func_Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_System_String__
+  commentId: M:Kuju63.WorkTree.CommandLine.Formatters.TableColumn.#ctor(System.String,System.Func{Kuju63.WorkTree.CommandLine.Models.WorktreeInfo,System.String})
+  name.vb: New(String, Func(Of WorktreeInfo, String))
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.TableColumn(string, System.Func<Kuju63.WorkTree.CommandLine.Models.WorktreeInfo, string>)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.New(String, System.Func(Of Kuju63.WorkTree.CommandLine.Models.WorktreeInfo, String))
+  nameWithType: TableColumn.TableColumn(string, Func<WorktreeInfo, string>)
+  nameWithType.vb: TableColumn.New(String, Func(Of WorktreeInfo, String))
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.#ctor*
+  name: TableColumn
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.html#Kuju63_WorkTree_CommandLine_Formatters_TableColumn__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Formatters.TableColumn.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.TableColumn
+  fullName.vb: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.New
+  nameWithType: TableColumn.TableColumn
+  nameWithType.vb: TableColumn.New
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.Header
+  name: Header
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.html#Kuju63_WorkTree_CommandLine_Formatters_TableColumn_Header
+  commentId: P:Kuju63.WorkTree.CommandLine.Formatters.TableColumn.Header
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.Header
+  nameWithType: TableColumn.Header
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.Header*
+  name: Header
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.html#Kuju63_WorkTree_CommandLine_Formatters_TableColumn_Header_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Formatters.TableColumn.Header
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.Header
+  nameWithType: TableColumn.Header
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.ValueSelector
+  name: ValueSelector
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.html#Kuju63_WorkTree_CommandLine_Formatters_TableColumn_ValueSelector
+  commentId: P:Kuju63.WorkTree.CommandLine.Formatters.TableColumn.ValueSelector
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.ValueSelector
+  nameWithType: TableColumn.ValueSelector
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.ValueSelector*
+  name: ValueSelector
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableColumn.html#Kuju63_WorkTree_CommandLine_Formatters_TableColumn_ValueSelector_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Formatters.TableColumn.ValueSelector
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableColumn.ValueSelector
+  nameWithType: TableColumn.ValueSelector
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter
+  name: TableFormatter
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Formatters.TableFormatter
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter
+  nameWithType: TableFormatter
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.#ctor
+  name: TableFormatter()
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.html#Kuju63_WorkTree_CommandLine_Formatters_TableFormatter__ctor
+  commentId: M:Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.#ctor
+  name.vb: New()
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.TableFormatter()
+  fullName.vb: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.New()
+  nameWithType: TableFormatter.TableFormatter()
+  nameWithType.vb: TableFormatter.New()
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.#ctor(Kuju63.WorkTree.CommandLine.Formatters.TableColumn[])
+  name: TableFormatter(params TableColumn[])
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.html#Kuju63_WorkTree_CommandLine_Formatters_TableFormatter__ctor_Kuju63_WorkTree_CommandLine_Formatters_TableColumn___
+  commentId: M:Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.#ctor(Kuju63.WorkTree.CommandLine.Formatters.TableColumn[])
+  name.vb: New(ParamArray TableColumn())
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.TableFormatter(params Kuju63.WorkTree.CommandLine.Formatters.TableColumn[])
+  fullName.vb: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.New(ParamArray Kuju63.WorkTree.CommandLine.Formatters.TableColumn())
+  nameWithType: TableFormatter.TableFormatter(params TableColumn[])
+  nameWithType.vb: TableFormatter.New(ParamArray TableColumn())
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.#ctor*
+  name: TableFormatter
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.html#Kuju63_WorkTree_CommandLine_Formatters_TableFormatter__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.TableFormatter
+  fullName.vb: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.New
+  nameWithType: TableFormatter.TableFormatter
+  nameWithType.vb: TableFormatter.New
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.Format(System.Collections.Generic.IEnumerable{Kuju63.WorkTree.CommandLine.Models.WorktreeInfo})
+  name: Format(IEnumerable<WorktreeInfo>)
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.html#Kuju63_WorkTree_CommandLine_Formatters_TableFormatter_Format_System_Collections_Generic_IEnumerable_Kuju63_WorkTree_CommandLine_Models_WorktreeInfo__
+  commentId: M:Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.Format(System.Collections.Generic.IEnumerable{Kuju63.WorkTree.CommandLine.Models.WorktreeInfo})
+  name.vb: Format(IEnumerable(Of WorktreeInfo))
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.Format(System.Collections.Generic.IEnumerable<Kuju63.WorkTree.CommandLine.Models.WorktreeInfo>)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.Format(System.Collections.Generic.IEnumerable(Of Kuju63.WorkTree.CommandLine.Models.WorktreeInfo))
+  nameWithType: TableFormatter.Format(IEnumerable<WorktreeInfo>)
+  nameWithType.vb: TableFormatter.Format(IEnumerable(Of WorktreeInfo))
+- uid: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.Format*
+  name: Format
+  href: api/Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.html#Kuju63_WorkTree_CommandLine_Formatters_TableFormatter_Format_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.Format
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Formatters.TableFormatter.Format
+  nameWithType: TableFormatter.Format
+- uid: Kuju63.WorkTree.CommandLine.Models
+  name: Kuju63.WorkTree.CommandLine.Models
+  href: api/Kuju63.WorkTree.CommandLine.Models.html
+  commentId: N:Kuju63.WorkTree.CommandLine.Models
+  fullName: Kuju63.WorkTree.CommandLine.Models
+  nameWithType: Kuju63.WorkTree.CommandLine.Models
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo
+  name: BranchInfo
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.BranchInfo
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo
+  nameWithType: BranchInfo
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.#ctor(System.String,System.String,System.Boolean,System.Boolean)
+  name: BranchInfo(string, string?, bool, bool)
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo__ctor_System_String_System_String_System_Boolean_System_Boolean_
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.BranchInfo.#ctor(System.String,System.String,System.Boolean,System.Boolean)
+  name.vb: New(String, String, Boolean, Boolean)
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.BranchInfo(string, string?, bool, bool)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.BranchInfo.New(String, String, Boolean, Boolean)
+  nameWithType: BranchInfo.BranchInfo(string, string?, bool, bool)
+  nameWithType.vb: BranchInfo.New(String, String, Boolean, Boolean)
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.#ctor*
+  name: BranchInfo
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.BranchInfo.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.BranchInfo
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.BranchInfo.New
+  nameWithType: BranchInfo.BranchInfo
+  nameWithType.vb: BranchInfo.New
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.BaseBranch
+  name: BaseBranch
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_BaseBranch
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.BranchInfo.BaseBranch
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.BaseBranch
+  nameWithType: BranchInfo.BaseBranch
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.BaseBranch*
+  name: BaseBranch
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_BaseBranch_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.BranchInfo.BaseBranch
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.BaseBranch
+  nameWithType: BranchInfo.BaseBranch
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.Exists
+  name: Exists
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_Exists
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.BranchInfo.Exists
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.Exists
+  nameWithType: BranchInfo.Exists
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.Exists*
+  name: Exists
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_Exists_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.BranchInfo.Exists
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.Exists
+  nameWithType: BranchInfo.Exists
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsRemote
+  name: IsRemote
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_IsRemote
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsRemote
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsRemote
+  nameWithType: BranchInfo.IsRemote
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsRemote*
+  name: IsRemote
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_IsRemote_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsRemote
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsRemote
+  nameWithType: BranchInfo.IsRemote
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsValidName(System.String)
+  name: IsValidName(string)
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_IsValidName_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsValidName(System.String)
+  name.vb: IsValidName(String)
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsValidName(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsValidName(String)
+  nameWithType: BranchInfo.IsValidName(string)
+  nameWithType.vb: BranchInfo.IsValidName(String)
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsValidName*
+  name: IsValidName
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_IsValidName_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsValidName
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.IsValidName
+  nameWithType: BranchInfo.IsValidName
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.Name
+  name: Name
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_Name
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.BranchInfo.Name
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.Name
+  nameWithType: BranchInfo.Name
+- uid: Kuju63.WorkTree.CommandLine.Models.BranchInfo.Name*
+  name: Name
+  href: api/Kuju63.WorkTree.CommandLine.Models.BranchInfo.html#Kuju63_WorkTree_CommandLine_Models_BranchInfo_Name_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.BranchInfo.Name
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.BranchInfo.Name
+  nameWithType: BranchInfo.Name
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1
+  name: CommandResult<T>
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.CommandResult`1
+  name.vb: CommandResult(Of T)
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T)
+  nameWithType: CommandResult<T>
+  nameWithType.vb: CommandResult(Of T)
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Data
+  name: Data
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Data
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Data
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Data
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Data
+  nameWithType: CommandResult<T>.Data
+  nameWithType.vb: CommandResult(Of T).Data
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Data*
+  name: Data
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Data_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Data
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Data
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Data
+  nameWithType: CommandResult<T>.Data
+  nameWithType.vb: CommandResult(Of T).Data
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorCode
+  name: ErrorCode
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_ErrorCode
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorCode
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.ErrorCode
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).ErrorCode
+  nameWithType: CommandResult<T>.ErrorCode
+  nameWithType.vb: CommandResult(Of T).ErrorCode
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorCode*
+  name: ErrorCode
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_ErrorCode_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorCode
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.ErrorCode
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).ErrorCode
+  nameWithType: CommandResult<T>.ErrorCode
+  nameWithType.vb: CommandResult(Of T).ErrorCode
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorMessage
+  name: ErrorMessage
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_ErrorMessage
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorMessage
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.ErrorMessage
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).ErrorMessage
+  nameWithType: CommandResult<T>.ErrorMessage
+  nameWithType.vb: CommandResult(Of T).ErrorMessage
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorMessage*
+  name: ErrorMessage
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_ErrorMessage_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.ErrorMessage
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.ErrorMessage
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).ErrorMessage
+  nameWithType: CommandResult<T>.ErrorMessage
+  nameWithType.vb: CommandResult(Of T).ErrorMessage
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure(System.String,System.String)
+  name: Failure(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Failure_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure(System.String,System.String)
+  name.vb: Failure(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Failure(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Failure(String, String)
+  nameWithType: CommandResult<T>.Failure(string, string)
+  nameWithType.vb: CommandResult(Of T).Failure(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure(System.String,System.String,System.String)
+  name: Failure(string, string, string?)
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Failure_System_String_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure(System.String,System.String,System.String)
+  name.vb: Failure(String, String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Failure(string, string, string?)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Failure(String, String, String)
+  nameWithType: CommandResult<T>.Failure(string, string, string?)
+  nameWithType.vb: CommandResult(Of T).Failure(String, String, String)
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure*
+  name: Failure
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Failure_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Failure
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Failure
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Failure
+  nameWithType: CommandResult<T>.Failure
+  nameWithType.vb: CommandResult(Of T).Failure
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.IsSuccess
+  name: IsSuccess
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_IsSuccess
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.IsSuccess
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.IsSuccess
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).IsSuccess
+  nameWithType: CommandResult<T>.IsSuccess
+  nameWithType.vb: CommandResult(Of T).IsSuccess
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.IsSuccess*
+  name: IsSuccess
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_IsSuccess_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.IsSuccess
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.IsSuccess
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).IsSuccess
+  nameWithType: CommandResult<T>.IsSuccess
+  nameWithType.vb: CommandResult(Of T).IsSuccess
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Solution
+  name: Solution
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Solution
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Solution
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Solution
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Solution
+  nameWithType: CommandResult<T>.Solution
+  nameWithType.vb: CommandResult(Of T).Solution
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Solution*
+  name: Solution
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Solution_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Solution
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Solution
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Solution
+  nameWithType: CommandResult<T>.Solution
+  nameWithType.vb: CommandResult(Of T).Solution
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success(`0)
+  name: Success(T)
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Success__0_
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success(`0)
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Success(T)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Success(T)
+  nameWithType: CommandResult<T>.Success(T)
+  nameWithType.vb: CommandResult(Of T).Success(T)
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success(`0,System.Collections.Generic.List{System.String})
+  name: Success(T, List<string>?)
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Success__0_System_Collections_Generic_List_System_String__
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success(`0,System.Collections.Generic.List{System.String})
+  name.vb: Success(T, List(Of String))
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Success(T, System.Collections.Generic.List<string>?)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Success(T, System.Collections.Generic.List(Of String))
+  nameWithType: CommandResult<T>.Success(T, List<string>?)
+  nameWithType.vb: CommandResult(Of T).Success(T, List(Of String))
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success*
+  name: Success
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Success_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Success
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Success
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Success
+  nameWithType: CommandResult<T>.Success
+  nameWithType.vb: CommandResult(Of T).Success
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.SuccessWithWarnings(`0,System.Collections.Generic.List{System.String})
+  name: SuccessWithWarnings(T, List<string>)
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_SuccessWithWarnings__0_System_Collections_Generic_List_System_String__
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.SuccessWithWarnings(`0,System.Collections.Generic.List{System.String})
+  name.vb: SuccessWithWarnings(T, List(Of String))
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.SuccessWithWarnings(T, System.Collections.Generic.List<string>)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).SuccessWithWarnings(T, System.Collections.Generic.List(Of String))
+  nameWithType: CommandResult<T>.SuccessWithWarnings(T, List<string>)
+  nameWithType.vb: CommandResult(Of T).SuccessWithWarnings(T, List(Of String))
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.SuccessWithWarnings*
+  name: SuccessWithWarnings
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_SuccessWithWarnings_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.SuccessWithWarnings
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.SuccessWithWarnings
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).SuccessWithWarnings
+  nameWithType: CommandResult<T>.SuccessWithWarnings
+  nameWithType.vb: CommandResult(Of T).SuccessWithWarnings
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Warnings
+  name: Warnings
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Warnings
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Warnings
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Warnings
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Warnings
+  nameWithType: CommandResult<T>.Warnings
+  nameWithType.vb: CommandResult(Of T).Warnings
+- uid: Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Warnings*
+  name: Warnings
+  href: api/Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html#Kuju63_WorkTree_CommandLine_Models_CommandResult_1_Warnings_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CommandResult`1.Warnings
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CommandResult<T>.Warnings
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.CommandResult(Of T).Warnings
+  nameWithType: CommandResult<T>.Warnings
+  nameWithType.vb: CommandResult(Of T).Warnings
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions
+  name: CreateWorktreeOptions
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions
+  nameWithType: CreateWorktreeOptions
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BaseBranch
+  name: BaseBranch
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_BaseBranch
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BaseBranch
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BaseBranch
+  nameWithType: CreateWorktreeOptions.BaseBranch
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BaseBranch*
+  name: BaseBranch
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_BaseBranch_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BaseBranch
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BaseBranch
+  nameWithType: CreateWorktreeOptions.BaseBranch
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BranchName
+  name: BranchName
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_BranchName
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BranchName
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BranchName
+  nameWithType: CreateWorktreeOptions.BranchName
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BranchName*
+  name: BranchName
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_BranchName_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BranchName
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.BranchName
+  nameWithType: CreateWorktreeOptions.BranchName
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.CheckoutExisting
+  name: CheckoutExisting
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_CheckoutExisting
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.CheckoutExisting
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.CheckoutExisting
+  nameWithType: CreateWorktreeOptions.CheckoutExisting
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.CheckoutExisting*
+  name: CheckoutExisting
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_CheckoutExisting_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.CheckoutExisting
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.CheckoutExisting
+  nameWithType: CreateWorktreeOptions.CheckoutExisting
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.EditorType
+  name: EditorType
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_EditorType
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.EditorType
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.EditorType
+  nameWithType: CreateWorktreeOptions.EditorType
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.EditorType*
+  name: EditorType
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_EditorType_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.EditorType
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.EditorType
+  nameWithType: CreateWorktreeOptions.EditorType
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.OutputFormat
+  name: OutputFormat
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_OutputFormat
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.OutputFormat
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.OutputFormat
+  nameWithType: CreateWorktreeOptions.OutputFormat
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.OutputFormat*
+  name: OutputFormat
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_OutputFormat_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.OutputFormat
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.OutputFormat
+  nameWithType: CreateWorktreeOptions.OutputFormat
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Validate
+  name: Validate()
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_Validate
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Validate
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Validate()
+  nameWithType: CreateWorktreeOptions.Validate()
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Validate*
+  name: Validate
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_Validate_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Validate
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Validate
+  nameWithType: CreateWorktreeOptions.Validate
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Verbose
+  name: Verbose
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_Verbose
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Verbose
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Verbose
+  nameWithType: CreateWorktreeOptions.Verbose
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Verbose*
+  name: Verbose
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_Verbose_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Verbose
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.Verbose
+  nameWithType: CreateWorktreeOptions.Verbose
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.WorktreePath
+  name: WorktreePath
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_WorktreePath
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.WorktreePath
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.WorktreePath
+  nameWithType: CreateWorktreeOptions.WorktreePath
+- uid: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.WorktreePath*
+  name: WorktreePath
+  href: api/Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_WorktreePath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.WorktreePath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions.WorktreePath
+  nameWithType: CreateWorktreeOptions.WorktreePath
+- uid: Kuju63.WorkTree.CommandLine.Models.DeletionFailure
+  name: DeletionFailure
+  href: api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.DeletionFailure
+  fullName: Kuju63.WorkTree.CommandLine.Models.DeletionFailure
+  nameWithType: DeletionFailure
+- uid: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Exception
+  name: Exception
+  href: api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.html#Kuju63_WorkTree_CommandLine_Models_DeletionFailure_Exception
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Exception
+  fullName: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Exception
+  nameWithType: DeletionFailure.Exception
+- uid: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Exception*
+  name: Exception
+  href: api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.html#Kuju63_WorkTree_CommandLine_Models_DeletionFailure_Exception_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Exception
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Exception
+  nameWithType: DeletionFailure.Exception
+- uid: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.FilePath
+  name: FilePath
+  href: api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.html#Kuju63_WorkTree_CommandLine_Models_DeletionFailure_FilePath
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.DeletionFailure.FilePath
+  fullName: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.FilePath
+  nameWithType: DeletionFailure.FilePath
+- uid: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.FilePath*
+  name: FilePath
+  href: api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.html#Kuju63_WorkTree_CommandLine_Models_DeletionFailure_FilePath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.DeletionFailure.FilePath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.FilePath
+  nameWithType: DeletionFailure.FilePath
+- uid: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Reason
+  name: Reason
+  href: api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.html#Kuju63_WorkTree_CommandLine_Models_DeletionFailure_Reason
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Reason
+  fullName: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Reason
+  nameWithType: DeletionFailure.Reason
+- uid: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Reason*
+  name: Reason
+  href: api/Kuju63.WorkTree.CommandLine.Models.DeletionFailure.html#Kuju63_WorkTree_CommandLine_Models_DeletionFailure_Reason_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Reason
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.DeletionFailure.Reason
+  nameWithType: DeletionFailure.Reason
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig
+  name: EditorConfig
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.EditorConfig
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig
+  nameWithType: EditorConfig
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig.Arguments
+  name: Arguments
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html#Kuju63_WorkTree_CommandLine_Models_EditorConfig_Arguments
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.EditorConfig.Arguments
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig.Arguments
+  nameWithType: EditorConfig.Arguments
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig.Arguments*
+  name: Arguments
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html#Kuju63_WorkTree_CommandLine_Models_EditorConfig_Arguments_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.EditorConfig.Arguments
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig.Arguments
+  nameWithType: EditorConfig.Arguments
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig.Command
+  name: Command
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html#Kuju63_WorkTree_CommandLine_Models_EditorConfig_Command
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.EditorConfig.Command
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig.Command
+  nameWithType: EditorConfig.Command
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig.Command*
+  name: Command
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html#Kuju63_WorkTree_CommandLine_Models_EditorConfig_Command_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.EditorConfig.Command
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig.Command
+  nameWithType: EditorConfig.Command
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig.EditorType
+  name: EditorType
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html#Kuju63_WorkTree_CommandLine_Models_EditorConfig_EditorType
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.EditorConfig.EditorType
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig.EditorType
+  nameWithType: EditorConfig.EditorType
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig.EditorType*
+  name: EditorType
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html#Kuju63_WorkTree_CommandLine_Models_EditorConfig_EditorType_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.EditorConfig.EditorType
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig.EditorType
+  nameWithType: EditorConfig.EditorType
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig.IsAvailable
+  name: IsAvailable
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html#Kuju63_WorkTree_CommandLine_Models_EditorConfig_IsAvailable
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.EditorConfig.IsAvailable
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig.IsAvailable
+  nameWithType: EditorConfig.IsAvailable
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorConfig.IsAvailable*
+  name: IsAvailable
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorConfig.html#Kuju63_WorkTree_CommandLine_Models_EditorConfig_IsAvailable_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.EditorConfig.IsAvailable
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorConfig.IsAvailable
+  nameWithType: EditorConfig.IsAvailable
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorType
+  name: EditorType
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorType.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.EditorType
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorType
+  nameWithType: EditorType
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorType.Emacs
+  name: Emacs
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorType.html#Kuju63_WorkTree_CommandLine_Models_EditorType_Emacs
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.EditorType.Emacs
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorType.Emacs
+  nameWithType: EditorType.Emacs
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorType.IntelliJIDEA
+  name: IntelliJIDEA
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorType.html#Kuju63_WorkTree_CommandLine_Models_EditorType_IntelliJIDEA
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.EditorType.IntelliJIDEA
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorType.IntelliJIDEA
+  nameWithType: EditorType.IntelliJIDEA
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorType.Nano
+  name: Nano
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorType.html#Kuju63_WorkTree_CommandLine_Models_EditorType_Nano
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.EditorType.Nano
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorType.Nano
+  nameWithType: EditorType.Nano
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorType.VSCode
+  name: VSCode
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorType.html#Kuju63_WorkTree_CommandLine_Models_EditorType_VSCode
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.EditorType.VSCode
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorType.VSCode
+  nameWithType: EditorType.VSCode
+- uid: Kuju63.WorkTree.CommandLine.Models.EditorType.Vim
+  name: Vim
+  href: api/Kuju63.WorkTree.CommandLine.Models.EditorType.html#Kuju63_WorkTree_CommandLine_Models_EditorType_Vim
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.EditorType.Vim
+  fullName: Kuju63.WorkTree.CommandLine.Models.EditorType.Vim
+  nameWithType: EditorType.Vim
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes
+  name: ErrorCodes
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.ErrorCodes
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes
+  nameWithType: ErrorCodes
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.BranchAlreadyExists
+  name: BranchAlreadyExists
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_BranchAlreadyExists
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.BranchAlreadyExists
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.BranchAlreadyExists
+  nameWithType: ErrorCodes.BranchAlreadyExists
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.BranchAlreadyInUse
+  name: BranchAlreadyInUse
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_BranchAlreadyInUse
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.BranchAlreadyInUse
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.BranchAlreadyInUse
+  nameWithType: ErrorCodes.BranchAlreadyInUse
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.DiskSpaceLow
+  name: DiskSpaceLow
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_DiskSpaceLow
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.DiskSpaceLow
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.DiskSpaceLow
+  nameWithType: ErrorCodes.DiskSpaceLow
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.EditorNotFound
+  name: EditorNotFound
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_EditorNotFound
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.EditorNotFound
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.EditorNotFound
+  nameWithType: ErrorCodes.EditorNotFound
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GetSolution(System.String)
+  name: GetSolution(string)
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_GetSolution_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GetSolution(System.String)
+  name.vb: GetSolution(String)
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GetSolution(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GetSolution(String)
+  nameWithType: ErrorCodes.GetSolution(string)
+  nameWithType.vb: ErrorCodes.GetSolution(String)
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GetSolution*
+  name: GetSolution
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_GetSolution_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GetSolution
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GetSolution
+  nameWithType: ErrorCodes.GetSolution
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GitCommandFailed
+  name: GitCommandFailed
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_GitCommandFailed
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GitCommandFailed
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GitCommandFailed
+  nameWithType: ErrorCodes.GitCommandFailed
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GitNotFound
+  name: GitNotFound
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_GitNotFound
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GitNotFound
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.GitNotFound
+  nameWithType: ErrorCodes.GitNotFound
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.InvalidBranchName
+  name: InvalidBranchName
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_InvalidBranchName
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.InvalidBranchName
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.InvalidBranchName
+  nameWithType: ErrorCodes.InvalidBranchName
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.InvalidPath
+  name: InvalidPath
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_InvalidPath
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.InvalidPath
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.InvalidPath
+  nameWithType: ErrorCodes.InvalidPath
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.NotGitRepository
+  name: NotGitRepository
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_NotGitRepository
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.NotGitRepository
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.NotGitRepository
+  nameWithType: ErrorCodes.NotGitRepository
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.PathNotWritable
+  name: PathNotWritable
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_PathNotWritable
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.PathNotWritable
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.PathNotWritable
+  nameWithType: ErrorCodes.PathNotWritable
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.WorktreeAlreadyExists
+  name: WorktreeAlreadyExists
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_WorktreeAlreadyExists
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.WorktreeAlreadyExists
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.WorktreeAlreadyExists
+  nameWithType: ErrorCodes.WorktreeAlreadyExists
+- uid: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.WorktreeCreationFailed
+  name: WorktreeCreationFailed
+  href: api/Kuju63.WorkTree.CommandLine.Models.ErrorCodes.html#Kuju63_WorkTree_CommandLine_Models_ErrorCodes_WorktreeCreationFailed
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.ErrorCodes.WorktreeCreationFailed
+  fullName: Kuju63.WorkTree.CommandLine.Models.ErrorCodes.WorktreeCreationFailed
+  nameWithType: ErrorCodes.WorktreeCreationFailed
+- uid: Kuju63.WorkTree.CommandLine.Models.OutputFormat
+  name: OutputFormat
+  href: api/Kuju63.WorkTree.CommandLine.Models.OutputFormat.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.OutputFormat
+  fullName: Kuju63.WorkTree.CommandLine.Models.OutputFormat
+  nameWithType: OutputFormat
+- uid: Kuju63.WorkTree.CommandLine.Models.OutputFormat.Human
+  name: Human
+  href: api/Kuju63.WorkTree.CommandLine.Models.OutputFormat.html#Kuju63_WorkTree_CommandLine_Models_OutputFormat_Human
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.OutputFormat.Human
+  fullName: Kuju63.WorkTree.CommandLine.Models.OutputFormat.Human
+  nameWithType: OutputFormat.Human
+- uid: Kuju63.WorkTree.CommandLine.Models.OutputFormat.Json
+  name: Json
+  href: api/Kuju63.WorkTree.CommandLine.Models.OutputFormat.html#Kuju63_WorkTree_CommandLine_Models_OutputFormat_Json
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.OutputFormat.Json
+  fullName: Kuju63.WorkTree.CommandLine.Models.OutputFormat.Json
+  nameWithType: OutputFormat.Json
+- uid: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError
+  name: RemovalValidationError
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.RemovalValidationError
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError
+  nameWithType: RemovalValidationError
+- uid: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.HasUncommittedChanges
+  name: HasUncommittedChanges
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.html#Kuju63_WorkTree_CommandLine_Models_RemovalValidationError_HasUncommittedChanges
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.HasUncommittedChanges
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.HasUncommittedChanges
+  nameWithType: RemovalValidationError.HasUncommittedChanges
+- uid: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsCurrentWorktree
+  name: IsCurrentWorktree
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.html#Kuju63_WorkTree_CommandLine_Models_RemovalValidationError_IsCurrentWorktree
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsCurrentWorktree
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsCurrentWorktree
+  nameWithType: RemovalValidationError.IsCurrentWorktree
+- uid: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsLocked
+  name: IsLocked
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.html#Kuju63_WorkTree_CommandLine_Models_RemovalValidationError_IsLocked
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsLocked
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsLocked
+  nameWithType: RemovalValidationError.IsLocked
+- uid: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsMainWorktree
+  name: IsMainWorktree
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.html#Kuju63_WorkTree_CommandLine_Models_RemovalValidationError_IsMainWorktree
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsMainWorktree
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.IsMainWorktree
+  nameWithType: RemovalValidationError.IsMainWorktree
+- uid: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.None
+  name: None
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.html#Kuju63_WorkTree_CommandLine_Models_RemovalValidationError_None
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.None
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.None
+  nameWithType: RemovalValidationError.None
+- uid: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.NotFound
+  name: NotFound
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.html#Kuju63_WorkTree_CommandLine_Models_RemovalValidationError_NotFound
+  commentId: F:Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.NotFound
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemovalValidationError.NotFound
+  nameWithType: RemovalValidationError.NotFound
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions
+  name: RemoveWorktreeOptions
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions
+  nameWithType: RemoveWorktreeOptions
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Force
+  name: Force
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_Force
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Force
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Force
+  nameWithType: RemoveWorktreeOptions.Force
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Force*
+  name: Force
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_Force_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Force
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Force
+  nameWithType: RemoveWorktreeOptions.Force
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.OutputFormat
+  name: OutputFormat
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_OutputFormat
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.OutputFormat
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.OutputFormat
+  nameWithType: RemoveWorktreeOptions.OutputFormat
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.OutputFormat*
+  name: OutputFormat
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_OutputFormat_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.OutputFormat
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.OutputFormat
+  nameWithType: RemoveWorktreeOptions.OutputFormat
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Verbose
+  name: Verbose
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_Verbose
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Verbose
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Verbose
+  nameWithType: RemoveWorktreeOptions.Verbose
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Verbose*
+  name: Verbose
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_Verbose_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Verbose
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.Verbose
+  nameWithType: RemoveWorktreeOptions.Verbose
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.WorktreeIdentifier
+  name: WorktreeIdentifier
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_WorktreeIdentifier
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.WorktreeIdentifier
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.WorktreeIdentifier
+  nameWithType: RemoveWorktreeOptions.WorktreeIdentifier
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.WorktreeIdentifier*
+  name: WorktreeIdentifier
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_WorktreeIdentifier_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.WorktreeIdentifier
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions.WorktreeIdentifier
+  nameWithType: RemoveWorktreeOptions.WorktreeIdentifier
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult
+  name: RemoveWorktreeResult
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult
+  nameWithType: RemoveWorktreeResult
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.DeletionFailures
+  name: DeletionFailures
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_DeletionFailures
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.DeletionFailures
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.DeletionFailures
+  nameWithType: RemoveWorktreeResult.DeletionFailures
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.DeletionFailures*
+  name: DeletionFailures
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_DeletionFailures_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.DeletionFailures
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.DeletionFailures
+  nameWithType: RemoveWorktreeResult.DeletionFailures
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Duration
+  name: Duration
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_Duration
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Duration
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Duration
+  nameWithType: RemoveWorktreeResult.Duration
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Duration*
+  name: Duration
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_Duration_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Duration
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Duration
+  nameWithType: RemoveWorktreeResult.Duration
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.FilesDeleted
+  name: FilesDeleted
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_FilesDeleted
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.FilesDeleted
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.FilesDeleted
+  nameWithType: RemoveWorktreeResult.FilesDeleted
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.FilesDeleted*
+  name: FilesDeleted
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_FilesDeleted_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.FilesDeleted
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.FilesDeleted
+  nameWithType: RemoveWorktreeResult.FilesDeleted
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.RemovedPath
+  name: RemovedPath
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_RemovedPath
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.RemovedPath
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.RemovedPath
+  nameWithType: RemoveWorktreeResult.RemovedPath
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.RemovedPath*
+  name: RemovedPath
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_RemovedPath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.RemovedPath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.RemovedPath
+  nameWithType: RemoveWorktreeResult.RemovedPath
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Success
+  name: Success
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_Success
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Success
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Success
+  nameWithType: RemoveWorktreeResult.Success
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Success*
+  name: Success
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_Success_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Success
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.Success
+  nameWithType: RemoveWorktreeResult.Success
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeId
+  name: WorktreeId
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_WorktreeId
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeId
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeId
+  nameWithType: RemoveWorktreeResult.WorktreeId
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeId*
+  name: WorktreeId
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_WorktreeId_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeId
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeId
+  nameWithType: RemoveWorktreeResult.WorktreeId
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeMetadataRemoved
+  name: WorktreeMetadataRemoved
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_WorktreeMetadataRemoved
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeMetadataRemoved
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeMetadataRemoved
+  nameWithType: RemoveWorktreeResult.WorktreeMetadataRemoved
+- uid: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeMetadataRemoved*
+  name: WorktreeMetadataRemoved
+  href: api/Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.html#Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeResult_WorktreeMetadataRemoved_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeMetadataRemoved
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeResult.WorktreeMetadataRemoved
+  nameWithType: RemoveWorktreeResult.WorktreeMetadataRemoved
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo
+  name: WorktreeInfo
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo
+  nameWithType: WorktreeInfo
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.#ctor(System.String,System.String,System.Boolean,System.String,System.DateTime,System.Boolean)
+  name: WorktreeInfo(string, string, bool, string, DateTime, bool)
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo__ctor_System_String_System_String_System_Boolean_System_String_System_DateTime_System_Boolean_
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.#ctor(System.String,System.String,System.Boolean,System.String,System.DateTime,System.Boolean)
+  name.vb: New(String, String, Boolean, String, Date, Boolean)
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.WorktreeInfo(string, string, bool, string, System.DateTime, bool)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.New(String, String, Boolean, String, Date, Boolean)
+  nameWithType: WorktreeInfo.WorktreeInfo(string, string, bool, string, DateTime, bool)
+  nameWithType.vb: WorktreeInfo.New(String, String, Boolean, String, Date, Boolean)
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.#ctor*
+  name: WorktreeInfo
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.WorktreeInfo
+  fullName.vb: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.New
+  nameWithType: WorktreeInfo.WorktreeInfo
+  nameWithType.vb: WorktreeInfo.New
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Branch
+  name: Branch
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_Branch
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Branch
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Branch
+  nameWithType: WorktreeInfo.Branch
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Branch*
+  name: Branch
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_Branch_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Branch
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Branch
+  nameWithType: WorktreeInfo.Branch
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CommitHash
+  name: CommitHash
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_CommitHash
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CommitHash
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CommitHash
+  nameWithType: WorktreeInfo.CommitHash
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CommitHash*
+  name: CommitHash
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_CommitHash_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CommitHash
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CommitHash
+  nameWithType: WorktreeInfo.CommitHash
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CreatedAt
+  name: CreatedAt
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_CreatedAt
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CreatedAt
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CreatedAt
+  nameWithType: WorktreeInfo.CreatedAt
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CreatedAt*
+  name: CreatedAt
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_CreatedAt_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CreatedAt
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.CreatedAt
+  nameWithType: WorktreeInfo.CreatedAt
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Exists
+  name: Exists
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_Exists
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Exists
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Exists
+  nameWithType: WorktreeInfo.Exists
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Exists*
+  name: Exists
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_Exists_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Exists
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Exists
+  nameWithType: WorktreeInfo.Exists
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayBranch
+  name: GetDisplayBranch()
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_GetDisplayBranch
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayBranch
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayBranch()
+  nameWithType: WorktreeInfo.GetDisplayBranch()
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayBranch*
+  name: GetDisplayBranch
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_GetDisplayBranch_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayBranch
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayBranch
+  nameWithType: WorktreeInfo.GetDisplayBranch
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayStatus
+  name: GetDisplayStatus()
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_GetDisplayStatus
+  commentId: M:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayStatus
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayStatus()
+  nameWithType: WorktreeInfo.GetDisplayStatus()
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayStatus*
+  name: GetDisplayStatus
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_GetDisplayStatus_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayStatus
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.GetDisplayStatus
+  nameWithType: WorktreeInfo.GetDisplayStatus
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.IsDetached
+  name: IsDetached
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_IsDetached
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.IsDetached
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.IsDetached
+  nameWithType: WorktreeInfo.IsDetached
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.IsDetached*
+  name: IsDetached
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_IsDetached_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.IsDetached
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.IsDetached
+  nameWithType: WorktreeInfo.IsDetached
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Path
+  name: Path
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_Path
+  commentId: P:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Path
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Path
+  nameWithType: WorktreeInfo.Path
+- uid: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Path*
+  name: Path
+  href: api/Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html#Kuju63_WorkTree_CommandLine_Models_WorktreeInfo_Path_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Path
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.Path
+  nameWithType: WorktreeInfo.Path
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor
+  name: Kuju63.WorkTree.CommandLine.Services.Editor
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.html
+  commentId: N:Kuju63.WorkTree.CommandLine.Services.Editor
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor
+  nameWithType: Kuju63.WorkTree.CommandLine.Services.Editor
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets
+  name: EditorPresets
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets
+  nameWithType: EditorPresets
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets.KnownEditors
+  name: KnownEditors
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets.html#Kuju63_WorkTree_CommandLine_Services_Editor_EditorPresets_KnownEditors
+  commentId: F:Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets.KnownEditors
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorPresets.KnownEditors
+  nameWithType: EditorPresets.KnownEditors
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService
+  name: EditorService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Services.Editor.EditorService
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService
+  nameWithType: EditorService
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.#ctor(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner)
+  name: EditorService(IProcessRunner)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_EditorService__ctor_Kuju63_WorkTree_CommandLine_Utils_IProcessRunner_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.#ctor(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner)
+  name.vb: New(IProcessRunner)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.EditorService(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.New(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner)
+  nameWithType: EditorService.EditorService(IProcessRunner)
+  nameWithType.vb: EditorService.New(IProcessRunner)
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.#ctor*
+  name: EditorService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_EditorService__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.EditorService
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.New
+  nameWithType: EditorService.EditorService
+  nameWithType.vb: EditorService.New
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync(System.String,Kuju63.WorkTree.CommandLine.Models.EditorType)
+  name: LaunchEditorAsync(string, EditorType)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_EditorService_LaunchEditorAsync_System_String_Kuju63_WorkTree_CommandLine_Models_EditorType_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync(System.String,Kuju63.WorkTree.CommandLine.Models.EditorType)
+  name.vb: LaunchEditorAsync(String, EditorType)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync(string, Kuju63.WorkTree.CommandLine.Models.EditorType)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync(String, Kuju63.WorkTree.CommandLine.Models.EditorType)
+  nameWithType: EditorService.LaunchEditorAsync(string, EditorType)
+  nameWithType.vb: EditorService.LaunchEditorAsync(String, EditorType)
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync(System.String,Kuju63.WorkTree.CommandLine.Models.EditorType,System.Threading.CancellationToken)
+  name: LaunchEditorAsync(string, EditorType, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_EditorService_LaunchEditorAsync_System_String_Kuju63_WorkTree_CommandLine_Models_EditorType_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync(System.String,Kuju63.WorkTree.CommandLine.Models.EditorType,System.Threading.CancellationToken)
+  name.vb: LaunchEditorAsync(String, EditorType, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync(string, Kuju63.WorkTree.CommandLine.Models.EditorType, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync(String, Kuju63.WorkTree.CommandLine.Models.EditorType, System.Threading.CancellationToken)
+  nameWithType: EditorService.LaunchEditorAsync(string, EditorType, CancellationToken)
+  nameWithType.vb: EditorService.LaunchEditorAsync(String, EditorType, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync*
+  name: LaunchEditorAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_EditorService_LaunchEditorAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.LaunchEditorAsync
+  nameWithType: EditorService.LaunchEditorAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.ResolveEditorCommand(Kuju63.WorkTree.CommandLine.Models.EditorType)
+  name: ResolveEditorCommand(EditorType)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_EditorService_ResolveEditorCommand_Kuju63_WorkTree_CommandLine_Models_EditorType_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.ResolveEditorCommand(Kuju63.WorkTree.CommandLine.Models.EditorType)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.ResolveEditorCommand(Kuju63.WorkTree.CommandLine.Models.EditorType)
+  nameWithType: EditorService.ResolveEditorCommand(EditorType)
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.ResolveEditorCommand*
+  name: ResolveEditorCommand
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_EditorService_ResolveEditorCommand_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.ResolveEditorCommand
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.EditorService.ResolveEditorCommand
+  nameWithType: EditorService.ResolveEditorCommand
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService
+  name: IEditorService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService
+  nameWithType: IEditorService
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync(System.String,Kuju63.WorkTree.CommandLine.Models.EditorType)
+  name: LaunchEditorAsync(string, EditorType)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_IEditorService_LaunchEditorAsync_System_String_Kuju63_WorkTree_CommandLine_Models_EditorType_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync(System.String,Kuju63.WorkTree.CommandLine.Models.EditorType)
+  name.vb: LaunchEditorAsync(String, EditorType)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync(string, Kuju63.WorkTree.CommandLine.Models.EditorType)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync(String, Kuju63.WorkTree.CommandLine.Models.EditorType)
+  nameWithType: IEditorService.LaunchEditorAsync(string, EditorType)
+  nameWithType.vb: IEditorService.LaunchEditorAsync(String, EditorType)
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync(System.String,Kuju63.WorkTree.CommandLine.Models.EditorType,System.Threading.CancellationToken)
+  name: LaunchEditorAsync(string, EditorType, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_IEditorService_LaunchEditorAsync_System_String_Kuju63_WorkTree_CommandLine_Models_EditorType_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync(System.String,Kuju63.WorkTree.CommandLine.Models.EditorType,System.Threading.CancellationToken)
+  name.vb: LaunchEditorAsync(String, EditorType, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync(string, Kuju63.WorkTree.CommandLine.Models.EditorType, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync(String, Kuju63.WorkTree.CommandLine.Models.EditorType, System.Threading.CancellationToken)
+  nameWithType: IEditorService.LaunchEditorAsync(string, EditorType, CancellationToken)
+  nameWithType.vb: IEditorService.LaunchEditorAsync(String, EditorType, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync*
+  name: LaunchEditorAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_IEditorService_LaunchEditorAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.LaunchEditorAsync
+  nameWithType: IEditorService.LaunchEditorAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.ResolveEditorCommand(Kuju63.WorkTree.CommandLine.Models.EditorType)
+  name: ResolveEditorCommand(EditorType)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_IEditorService_ResolveEditorCommand_Kuju63_WorkTree_CommandLine_Models_EditorType_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.ResolveEditorCommand(Kuju63.WorkTree.CommandLine.Models.EditorType)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.ResolveEditorCommand(Kuju63.WorkTree.CommandLine.Models.EditorType)
+  nameWithType: IEditorService.ResolveEditorCommand(EditorType)
+- uid: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.ResolveEditorCommand*
+  name: ResolveEditorCommand
+  href: api/Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.html#Kuju63_WorkTree_CommandLine_Services_Editor_IEditorService_ResolveEditorCommand_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.ResolveEditorCommand
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService.ResolveEditorCommand
+  nameWithType: IEditorService.ResolveEditorCommand
+- uid: Kuju63.WorkTree.CommandLine.Services.Git
+  name: Kuju63.WorkTree.CommandLine.Services.Git
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.html
+  commentId: N:Kuju63.WorkTree.CommandLine.Services.Git
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git
+  nameWithType: Kuju63.WorkTree.CommandLine.Services.Git
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService
+  name: GitService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Services.Git.GitService
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService
+  nameWithType: GitService
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.#ctor(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner,System.IO.Abstractions.IFileSystem)
+  name: GitService(IProcessRunner, IFileSystem)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService__ctor_Kuju63_WorkTree_CommandLine_Utils_IProcessRunner_System_IO_Abstractions_IFileSystem_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.#ctor(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner,System.IO.Abstractions.IFileSystem)
+  name.vb: New(IProcessRunner, IFileSystem)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.GitService(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner, System.IO.Abstractions.IFileSystem)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.New(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner, System.IO.Abstractions.IFileSystem)
+  nameWithType: GitService.GitService(IProcessRunner, IFileSystem)
+  nameWithType.vb: GitService.New(IProcessRunner, IFileSystem)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.#ctor*
+  name: GitService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.GitService
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.New
+  nameWithType: GitService.GitService
+  nameWithType.vb: GitService.New
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(System.String,System.String)
+  name: AddWorktreeAsync(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeAsync_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(System.String,System.String)
+  name.vb: AddWorktreeAsync(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(String, String)
+  nameWithType: GitService.AddWorktreeAsync(string, string)
+  nameWithType.vb: GitService.AddWorktreeAsync(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(System.String,System.String,System.Threading.CancellationToken)
+  name: AddWorktreeAsync(string, string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeAsync_System_String_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(System.String,System.String,System.Threading.CancellationToken)
+  name.vb: AddWorktreeAsync(String, String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(string, string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(String, String, System.Threading.CancellationToken)
+  nameWithType: GitService.AddWorktreeAsync(string, string, CancellationToken)
+  nameWithType.vb: GitService.AddWorktreeAsync(String, String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync*
+  name: AddWorktreeAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync
+  nameWithType: GitService.AddWorktreeAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(System.String)
+  name: BranchExistsAsync(string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_BranchExistsAsync_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(System.String)
+  name.vb: BranchExistsAsync(String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(String)
+  nameWithType: GitService.BranchExistsAsync(string)
+  nameWithType.vb: GitService.BranchExistsAsync(String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(System.String,System.Threading.CancellationToken)
+  name: BranchExistsAsync(string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_BranchExistsAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(System.String,System.Threading.CancellationToken)
+  name.vb: BranchExistsAsync(String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(String, System.Threading.CancellationToken)
+  nameWithType: GitService.BranchExistsAsync(string, CancellationToken)
+  nameWithType.vb: GitService.BranchExistsAsync(String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync*
+  name: BranchExistsAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_BranchExistsAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync
+  nameWithType: GitService.BranchExistsAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(System.String,System.String)
+  name: CreateBranchAsync(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_CreateBranchAsync_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(System.String,System.String)
+  name.vb: CreateBranchAsync(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(String, String)
+  nameWithType: GitService.CreateBranchAsync(string, string)
+  nameWithType.vb: GitService.CreateBranchAsync(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(System.String,System.String,System.Threading.CancellationToken)
+  name: CreateBranchAsync(string, string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_CreateBranchAsync_System_String_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(System.String,System.String,System.Threading.CancellationToken)
+  name.vb: CreateBranchAsync(String, String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(string, string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(String, String, System.Threading.CancellationToken)
+  nameWithType: GitService.CreateBranchAsync(string, string, CancellationToken)
+  nameWithType.vb: GitService.CreateBranchAsync(String, String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync*
+  name: CreateBranchAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_CreateBranchAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync
+  nameWithType: GitService.CreateBranchAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync
+  name: GetCurrentBranchAsync()
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetCurrentBranchAsync
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync()
+  nameWithType: GitService.GetCurrentBranchAsync()
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync(System.Threading.CancellationToken)
+  name: GetCurrentBranchAsync(CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetCurrentBranchAsync_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync(System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync(System.Threading.CancellationToken)
+  nameWithType: GitService.GetCurrentBranchAsync(CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync*
+  name: GetCurrentBranchAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetCurrentBranchAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync
+  nameWithType: GitService.GetCurrentBranchAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(System.String)
+  name: HasUncommittedChangesAsync(string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_HasUncommittedChangesAsync_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(System.String)
+  name.vb: HasUncommittedChangesAsync(String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(String)
+  nameWithType: GitService.HasUncommittedChangesAsync(string)
+  nameWithType.vb: GitService.HasUncommittedChangesAsync(String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(System.String,System.Threading.CancellationToken)
+  name: HasUncommittedChangesAsync(string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_HasUncommittedChangesAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(System.String,System.Threading.CancellationToken)
+  name.vb: HasUncommittedChangesAsync(String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(String, System.Threading.CancellationToken)
+  nameWithType: GitService.HasUncommittedChangesAsync(string, CancellationToken)
+  nameWithType.vb: GitService.HasUncommittedChangesAsync(String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync*
+  name: HasUncommittedChangesAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_HasUncommittedChangesAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync
+  nameWithType: GitService.HasUncommittedChangesAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync
+  name: IsGitRepositoryAsync()
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsGitRepositoryAsync
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync()
+  nameWithType: GitService.IsGitRepositoryAsync()
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync(System.Threading.CancellationToken)
+  name: IsGitRepositoryAsync(CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsGitRepositoryAsync_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync(System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync(System.Threading.CancellationToken)
+  nameWithType: GitService.IsGitRepositoryAsync(CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync*
+  name: IsGitRepositoryAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsGitRepositoryAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync
+  nameWithType: GitService.IsGitRepositoryAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(System.String)
+  name: IsWorktreeLockedAsync(string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsWorktreeLockedAsync_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(System.String)
+  name.vb: IsWorktreeLockedAsync(String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(String)
+  nameWithType: GitService.IsWorktreeLockedAsync(string)
+  nameWithType.vb: GitService.IsWorktreeLockedAsync(String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(System.String,System.Threading.CancellationToken)
+  name: IsWorktreeLockedAsync(string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsWorktreeLockedAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(System.String,System.Threading.CancellationToken)
+  name.vb: IsWorktreeLockedAsync(String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(String, System.Threading.CancellationToken)
+  nameWithType: GitService.IsWorktreeLockedAsync(string, CancellationToken)
+  nameWithType.vb: GitService.IsWorktreeLockedAsync(String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync*
+  name: IsWorktreeLockedAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsWorktreeLockedAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync
+  nameWithType: GitService.IsWorktreeLockedAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync
+  name: ListWorktreesAsync()
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_ListWorktreesAsync
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync()
+  nameWithType: GitService.ListWorktreesAsync()
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync(System.Threading.CancellationToken)
+  name: ListWorktreesAsync(CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_ListWorktreesAsync_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync(System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync(System.Threading.CancellationToken)
+  nameWithType: GitService.ListWorktreesAsync(CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync*
+  name: ListWorktreesAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_ListWorktreesAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync
+  nameWithType: GitService.ListWorktreesAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(System.String,System.Boolean)
+  name: RemoveWorktreeAsync(string, bool)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_RemoveWorktreeAsync_System_String_System_Boolean_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(System.String,System.Boolean)
+  name.vb: RemoveWorktreeAsync(String, Boolean)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(string, bool)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(String, Boolean)
+  nameWithType: GitService.RemoveWorktreeAsync(string, bool)
+  nameWithType.vb: GitService.RemoveWorktreeAsync(String, Boolean)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(System.String,System.Boolean,System.Threading.CancellationToken)
+  name: RemoveWorktreeAsync(string, bool, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_RemoveWorktreeAsync_System_String_System_Boolean_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(System.String,System.Boolean,System.Threading.CancellationToken)
+  name.vb: RemoveWorktreeAsync(String, Boolean, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(string, bool, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(String, Boolean, System.Threading.CancellationToken)
+  nameWithType: GitService.RemoveWorktreeAsync(string, bool, CancellationToken)
+  nameWithType.vb: GitService.RemoveWorktreeAsync(String, Boolean, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync*
+  name: RemoveWorktreeAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.GitService.html#Kuju63_WorkTree_CommandLine_Services_Git_GitService_RemoveWorktreeAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync
+  nameWithType: GitService.RemoveWorktreeAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService
+  name: IGitService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Services.Git.IGitService
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService
+  nameWithType: IGitService
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync(System.String,System.String)
+  name: AddWorktreeAsync(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_AddWorktreeAsync_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync(System.String,System.String)
+  name.vb: AddWorktreeAsync(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync(String, String)
+  nameWithType: IGitService.AddWorktreeAsync(string, string)
+  nameWithType.vb: IGitService.AddWorktreeAsync(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync(System.String,System.String,System.Threading.CancellationToken)
+  name: AddWorktreeAsync(string, string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_AddWorktreeAsync_System_String_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync(System.String,System.String,System.Threading.CancellationToken)
+  name.vb: AddWorktreeAsync(String, String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync(string, string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync(String, String, System.Threading.CancellationToken)
+  nameWithType: IGitService.AddWorktreeAsync(string, string, CancellationToken)
+  nameWithType.vb: IGitService.AddWorktreeAsync(String, String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync*
+  name: AddWorktreeAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_AddWorktreeAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.AddWorktreeAsync
+  nameWithType: IGitService.AddWorktreeAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync(System.String)
+  name: BranchExistsAsync(string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_BranchExistsAsync_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync(System.String)
+  name.vb: BranchExistsAsync(String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync(String)
+  nameWithType: IGitService.BranchExistsAsync(string)
+  nameWithType.vb: IGitService.BranchExistsAsync(String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync(System.String,System.Threading.CancellationToken)
+  name: BranchExistsAsync(string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_BranchExistsAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync(System.String,System.Threading.CancellationToken)
+  name.vb: BranchExistsAsync(String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync(string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync(String, System.Threading.CancellationToken)
+  nameWithType: IGitService.BranchExistsAsync(string, CancellationToken)
+  nameWithType.vb: IGitService.BranchExistsAsync(String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync*
+  name: BranchExistsAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_BranchExistsAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.BranchExistsAsync
+  nameWithType: IGitService.BranchExistsAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync(System.String,System.String)
+  name: CreateBranchAsync(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_CreateBranchAsync_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync(System.String,System.String)
+  name.vb: CreateBranchAsync(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync(String, String)
+  nameWithType: IGitService.CreateBranchAsync(string, string)
+  nameWithType.vb: IGitService.CreateBranchAsync(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync(System.String,System.String,System.Threading.CancellationToken)
+  name: CreateBranchAsync(string, string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_CreateBranchAsync_System_String_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync(System.String,System.String,System.Threading.CancellationToken)
+  name.vb: CreateBranchAsync(String, String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync(string, string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync(String, String, System.Threading.CancellationToken)
+  nameWithType: IGitService.CreateBranchAsync(string, string, CancellationToken)
+  nameWithType.vb: IGitService.CreateBranchAsync(String, String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync*
+  name: CreateBranchAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_CreateBranchAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.CreateBranchAsync
+  nameWithType: IGitService.CreateBranchAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync
+  name: GetCurrentBranchAsync()
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_GetCurrentBranchAsync
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync()
+  nameWithType: IGitService.GetCurrentBranchAsync()
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync(System.Threading.CancellationToken)
+  name: GetCurrentBranchAsync(CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_GetCurrentBranchAsync_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync(System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync(System.Threading.CancellationToken)
+  nameWithType: IGitService.GetCurrentBranchAsync(CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync*
+  name: GetCurrentBranchAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_GetCurrentBranchAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.GetCurrentBranchAsync
+  nameWithType: IGitService.GetCurrentBranchAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync(System.String)
+  name: HasUncommittedChangesAsync(string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_HasUncommittedChangesAsync_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync(System.String)
+  name.vb: HasUncommittedChangesAsync(String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync(String)
+  nameWithType: IGitService.HasUncommittedChangesAsync(string)
+  nameWithType.vb: IGitService.HasUncommittedChangesAsync(String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync(System.String,System.Threading.CancellationToken)
+  name: HasUncommittedChangesAsync(string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_HasUncommittedChangesAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync(System.String,System.Threading.CancellationToken)
+  name.vb: HasUncommittedChangesAsync(String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync(string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync(String, System.Threading.CancellationToken)
+  nameWithType: IGitService.HasUncommittedChangesAsync(string, CancellationToken)
+  nameWithType.vb: IGitService.HasUncommittedChangesAsync(String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync*
+  name: HasUncommittedChangesAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_HasUncommittedChangesAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.HasUncommittedChangesAsync
+  nameWithType: IGitService.HasUncommittedChangesAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync
+  name: IsGitRepositoryAsync()
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_IsGitRepositoryAsync
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync()
+  nameWithType: IGitService.IsGitRepositoryAsync()
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync(System.Threading.CancellationToken)
+  name: IsGitRepositoryAsync(CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_IsGitRepositoryAsync_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync(System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync(System.Threading.CancellationToken)
+  nameWithType: IGitService.IsGitRepositoryAsync(CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync*
+  name: IsGitRepositoryAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_IsGitRepositoryAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsGitRepositoryAsync
+  nameWithType: IGitService.IsGitRepositoryAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync(System.String)
+  name: IsWorktreeLockedAsync(string)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_IsWorktreeLockedAsync_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync(System.String)
+  name.vb: IsWorktreeLockedAsync(String)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync(String)
+  nameWithType: IGitService.IsWorktreeLockedAsync(string)
+  nameWithType.vb: IGitService.IsWorktreeLockedAsync(String)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync(System.String,System.Threading.CancellationToken)
+  name: IsWorktreeLockedAsync(string, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_IsWorktreeLockedAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync(System.String,System.Threading.CancellationToken)
+  name.vb: IsWorktreeLockedAsync(String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync(string, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync(String, System.Threading.CancellationToken)
+  nameWithType: IGitService.IsWorktreeLockedAsync(string, CancellationToken)
+  nameWithType.vb: IGitService.IsWorktreeLockedAsync(String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync*
+  name: IsWorktreeLockedAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_IsWorktreeLockedAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.IsWorktreeLockedAsync
+  nameWithType: IGitService.IsWorktreeLockedAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync
+  name: ListWorktreesAsync()
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_ListWorktreesAsync
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync()
+  nameWithType: IGitService.ListWorktreesAsync()
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync(System.Threading.CancellationToken)
+  name: ListWorktreesAsync(CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_ListWorktreesAsync_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync(System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync(System.Threading.CancellationToken)
+  nameWithType: IGitService.ListWorktreesAsync(CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync*
+  name: ListWorktreesAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_ListWorktreesAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.ListWorktreesAsync
+  nameWithType: IGitService.ListWorktreesAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync(System.String,System.Boolean)
+  name: RemoveWorktreeAsync(string, bool)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_RemoveWorktreeAsync_System_String_System_Boolean_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync(System.String,System.Boolean)
+  name.vb: RemoveWorktreeAsync(String, Boolean)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync(string, bool)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync(String, Boolean)
+  nameWithType: IGitService.RemoveWorktreeAsync(string, bool)
+  nameWithType.vb: IGitService.RemoveWorktreeAsync(String, Boolean)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync(System.String,System.Boolean,System.Threading.CancellationToken)
+  name: RemoveWorktreeAsync(string, bool, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_RemoveWorktreeAsync_System_String_System_Boolean_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync(System.String,System.Boolean,System.Threading.CancellationToken)
+  name.vb: RemoveWorktreeAsync(String, Boolean, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync(string, bool, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync(String, Boolean, System.Threading.CancellationToken)
+  nameWithType: IGitService.RemoveWorktreeAsync(string, bool, CancellationToken)
+  nameWithType.vb: IGitService.RemoveWorktreeAsync(String, Boolean, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync*
+  name: RemoveWorktreeAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html#Kuju63_WorkTree_CommandLine_Services_Git_IGitService_RemoveWorktreeAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Git.IGitService.RemoveWorktreeAsync
+  nameWithType: IGitService.RemoveWorktreeAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree
+  name: Kuju63.WorkTree.CommandLine.Services.Worktree
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.html
+  commentId: N:Kuju63.WorkTree.CommandLine.Services.Worktree
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree
+  nameWithType: Kuju63.WorkTree.CommandLine.Services.Worktree
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService
+  name: IWorktreeService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService
+  nameWithType: IWorktreeService
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions)
+  name: CreateWorktreeAsync(CreateWorktreeOptions)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_CreateWorktreeAsync_Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions)
+  nameWithType: IWorktreeService.CreateWorktreeAsync(CreateWorktreeOptions)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions,System.Threading.CancellationToken)
+  name: CreateWorktreeAsync(CreateWorktreeOptions, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_CreateWorktreeAsync_Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions,System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions, System.Threading.CancellationToken)
+  nameWithType: IWorktreeService.CreateWorktreeAsync(CreateWorktreeOptions, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync*
+  name: CreateWorktreeAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_CreateWorktreeAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.CreateWorktreeAsync
+  nameWithType: IWorktreeService.CreateWorktreeAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync
+  name: ListWorktreesAsync()
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_ListWorktreesAsync
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync()
+  nameWithType: IWorktreeService.ListWorktreesAsync()
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync(System.Threading.CancellationToken)
+  name: ListWorktreesAsync(CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_ListWorktreesAsync_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync(System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync(System.Threading.CancellationToken)
+  nameWithType: IWorktreeService.ListWorktreesAsync(CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync*
+  name: ListWorktreesAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_ListWorktreesAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ListWorktreesAsync
+  nameWithType: IWorktreeService.ListWorktreesAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions)
+  name: RemoveWorktreeAsync(RemoveWorktreeOptions)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_RemoveWorktreeAsync_Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions)
+  nameWithType: IWorktreeService.RemoveWorktreeAsync(RemoveWorktreeOptions)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions,System.Threading.CancellationToken)
+  name: RemoveWorktreeAsync(RemoveWorktreeOptions, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_RemoveWorktreeAsync_Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions,System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions, System.Threading.CancellationToken)
+  nameWithType: IWorktreeService.RemoveWorktreeAsync(RemoveWorktreeOptions, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync*
+  name: RemoveWorktreeAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_RemoveWorktreeAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.RemoveWorktreeAsync
+  nameWithType: IWorktreeService.RemoveWorktreeAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync(System.String,System.Boolean)
+  name: ValidateForRemovalAsync(string, bool)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_ValidateForRemovalAsync_System_String_System_Boolean_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync(System.String,System.Boolean)
+  name.vb: ValidateForRemovalAsync(String, Boolean)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync(string, bool)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync(String, Boolean)
+  nameWithType: IWorktreeService.ValidateForRemovalAsync(string, bool)
+  nameWithType.vb: IWorktreeService.ValidateForRemovalAsync(String, Boolean)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync(System.String,System.Boolean,System.Threading.CancellationToken)
+  name: ValidateForRemovalAsync(string, bool, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_ValidateForRemovalAsync_System_String_System_Boolean_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync(System.String,System.Boolean,System.Threading.CancellationToken)
+  name.vb: ValidateForRemovalAsync(String, Boolean, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync(string, bool, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync(String, Boolean, System.Threading.CancellationToken)
+  nameWithType: IWorktreeService.ValidateForRemovalAsync(string, bool, CancellationToken)
+  nameWithType.vb: IWorktreeService.ValidateForRemovalAsync(String, Boolean, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync*
+  name: ValidateForRemovalAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_IWorktreeService_ValidateForRemovalAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.IWorktreeService.ValidateForRemovalAsync
+  nameWithType: IWorktreeService.ValidateForRemovalAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService
+  name: WorktreeService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService
+  nameWithType: WorktreeService
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.#ctor(Kuju63.WorkTree.CommandLine.Services.Git.IGitService,Kuju63.WorkTree.CommandLine.Utils.IPathHelper)
+  name: WorktreeService(IGitService, IPathHelper)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService__ctor_Kuju63_WorkTree_CommandLine_Services_Git_IGitService_Kuju63_WorkTree_CommandLine_Utils_IPathHelper_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.#ctor(Kuju63.WorkTree.CommandLine.Services.Git.IGitService,Kuju63.WorkTree.CommandLine.Utils.IPathHelper)
+  name.vb: New(IGitService, IPathHelper)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.WorktreeService(Kuju63.WorkTree.CommandLine.Services.Git.IGitService, Kuju63.WorkTree.CommandLine.Utils.IPathHelper)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.New(Kuju63.WorkTree.CommandLine.Services.Git.IGitService, Kuju63.WorkTree.CommandLine.Utils.IPathHelper)
+  nameWithType: WorktreeService.WorktreeService(IGitService, IPathHelper)
+  nameWithType.vb: WorktreeService.New(IGitService, IPathHelper)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.#ctor(Kuju63.WorkTree.CommandLine.Services.Git.IGitService,Kuju63.WorkTree.CommandLine.Utils.IPathHelper,Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService)
+  name: WorktreeService(IGitService, IPathHelper, IEditorService?)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService__ctor_Kuju63_WorkTree_CommandLine_Services_Git_IGitService_Kuju63_WorkTree_CommandLine_Utils_IPathHelper_Kuju63_WorkTree_CommandLine_Services_Editor_IEditorService_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.#ctor(Kuju63.WorkTree.CommandLine.Services.Git.IGitService,Kuju63.WorkTree.CommandLine.Utils.IPathHelper,Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService)
+  name.vb: New(IGitService, IPathHelper, IEditorService)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.WorktreeService(Kuju63.WorkTree.CommandLine.Services.Git.IGitService, Kuju63.WorkTree.CommandLine.Utils.IPathHelper, Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService?)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.New(Kuju63.WorkTree.CommandLine.Services.Git.IGitService, Kuju63.WorkTree.CommandLine.Utils.IPathHelper, Kuju63.WorkTree.CommandLine.Services.Editor.IEditorService)
+  nameWithType: WorktreeService.WorktreeService(IGitService, IPathHelper, IEditorService?)
+  nameWithType.vb: WorktreeService.New(IGitService, IPathHelper, IEditorService)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.#ctor*
+  name: WorktreeService
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.WorktreeService
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.New
+  nameWithType: WorktreeService.WorktreeService
+  nameWithType.vb: WorktreeService.New
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions)
+  name: CreateWorktreeAsync(CreateWorktreeOptions)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_CreateWorktreeAsync_Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions)
+  nameWithType: WorktreeService.CreateWorktreeAsync(CreateWorktreeOptions)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions,System.Threading.CancellationToken)
+  name: CreateWorktreeAsync(CreateWorktreeOptions, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_CreateWorktreeAsync_Kuju63_WorkTree_CommandLine_Models_CreateWorktreeOptions_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions,System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.CreateWorktreeOptions, System.Threading.CancellationToken)
+  nameWithType: WorktreeService.CreateWorktreeAsync(CreateWorktreeOptions, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync*
+  name: CreateWorktreeAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_CreateWorktreeAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.CreateWorktreeAsync
+  nameWithType: WorktreeService.CreateWorktreeAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync
+  name: ListWorktreesAsync()
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_ListWorktreesAsync
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync()
+  nameWithType: WorktreeService.ListWorktreesAsync()
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync(System.Threading.CancellationToken)
+  name: ListWorktreesAsync(CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_ListWorktreesAsync_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync(System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync(System.Threading.CancellationToken)
+  nameWithType: WorktreeService.ListWorktreesAsync(CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync*
+  name: ListWorktreesAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_ListWorktreesAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ListWorktreesAsync
+  nameWithType: WorktreeService.ListWorktreesAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions)
+  name: RemoveWorktreeAsync(RemoveWorktreeOptions)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_RemoveWorktreeAsync_Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions)
+  nameWithType: WorktreeService.RemoveWorktreeAsync(RemoveWorktreeOptions)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions,System.Threading.CancellationToken)
+  name: RemoveWorktreeAsync(RemoveWorktreeOptions, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_RemoveWorktreeAsync_Kuju63_WorkTree_CommandLine_Models_RemoveWorktreeOptions_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions,System.Threading.CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync(Kuju63.WorkTree.CommandLine.Models.RemoveWorktreeOptions, System.Threading.CancellationToken)
+  nameWithType: WorktreeService.RemoveWorktreeAsync(RemoveWorktreeOptions, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync*
+  name: RemoveWorktreeAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_RemoveWorktreeAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.RemoveWorktreeAsync
+  nameWithType: WorktreeService.RemoveWorktreeAsync
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync(System.String,System.Boolean)
+  name: ValidateForRemovalAsync(string, bool)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_ValidateForRemovalAsync_System_String_System_Boolean_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync(System.String,System.Boolean)
+  name.vb: ValidateForRemovalAsync(String, Boolean)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync(string, bool)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync(String, Boolean)
+  nameWithType: WorktreeService.ValidateForRemovalAsync(string, bool)
+  nameWithType.vb: WorktreeService.ValidateForRemovalAsync(String, Boolean)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync(System.String,System.Boolean,System.Threading.CancellationToken)
+  name: ValidateForRemovalAsync(string, bool, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_ValidateForRemovalAsync_System_String_System_Boolean_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync(System.String,System.Boolean,System.Threading.CancellationToken)
+  name.vb: ValidateForRemovalAsync(String, Boolean, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync(string, bool, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync(String, Boolean, System.Threading.CancellationToken)
+  nameWithType: WorktreeService.ValidateForRemovalAsync(string, bool, CancellationToken)
+  nameWithType.vb: WorktreeService.ValidateForRemovalAsync(String, Boolean, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync*
+  name: ValidateForRemovalAsync
+  href: api/Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.html#Kuju63_WorkTree_CommandLine_Services_Worktree_WorktreeService_ValidateForRemovalAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Services.Worktree.WorktreeService.ValidateForRemovalAsync
+  nameWithType: WorktreeService.ValidateForRemovalAsync
+- uid: Kuju63.WorkTree.CommandLine.Utils
+  name: Kuju63.WorkTree.CommandLine.Utils
+  href: api/Kuju63.WorkTree.CommandLine.Utils.html
+  commentId: N:Kuju63.WorkTree.CommandLine.Utils
+  fullName: Kuju63.WorkTree.CommandLine.Utils
+  nameWithType: Kuju63.WorkTree.CommandLine.Utils
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper
+  name: IPathHelper
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Utils.IPathHelper
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper
+  nameWithType: IPathHelper
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.EnsureParentDirectoryExists(System.String)
+  name: EnsureParentDirectoryExists(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_EnsureParentDirectoryExists_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.EnsureParentDirectoryExists(System.String)
+  name.vb: EnsureParentDirectoryExists(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.EnsureParentDirectoryExists(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.EnsureParentDirectoryExists(String)
+  nameWithType: IPathHelper.EnsureParentDirectoryExists(string)
+  nameWithType.vb: IPathHelper.EnsureParentDirectoryExists(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.EnsureParentDirectoryExists*
+  name: EnsureParentDirectoryExists
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_EnsureParentDirectoryExists_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.EnsureParentDirectoryExists
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.EnsureParentDirectoryExists
+  nameWithType: IPathHelper.EnsureParentDirectoryExists
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.HasWritePermission(System.String)
+  name: HasWritePermission(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_HasWritePermission_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.HasWritePermission(System.String)
+  name.vb: HasWritePermission(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.HasWritePermission(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.HasWritePermission(String)
+  nameWithType: IPathHelper.HasWritePermission(string)
+  nameWithType.vb: IPathHelper.HasWritePermission(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.HasWritePermission*
+  name: HasWritePermission
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_HasWritePermission_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.HasWritePermission
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.HasWritePermission
+  nameWithType: IPathHelper.HasWritePermission
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.NormalizePath(System.String)
+  name: NormalizePath(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_NormalizePath_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.NormalizePath(System.String)
+  name.vb: NormalizePath(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.NormalizePath(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.NormalizePath(String)
+  nameWithType: IPathHelper.NormalizePath(string)
+  nameWithType.vb: IPathHelper.NormalizePath(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.NormalizePath*
+  name: NormalizePath
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_NormalizePath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.NormalizePath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.NormalizePath
+  nameWithType: IPathHelper.NormalizePath
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ResolvePath(System.String,System.String)
+  name: ResolvePath(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_ResolvePath_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ResolvePath(System.String,System.String)
+  name.vb: ResolvePath(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ResolvePath(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ResolvePath(String, String)
+  nameWithType: IPathHelper.ResolvePath(string, string)
+  nameWithType.vb: IPathHelper.ResolvePath(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ResolvePath*
+  name: ResolvePath
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_ResolvePath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ResolvePath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ResolvePath
+  nameWithType: IPathHelper.ResolvePath
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ValidatePath(System.String)
+  name: ValidatePath(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_ValidatePath_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ValidatePath(System.String)
+  name.vb: ValidatePath(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ValidatePath(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ValidatePath(String)
+  nameWithType: IPathHelper.ValidatePath(string)
+  nameWithType.vb: IPathHelper.ValidatePath(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ValidatePath*
+  name: ValidatePath
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IPathHelper.html#Kuju63_WorkTree_CommandLine_Utils_IPathHelper_ValidatePath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ValidatePath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IPathHelper.ValidatePath
+  nameWithType: IPathHelper.ValidatePath
+- uid: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner
+  name: IProcessRunner
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Utils.IProcessRunner
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner
+  nameWithType: IProcessRunner
+- uid: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(System.String,System.String)
+  name: RunAsync(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.html#Kuju63_WorkTree_CommandLine_Utils_IProcessRunner_RunAsync_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(System.String,System.String)
+  name.vb: RunAsync(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(String, String)
+  nameWithType: IProcessRunner.RunAsync(string, string)
+  nameWithType.vb: IProcessRunner.RunAsync(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(System.String,System.String,System.String)
+  name: RunAsync(string, string, string?)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.html#Kuju63_WorkTree_CommandLine_Utils_IProcessRunner_RunAsync_System_String_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(System.String,System.String,System.String)
+  name.vb: RunAsync(String, String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(string, string, string?)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(String, String, String)
+  nameWithType: IProcessRunner.RunAsync(string, string, string?)
+  nameWithType.vb: IProcessRunner.RunAsync(String, String, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(System.String,System.String,System.String,System.Threading.CancellationToken)
+  name: RunAsync(string, string, string?, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.html#Kuju63_WorkTree_CommandLine_Utils_IProcessRunner_RunAsync_System_String_System_String_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(System.String,System.String,System.String,System.Threading.CancellationToken)
+  name.vb: RunAsync(String, String, String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(string, string, string?, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync(String, String, String, System.Threading.CancellationToken)
+  nameWithType: IProcessRunner.RunAsync(string, string, string?, CancellationToken)
+  nameWithType.vb: IProcessRunner.RunAsync(String, String, String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync*
+  name: RunAsync
+  href: api/Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.html#Kuju63_WorkTree_CommandLine_Utils_IProcessRunner_RunAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.RunAsync
+  nameWithType: IProcessRunner.RunAsync
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper
+  name: PathHelper
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Utils.PathHelper
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper
+  nameWithType: PathHelper
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.#ctor(System.IO.Abstractions.IFileSystem)
+  name: PathHelper(IFileSystem)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper__ctor_System_IO_Abstractions_IFileSystem_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.PathHelper.#ctor(System.IO.Abstractions.IFileSystem)
+  name.vb: New(IFileSystem)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.PathHelper(System.IO.Abstractions.IFileSystem)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathHelper.New(System.IO.Abstractions.IFileSystem)
+  nameWithType: PathHelper.PathHelper(IFileSystem)
+  nameWithType.vb: PathHelper.New(IFileSystem)
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.#ctor*
+  name: PathHelper
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathHelper.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.PathHelper
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathHelper.New
+  nameWithType: PathHelper.PathHelper
+  nameWithType.vb: PathHelper.New
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.EnsureParentDirectoryExists(System.String)
+  name: EnsureParentDirectoryExists(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_EnsureParentDirectoryExists_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.PathHelper.EnsureParentDirectoryExists(System.String)
+  name.vb: EnsureParentDirectoryExists(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.EnsureParentDirectoryExists(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathHelper.EnsureParentDirectoryExists(String)
+  nameWithType: PathHelper.EnsureParentDirectoryExists(string)
+  nameWithType.vb: PathHelper.EnsureParentDirectoryExists(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.EnsureParentDirectoryExists*
+  name: EnsureParentDirectoryExists
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_EnsureParentDirectoryExists_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathHelper.EnsureParentDirectoryExists
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.EnsureParentDirectoryExists
+  nameWithType: PathHelper.EnsureParentDirectoryExists
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.HasWritePermission(System.String)
+  name: HasWritePermission(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_HasWritePermission_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.PathHelper.HasWritePermission(System.String)
+  name.vb: HasWritePermission(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.HasWritePermission(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathHelper.HasWritePermission(String)
+  nameWithType: PathHelper.HasWritePermission(string)
+  nameWithType.vb: PathHelper.HasWritePermission(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.HasWritePermission*
+  name: HasWritePermission
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_HasWritePermission_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathHelper.HasWritePermission
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.HasWritePermission
+  nameWithType: PathHelper.HasWritePermission
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.NormalizePath(System.String)
+  name: NormalizePath(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_NormalizePath_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.PathHelper.NormalizePath(System.String)
+  name.vb: NormalizePath(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.NormalizePath(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathHelper.NormalizePath(String)
+  nameWithType: PathHelper.NormalizePath(string)
+  nameWithType.vb: PathHelper.NormalizePath(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.NormalizePath*
+  name: NormalizePath
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_NormalizePath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathHelper.NormalizePath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.NormalizePath
+  nameWithType: PathHelper.NormalizePath
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ResolvePath(System.String,System.String)
+  name: ResolvePath(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_ResolvePath_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.PathHelper.ResolvePath(System.String,System.String)
+  name.vb: ResolvePath(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ResolvePath(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ResolvePath(String, String)
+  nameWithType: PathHelper.ResolvePath(string, string)
+  nameWithType.vb: PathHelper.ResolvePath(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ResolvePath*
+  name: ResolvePath
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_ResolvePath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathHelper.ResolvePath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ResolvePath
+  nameWithType: PathHelper.ResolvePath
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ValidatePath(System.String)
+  name: ValidatePath(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_ValidatePath_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.PathHelper.ValidatePath(System.String)
+  name.vb: ValidatePath(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ValidatePath(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ValidatePath(String)
+  nameWithType: PathHelper.ValidatePath(string)
+  nameWithType.vb: PathHelper.ValidatePath(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ValidatePath*
+  name: ValidatePath
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathHelper.html#Kuju63_WorkTree_CommandLine_Utils_PathHelper_ValidatePath_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathHelper.ValidatePath
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathHelper.ValidatePath
+  nameWithType: PathHelper.ValidatePath
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult
+  name: PathValidationResult
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Utils.PathValidationResult
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult
+  nameWithType: PathValidationResult
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.#ctor(System.Boolean,System.String)
+  name: PathValidationResult(bool, string?)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_PathValidationResult__ctor_System_Boolean_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.#ctor(System.Boolean,System.String)
+  name.vb: New(Boolean, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.PathValidationResult(bool, string?)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.New(Boolean, String)
+  nameWithType: PathValidationResult.PathValidationResult(bool, string?)
+  nameWithType.vb: PathValidationResult.New(Boolean, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.#ctor*
+  name: PathValidationResult
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_PathValidationResult__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.PathValidationResult
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.New
+  nameWithType: PathValidationResult.PathValidationResult
+  nameWithType.vb: PathValidationResult.New
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.ErrorMessage
+  name: ErrorMessage
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_PathValidationResult_ErrorMessage
+  commentId: P:Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.ErrorMessage
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.ErrorMessage
+  nameWithType: PathValidationResult.ErrorMessage
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.ErrorMessage*
+  name: ErrorMessage
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_PathValidationResult_ErrorMessage_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.ErrorMessage
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.ErrorMessage
+  nameWithType: PathValidationResult.ErrorMessage
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.IsValid
+  name: IsValid
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_PathValidationResult_IsValid
+  commentId: P:Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.IsValid
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.IsValid
+  nameWithType: PathValidationResult.IsValid
+- uid: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.IsValid*
+  name: IsValid
+  href: api/Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_PathValidationResult_IsValid_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.IsValid
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.PathValidationResult.IsValid
+  nameWithType: PathValidationResult.IsValid
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult
+  name: ProcessResult
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Utils.ProcessResult
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult
+  nameWithType: ProcessResult
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.#ctor(System.Int32,System.String,System.String)
+  name: ProcessResult(int, string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html#Kuju63_WorkTree_CommandLine_Utils_ProcessResult__ctor_System_Int32_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.ProcessResult.#ctor(System.Int32,System.String,System.String)
+  name.vb: New(Integer, String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.ProcessResult(int, string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.New(Integer, String, String)
+  nameWithType: ProcessResult.ProcessResult(int, string, string)
+  nameWithType.vb: ProcessResult.New(Integer, String, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.#ctor*
+  name: ProcessResult
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html#Kuju63_WorkTree_CommandLine_Utils_ProcessResult__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.ProcessResult.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.ProcessResult
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.New
+  nameWithType: ProcessResult.ProcessResult
+  nameWithType.vb: ProcessResult.New
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.ExitCode
+  name: ExitCode
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html#Kuju63_WorkTree_CommandLine_Utils_ProcessResult_ExitCode
+  commentId: P:Kuju63.WorkTree.CommandLine.Utils.ProcessResult.ExitCode
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.ExitCode
+  nameWithType: ProcessResult.ExitCode
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.ExitCode*
+  name: ExitCode
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html#Kuju63_WorkTree_CommandLine_Utils_ProcessResult_ExitCode_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.ProcessResult.ExitCode
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.ExitCode
+  nameWithType: ProcessResult.ExitCode
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardError
+  name: StandardError
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html#Kuju63_WorkTree_CommandLine_Utils_ProcessResult_StandardError
+  commentId: P:Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardError
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardError
+  nameWithType: ProcessResult.StandardError
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardError*
+  name: StandardError
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html#Kuju63_WorkTree_CommandLine_Utils_ProcessResult_StandardError_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardError
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardError
+  nameWithType: ProcessResult.StandardError
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardOutput
+  name: StandardOutput
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html#Kuju63_WorkTree_CommandLine_Utils_ProcessResult_StandardOutput
+  commentId: P:Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardOutput
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardOutput
+  nameWithType: ProcessResult.StandardOutput
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardOutput*
+  name: StandardOutput
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessResult.html#Kuju63_WorkTree_CommandLine_Utils_ProcessResult_StandardOutput_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardOutput
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessResult.StandardOutput
+  nameWithType: ProcessResult.StandardOutput
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner
+  name: ProcessRunner
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Utils.ProcessRunner
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner
+  nameWithType: ProcessRunner
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(System.String,System.String)
+  name: RunAsync(string, string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.html#Kuju63_WorkTree_CommandLine_Utils_ProcessRunner_RunAsync_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(System.String,System.String)
+  name.vb: RunAsync(String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(string, string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(String, String)
+  nameWithType: ProcessRunner.RunAsync(string, string)
+  nameWithType.vb: ProcessRunner.RunAsync(String, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(System.String,System.String,System.String)
+  name: RunAsync(string, string, string?)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.html#Kuju63_WorkTree_CommandLine_Utils_ProcessRunner_RunAsync_System_String_System_String_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(System.String,System.String,System.String)
+  name.vb: RunAsync(String, String, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(string, string, string?)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(String, String, String)
+  nameWithType: ProcessRunner.RunAsync(string, string, string?)
+  nameWithType.vb: ProcessRunner.RunAsync(String, String, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(System.String,System.String,System.String,System.Threading.CancellationToken)
+  name: RunAsync(string, string, string?, CancellationToken)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.html#Kuju63_WorkTree_CommandLine_Utils_ProcessRunner_RunAsync_System_String_System_String_System_String_System_Threading_CancellationToken_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(System.String,System.String,System.String,System.Threading.CancellationToken)
+  name.vb: RunAsync(String, String, String, CancellationToken)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(string, string, string?, System.Threading.CancellationToken)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync(String, String, String, System.Threading.CancellationToken)
+  nameWithType: ProcessRunner.RunAsync(string, string, string?, CancellationToken)
+  nameWithType.vb: ProcessRunner.RunAsync(String, String, String, CancellationToken)
+- uid: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync*
+  name: RunAsync
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.html#Kuju63_WorkTree_CommandLine_Utils_ProcessRunner_RunAsync_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ProcessRunner.RunAsync
+  nameWithType: ProcessRunner.RunAsync
+- uid: Kuju63.WorkTree.CommandLine.Utils.ValidationResult
+  name: ValidationResult
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Utils.ValidationResult
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ValidationResult
+  nameWithType: ValidationResult
+- uid: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.#ctor(System.Boolean,System.String)
+  name: ValidationResult(bool, string?)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_ValidationResult__ctor_System_Boolean_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.ValidationResult.#ctor(System.Boolean,System.String)
+  name.vb: New(Boolean, String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.ValidationResult(bool, string?)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.New(Boolean, String)
+  nameWithType: ValidationResult.ValidationResult(bool, string?)
+  nameWithType.vb: ValidationResult.New(Boolean, String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.#ctor*
+  name: ValidationResult
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_ValidationResult__ctor_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.ValidationResult.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.ValidationResult
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.New
+  nameWithType: ValidationResult.ValidationResult
+  nameWithType.vb: ValidationResult.New
+- uid: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.ErrorMessage
+  name: ErrorMessage
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_ValidationResult_ErrorMessage
+  commentId: P:Kuju63.WorkTree.CommandLine.Utils.ValidationResult.ErrorMessage
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.ErrorMessage
+  nameWithType: ValidationResult.ErrorMessage
+- uid: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.ErrorMessage*
+  name: ErrorMessage
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_ValidationResult_ErrorMessage_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.ValidationResult.ErrorMessage
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.ErrorMessage
+  nameWithType: ValidationResult.ErrorMessage
+- uid: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.IsValid
+  name: IsValid
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_ValidationResult_IsValid
+  commentId: P:Kuju63.WorkTree.CommandLine.Utils.ValidationResult.IsValid
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.IsValid
+  nameWithType: ValidationResult.IsValid
+- uid: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.IsValid*
+  name: IsValid
+  href: api/Kuju63.WorkTree.CommandLine.Utils.ValidationResult.html#Kuju63_WorkTree_CommandLine_Utils_ValidationResult_IsValid_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.ValidationResult.IsValid
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.ValidationResult.IsValid
+  nameWithType: ValidationResult.IsValid
+- uid: Kuju63.WorkTree.CommandLine.Utils.Validators
+  name: Validators
+  href: api/Kuju63.WorkTree.CommandLine.Utils.Validators.html
+  commentId: T:Kuju63.WorkTree.CommandLine.Utils.Validators
+  fullName: Kuju63.WorkTree.CommandLine.Utils.Validators
+  nameWithType: Validators
+- uid: Kuju63.WorkTree.CommandLine.Utils.Validators.SanitizeBranchName(System.String)
+  name: SanitizeBranchName(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.Validators.html#Kuju63_WorkTree_CommandLine_Utils_Validators_SanitizeBranchName_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.Validators.SanitizeBranchName(System.String)
+  name.vb: SanitizeBranchName(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.Validators.SanitizeBranchName(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.Validators.SanitizeBranchName(String)
+  nameWithType: Validators.SanitizeBranchName(string)
+  nameWithType.vb: Validators.SanitizeBranchName(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.Validators.SanitizeBranchName*
+  name: SanitizeBranchName
+  href: api/Kuju63.WorkTree.CommandLine.Utils.Validators.html#Kuju63_WorkTree_CommandLine_Utils_Validators_SanitizeBranchName_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.Validators.SanitizeBranchName
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.Validators.SanitizeBranchName
+  nameWithType: Validators.SanitizeBranchName
+- uid: Kuju63.WorkTree.CommandLine.Utils.Validators.ValidateBranchName(System.String)
+  name: ValidateBranchName(string)
+  href: api/Kuju63.WorkTree.CommandLine.Utils.Validators.html#Kuju63_WorkTree_CommandLine_Utils_Validators_ValidateBranchName_System_String_
+  commentId: M:Kuju63.WorkTree.CommandLine.Utils.Validators.ValidateBranchName(System.String)
+  name.vb: ValidateBranchName(String)
+  fullName: Kuju63.WorkTree.CommandLine.Utils.Validators.ValidateBranchName(string)
+  fullName.vb: Kuju63.WorkTree.CommandLine.Utils.Validators.ValidateBranchName(String)
+  nameWithType: Validators.ValidateBranchName(string)
+  nameWithType.vb: Validators.ValidateBranchName(String)
+- uid: Kuju63.WorkTree.CommandLine.Utils.Validators.ValidateBranchName*
+  name: ValidateBranchName
+  href: api/Kuju63.WorkTree.CommandLine.Utils.Validators.html#Kuju63_WorkTree_CommandLine_Utils_Validators_ValidateBranchName_
+  commentId: Overload:Kuju63.WorkTree.CommandLine.Utils.Validators.ValidateBranchName
+  isSpec: "True"
+  fullName: Kuju63.WorkTree.CommandLine.Utils.Validators.ValidateBranchName
+  nameWithType: Validators.ValidateBranchName

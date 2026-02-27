@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: Release Binary Hash Files | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: Release Binary Hash Files | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/006-release-hash-files/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-release-binary-hash-files">Tasks: Release Binary Hash Files</h1>
+
+<p><strong>Input</strong>: Design documents from <code>/specs/006-release-hash-files/</code>
+<strong>Prerequisites</strong>: plan.md (required), spec.md (required for user stories), research.md, data-model.md</p>
+<p><strong>Organization</strong>: Tasks are grouped by user story to enable independent implementation and testing of each story.</p>
+<p><strong>Note</strong>: This is a CI/CD workflow feature. Tests are not applicable as the workflow execution itself serves as the test.</p>
+<h2 id="format-id-p-story-description">Format: <code>[ID] [P?] [Story] Description</code></h2>
+<ul>
+<li><strong>[P]</strong>: Can run in parallel (different files, no dependencies)</li>
+<li><strong>[Story]</strong>: Which user story this task belongs to (e.g., US1, US2, US3)</li>
+<li>Include exact file paths in descriptions</li>
+</ul>
+<hr>
+<h2 id="phase-1-setup">Phase 1: Setup</h2>
+<p><strong>Purpose</strong>: Verify prerequisites and understand existing implementation</p>
+<ul>
+<li>[X] T001 Review current release workflow in .github/workflows/release.yml to understand existing hash generation</li>
+<li>[X] T002 [P] Review existing hash generation script in .github/scripts/generate-checksums.sh</li>
+<li>[X] T003 [P] Review existing release notes generation script in .github/scripts/generate-release-notes.sh</li>
+<li>[X] T004 [P] Review research findings in specs/006-release-hash-files/research.md for format requirements</li>
+<li>[X] T005 [P] Review data model in specs/006-release-hash-files/data-model.md for file format specifications</li>
+</ul>
+<hr>
+<h2 id="phase-2-foundational-blocking-prerequisites">Phase 2: Foundational (Blocking Prerequisites)</h2>
+<p><strong>Purpose</strong>: Core infrastructure understanding - No dependencies blocking user stories for this CI/CD feature</p>
+<p><strong>Note</strong>: Since this is a workflow modification, there are no blocking foundational tasks. User stories can proceed directly.</p>
+<p><strong>Checkpoint</strong>: Foundation ready - user story implementation can begin</p>
+<hr>
+<h2 id="phase-3-user-story-1---automated-hash-generation-on-release-priority-p1--mvp">Phase 3: User Story 1 - Automated Hash Generation on Release (Priority: P1) 🎯 MVP</h2>
+<p><strong>Goal</strong>: Automatically generate individual <code>.sha256</code> hash files for all binary artifacts during release, in addition to the existing <code>SHA256SUMS</code> file.</p>
+<p><strong>Independent Test</strong>: Trigger release workflow and verify that individual <code>.sha256</code> files are generated for each binary and uploaded as release assets.</p>
+<p><strong>Implementation Details</strong> (from research.md &amp; data-model.md):</p>
+<ul>
+<li>File format: <code>&lt;hash&gt;  &lt;filename&gt;</code> (two spaces separator)</li>
+<li>File naming: <code>&lt;binary-filename&gt;.sha256</code></li>
+<li>Maintain backward compatibility with existing <code>SHA256SUMS</code> file</li>
+</ul>
+<h3 id="implementation-for-user-story-1">Implementation for User Story 1</h3>
+<ul>
+<li>[X] T006 [P] [US1] Modify .github/scripts/generate-checksums.sh to generate individual .sha256 files in addition to SHA256SUMS</li>
+<li>[X] T007 [P] [US1] Add input validation to .github/scripts/generate-checksums.sh to ensure all binaries exist before hash generation</li>
+<li>[X] T008 [US1] Update .github/workflows/release.yml to upload individual .sha256 files in the &quot;Create GitHub Release&quot; step (update files: section)</li>
+<li>[X] T009 [US1] Add error handling to .github/workflows/release.yml to fail workflow if .sha256 file generation fails (FR-005)</li>
+<li>[X] T010 [P] [US1] Create .github/workflows/verify-hashes.yml workflow to test hash generation on pull requests</li>
+<li>[X] T011 [US1] Test verify-hashes.yml workflow locally or in a test PR to ensure it validates hash file format and completeness</li>
+</ul>
+<p><strong>Checkpoint</strong>: Individual <code>.sha256</code> files should be generated and uploaded for each binary artifact in releases</p>
+<hr>
+<h2 id="phase-4-user-story-2---user-side-integrity-verification-priority-p2">Phase 4: User Story 2 - User-Side Integrity Verification (Priority: P2)</h2>
+<p><strong>Goal</strong>: Provide comprehensive Japanese documentation for users to verify downloaded binaries using hash files.</p>
+<p><strong>Independent Test</strong>: Review documentation and follow verification steps on each platform (Windows, Linux, macOS) to confirm instructions are clear and accurate.</p>
+<p><strong>Implementation Details</strong> (from quickstart.md):</p>
+<ul>
+<li>Platform-specific verification commands</li>
+<li>Troubleshooting guide</li>
+<li>FAQ section</li>
+</ul>
+<h3 id="implementation-for-user-story-2">Implementation for User Story 2</h3>
+<ul>
+<li>[X] T012 [P] [US2] Copy specs/006-release-hash-files/quickstart.md to docs/release-verification.md</li>
+<li>[X] T013 [P] [US2] Add &quot;Verifying Downloads&quot; section to docs/user-guide.md with link to release-verification.md</li>
+<li>[X] T014 [US2] Update docs/user-guide.md with quick reference for hash verification commands (Windows, Linux, macOS)</li>
+<li>[X] T015 [P] [US2] Add verification examples to docs/release-verification.md showing actual hash file content examples</li>
+<li>[X] T016 [US2] Review and test documentation on all three platforms (Windows PowerShell, Linux sha256sum, macOS shasum)</li>
+</ul>
+<p><strong>Checkpoint</strong>: Users have clear, platform-specific documentation for verifying downloads</p>
+<hr>
+<h2 id="phase-5-user-story-3---hash-documentation-in-release-notes-priority-p3">Phase 5: User Story 3 - Hash Documentation in Release Notes (Priority: P3)</h2>
+<p><strong>Goal</strong>: Display hash values directly in release notes in a user-friendly format, allowing quick verification without downloading separate hash files.</p>
+<p><strong>Independent Test</strong>: Create a test release and verify that hash values are displayed in release notes in the correct format (code block with download links).</p>
+<p><strong>Implementation Details</strong> (from research.md):</p>
+<ul>
+<li>Use Option A format: Code block with download links + verification instructions</li>
+<li>Include hash values for all binaries</li>
+<li>Provide verification commands for all platforms</li>
+</ul>
+<h3 id="implementation-for-user-story-3">Implementation for User Story 3</h3>
+<ul>
+<li>[X] T017 [US3] Modify .github/scripts/generate-release-notes.sh to read SHA256SUMS file and extract hash values</li>
+<li>[X] T018 [US3] Add &quot;Checksums&quot; section to release notes template in .github/scripts/generate-release-notes.sh</li>
+<li>[X] T019 [US3] Include verification instructions for Windows, Linux, and macOS in release notes template</li>
+<li>[X] T020 [US3] Format hash values as code block in release notes for easy copy-paste</li>
+<li>[X] T021 [US3] Add download links to SHA256SUMS and individual .sha256 files in release notes</li>
+<li>[X] T022 [US3] Test release notes generation locally to verify hash table formatting and links</li>
+</ul>
+<p><strong>Checkpoint</strong>: Release notes include checksums section with verification instructions</p>
+<hr>
+<h2 id="phase-6-polish--cross-cutting-concerns">Phase 6: Polish &amp; Cross-Cutting Concerns</h2>
+<p><strong>Purpose</strong>: Final validation and documentation improvements</p>
+<ul>
+<li>[X] T023 [P] Add comments to .github/scripts/generate-checksums.sh explaining individual .sha256 file generation logic</li>
+<li>[X] T024 [P] Add comments to .github/scripts/generate-release-notes.sh explaining hash table generation</li>
+<li>[X] T025 [P] Update CLAUDE.md to document new hash file generation workflow (if needed)</li>
+<li>[X] T026 [P] Add hash file generation example to project README or release documentation</li>
+<li>[X] T027 Run end-to-end test: trigger release workflow and verify all hash files are generated and documented correctly</li>
+<li>[X] T028 Validate hash file format compliance using regex from data-model.md (two spaces separator)</li>
+<li>[X] T029 [P] Review all documentation for consistency and accuracy</li>
+<li>[X] T030 Create ADR (Architecture Decision Record) documenting the decision to use GNU/Linux format and provide both SHA256SUMS and individual .sha256 files</li>
+</ul>
+<hr>
+<h2 id="dependencies--execution-order">Dependencies &amp; Execution Order</h2>
+<h3 id="phase-dependencies">Phase Dependencies</h3>
+<ul>
+<li><strong>Setup (Phase 1)</strong>: No dependencies - can start immediately</li>
+<li><strong>Foundational (Phase 2)</strong>: N/A - No blocking foundational tasks for this CI/CD feature</li>
+<li><strong>User Stories (Phase 3-5)</strong>: Can proceed independently after Setup (Phase 1) review
+<ul>
+<li>US1 (P1): Can start immediately after Setup</li>
+<li>US2 (P2): Can start immediately after Setup (independent documentation task)</li>
+<li>US3 (P3): Depends on US1 completion (needs .sha256 files to exist for release notes)</li>
+</ul>
+</li>
+<li><strong>Polish (Phase 6)</strong>: Depends on all user stories being complete</li>
+</ul>
+<h3 id="user-story-dependencies">User Story Dependencies</h3>
+<ul>
+<li><strong>User Story 1 (P1)</strong>: Can start after Setup - No dependencies on other stories</li>
+<li><strong>User Story 2 (P2)</strong>: Can start after Setup - Independent of US1 (documentation only)</li>
+<li><strong>User Story 3 (P3)</strong>: Should start after US1 is complete (uses SHA256SUMS generated by US1)</li>
+</ul>
+<h3 id="within-each-user-story">Within Each User Story</h3>
+<p><strong>US1 (Automated Hash Generation)</strong>:</p>
+<ol>
+<li>T006, T007 can run in parallel (both modify generate-checksums.sh)</li>
+<li>T008 depends on T006 completion (needs .sha256 files to upload)</li>
+<li>T009 depends on T008 (modifies same workflow file)</li>
+<li>T010, T011 can run in parallel with T006-T009 (separate workflow file)</li>
+</ol>
+<p><strong>US2 (User Documentation)</strong>:</p>
+<ol>
+<li>T012, T013, T015 can run in parallel (different files)</li>
+<li>T014 depends on T013 (same file - user-guide.md)</li>
+<li>T016 is final validation after all docs are written</li>
+</ol>
+<p><strong>US3 (Release Notes Hash Table)</strong>:</p>
+<ol>
+<li>T017-T020 must run sequentially (all modify generate-release-notes.sh)</li>
+<li>T021 depends on T020 (same script)</li>
+<li>T022 is final testing</li>
+</ol>
+<h3 id="parallel-opportunities">Parallel Opportunities</h3>
+<p><strong>After Setup (Phase 1)</strong>:</p>
+<ul>
+<li>US1 tasks T006 and T007 can run in parallel</li>
+<li>US1 task T010 can run in parallel with T006-T009</li>
+<li>US2 tasks T012, T013, T015 can run in parallel</li>
+<li>US2 entire phase can run in parallel with US1</li>
+</ul>
+<p><strong>Within User Stories</strong>:</p>
+<ul>
+<li>US1: T006, T007, T010 can all run in parallel (different concerns)</li>
+<li>US2: T012, T013, T015 can all run in parallel (different files)</li>
+</ul>
+<p><strong>Across User Stories</strong>:</p>
+<ul>
+<li>US1 and US2 can run completely in parallel (different files, independent goals)</li>
+<li>US3 should wait for US1 to complete (uses generated hash files)</li>
+</ul>
+<hr>
+<h2 id="parallel-example-user-story-1">Parallel Example: User Story 1</h2>
+<pre><code class="lang-bash"># Launch parallel tasks for User Story 1:
+Task T006: &quot;Modify .github/scripts/generate-checksums.sh to generate individual .sha256 files&quot;
+Task T007: &quot;Add input validation to .github/scripts/generate-checksums.sh&quot;
+Task T010: &quot;Create .github/workflows/verify-hashes.yml workflow&quot;
+
+# Then sequentially:
+Task T008: &quot;Update .github/workflows/release.yml to upload .sha256 files&quot;
+Task T009: &quot;Add error handling to release.yml&quot;
+Task T011: &quot;Test verify-hashes.yml workflow&quot;
+</code></pre>
+<h2 id="parallel-example-user-story-2">Parallel Example: User Story 2</h2>
+<pre><code class="lang-bash"># Launch all documentation tasks in parallel:
+Task T012: &quot;Copy quickstart.md to docs/release-verification.md&quot;
+Task T013: &quot;Add 'Verifying Downloads' section to docs/user-guide.md&quot;
+Task T015: &quot;Add verification examples to docs/release-verification.md&quot;
+
+# Then sequentially:
+Task T014: &quot;Update docs/user-guide.md with quick reference&quot;
+Task T016: &quot;Review and test documentation on all platforms&quot;
+</code></pre>
+<hr>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="mvp-first-user-story-1-only">MVP First (User Story 1 Only)</h3>
+<ol>
+<li>Complete Phase 1: Setup (review existing implementation)</li>
+<li>Complete Phase 3: User Story 1 (automated hash generation)</li>
+<li><strong>STOP and VALIDATE</strong>: Test US1 by triggering a test release</li>
+<li>Verify individual <code>.sha256</code> files are generated and uploaded correctly</li>
+<li>Deploy/merge if ready</li>
+</ol>
+<p><strong>Value</strong>: Users can now verify downloads using individual <code>.sha256</code> files (basic integrity verification enabled)</p>
+<h3 id="incremental-delivery">Incremental Delivery</h3>
+<ol>
+<li><p><strong>MVP (US1 only)</strong>:</p>
+<ul>
+<li>Individual hash files generated automatically ✅</li>
+<li>Users can manually verify using <code>.sha256</code> files</li>
+<li>Basic integrity protection in place</li>
+</ul>
+</li>
+<li><p><strong>Enhanced (US1 + US2)</strong>:</p>
+<ul>
+<li>Individual hash files generated ✅</li>
+<li><strong>+ Comprehensive user documentation ✅</strong></li>
+<li>Users have clear instructions for all platforms</li>
+<li>Lower support burden (self-service verification)</li>
+</ul>
+</li>
+<li><p><strong>Complete (US1 + US2 + US3)</strong>:</p>
+<ul>
+<li>Individual hash files generated ✅</li>
+<li>Comprehensive user documentation ✅</li>
+<li><strong>+ Hash values in release notes ✅</strong></li>
+<li>Maximum user convenience (no separate file download needed)</li>
+<li>Best user experience</li>
+</ul>
+</li>
+</ol>
+<h3 id="parallel-team-strategy">Parallel Team Strategy</h3>
+<p>With multiple developers:</p>
+<ol>
+<li><strong>Setup Phase</strong>: Single developer reviews existing implementation (T001-T005)</li>
+<li><strong>User Story Work</strong> (can proceed in parallel):
+<ul>
+<li><strong>Developer A</strong>: US1 (Hash Generation) - Priority P1</li>
+<li><strong>Developer B</strong>: US2 (Documentation) - Priority P2</li>
+<li>US1 and US2 have NO dependencies and can run completely in parallel</li>
+</ul>
+</li>
+<li><strong>User Story 3</strong>: After US1 completes
+<ul>
+<li><strong>Developer A or B</strong>: US3 (Release Notes) - Priority P3</li>
+<li>Depends on US1 completion (uses SHA256SUMS file)</li>
+</ul>
+</li>
+<li><strong>Polish Phase</strong>: Team collaborates on final validation</li>
+</ol>
+<hr>
+<h2 id="file-change-summary">File Change Summary</h2>
+<h3 id="modified-files">Modified Files</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>User Story</th>
+<th>Change Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.github/scripts/generate-checksums.sh</code></td>
+<td>US1</td>
+<td>Modification</td>
+<td>Add individual <code>.sha256</code> file generation</td>
+</tr>
+<tr>
+<td><code>.github/workflows/release.yml</code></td>
+<td>US1</td>
+<td>Modification</td>
+<td>Upload <code>.sha256</code> files, add error handling</td>
+</tr>
+<tr>
+<td><code>.github/scripts/generate-release-notes.sh</code></td>
+<td>US3</td>
+<td>Modification</td>
+<td>Add checksums section with verification instructions</td>
+</tr>
+<tr>
+<td><code>docs/user-guide.md</code></td>
+<td>US2</td>
+<td>Modification</td>
+<td>Add &quot;Verifying Downloads&quot; section</td>
+</tr>
+</tbody>
+</table>
+<h3 id="new-files">New Files</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>User Story</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.github/workflows/verify-hashes.yml</code></td>
+<td>US1</td>
+<td>Test workflow for hash generation validation</td>
+</tr>
+<tr>
+<td><code>docs/release-verification.md</code></td>
+<td>US2</td>
+<td>Comprehensive hash verification guide (Japanese)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="success-criteria-mapping">Success Criteria Mapping</h2>
+<p>Each task maps to specific success criteria from spec.md:</p>
+<table>
+<thead>
+<tr>
+<th>Success Criterion</th>
+<th>Tasks</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SC-001</strong>: 100% of binaries have .sha256 files</td>
+<td>T006-T011</td>
+<td>verify-hashes.yml workflow validates completeness</td>
+</tr>
+<tr>
+<td><strong>SC-002</strong>: Users can verify using standard tools</td>
+<td>T012-T016</td>
+<td>Documentation tested on all platforms</td>
+</tr>
+<tr>
+<td><strong>SC-003</strong>: Workflow fails if hash generation fails</td>
+<td>T009</td>
+<td>Error handling in release.yml</td>
+</tr>
+<tr>
+<td><strong>SC-004</strong>: Hash values visible in release notes</td>
+<td>T017-T022</td>
+<td>Release notes include checksums section</td>
+</tr>
+<tr>
+<td><strong>SC-005</strong>: No support requests for verification</td>
+<td>T012-T016, T017-T022</td>
+<td>Clear documentation + in-release-notes visibility</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>[P] tasks</strong>: Different files, no dependencies - safe to run in parallel</li>
+<li><strong>[Story] label</strong>: Maps task to specific user story for traceability</li>
+<li><strong>No test tasks</strong>: Workflow execution IS the test - verify-hashes.yml workflow serves this purpose</li>
+<li><strong>Backward compatibility</strong>: Maintain existing <code>SHA256SUMS</code> file and <code>SHA256SUMS.asc</code> signature</li>
+<li><strong>Format validation</strong>: All <code>.sha256</code> files must use GNU/Linux format (<code>&lt;hash&gt;  &lt;filename&gt;</code> with two spaces)</li>
+<li><strong>Error handling</strong>: Workflow MUST fail if any hash file generation fails (FR-005)</li>
+<li><strong>Documentation language</strong>: User-facing docs in Japanese, code comments in English</li>
+<li><strong>Commit strategy</strong>: Commit after each user story phase completion</li>
+<li><strong>MVP scope</strong>: User Story 1 only is sufficient for MVP (enables basic integrity verification)</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/006-release-hash-files/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

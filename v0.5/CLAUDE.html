@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>CLAUDE.md | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CLAUDE.md | wtm ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/CLAUDE.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="claudemd">CLAUDE.md</h1>
+
+<p>This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.</p>
+<h2 id="project-overview">Project Overview</h2>
+<p><strong>wt</strong> is a Git worktree management CLI tool built with .NET 10.0 and System.CommandLine. It simplifies creating, listing, and managing Git worktrees with optional editor integration.</p>
+<h2 id="build--test-commands">Build &amp; Test Commands</h2>
+<pre><code class="lang-bash"># Build
+dotnet build wt.sln --configuration Release
+
+# Run all tests
+dotnet test wt.sln
+
+# Run tests with coverage
+dotnet test wt.sln --collect:&quot;XPlat Code Coverage&quot;
+
+# Run the CLI (from project root)
+dotnet run --project wt.cli -- &lt;command&gt; [options]
+
+# Run a single test file
+dotnet test wt.tests --filter &quot;FullyQualifiedName~ClassName&quot;
+
+# Run a single test method
+dotnet test wt.tests --filter &quot;FullyQualifiedName~ClassName.MethodName&quot;
+</code></pre>
+<h2 id="architecture">Architecture</h2>
+<h3 id="dependency-flow">Dependency Flow</h3>
+<pre><code>Program.cs (DI setup) → Commands → WorktreeService → GitService/EditorService
+                                                   → PathHelper
+</code></pre>
+<h3 id="key-components">Key Components</h3>
+<ul>
+<li><p><strong>Program.cs</strong>: Entry point with manual DI wiring. Instantiates all services and registers commands with RootCommand.</p>
+</li>
+<li><p><strong>Commands/</strong>: System.CommandLine command definitions. Each command inherits from <code>Command</code> and takes services via constructor.</p>
+<ul>
+<li><code>CreateCommand</code>: Creates worktree with new branch</li>
+<li><code>ListCommand</code>: Lists all worktrees in table/JSON format</li>
+</ul>
+</li>
+<li><p><strong>Services/</strong>: Business logic layer</p>
+<ul>
+<li><code>GitService</code>: Wraps git CLI operations (worktree add, branch operations, repository checks)</li>
+<li><code>WorktreeService</code>: Orchestrates worktree creation flow, coordinates git/editor/path services</li>
+<li><code>EditorService</code>: Launches editors (vscode, vim, emacs, nano, idea)</li>
+<li><code>ProcessRunner</code>: Executes shell commands, abstracts process spawning</li>
+</ul>
+</li>
+<li><p><strong>Models/</strong>: Data structures</p>
+<ul>
+<li><code>CommandResult&lt;T&gt;</code>: Result pattern with success/failure, error codes, and solutions</li>
+<li><code>ErrorCodes</code>: Centralized error code constants (GIT001-003, BR001-003, WT001-002, FS001-003, ED001) with <code>GetSolution()</code> method</li>
+</ul>
+</li>
+<li><p><strong>Utils/</strong>: Helpers</p>
+<ul>
+<li><code>PathHelper</code>: Worktree path resolution using <code>System.IO.Abstractions</code></li>
+</ul>
+</li>
+<li><p><strong>Formatters/</strong>: Output formatting</p>
+<ul>
+<li><code>TableFormatter</code>: Unicode box-drawing table output for human-readable display</li>
+</ul>
+</li>
+</ul>
+<h3 id="testability-pattern">Testability Pattern</h3>
+<p>All file system operations use <code>System.IO.Abstractions</code> for mockability. Tests use <code>System.IO.Abstractions.TestingHelpers</code> and Moq for mocking. Assertions use Shouldly.</p>
+<h2 id="development-workflow-from-agentsmd">Development Workflow (from AGENTS.md)</h2>
+<p>This project follows <strong>SDD (Specification-Driven Development)</strong> with <strong>TDD (Test-Driven Development)</strong>:</p>
+<ol>
+<li>Create/update specification in <code>specs/&lt;number&gt;-&lt;feature&gt;/spec.md</code> using Spec Kit</li>
+<li>Write tests first (Red)</li>
+<li>Implement minimal code to pass (Green)</li>
+<li>Refactor while keeping tests green</li>
+<li>User commits changes (AI provides draft commit message only)</li>
+</ol>
+<h3 id="spec-kit-installation">Spec Kit Installation</h3>
+<pre><code class="lang-bash">uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+</code></pre>
+<h2 id="communication-rules">Communication Rules</h2>
+<ul>
+<li><strong>Japanese preferred</strong> for communication; respond in English if queried in English</li>
+<li><strong>Single question at a time</strong> - don't batch multiple questions</li>
+<li>When presenting technical choices, provide <strong>multiple options with pros/cons</strong></li>
+<li><strong>Commit messages in English</strong> following Conventional Commits: <code>&lt;type&gt;: &lt;subject&gt;</code></li>
+<li>Types: <code>feat</code>, <code>fix</code>, <code>docs</code>, <code>style</code>, <code>refactor</code>, <code>test</code>, <code>chore</code></li>
+</ul>
+<h2 id="documentation-generation">Documentation Generation</h2>
+<ul>
+<li><strong>Command docs</strong> (<code>docs/commands/</code>): Auto-generated from System.CommandLine via <code>Tools/DocGenerator</code> - don't edit directly</li>
+<li><strong>API docs</strong> (<code>api/</code>): Auto-generated by DocFX from XML comments - don't edit directly</li>
+<li><strong>User docs</strong> (<code>docs/</code>): Manual markdown files - edit directly</li>
+</ul>
+<pre><code class="lang-bash"># Generate command docs
+cd Tools/DocGenerator &amp;&amp; dotnet run -- ../../docs
+
+# Build all docs
+docfx build docfx.json
+</code></pre>
+<h2 id="code-style">Code Style</h2>
+<ul>
+<li>Use <code>var</code> when type is apparent</li>
+<li>Allman brace style (braces on new lines)</li>
+<li>4-space indentation for C#</li>
+<li>Sort usings with System.* first</li>
+<li>XML documentation for public APIs (English)</li>
+</ul>
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->
+<h2 id="active-technologies">Active Technologies</h2>
+<ul>
+<li>YAML (GitHub Actions workflows), Bash/PowerShell (hash generation scripts) + GitHub Actions, sha256sum (Linux/macOS), Get-FileHash (Windows PowerShell) (006-release-hash-files)</li>
+<li>GitHub Releases (release assets storage) (006-release-hash-files)</li>
+</ul>
+<h2 id="recent-changes">Recent Changes</h2>
+<ul>
+<li>006-release-hash-files: Added YAML (GitHub Actions workflows), Bash/PowerShell (hash generation scripts) + GitHub Actions, sha256sum (Linux/macOS), Get-FileHash (Windows PowerShell)</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/CLAUDE.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

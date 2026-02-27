@@ -262,7 +262,7 @@ jobs:
           echo "::group::Verifying required packages"
           set -e
 
-          # Required packages for wt CLI
+          # Required packages for wtm CLI
           REQUIRED_PACKAGES=(
             "System.CommandLine"
             "System.IO.Abstractions"

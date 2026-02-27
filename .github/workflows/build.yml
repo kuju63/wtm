@@ -31,7 +31,7 @@ jobs:
             rid: win-x64
             mandatory: true
             script: build-windows.sh
-            artifact-name: wt-${{ inputs.version }}-windows-x64.exe
+            artifact-name: wtm-${{ inputs.version }}-windows-x64.exe
 
           # Linux x64 (MANDATORY)
           - os: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
             rid: linux-x64
             mandatory: true
             script: build-linux-x64.sh
-            artifact-name: wt-${{ inputs.version }}-linux-x64
+            artifact-name: wtm-${{ inputs.version }}-linux-x64
 
           # Linux ARM (OPTIONAL)
           - os: ubuntu-latest
@@ -49,7 +49,7 @@ jobs:
             rid: linux-arm
             mandatory: false
             script: build-linux-arm.sh
-            artifact-name: wt-${{ inputs.version }}-linux-arm
+            artifact-name: wtm-${{ inputs.version }}-linux-arm
 
           # macOS ARM64 (MANDATORY)
           - os: macos-latest
@@ -58,7 +58,7 @@ jobs:
             rid: osx-arm64
             mandatory: true
             script: build-macos-arm64.sh
-            artifact-name: wt-${{ inputs.version }}-macos-arm64
+            artifact-name: wtm-${{ inputs.version }}-macos-arm64
 
     steps:
       - name: Checkout repository
@@ -99,7 +99,7 @@ jobs:
         with:
           name: binary-${{ matrix.platform }}-${{ matrix.arch }}
           path: |
-            wt.cli/bin/Release/net10.0/${{ matrix.rid }}/publish/wt*
+            wt.cli/bin/Release/net10.0/${{ matrix.rid }}/publish/wtm*
           retention-days: 7
 
       - name: Report build status

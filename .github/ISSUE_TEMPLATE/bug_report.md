@@ -28,7 +28,7 @@ Paste console log here.
  - Version [e.g. 22]
 - Shell: [e.g. bash, zsh]
 - Git Version: [e.g. 2.25.0]
-- wt Version: [e.g. 0.1.0]
+- wtm Version: [e.g. 0.1.0]
 
 **Additional context**
 Add any other context about the problem here.

@@ -2,13 +2,13 @@
 _layout: landing
 ---
 
-# wt - Git Worktree Manager
+# wtm - Git Worktree Manager
 
 A modern CLI tool to simplify Git worktree management. Create worktrees with a single command and optionally launch your favorite editor.
 
 ## ✨ Features
 
-- **Simple worktree creation**: `wt create feature-branch`
+- **Simple worktree creation**: `wtm create feature-branch`
 - **List all worktrees**: Display all worktrees with their branches in a beautiful table
 - **Smart defaults**: Automatically creates worktrees in `../wt-<branch>` directory
 - **Editor integration**: Auto-launch VS Code, Vim, Emacs, or IntelliJ IDEA
@@ -30,10 +30,10 @@ Get started in minutes! Download the latest release for your platform:
 
 ```bash
 # Create a new feature branch worktree
-wt create feature-login
+wtm create feature-login
 
 # List all worktrees
-wt list
+wtm list
 ```
 
 **[📖 Quick Start Guide](docs/guides/quickstart.md)**
@@ -44,7 +44,7 @@ wt list
 
 ### For Users
 
-- **[Installation Guide](docs/installation.md)** - Install `wt` on your system
+- **[Installation Guide](docs/installation.md)** - Install `wtm` on your system
 - **[Quick Start Guide](docs/guides/quickstart.md)** - Get up and running in 5 minutes
 - **[Command Reference](docs/commands/index.md)** - Detailed command documentation with examples
 
@@ -53,7 +53,7 @@ wt list
 ### For Developers
 
 - **[API Reference](api/index.md)** - Complete API documentation
-- **[Contributing Guide](docs/contributing.md)** - Help improve `wt`
+- **[Contributing Guide](docs/contributing.md)** - Help improve `wtm`
 
 ---
 
@@ -66,7 +66,7 @@ Git worktrees allow you to have multiple working directories from a single repos
 - **Run different versions** side-by-side for testing
 - **Keep your workspace organized** with parallel directories
 
-`wt` makes managing worktrees simple and intuitive.
+`wtm` makes managing worktrees simple and intuitive.
 
 ---
 
@@ -74,13 +74,13 @@ Git worktrees allow you to have multiple working directories from a single repos
 
 ```bash
 # Start working on a new feature
-wt create feature-user-auth --editor vscode
+wtm create feature-user-auth --editor vscode
 
 # In another terminal, fix a bug
-wt create bugfix-login-timeout --base main
+wtm create bugfix-login-timeout --base main
 
 # Check all your worktrees
-wt list
+wtm list
 ```
 
 Output:

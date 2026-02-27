@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Protection against removing main worktree or current working directory
   - Human-readable and JSON output formats (`--output` flag)
   - Verbose error reporting with error codes (`--verbose` flag)
-  - Actionable error messages with solutions (e.g., "Use 'wt list' to see available worktrees")
+  - Actionable error messages with solutions (e.g., "Use 'wtm list' to see available worktrees")
 - **SBOM (Software Bill of Materials) Generation**: Complete supply chain transparency for all releases
   - SPDX 2.3 format (ISO/IEC 5962:2021 compliant)
   - Automatic generation with Microsoft SBOM Tool
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Supports Renovate automated dependency updates
   - Provides visibility in repository Insights → Dependency graph
 - **SBOM Release Assets**: Downloadable SBOM files attached to every GitHub release
-  - Filename format: `wt-{version}-sbom.spdx.json`
+  - Filename format: `wtm-{version}-sbom.spdx.json`
   - Signed with GPG for authenticity
   - Available for all releases
 - **PR SBOM Testing Workflow**: Pre-release validation for pull requests

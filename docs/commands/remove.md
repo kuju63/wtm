@@ -1,11 +1,11 @@
-# wt remove
+# wtm remove
 
 Remove a git worktree and delete its working directory
 
 ## Syntax
 
 ```bash
-wt remove <worktree> [options]
+wtm remove <worktree> [options]
 ```
 
 ## Arguments

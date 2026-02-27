@@ -54,9 +54,9 @@ fi
 
 # Determine binary name based on RID
 if [[ "$RID" == win-* ]]; then
-  BINARY_NAME="wt.exe"
+  BINARY_NAME="wtm.exe"
 else
-  BINARY_NAME="wt"
+  BINARY_NAME="wtm"
 fi
 
 BINARY_PATH="./bin/Release/net10.0/$RID/publish/$BINARY_NAME"

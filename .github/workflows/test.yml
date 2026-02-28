@@ -6,6 +6,7 @@ on:
       - main
       - 'feature/**'
       - 'fix/**'
+      - '[0-9]*-**'
   pull_request:
     branches:
       - main
@@ -98,7 +99,6 @@ jobs:
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('scripts/install.sh') != '' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6

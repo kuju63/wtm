@@ -25,10 +25,10 @@ jobs:
           mkdir -p test-artifacts
 
           # Create test binary files with known content
-          echo "Test Windows binary" > test-artifacts/wt-v0.0.0-test-windows-x64.exe
-          echo "Test Linux x64 binary" > test-artifacts/wt-v0.0.0-test-linux-x64
-          echo "Test Linux ARM binary" > test-artifacts/wt-v0.0.0-test-linux-arm
-          echo "Test macOS ARM64 binary" > test-artifacts/wt-v0.0.0-test-macos-arm64
+          echo "Test Windows binary" > test-artifacts/wtm-v0.0.0-test-windows-x64.exe
+          echo "Test Linux x64 binary" > test-artifacts/wtm-v0.0.0-test-linux-x64
+          echo "Test Linux ARM binary" > test-artifacts/wtm-v0.0.0-test-linux-arm
+          echo "Test macOS ARM64 binary" > test-artifacts/wtm-v0.0.0-test-macos-arm64
 
       - name: Generate checksums
         run: |
@@ -48,7 +48,7 @@ jobs:
           cd test-artifacts
           MISSING_FILES=()
 
-          for binary in wt-v0.0.0-test-windows-x64.exe wt-v0.0.0-test-linux-x64 wt-v0.0.0-test-linux-arm wt-v0.0.0-test-macos-arm64; do
+          for binary in wtm-v0.0.0-test-windows-x64.exe wtm-v0.0.0-test-linux-x64 wtm-v0.0.0-test-linux-arm wtm-v0.0.0-test-macos-arm64; do
             if [ ! -f "${binary}.sha256" ]; then
               MISSING_FILES+=("${binary}.sha256")
             fi
@@ -131,7 +131,7 @@ jobs:
           cd test-artifacts
           MISMATCHES=()
 
-          for binary in wt-v0.0.0-test-windows-x64.exe wt-v0.0.0-test-linux-x64 wt-v0.0.0-test-linux-arm wt-v0.0.0-test-macos-arm64; do
+          for binary in wtm-v0.0.0-test-windows-x64.exe wtm-v0.0.0-test-linux-x64 wtm-v0.0.0-test-linux-arm wtm-v0.0.0-test-macos-arm64; do
             # Get hash from individual .sha256 file
             INDIVIDUAL_HASH=$(cat "${binary}.sha256" | awk '{print $1}')
 
@@ -178,7 +178,7 @@ jobs:
           cd test-artifacts
 
           # Count binaries
-          BINARY_COUNT=$(find . -type f \( -name "wt-*-windows-*.exe" -o -name "wt-*-linux-*" -o -name "wt-*-macos-*" \) ! -name "*.sha256" | wc -l)
+          BINARY_COUNT=$(find . -type f \( -name "wtm-*-windows-*.exe" -o -name "wtm-*-linux-*" -o -name "wtm-*-macos-*" \) ! -name "*.sha256" | wc -l)
 
           # Count entries in SHA256SUMS
           SHA256SUMS_COUNT=$(wc -l < SHA256SUMS)

@@ -1,11 +1,11 @@
 # Quick Start Guide
 
-Get started with `wt` in just a few minutes. This guide walks you through creating your first worktree and covers basic commands.
+Get started with `wtm` in just a few minutes. This guide walks you through creating your first worktree and covers basic commands.
 
 ## Prerequisites
 
 - Git installed and configured
-- `wt` installed (see [Installation Guide](../installation.md))
+- `wtm` installed (see [Installation Guide](../installation.md))
 - An existing Git repository
 
 ---
@@ -25,7 +25,7 @@ cd /path/to/your/project
 Create a new worktree for a feature branch:
 
 ```bash
-wt create feature-new-feature
+wtm create feature-new-feature
 ```
 
 This command will:
@@ -47,7 +47,7 @@ This command will:
 View all worktrees in your repository:
 
 ```bash
-wt list
+wtm list
 ```
 
 **Output:**
@@ -70,7 +70,7 @@ wt list
 Specify a custom location for your worktree:
 
 ```bash
-wt create feature-login --path ~/projects/myapp-login
+wtm create feature-login --path ~/projects/myapp-login
 ```
 
 ### Create Worktree from Specific Base Branch
@@ -78,7 +78,7 @@ wt create feature-login --path ~/projects/myapp-login
 Create a branch from a specific base (e.g., `main`):
 
 ```bash
-wt create feature-login --base main
+wtm create feature-login --base main
 ```
 
 ### Auto-Launch Editor
@@ -86,7 +86,7 @@ wt create feature-login --base main
 Create a worktree and automatically open it in your editor:
 
 ```bash
-wt create feature-login --editor vscode
+wtm create feature-login --editor vscode
 ```
 
 Supported editors: `vscode`, `vim`, `emacs`, `nano`, `idea`
@@ -100,7 +100,7 @@ Supported editors: `vscode`, `vim`, `emacs`, `nano`, `idea`
 1. **Start a new feature**:
 
    ```bash
-   wt create feature-user-auth
+   wtm create feature-user-auth
    cd ../wt-feature-user-auth
    ```
 
@@ -130,11 +130,11 @@ Work on multiple features simultaneously:
 
 ```bash
 # Terminal 1: Work on feature A
-wt create feature-a
+wtm create feature-a
 cd ../wt-feature-a
 
-# Terminal 2: Work on feature B  
-wt create feature-b
+# Terminal 2: Work on feature B
+wtm create feature-b
 cd ../wt-feature-b
 
 # Terminal 3: Review code in main
@@ -147,7 +147,7 @@ Each worktree is independent - changes in one don't affect others.
 
 ## Editor Integration
 
-`wt` can automatically open new worktrees in your preferred editor.
+`wtm` can automatically open new worktrees in your preferred editor.
 
 ### Supported Editors
 
@@ -160,7 +160,7 @@ Each worktree is independent - changes in one don't affect others.
 ### Example
 
 ```bash
-wt create feature-ui --editor vscode
+wtm create feature-ui --editor vscode
 ```
 
 This will create the worktree and automatically launch VS Code in that directory.
@@ -174,9 +174,9 @@ This will create the worktree and automatically launch VS Code in that directory
 Use descriptive branch names with prefixes:
 
 ```bash
-wt create feature-user-authentication
-wt create bugfix-login-timeout
-wt create hotfix-security-patch
+wtm create feature-user-authentication
+wtm create bugfix-login-timeout
+wtm create hotfix-security-patch
 ```
 
 ### 2. Default Directory Structure
@@ -210,7 +210,7 @@ git worktree prune
 For scripting and automation:
 
 ```bash
-wt create feature-api --output json | jq '.worktree.path'
+wtm create feature-api --output json | jq '.worktree.path'
 ```
 
 ---
@@ -219,13 +219,13 @@ wt create feature-api --output json | jq '.worktree.path'
 
 - **[Command Reference](../commands/index.md)**: Detailed documentation for all commands
 - **[Installation Guide](../installation.md)**: Advanced installation options
-- **[Contributing](../contributing.md)**: Help improve `wt`
+- **[Contributing](../contributing.md)**: Help improve `wtm`
 
 ---
 
 ## Getting Help
 
-- Run `wt --help` for command help
-- Run `wt create --help` for create command options
+- Run `wtm --help` for command help
+- Run `wtm create --help` for create command options
 - Visit the [GitHub repository](https://github.com/kuju63/wt)
 - Report issues on [GitHub Issues](https://github.com/kuju63/wt/issues)

@@ -1,12 +1,12 @@
 # Release Verification Guide
 
 **Feature**: Release Binary Hash Files
-**Audience**: End users of the wt tool
+**Audience**: End users of the wtm tool
 **Last Updated**: 2026-02-17
 
 ## Overview
 
-After downloading the wt tool, you can verify that the files have not been corrupted or tampered with by checking their SHA256 hashes. This guide explains how to verify downloads on each platform.
+After downloading the wtm tool, you can verify that the files have not been corrupted or tampered with by checking their SHA256 hashes. This guide explains how to verify downloads on each platform.
 
 ---
 
@@ -26,8 +26,8 @@ Download the binary and hash file for your platform from the GitHub Releases pag
 
 **Required files**:
 
-1. Binary file (e.g., `wt-v1.0.0-windows-x64.exe`)
-2. Hash file (e.g., `wt-v1.0.0-windows-x64.exe.sha256`)
+1. Binary file (e.g., `wtm-v1.0.0-windows-x64.exe`)
+2. Hash file (e.g., `wtm-v1.0.0-windows-x64.exe.sha256`)
 
 Or:
 
@@ -48,10 +48,10 @@ Open PowerShell in the same folder as the downloaded binary and run:
 
 ```powershell
 # Calculate hash of downloaded file
-$hash = (Get-FileHash .\wt-v1.0.0-windows-x64.exe -Algorithm SHA256).Hash
+$hash = (Get-FileHash .\wtm-v1.0.0-windows-x64.exe -Algorithm SHA256).Hash
 
 # Read expected hash from .sha256 file
-$expected = (Get-Content .\wt-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]
+$expected = (Get-Content .\wtm-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]
 
 # Compare
 if ($hash -eq $expected) {
@@ -81,10 +81,10 @@ Get-Content SHA256SUMS | ForEach-Object {
 }
 ```
 
-**Example individual .sha256 file content** (`wt-v1.0.0-windows-x64.exe.sha256`):
+**Example individual .sha256 file content** (`wtm-v1.0.0-windows-x64.exe.sha256`):
 
 ```text
-a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-windows-x64.exe
+a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wtm-v1.0.0-windows-x64.exe
 ```
 
 Note: Two spaces separate the hash and filename.
@@ -102,19 +102,19 @@ Note: Two spaces separate the hash and filename.
 Run this command in the same directory as the downloaded binary:
 
 ```bash
-sha256sum -c wt-v1.0.0-linux-x64.sha256
+sha256sum -c wtm-v1.0.0-linux-x64.sha256
 ```
 
 **Success output**:
 
 ```
-wt-v1.0.0-linux-x64: OK
+wtm-v1.0.0-linux-x64: OK
 ```
 
 **Failure output**:
 
 ```
-wt-v1.0.0-linux-x64: FAILED
+wtm-v1.0.0-linux-x64: FAILED
 sha256sum: WARNING: 1 computed checksum did NOT match
 ```
 
@@ -129,19 +129,19 @@ sha256sum -c SHA256SUMS
 **Success output**:
 
 ```
-wt-v1.0.0-linux-x64: OK
-wt-v1.0.0-linux-arm: OK
-wt-v1.0.0-windows-x64.exe: OK
-wt-v1.0.0-macos-arm64: OK
+wtm-v1.0.0-linux-x64: OK
+wtm-v1.0.0-linux-arm: OK
+wtm-v1.0.0-windows-x64.exe: OK
+wtm-v1.0.0-macos-arm64: OK
 ```
 
 **Example SHA256SUMS file content**:
 
 ```text
-a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-linux-x64
-b2c3d4e5f6a78901234567890123456789012345678901234567890123456789  wt-v1.0.0-linux-arm
-c3d4e5f6a7b89012345678901234567890123456789012345678901234567890  wt-v1.0.0-macos-arm64
-d4e5f6a7b8c90123456789012345678901234567890123456789012345678901  wt-v1.0.0-windows-x64.exe
+a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wtm-v1.0.0-linux-x64
+b2c3d4e5f6a78901234567890123456789012345678901234567890123456789  wtm-v1.0.0-linux-arm
+c3d4e5f6a7b89012345678901234567890123456789012345678901234567890  wtm-v1.0.0-macos-arm64
+d4e5f6a7b8c90123456789012345678901234567890123456789012345678901  wtm-v1.0.0-windows-x64.exe
 ```
 
 Note: Each line contains a hash (64 characters), two spaces, and the filename.
@@ -151,7 +151,7 @@ Note: Each line contains a hash (64 characters), two spaces, and the filename.
 To verify only a specific file:
 
 ```bash
-grep wt-v1.0.0-linux-x64 SHA256SUMS | sha256sum -c
+grep wtm-v1.0.0-linux-x64 SHA256SUMS | sha256sum -c
 ```
 
 ---
@@ -167,19 +167,19 @@ grep wt-v1.0.0-linux-x64 SHA256SUMS | sha256sum -c
 Run this command in the same directory as the downloaded binary:
 
 ```bash
-shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
+shasum -a 256 -c wtm-v1.0.0-macos-arm64.sha256
 ```
 
 **Success output**:
 
 ```
-wt-v1.0.0-macos-arm64: OK
+wtm-v1.0.0-macos-arm64: OK
 ```
 
 **Failure output**:
 
 ```
-wt-v1.0.0-macos-arm64: FAILED
+wtm-v1.0.0-macos-arm64: FAILED
 shasum: WARNING: 1 computed checksum did NOT match
 ```
 
@@ -195,13 +195,13 @@ shasum -a 256 -c SHA256SUMS
 
 ```bash
 # Calculate hash
-openssl sha256 wt-v1.0.0-macos-arm64
+openssl sha256 wtm-v1.0.0-macos-arm64
 
 # Output example:
-# SHA256(wt-v1.0.0-macos-arm64)= a1b2c3d4e5f6...
+# SHA256(wtm-v1.0.0-macos-arm64)= a1b2c3d4e5f6...
 
 # Manually compare with hash file content
-cat wt-v1.0.0-macos-arm64.sha256
+cat wtm-v1.0.0-macos-arm64.sha256
 ```
 
 ---
@@ -243,7 +243,7 @@ sudo dnf install coreutils
 brew install coreutils
 
 # Use gsha256sum instead of sha256sum
-gsha256sum -c wt-v1.0.0-macos-arm64.sha256
+gsha256sum -c wtm-v1.0.0-macos-arm64.sha256
 ```
 
 ---
@@ -291,14 +291,14 @@ After successful verification:
 2. **Grant execute permissions** (Linux/macOS):
 
    ```bash
-   chmod +x wt-v1.0.0-linux-x64
+   chmod +x wtm-v1.0.0-linux-x64
    ```
 
-3. **Start using the wt tool**:
+3. **Start using the wtm tool**:
 
    ```bash
-   wt --version
-   wt --help
+   wtm --version
+   wtm --help
    ```
 
 For detailed usage instructions, see the [Installation Guide](installation.md).

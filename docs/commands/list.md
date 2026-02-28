@@ -1,11 +1,11 @@
-# wt list
+# wtm list
 
 List all worktrees with their branch information
 
 ## Syntax
 
 ```bash
-wt list [options]
+wtm list [options]
 ```
 
 ## Options

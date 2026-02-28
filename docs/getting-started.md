@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide will help you get started with the `wt` CLI tool for managing Git worktrees.
+This guide will help you get started with the `wtm` CLI tool for managing Git worktrees.
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ dotnet tool install --global --add-source ./nupkg wt
 Create a new worktree for a feature branch:
 
 ```bash
-wt create feature-login
+wtm create feature-login
 ```
 
 This command will:
@@ -52,7 +52,7 @@ This command will:
 View all worktrees in your repository:
 
 ```bash
-wt list
+wtm list
 ```
 
 Output example:
@@ -84,10 +84,10 @@ cd ../wt-feature-login
 You can create multiple worktrees to work on different features simultaneously:
 
 ```bash
-wt create feature-auth
-wt create feature-ui
-wt create bugfix-123 --base main
-wt list
+wtm create feature-auth
+wtm create feature-ui
+wtm create bugfix-123 --base main
+wtm list
 ```
 
 Each worktree is independent, allowing you to switch between features without stashing changes.
@@ -97,13 +97,13 @@ Each worktree is independent, allowing you to switch between features without st
 ### Custom Worktree Path
 
 ```bash
-wt create feature-api --path ~/projects/myapp-api
+wtm create feature-api --path ~/projects/myapp-api
 ```
 
 ### Auto-Launch Editor
 
 ```bash
-wt create feature-ui --editor vscode
+wtm create feature-ui --editor vscode
 ```
 
 Supported editors:
@@ -117,8 +117,8 @@ Supported editors:
 ### JSON Output for Automation
 
 ```bash
-wt create feature-test --output json
-wt list --format json  # Coming in future release
+wtm create feature-test --output json
+wtm list --format json  # Coming in future release
 ```
 
 ## Common Scenarios
@@ -130,26 +130,26 @@ wt list --format json  # Coming in future release
 cd ~/projects/myapp
 
 # Feature 1: User authentication
-wt create feature-auth
+wtm create feature-auth
 cd ../wt-feature-auth
 # ... work on authentication ...
 
 # Feature 2: New UI while auth is in progress
 cd ~/projects/myapp
-wt create feature-ui
+wtm create feature-ui
 cd ../wt-feature-ui
 # ... work on UI ...
 
 # View all active worktrees
 cd ~/projects/myapp
-wt list
+wtm list
 ```
 
 ### Scenario 2: Hotfix on Production
 
 ```bash
 # Create hotfix from main branch
-wt create hotfix-critical-bug --base main
+wtm create hotfix-critical-bug --base main
 
 # Work on the fix in isolation
 cd ../wt-hotfix-critical-bug
@@ -161,7 +161,7 @@ cd ../wt-hotfix-critical-bug
 
 ```bash
 # Create worktree for PR review
-wt create review-pr-123 --base main
+wtm create review-pr-123 --base main
 cd ../wt-review-pr-123
 
 # Fetch and checkout the PR branch
@@ -174,9 +174,9 @@ git checkout pr-123
 ## Tips and Best Practices
 
 1. **Keep worktrees organized**: Use the default naming convention `wt-<branch>` for consistency
-2. **List regularly**: Use `wt list` to see all your worktrees and their status
+2. **List regularly**: Use `wtm list` to see all your worktrees and their status
 3. **Clean up**: Remove worktrees when done with `git worktree remove <path>`
-4. **Missing worktrees**: If `wt list` shows a worktree as `missing`, remove it with `git worktree prune`
+4. **Missing worktrees**: If `wtm list` shows a worktree as `missing`, remove it with `git worktree prune`
 5. **Detached HEAD**: Be careful with detached HEAD state - create a branch if you need to keep changes
 
 ## Next Steps

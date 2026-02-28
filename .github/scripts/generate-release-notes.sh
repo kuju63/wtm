@@ -76,10 +76,10 @@ fi
 # Add installation instructions
 RELEASE_NOTES="${RELEASE_NOTES}## 📦 Installation\n\n"
 RELEASE_NOTES="${RELEASE_NOTES}Download the binary for your platform:\n\n"
-RELEASE_NOTES="${RELEASE_NOTES}- **Windows x64**: \`wt-${NEW_VERSION}-windows-x64.exe\`\n"
-RELEASE_NOTES="${RELEASE_NOTES}- **Linux x64**: \`wt-${NEW_VERSION}-linux-x64\`\n"
-RELEASE_NOTES="${RELEASE_NOTES}- **Linux ARM**: \`wt-${NEW_VERSION}-linux-arm\` (optional)\n"
-RELEASE_NOTES="${RELEASE_NOTES}- **macOS ARM64**: \`wt-${NEW_VERSION}-macos-arm64\`\n\n"
+RELEASE_NOTES="${RELEASE_NOTES}- **Windows x64**: \`wtm-${NEW_VERSION}-windows-x64.exe\`\n"
+RELEASE_NOTES="${RELEASE_NOTES}- **Linux x64**: \`wtm-${NEW_VERSION}-linux-x64\`\n"
+RELEASE_NOTES="${RELEASE_NOTES}- **Linux ARM**: \`wtm-${NEW_VERSION}-linux-arm\` (optional)\n"
+RELEASE_NOTES="${RELEASE_NOTES}- **macOS ARM64**: \`wtm-${NEW_VERSION}-macos-arm64\`\n\n"
 
 # Add checksums section
 RELEASE_NOTES="${RELEASE_NOTES}## 📋 Checksums\n\n"
@@ -97,7 +97,7 @@ RELEASE_NOTES="${RELEASE_NOTES}See the [Release Verification Guide](https://kuju
 
 # Add security section
 RELEASE_NOTES="${RELEASE_NOTES}## 🔒 Security\n\n"
-RELEASE_NOTES="${RELEASE_NOTES}Software Bill of Materials (SBOM) is available as \`wt-${NEW_VERSION}-sbom.spdx.json\`\n\n"
+RELEASE_NOTES="${RELEASE_NOTES}Software Bill of Materials (SBOM) is available as \`wtm-${NEW_VERSION}-sbom.spdx.json\`\n\n"
 
 # Add footer
 RELEASE_NOTES="${RELEASE_NOTES}---\n\n"

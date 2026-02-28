@@ -88,7 +88,7 @@ jobs:
 
           SBOM_FILE="${{ steps.sbom.outputs.sbom_file }}"
 
-          # Required packages for wt CLI
+          # Required packages for wtm CLI
           REQUIRED_PACKAGES=(
             "System.CommandLine"
             "System.IO.Abstractions"
@@ -148,7 +148,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Upload SBOM artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-pr-${{ github.event.pull_request.number }}
           path: sbom-test.spdx.json

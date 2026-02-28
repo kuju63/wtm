@@ -1,11 +1,11 @@
-# wt - Git Worktree Manager
+# wtm - Git Worktree Manager
 
 A modern CLI tool to simplify Git worktree management. Create worktrees with a single command and optionally launch your favorite editor.
 
 ## Features
 
-- ✨ **Simple worktree creation**: `wt create feature-branch`
-- 📋 **List all worktrees**: `wt list` - Display all worktrees with their branches
+- ✨ **Simple worktree creation**: `wtm create feature-branch`
+- 📋 **List all worktrees**: `wtm list` - Display all worktrees with their branches
 - 🎯 **Smart defaults**: Automatically creates worktrees in `../wt-<branch>` directory
 - 🚀 **Editor integration**: Auto-launch VS Code, Vim, Emacs, or IntelliJ IDEA
 - 🛠️ **Custom paths**: Specify where to create worktrees
@@ -56,14 +56,14 @@ Each release includes:
 
 ```bash
 # Linux/macOS
-sha256sum -c wt-v1.0.0-linux-x64.sha256
+sha256sum -c wtm-v1.0.0-linux-x64.sha256
 
 # macOS (alternative)
-shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
+shasum -a 256 -c wtm-v1.0.0-macos-arm64.sha256
 
 # Windows PowerShell
-$hash = (Get-FileHash .\wt-v1.0.0-windows-x64.exe).Hash
-$expected = (Get-Content .\wt-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]
+$hash = (Get-FileHash .\wtm-v1.0.0-windows-x64.exe).Hash
+$expected = (Get-Content .\wtm-v1.0.0-windows-x64.exe.sha256).Split(" ")[0]
 $hash -eq $expected  # Should return True
 ```
 
@@ -92,7 +92,7 @@ dotnet tool install --global --add-source ./nupkg wt
 Create a new worktree with a new branch:
 
 ```bash
-wt create feature-login
+wtm create feature-login
 ```
 
 This will:
@@ -106,7 +106,7 @@ This will:
 Create a branch from a specific base branch:
 
 ```bash
-wt create feature-login --base main
+wtm create feature-login --base main
 ```
 
 ### Custom Path
@@ -114,7 +114,7 @@ wt create feature-login --base main
 Create a worktree at a custom location:
 
 ```bash
-wt create feature-login --path ~/projects/myapp-feature-login
+wtm create feature-login --path ~/projects/myapp-feature-login
 ```
 
 ### Auto-Launch Editor
@@ -122,7 +122,7 @@ wt create feature-login --path ~/projects/myapp-feature-login
 Create a worktree and automatically open it in your editor:
 
 ```bash
-wt create feature-login --editor vscode
+wtm create feature-login --editor vscode
 ```
 
 Supported editors:
@@ -138,7 +138,7 @@ Supported editors:
 For automation and scripting:
 
 ```bash
-wt create feature-login --output json
+wtm create feature-login --output json
 ```
 
 ### Verbose Mode
@@ -146,12 +146,12 @@ wt create feature-login --output json
 Show detailed diagnostic information:
 
 ```bash
-wt create feature-login --verbose
+wtm create feature-login --verbose
 ```
 
 ## Command Reference
 
-### `wt list`
+### `wtm list`
 
 List all worktrees with their branch information.
 
@@ -176,7 +176,7 @@ Display all Git worktrees in the repository with their paths, checked-out branch
 - `10` - Git command failed
 - `99` - Unexpected error
 
-### `wt create <branch> [options]`
+### `wtm create <branch> [options]`
 
 Create a new worktree with a new branch.
 
@@ -198,7 +198,7 @@ Create a new worktree with a new branch.
 ### Example 1: Simple Feature Branch
 
 ```bash
-wt create feature-auth
+wtm create feature-auth
 ```
 
 Output:
@@ -212,13 +212,13 @@ Output:
 ### Example 2: Bug Fix with Custom Path
 
 ```bash
-wt create bugfix-123 --base main --path ~/bugfixes/fix-123
+wtm create bugfix-123 --base main --path ~/bugfixes/fix-123
 ```
 
 ### Example 3: With Editor Launch
 
 ```bash
-wt create feature-ui --editor vscode
+wtm create feature-ui --editor vscode
 ```
 
 This will create the worktree and automatically open VS Code in the new worktree directory.
@@ -226,7 +226,7 @@ This will create the worktree and automatically open VS Code in the new worktree
 ### Example 4: Automation with JSON
 
 ```bash
-wt create feature-api --output json | jq '.worktree.path'
+wtm create feature-api --output json | jq '.worktree.path'
 ```
 
 Output:
@@ -247,11 +247,11 @@ Output:
 
 ### Error: Not a git repository
 
-**Solution**: Run `wt` from within a Git repository directory.
+**Solution**: Run `wtm` from within a Git repository directory.
 
 ```bash
 cd /path/to/your/git/repo
-wt create my-branch
+wtm create my-branch
 ```
 
 ### Error: Branch already exists
@@ -260,7 +260,7 @@ wt create my-branch
 
 ```bash
 git branch -d existing-branch
-wt create existing-branch
+wtm create existing-branch
 ```
 
 ### Error: Path already exists
@@ -268,7 +268,7 @@ wt create existing-branch
 **Solution**: Specify a different path or remove the existing directory.
 
 ```bash
-wt create my-branch --path ~/different/path
+wtm create my-branch --path ~/different/path
 ```
 
 ### Error: Editor not found
@@ -287,7 +287,7 @@ vim --version
 
 ### SBOM (Software Bill of Materials)
 
-Every release of `wt` includes a complete Software Bill of Materials (SBOM) that provides transparency about all dependencies used in the software:
+Every release of `wtm` includes a complete Software Bill of Materials (SBOM) that provides transparency about all dependencies used in the software:
 
 - **📄 Format**: SPDX 2.3 (ISO/IEC 5962:2021 compliant)
 - **🔍 Transparency**: Complete list of all direct and transitive dependencies
@@ -300,12 +300,12 @@ Every release of `wt` includes a complete Software Bill of Materials (SBOM) that
 ```bash
 # Download SBOM from latest release
 VERSION=$(curl -s https://api.github.com/repos/kuju63/wt/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-curl -L https://github.com/kuju63/wt/releases/download/${VERSION}/wt-${VERSION}-sbom.spdx.json \
-  -o wt-sbom.spdx.json
+curl -L https://github.com/kuju63/wt/releases/download/${VERSION}/wtm-${VERSION}-sbom.spdx.json \
+  -o wtm-sbom.spdx.json
 
 # Or download a specific version
-curl -L https://github.com/kuju63/wt/releases/download/v1.0.0/wt-v1.0.0-sbom.spdx.json \
-  -o wt-sbom.spdx.json
+curl -L https://github.com/kuju63/wt/releases/download/v1.0.0/wtm-v1.0.0-sbom.spdx.json \
+  -o wtm-sbom.spdx.json
 ```
 
 #### Verify SBOM
@@ -315,17 +315,17 @@ curl -L https://github.com/kuju63/wt/releases/download/v1.0.0/wt-v1.0.0-sbom.spd
 npm install -g @spdx/spdx-validator
 
 # Validate SBOM format
-spdx-validator wt-sbom.spdx.json
+spdx-validator wtm-sbom.spdx.json
 ```
 
 #### View Dependencies
 
 ```bash
 # List all dependencies with versions
-jq -r '.packages[] | "\(.name)@\(.versionInfo)"' wt-sbom.spdx.json
+jq -r '.packages[] | "\(.name)@\(.versionInfo)"' wtm-sbom.spdx.json
 
 # Check license information
-jq -r '.packages[] | "\(.name): \(.licenseDeclared)"' wt-sbom.spdx.json
+jq -r '.packages[] | "\(.name): \(.licenseDeclared)"' wtm-sbom.spdx.json
 ```
 
 **Learn more**: See the [SBOM Usage Guide](docs/guides/sbom-usage.md) for detailed information.

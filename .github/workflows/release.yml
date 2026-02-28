@@ -444,6 +444,8 @@ jobs:
             release-assets/wt-*-sbom.spdx.json.asc
             release-assets/SHA256SUMS
             release-assets/SHA256SUMS.asc
+            scripts/install.sh
+            scripts/install.ps1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -525,7 +527,12 @@ jobs:
       - name: Setup root redirect
         run: |
           cp docs/redirect.html _site/index.html
-      
+
+      - name: Copy install scripts to site
+        run: |
+          cp scripts/install.sh _site/install.sh
+          cp scripts/install.ps1 _site/install.ps1
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

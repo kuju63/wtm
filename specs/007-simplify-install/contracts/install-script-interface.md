@@ -42,18 +42,18 @@ curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --prefix /usr/local
 ```
 Detecting platform... linux-x64
 Fetching latest version... v1.2.3
-wt v1.2.0 is already installed. Updating to v1.2.3...
-  ↳ または: wt v1.2.3 is already the latest version. Skipping.
-Downloading wt v1.2.3 for linux-x64...
+wtm v1.2.0 is already installed. Updating to v1.2.3...
+  ↳ または: wtm v1.2.3 is already the latest version. Skipping.
+Downloading wtm v1.2.3 for linux-x64...
 Verifying SHA256 checksum...
-Installing to /home/user/.local/bin/wt...
-chmod +x /home/user/.local/bin/wt
+Installing to /home/user/.local/bin/wtm...
+chmod +x /home/user/.local/bin/wtm
 
-✓ wt v1.2.3 installed successfully!
+✓ wtm v1.2.3 installed successfully!
 
 Next steps:
-  wt --version   # verify installation
-  wt --help      # see available commands
+  wtm --version   # verify installation
+  wtm --help      # see available commands
 ```
 
 ### 標準出力（PATH未登録時の追加案内）
@@ -69,14 +69,14 @@ To add it, run:
 
 ```
 Note: On macOS, if you see "cannot be opened because the developer cannot be verified":
-  xattr -d com.apple.quarantine /home/user/.local/bin/wt
+  xattr -d com.apple.quarantine /home/user/.local/bin/wtm
 ```
 
 ### 標準出力（上書き確認プロンプト - インタラクティブ TTY）
 
 ```
-/home/user/.local/bin/wt already exists (current: v1.2.0, new: v1.2.3).
-Overwrite existing /home/user/.local/bin/wt? [y/N]
+/home/user/.local/bin/wtm already exists (current: v1.2.0, new: v1.2.3).
+Overwrite existing /home/user/.local/bin/wtm? [y/N]
 ```
 
 ```
@@ -86,7 +86,7 @@ Installation cancelled.
 ### 標準出力（上書きスキップ - 非インタラクティブ環境）
 
 ```
-Note: /home/user/.local/bin/wt already exists. Skipping overwrite in non-interactive mode.
+Note: /home/user/.local/bin/wtm already exists. Skipping overwrite in non-interactive mode.
 To force overwrite, re-run with --force:
   curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --force
 ```
@@ -100,13 +100,13 @@ Manual install: https://github.com/kuju63/wt/releases
 ```
 
 ```
-Error: SHA256 verification failed for wt-v1.2.3-linux-x64.
+Error: SHA256 verification failed for wtm-v1.2.3-linux-x64.
        Downloaded file has been removed. Please retry.
 ```
 
 ```
 Error: Failed to download binary. Please check your network connection.
-       URL: https://github.com/kuju63/wt/releases/download/v1.2.3/wt-v1.2.3-linux-x64
+       URL: https://github.com/kuju63/wt/releases/download/v1.2.3/wtm-v1.2.3-linux-x64
 ```
 
 ---
@@ -118,7 +118,7 @@ Error: Failed to download binary. Please check your network connection.
 ```powershell
 irm https://kuju63.github.io/wt/install.ps1 | iex
 # または（パラメータ付き）
-& ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Prefix "$env:ProgramFiles\wt"
+& ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Prefix "$env:ProgramFiles\wtm"
 # 強制上書き（-Force）
 & ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Force
 ```
@@ -127,12 +127,12 @@ irm https://kuju63.github.io/wt/install.ps1 | iex
 
 | パラメータ | 説明 | デフォルト |
 |---|---|---|
-| `-Prefix <path>` | インストール先ディレクトリ | `$env:LOCALAPPDATA\Programs\wt` |
+| `-Prefix <path>` | インストール先ディレクトリ | `$env:LOCALAPPDATA\Programs\wtm` |
 | `-Force` | 既存バイナリへの上書き確認プロンプトをスキップ（FR-017） | `$false` |
 
 ### インタラクティブ/非インタラクティブ挙動（FR-016/017/018）
 
-PowerShell は `[Environment]::UserInteractive` で対話モードを判定。`irm | iex` パターンはパイプ経由となり非インタラクティブとして扱う。
+PowerShell は `[Environment]::UserInteractive` で対話モードを判定。`irm | iex` は現在のセッション内でスクリプトを実行するため `[Environment]::UserInteractive` の値は変化しない。インタラクティブなターミナルから実行した場合は `$true` のまま確認プロンプトが表示される。非インタラクティブ環境（サービス、タスクスケジューラ等）では `$false` となり上書きをスキップする。Unix の `curl | sh` とは異なり、`irm | iex` はパイプ経由でも非インタラクティブにはならない点に注意。
 
 | 条件 | 挙動 |
 |---|---|
@@ -152,23 +152,23 @@ PowerShell は `[Environment]::UserInteractive` で対話モードを判定。`i
 
 ```
 Fetching latest version... v1.2.3
-Downloading wt v1.2.3 for windows-x64...
+Downloading wtm v1.2.3 for windows-x64...
 Verifying SHA256 checksum...
-Installing to C:\Users\user\AppData\Local\Programs\wt\wt.exe...
+Installing to C:\Users\user\AppData\Local\Programs\wtm\wtm.exe...
 
-✓ wt v1.2.3 installed successfully!
+✓ wtm v1.2.3 installed successfully!
 
 Next steps:
-  wt --version
-  wt --help
+  wtm --version
+  wtm --help
 ```
 
 ### PATH未登録時の案内
 
 ```
-Note: C:\Users\user\AppData\Local\Programs\wt is not in your PATH.
+Note: C:\Users\user\AppData\Local\Programs\wtm is not in your PATH.
 To add it permanently, run in an Administrator PowerShell:
-  [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Users\user\AppData\Local\Programs\wt", "User")
+  [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Users\user\AppData\Local\Programs\wtm", "User")
 Then restart your terminal.
 ```
 
@@ -240,5 +240,5 @@ irm https://kuju63.github.io/wt/install.ps1 | iex
 - プラットフォーム・アーキテクチャを検出
 - 最新バージョンをダウンロード
 - SHA256チェックサムを検証
-- `~/.local/bin`（Unix）または `%LOCALAPPDATA%\Programs\wt`（Windows）にインストール
+- `~/.local/bin`（Unix）または `%LOCALAPPDATA%\Programs\wtm`（Windows）にインストール
 ```

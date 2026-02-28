@@ -16,10 +16,10 @@
 | `PLATFORM_TAG` | string | プラットフォーム識別子 | 自動検出: `linux` / `macos` |
 | `ARCH_TAG` | string | アーキテクチャ識別子 | 自動検出: `x64` / `arm64` / `arm` |
 | `LATEST_VERSION` | string | 最新バージョンタグ | GitHub API取得 (例: `v1.2.3`) |
-| `BINARY_NAME` | string | ダウンロードするバイナリ名 | `wt-${LATEST_VERSION}-${PLATFORM_TAG}-${ARCH_TAG}` |
+| `BINARY_NAME` | string | ダウンロードするバイナリ名 | `wtm-${LATEST_VERSION}-${PLATFORM_TAG}-${ARCH_TAG}` |
 | `DOWNLOAD_URL` | string | バイナリのダウンロードURL | `https://github.com/kuju63/wt/releases/download/${LATEST_VERSION}/${BINARY_NAME}` |
 | `HASH_URL` | string | SHA256ハッシュファイルURL | `${DOWNLOAD_URL}.sha256` |
-| `INSTALL_PATH` | string | インストール先フルパス | `${INSTALL_DIR}/wt` |
+| `INSTALL_PATH` | string | インストール先フルパス | `${INSTALL_DIR}/wtm` |
 
 **コマンドライン引数**:
 
@@ -43,12 +43,12 @@
 
 | フィールド/変数 | 型 | 説明 | デフォルト |
 |---|---|---|---|
-| `$InstallDir` | string | インストール先ディレクトリ | `$env:LOCALAPPDATA\Programs\wt` |
+| `$InstallDir` | string | インストール先ディレクトリ | `$env:LOCALAPPDATA\Programs\wtm` |
 | `$LatestVersion` | string | 最新バージョンタグ | GitHub API取得 |
-| `$BinaryName` | string | ダウンロードするバイナリ名 | `wt-${LatestVersion}-windows-x64.exe` |
+| `$BinaryName` | string | ダウンロードするバイナリ名 | `wtm-${LatestVersion}-windows-x64.exe` |
 | `$DownloadUrl` | string | ダウンロードURL | `https://github.com/kuju63/wt/releases/download/${LatestVersion}/${BinaryName}` |
 | `$HashUrl` | string | SHA256ハッシュURL | `${DownloadUrl}.sha256` |
-| `$InstallPath` | string | インストール先フルパス | `${InstallDir}\wt.exe` |
+| `$InstallPath` | string | インストール先フルパス | `${InstallDir}\wtm.exe` |
 
 **パラメータ**:
 
@@ -123,7 +123,7 @@ PATH確認
 macOS Gatekeeper 案内 (macOSのみ)
   │
   ▼
-インストール完了: "wt ${VERSION} installed successfully"
+インストール完了: "wtm ${VERSION} installed successfully"
 ```
 
 ---

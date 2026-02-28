@@ -47,7 +47,7 @@ PowerShell では `[Environment]::UserInteractive` を使用する。
 | プラットフォーム | デフォルトパス |
 |---|---|
 | Unix | `~/.local/bin` (XDG Base Directory 準拠、sudo 不要) |
-| Windows | `$env:LOCALAPPDATA\Programs\wt` (ユーザースコープ) |
+| Windows | `$env:LOCALAPPDATA\Programs\wtm` (ユーザースコープ) |
 
 ### 5. SHA256検証コマンド
 

@@ -25,16 +25,16 @@
 
 ### 2. バイナリ命名パターン（release.ymlより確認済み）
 
-**Decision**: 以下の命名パターンを採用（既存実装と一致）
+**Decision**: 以下の命名パターンを採用（バイナリ名 `wtm` に変更後）
 
 | Platform | File Name |
 |----------|-----------|
-| Linux x64 | `wt-${VERSION}-linux-x64` |
-| Linux ARM | `wt-${VERSION}-linux-arm` |
-| macOS ARM64 | `wt-${VERSION}-macos-arm64` |
-| Windows x64 | `wt-${VERSION}-windows-x64.exe` |
+| Linux x64 | `wtm-${VERSION}-linux-x64` |
+| Linux ARM | `wtm-${VERSION}-linux-arm` |
+| macOS ARM64 | `wtm-${VERSION}-macos-arm64` |
+| Windows x64 | `wtm-${VERSION}-windows-x64.exe` |
 
-SHA256ファイル: `wt-${VERSION}-${PLATFORM}-${ARCH}.sha256`
+SHA256ファイル: `wtm-${VERSION}-${PLATFORM}-${ARCH}.sha256`
 統合チェックサム: `SHA256SUMS`
 
 ---
@@ -134,7 +134,7 @@ fi
 **Decision**:
 
 - Unix デフォルト: `~/.local/bin` (sudo不要)
-- Windows デフォルト: `$env:LOCALAPPDATA\Programs\wt`
+- Windows デフォルト: `$env:LOCALAPPDATA\Programs\wtm`
 - `--prefix DIR` オプションでカスタマイズ可能
 
 **PATH案内**:
@@ -175,10 +175,10 @@ download() {
 if command -v "$INSTALL_PATH" >/dev/null 2>&1; then
   CURRENT=$("$INSTALL_PATH" --version 2>/dev/null | head -1 || echo "unknown")
   if [ "$CURRENT" = "$LATEST_VERSION" ]; then
-    echo "wt ${LATEST_VERSION} is already installed and up to date."
+    echo "wtm ${LATEST_VERSION} is already installed and up to date."
     exit 0
   fi
-  echo "Updating wt from $CURRENT to $LATEST_VERSION..."
+  echo "Updating wtm from $CURRENT to $LATEST_VERSION..."
 fi
 ```
 

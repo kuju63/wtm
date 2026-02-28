@@ -94,3 +94,20 @@ jobs:
           path: 'coverage/**/*.trx'
           reporter: dotnet-trx
           fail-on-error: true
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('scripts/install.sh') != '' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run shellcheck on install.sh
+        run: shellcheck --severity=warning scripts/install.sh
+
+      - name: Validate install.sh syntax
+        run: bash -n scripts/install.sh

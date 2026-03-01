@@ -20,7 +20,28 @@ A modern CLI tool to simplify Git worktree management. Create worktrees with a s
 - .NET 10.0 SDK or later
 - Git 2.5 or later
 
-### Download from Releases (Recommended)
+### Quick Install (Recommended)
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://kuju63.github.io/wt/install.sh | sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://kuju63.github.io/wt/install.ps1 | iex
+```
+
+The install script automatically:
+
+- Detects your platform and architecture
+- Downloads the latest version
+- Verifies the SHA256 checksum
+- Installs to `~/.local/bin` (Unix) or `%LOCALAPPDATA%\Programs\wtm` (Windows)
+
+### Download from Releases
 
 Download the latest release for your platform from the [GitHub Releases](https://github.com/kuju63/wt/releases) page.
 

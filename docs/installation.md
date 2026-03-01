@@ -2,6 +2,41 @@
 
 This guide will help you install the `wtm` command-line tool for Git worktree management.
 
+## Quick Install
+
+The fastest way to install `wtm`:
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://kuju63.github.io/wt/install.sh | sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://kuju63.github.io/wt/install.ps1 | iex
+```
+
+The installer automatically:
+
+- Detects your platform and architecture
+- Downloads the latest release
+- Verifies the SHA256 checksum
+- Installs to `~/.local/bin` (Unix) or `%LOCALAPPDATA%\Programs\wtm` (Windows)
+
+For custom install directory, use `--prefix` (Unix) or `-Prefix` (Windows):
+
+```bash
+curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --prefix /usr/local
+```
+
+```powershell
+& ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Prefix "$env:ProgramFiles\wtm"
+```
+
+---
+
 ## System Requirements
 
 Before installing `wtm`, ensure your system meets the following requirements:

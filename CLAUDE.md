@@ -116,9 +116,9 @@ docfx build docfx.json
 
 ## Active Technologies
 
-- YAML (GitHub Actions workflows), Bash/PowerShell (hash generation scripts) + GitHub Actions, sha256sum (Linux/macOS), Get-FileHash (Windows PowerShell) (006-release-hash-files)
-- GitHub Releases (release assets storage) (006-release-hash-files)
+- Bash (POSIX sh 互換) / PowerShell 5.1+ + `curl` または `wget` (Unix)、`Invoke-WebRequest` (Windows PowerShell 組み込み) (007-simplify-install)
+- N/A（ファイルシステムへのバイナリ配置のみ） (007-simplify-install)
 
 ## Recent Changes
 
-- 006-release-hash-files: Added YAML (GitHub Actions workflows), Bash/PowerShell (hash generation scripts) + GitHub Actions, sha256sum (Linux/macOS), Get-FileHash (Windows PowerShell)
+- 007-simplify-install: Added Bash (POSIX sh 互換) / PowerShell 5.1+ + `curl` または `wget` (Unix)、`Invoke-WebRequest` (Windows PowerShell 組み込み)

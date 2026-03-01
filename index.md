@@ -22,7 +22,19 @@ A modern CLI tool to simplify Git worktree management. Create worktrees with a s
 
 ### Installation
 
-Get started in minutes! Download the latest release for your platform:
+Get started in minutes with a single command:
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://kuju63.github.io/wt/install.sh | sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://kuju63.github.io/wt/install.ps1 | iex
+```
 
 **[📥 Installation Guide](docs/installation.md)**
 

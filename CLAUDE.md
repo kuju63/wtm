@@ -114,7 +114,6 @@ docfx build docfx.json
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
 
-
 ## Active Technologies
 
 - Bash (POSIX sh 互換) / PowerShell 5.1+ + `curl` または `wget` (Unix)、`Invoke-WebRequest` (Windows PowerShell 組み込み) (007-simplify-install)

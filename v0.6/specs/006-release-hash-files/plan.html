@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Implementation Plan: Release Binary Hash Files | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Implementation Plan: Release Binary Hash Files | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/006-release-hash-files/plan.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="implementation-plan-release-binary-hash-files">Implementation Plan: Release Binary Hash Files</h1>
+
+<p><strong>Branch</strong>: <code>006-release-hash-files</code> | <strong>Date</strong>: 2026-02-14 | <strong>Spec</strong>: <a href="spec.html">spec.md</a>
+<strong>Input</strong>: Feature specification from <code>/specs/006-release-hash-files/spec.md</code></p>
+<p><strong>Note</strong>: This template is filled in by the <code>/speckit.plan</code> command. See <code>.specify/templates/commands/plan.md</code> for the execution workflow.</p>
+<h2 id="summary">Summary</h2>
+<p>This feature adds automated SHA256 hash file generation to the release process. When a release is published, the CI/CD workflow automatically generates hash files for all binary artifacts, uploads them as release assets, and includes hash values in release notes. This enables users to verify download integrity using standard command-line tools.</p>
+<p><strong>Technical Approach</strong>: Modify GitHub Actions release workflow to generate SHA256 hash files after binary builds, upload hash files alongside binaries, and update release notes template to include hash values.</p>
+<h2 id="technical-context">Technical Context</h2>
+<p><strong>Language/Version</strong>: YAML (GitHub Actions workflows), Bash/PowerShell (hash generation scripts)
+<strong>Primary Dependencies</strong>: GitHub Actions, sha256sum (Linux/macOS), Get-FileHash (Windows PowerShell)
+<strong>Storage</strong>: GitHub Releases (release assets storage)
+<strong>Testing</strong>: GitHub Actions workflow execution tests, hash verification integration tests
+<strong>Target Platform</strong>: GitHub Actions runners (ubuntu-latest, windows-latest, macos-latest)
+<strong>Project Type</strong>: CI/CD workflow modification with minimal tool changes
+<strong>Performance Goals</strong>: Hash generation completes within 10 seconds per artifact (typically &lt;5MB binaries)
+<strong>Constraints</strong>: GitHub Actions execution time limits (&lt;6 hours per workflow), release asset size limits (2GB per file, 10GB total)
+<strong>Scale/Scope</strong>: 3-5 binary artifacts per release (Windows, Linux, macOS variants), ~10-20 releases per year</p>
+<h2 id="constitution-check">Constitution Check</h2>
+<p><em>GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.</em></p>
+<h3 id="initial-check-before-research">Initial Check (Before Research)</h3>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>I. Developer Usability</strong></td>
+<td>✅ PASS</td>
+<td>Users verify downloads using standard CLI tools (sha256sum, Get-FileHash); hash files follow industry-standard format</td>
+</tr>
+<tr>
+<td><strong>II. Cross-Platform</strong></td>
+<td>✅ PASS</td>
+<td>SHA256 hashing supported on all platforms; hash files are plain text, platform-agnostic</td>
+</tr>
+<tr>
+<td><strong>III. Clean &amp; Secure Code</strong></td>
+<td>✅ PASS</td>
+<td>Uses secure SHA256 algorithm; minimal script complexity; no hardcoded secrets; hash generation scripts are simple and auditable</td>
+</tr>
+<tr>
+<td><strong>IV. Documentation Clarity</strong></td>
+<td>✅ PASS</td>
+<td>Will provide Japanese documentation for hash verification in README and release notes</td>
+</tr>
+<tr>
+<td><strong>V. Minimal Dependencies</strong></td>
+<td>✅ PASS</td>
+<td>Uses OS-standard tools only (sha256sum on Linux/macOS, Get-FileHash on Windows); no new dependencies added</td>
+</tr>
+<tr>
+<td><strong>VI. Comprehensive Testing</strong></td>
+<td>✅ PASS</td>
+<td>Will include workflow execution tests, hash file generation verification, and integration tests for hash validation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Quantitative Thresholds</strong>:</p>
+<ul>
+<li>Method LOC: Hash generation scripts &lt;50 lines ✅</li>
+<li>Cyclomatic Complexity: Scripts are linear (&lt;3) ✅</li>
+<li>Test Coverage: Workflow and scripts will have 90%+ coverage ✅</li>
+<li>Dependency Vulnerabilities: No new dependencies ✅</li>
+<li>PR Quality Gate: All PRs will pass automated tests ✅</li>
+</ul>
+<p><strong>Result</strong>: ✅ ALL GATES PASSED - Proceed to Phase 0 Research</p>
+<h3 id="post-design-check">Post-Design Check</h3>
+<p>Re-evaluated after completing research.md, data-model.md, and quickstart.md:</p>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>I. Developer Usability</strong></td>
+<td>✅ PASS</td>
+<td>quickstart.md provides clear, platform-specific verification instructions; supports both individual .sha256 files and batch SHA256SUMS verification</td>
+</tr>
+<tr>
+<td><strong>II. Cross-Platform</strong></td>
+<td>✅ PASS</td>
+<td>data-model.md confirms GNU/Linux standard format works across Windows (PowerShell), Linux (sha256sum), and macOS (shasum); no platform-specific dependencies</td>
+</tr>
+<tr>
+<td><strong>III. Clean &amp; Secure Code</strong></td>
+<td>✅ PASS</td>
+<td>research.md confirms use of industry-standard SHA256 algorithm and file formats; scripts will be simple (&lt;50 lines) with no complex logic</td>
+</tr>
+<tr>
+<td><strong>IV. Documentation Clarity</strong></td>
+<td>✅ PASS</td>
+<td>quickstart.md provides comprehensive Japanese documentation for end users; release notes will include checksums section</td>
+</tr>
+<tr>
+<td><strong>V. Minimal Dependencies</strong></td>
+<td>✅ PASS</td>
+<td>Uses OS-native tools only (sha256sum, shasum, Get-FileHash); no new package dependencies</td>
+</tr>
+<tr>
+<td><strong>VI. Comprehensive Testing</strong></td>
+<td>✅ PASS</td>
+<td>verify-hashes.yml workflow will test hash generation; data-model.md defines validation rules for format compliance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Quantitative Thresholds</strong>:</p>
+<ul>
+<li>Method LOC: Hash generation script &lt;50 lines ✅ (single function to iterate binaries and generate hashes)</li>
+<li>Cyclomatic Complexity: Linear workflow, &lt;3 ✅ (loop + file I/O only)</li>
+<li>Test Coverage: Workflow validation covers critical path ✅</li>
+<li>Dependency Vulnerabilities: No new dependencies ✅</li>
+<li>PR Quality Gate: CI workflow tests before merge ✅</li>
+</ul>
+<p><strong>Result</strong>: ✅ ALL GATES PASSED - Design conforms to all constitution principles</p>
+<p><strong>Design Changes from Initial Plan</strong>:</p>
+<ul>
+<li>Confirmed both SHA256SUMS (existing) and individual .sha256 files (new) will coexist</li>
+<li>Finalized file format: GNU/Linux standard (<code>&lt;hash&gt;  &lt;filename&gt;</code> with two spaces)</li>
+<li>Defined release notes format: code block with download links + verification instructions</li>
+</ul>
+<h2 id="project-structure">Project Structure</h2>
+<h3 id="documentation-this-feature">Documentation (this feature)</h3>
+<pre><code class="lang-text">specs/006-release-hash-files/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+
+Note: contracts/ is not applicable (no API contracts for CI/CD feature)
+</code></pre>
+<h3 id="source-code-repository-root">Source Code (repository root)</h3>
+<p>This feature modifies existing CI/CD workflows and scripts:</p>
+<pre><code class="lang-text">.github/
+├── workflows/
+│   ├── release.yml              # Modified: Add individual .sha256 file generation
+│   └── verify-hashes.yml        # New: Test workflow to verify hash generation
+└── scripts/
+    ├── generate-checksums.sh    # Modified: Generate both SHA256SUMS and individual .sha256 files
+    └── generate-release-notes.sh # Modified: Include hash values table in release notes
+
+docs/
+├── user-guide.md                # Modified: Add &quot;Verifying Downloads&quot; section
+└── release-verification.md      # New: Detailed hash verification guide (Japanese)
+</code></pre>
+<p><strong>Structure Decision</strong>: This feature uses <strong>CI/CD workflow modification</strong> pattern. Changes are minimal and focused on existing release automation scripts.</p>
+<h3 id="current-vs-enhanced-release-pipeline">Current vs. Enhanced Release Pipeline</h3>
+<p><strong>Current Release Flow</strong> (implemented):</p>
+<pre><code class="lang-text">1. calculate-version  → Determine next version
+2. build              → Build binaries for all platforms
+3. create-release:
+   ├─ Organize binaries (rename with version)
+   ├─ Generate checksums (.github/scripts/generate-checksums.sh)
+   │  └─ Creates: SHA256SUMS (single file with all hashes)
+   ├─ Generate SBOM
+   ├─ Sign artifacts (SHA256SUMS.asc)
+   ├─ Generate release notes (plain format, NO hash values)
+   └─ Create GitHub Release
+      └─ Uploads: binaries, SHA256SUMS, SHA256SUMS.asc, SBOM
+</code></pre>
+<p><strong>Enhanced Release Flow</strong> (this feature adds):</p>
+<pre><code class="lang-text">1. calculate-version  → (unchanged)
+2. build              → (unchanged)
+3. create-release:
+   ├─ Organize binaries → (unchanged)
+   ├─ Generate checksums (.github/scripts/generate-checksums.sh) ★ MODIFIED
+   │  ├─ Creates: SHA256SUMS (existing, unchanged)
+   │  └─ Creates: individual .sha256 files (NEW)
+   │     ├─ wt-v1.0.0-windows-x64.exe.sha256
+   │     ├─ wt-v1.0.0-linux-x64.sha256
+   │     ├─ wt-v1.0.0-linux-arm.sha256
+   │     └─ wt-v1.0.0-macos-arm64.sha256
+   ├─ Generate SBOM → (unchanged)
+   ├─ Sign artifacts → (unchanged, signs SHA256SUMS only)
+   ├─ Generate release notes (.github/scripts/generate-release-notes.sh) ★ MODIFIED
+   │  └─ Includes: hash values table (NEW)
+   └─ Create GitHub Release ★ MODIFIED
+      └─ Uploads: binaries, .sha256 files (NEW), SHA256SUMS, SHA256SUMS.asc, SBOM
+</code></pre>
+<p><strong>Key Additions</strong>:</p>
+<ul>
+<li>✅ Individual <code>.sha256</code> files per binary (FR-002)</li>
+<li>✅ Hash values table in release notes (FR-006)</li>
+<li>✅ Verification workflow to test hash generation (FR-005)</li>
+</ul>
+<p><strong>What Stays Unchanged</strong>:</p>
+<ul>
+<li>Existing SHA256SUMS file (maintains backward compatibility)</li>
+<li>SBOM generation and signing workflow</li>
+<li>Binary build process</li>
+<li>Version calculation logic</li>
+</ul>
+<h2 id="complexity-tracking">Complexity Tracking</h2>
+<p>No constitution violations detected. This section is not applicable for this feature.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/006-release-hash-files/plan.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

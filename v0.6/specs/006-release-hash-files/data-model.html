@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Data Model: Release Binary Hash Files | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Data Model: Release Binary Hash Files | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/006-release-hash-files/data-model.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="data-model-release-binary-hash-files">Data Model: Release Binary Hash Files</h1>
+
+<p><strong>Feature</strong>: Release Binary Hash Files
+<strong>Branch</strong>: 006-release-hash-files
+<strong>Date</strong>: 2026-02-14</p>
+<h2 id="overview">Overview</h2>
+<p>This document defines the data structures and relationships for the release hash files feature. Since this is a CI/CD workflow feature, the data model focuses on file formats and artifact metadata rather than database schemas.</p>
+<hr>
+<h2 id="entities">Entities</h2>
+<h3 id="1-binary-artifact">1. Binary Artifact</h3>
+<p>A compiled executable or archive file included in a release.</p>
+<p><strong>Attributes</strong>:</p>
+<ul>
+<li><strong>filename</strong> (string): Full name with version and platform (e.g., <code>wt-v1.0.0-windows-x64.exe</code>)</li>
+<li><strong>path</strong> (string): Relative path in release-assets directory (e.g., <code>release-assets/wt-v1.0.0-windows-x64.exe</code>)</li>
+<li><strong>version</strong> (string): Release version tag (e.g., <code>v1.0.0</code>)</li>
+<li><strong>platform</strong> (string): Target platform (e.g., <code>windows-x64</code>, <code>linux-x64</code>, <code>linux-arm</code>, <code>macos-arm64</code>)</li>
+<li><strong>size</strong> (integer): File size in bytes</li>
+<li><strong>format</strong> (string): File extension/type (e.g., <code>.exe</code>, no extension for Unix executables)</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>Has <strong>exactly one</strong> corresponding Individual Hash File</li>
+<li>Appears in <strong>one</strong> Combined Hash File (SHA256SUMS)</li>
+<li>Part of <strong>one</strong> Release</li>
+</ul>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>Filename must follow pattern: <code>wt-&lt;version&gt;-&lt;platform&gt;[.exe]</code></li>
+<li>Version must be valid semver with <code>v</code> prefix</li>
+<li>Platform must be one of: <code>windows-x64</code>, <code>linux-x64</code>, <code>linux-arm</code>, <code>macos-arm64</code></li>
+<li>File must exist and be readable</li>
+</ul>
+<p><strong>State Transitions</strong>:</p>
+<pre><code>[Built] → [Hash Generated] → [Uploaded to Release]
+</code></pre>
+<p><strong>Example</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;filename&quot;: &quot;wt-v1.0.0-windows-x64.exe&quot;,
+  &quot;path&quot;: &quot;release-assets/wt-v1.0.0-windows-x64.exe&quot;,
+  &quot;version&quot;: &quot;v1.0.0&quot;,
+  &quot;platform&quot;: &quot;windows-x64&quot;,
+  &quot;size&quot;: 8388608,
+  &quot;format&quot;: &quot;.exe&quot;
+}
+</code></pre>
+<hr>
+<h3 id="2-individual-hash-file">2. Individual Hash File</h3>
+<p>A text file containing the SHA256 checksum for a single binary artifact.</p>
+<p><strong>Attributes</strong>:</p>
+<ul>
+<li><strong>filename</strong> (string): Binary filename + <code>.sha256</code> extension (e.g., <code>wt-v1.0.0-windows-x64.exe.sha256</code>)</li>
+<li><strong>path</strong> (string): Relative path in release-assets directory</li>
+<li><strong>hash_value</strong> (string): 64-character hexadecimal SHA256 hash</li>
+<li><strong>binary_filename</strong> (string): Name of the corresponding binary file</li>
+<li><strong>format</strong> (string): Always <code>GNU/Linux standard</code> (hash + two spaces + filename)</li>
+<li><strong>algorithm</strong> (string): Always <code>SHA256</code></li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>Corresponds to <strong>exactly one</strong> Binary Artifact</li>
+<li>Derived from same source as Combined Hash File</li>
+</ul>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>Filename must be <code>&lt;binary-filename&gt;.sha256</code></li>
+<li>Hash value must be exactly 64 hexadecimal characters (lowercase or uppercase)</li>
+<li>File content must follow format: <code>&lt;hash&gt;  &lt;filename&gt;</code> (two spaces)</li>
+<li>Binary filename in content must match the actual binary filename</li>
+</ul>
+<p><strong>File Format</strong>:</p>
+<pre><code class="lang-text">&lt;64-char-hex-hash&gt;  &lt;binary-filename&gt;
+</code></pre>
+<p><strong>Example File Content</strong> (<code>wt-v1.0.0-windows-x64.exe.sha256</code>):</p>
+<pre><code class="lang-text">a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-windows-x64.exe
+</code></pre>
+<p><strong>Example Metadata</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;filename&quot;: &quot;wt-v1.0.0-windows-x64.exe.sha256&quot;,
+  &quot;path&quot;: &quot;release-assets/wt-v1.0.0-windows-x64.exe.sha256&quot;,
+  &quot;hash_value&quot;: &quot;a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd&quot;,
+  &quot;binary_filename&quot;: &quot;wt-v1.0.0-windows-x64.exe&quot;,
+  &quot;format&quot;: &quot;GNU/Linux standard&quot;,
+  &quot;algorithm&quot;: &quot;SHA256&quot;
+}
+</code></pre>
+<hr>
+<h3 id="3-combined-hash-file-sha256sums">3. Combined Hash File (SHA256SUMS)</h3>
+<p>A single text file containing SHA256 checksums for all binary artifacts in a release.</p>
+<p><strong>Attributes</strong>:</p>
+<ul>
+<li><strong>filename</strong> (string): Always <code>SHA256SUMS</code></li>
+<li><strong>path</strong> (string): Always <code>release-assets/SHA256SUMS</code></li>
+<li><strong>entries</strong> (array): List of hash entries, one per binary</li>
+<li><strong>format</strong> (string): Always <code>GNU/Linux standard</code> (hash + two spaces + filename per line)</li>
+<li><strong>algorithm</strong> (string): Always <code>SHA256</code></li>
+<li><strong>signature_file</strong> (string): Optional GPG signature file (<code>SHA256SUMS.asc</code>)</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>Contains checksums for <strong>all</strong> Binary Artifacts in a release</li>
+<li>Has <strong>one optional</strong> GPG Signature File</li>
+</ul>
+<p><strong>Validation Rules</strong>:</p>
+<ul>
+<li>Must contain at least one entry</li>
+<li>Each entry must follow format: <code>&lt;hash&gt;  &lt;filename&gt;\n</code></li>
+<li>All binary artifacts in release must have corresponding entry</li>
+<li>Entries should be sorted alphabetically by filename (convention)</li>
+<li>File must end with newline</li>
+</ul>
+<p><strong>File Format</strong>:</p>
+<pre><code class="lang-text">&lt;hash-1&gt;  &lt;binary-1&gt;
+&lt;hash-2&gt;  &lt;binary-2&gt;
+...
+&lt;hash-n&gt;  &lt;binary-n&gt;
+</code></pre>
+<p><strong>Example File Content</strong> (<code>SHA256SUMS</code>):</p>
+<pre><code class="lang-text">b2c3d4e5f6a78901234567890123456789012345678901234567890123456789  wt-v1.0.0-linux-amd64
+c3d4e5f6a7b89012345678901234567890123456789012345678901234567890  wt-v1.0.0-linux-arm
+d4e5f6a7b8c90123456789012345678901234567890123456789012345678901  wt-v1.0.0-macos-arm64
+a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-windows-x64.exe
+</code></pre>
+<p><strong>Example Metadata</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;filename&quot;: &quot;SHA256SUMS&quot;,
+  &quot;path&quot;: &quot;release-assets/SHA256SUMS&quot;,
+  &quot;entries&quot;: [
+    {
+      &quot;hash&quot;: &quot;b2c3d4e5f6a78901234567890123456789012345678901234567890123456789&quot;,
+      &quot;filename&quot;: &quot;wt-v1.0.0-linux-amd64&quot;
+    },
+    {
+      &quot;hash&quot;: &quot;c3d4e5f6a7b89012345678901234567890123456789012345678901234567890&quot;,
+      &quot;filename&quot;: &quot;wt-v1.0.0-linux-arm&quot;
+    },
+    {
+      &quot;hash&quot;: &quot;d4e5f6a7b8c90123456789012345678901234567890123456789012345678901&quot;,
+      &quot;filename&quot;: &quot;wt-v1.0.0-macos-arm64&quot;
+    },
+    {
+      &quot;hash&quot;: &quot;a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd&quot;,
+      &quot;filename&quot;: &quot;wt-v1.0.0-windows-x64.exe&quot;
+    }
+  ],
+  &quot;format&quot;: &quot;GNU/Linux standard&quot;,
+  &quot;algorithm&quot;: &quot;SHA256&quot;,
+  &quot;signature_file&quot;: &quot;SHA256SUMS.asc&quot;
+}
+</code></pre>
+<hr>
+<h3 id="4-release">4. Release</h3>
+<p>A published version of the wt CLI tool with associated assets.</p>
+<p><strong>Attributes</strong>:</p>
+<ul>
+<li><strong>tag_name</strong> (string): Git tag and version identifier (e.g., <code>v1.0.0</code>)</li>
+<li><strong>name</strong> (string): Release title (same as tag_name)</li>
+<li><strong>body</strong> (string): Release notes in markdown format (includes checksums section)</li>
+<li><strong>draft</strong> (boolean): Whether release is a draft (always <code>false</code> for published releases)</li>
+<li><strong>prerelease</strong> (boolean): Whether release is a pre-release</li>
+<li><strong>created_at</strong> (datetime): Release creation timestamp</li>
+<li><strong>published_at</strong> (datetime): Release publication timestamp</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>Contains <strong>multiple</strong> Binary Artifacts (3-5 typically)</li>
+<li>Contains <strong>multiple</strong> Individual Hash Files (one per binary)</li>
+<li>Contains <strong>one</strong> Combined Hash File (SHA256SUMS)</li>
+<li>Contains <strong>one</strong> SBOM file</li>
+<li>Has <strong>one</strong> Release Notes document</li>
+</ul>
+<p><strong>Validation Rules</strong> (from Success Criteria):</p>
+<ul>
+<li>Must have at least one binary artifact</li>
+<li>Every binary artifact must have corresponding <code>.sha256</code> file</li>
+<li>Must have exactly one <code>SHA256SUMS</code> file</li>
+<li>Release notes must include checksums section</li>
+<li>All hash files must be generated before release publication</li>
+</ul>
+<p><strong>Assets List</strong>:</p>
+<pre><code>- wt-&lt;version&gt;-windows-x64.exe
+- wt-&lt;version&gt;-windows-x64.exe.sha256  (NEW)
+- wt-&lt;version&gt;-linux-x64
+- wt-&lt;version&gt;-linux-x64.sha256  (NEW)
+- wt-&lt;version&gt;-linux-arm
+- wt-&lt;version&gt;-linux-arm.sha256  (NEW)
+- wt-&lt;version&gt;-macos-arm64
+- wt-&lt;version&gt;-macos-arm64.sha256  (NEW)
+- SHA256SUMS  (EXISTING)
+- SHA256SUMS.asc  (EXISTING)
+- wt-&lt;version&gt;-sbom.spdx.json  (EXISTING)
+- wt-&lt;version&gt;-sbom.spdx.json.asc  (EXISTING)
+</code></pre>
+<hr>
+<h2 id="relationships-diagram">Relationships Diagram</h2>
+<pre><code class="lang-text">┌─────────────────┐
+│     Release     │
+│   (v1.0.0)      │
+└────────┬────────┘
+         │
+         │ contains (1:N)
+         │
+    ┌────▼───────────────────────┐
+    │                            │
+    │  Binary Artifacts (N)      │
+    │                            │
+    ├────────────────────────────┤
+    │ - wt-v1.0.0-windows-x64.exe│◄─────┐
+    │ - wt-v1.0.0-linux-x64      │◄───┐ │
+    │ - wt-v1.0.0-linux-arm      │◄─┐ │ │
+    │ - wt-v1.0.0-macos-arm64    │◄┐│ │ │
+    └────────────────────────────┘ ││ │ │
+                                   ││ │ │
+           ┌───────────────────────┘│ │ │
+           │  has (1:1)             │ │ │
+           │                        │ │ │
+    ┌──────▼──────────────┐  ┌──────▼─▼─▼──────────┐
+    │ Individual Hash     │  │ Combined Hash File  │
+    │ Files (N)           │  │   (SHA256SUMS)      │
+    ├─────────────────────┤  ├─────────────────────┤
+    │ - *.sha256 (each)   │  │ Contains all hashes │
+    │   Format:           │  │   Format:           │
+    │   &lt;hash&gt;  &lt;file&gt;    │  │   &lt;hash&gt;  &lt;file&gt;    │
+    └─────────────────────┘  │   (one per line)    │
+                             └─────────────────────┘
+                                      │
+                                      │ signed by (0:1)
+                                      │
+                             ┌────────▼────────────┐
+                             │ GPG Signature File  │
+                             │ (SHA256SUMS.asc)    │
+                             └─────────────────────┘
+</code></pre>
+<hr>
+<h2 id="file-naming-conventions">File Naming Conventions</h2>
+<h3 id="binary-artifacts">Binary Artifacts</h3>
+<p><strong>Pattern</strong>: <code>wt-&lt;version&gt;-&lt;platform&gt;[.exe]</code></p>
+<p><strong>Examples</strong>:</p>
+<ul>
+<li><code>wt-v1.0.0-windows-x64.exe</code></li>
+<li><code>wt-v1.0.0-linux-x64</code></li>
+<li><code>wt-v1.0.0-linux-arm</code></li>
+<li><code>wt-v1.0.0-macos-arm64</code></li>
+</ul>
+<p><strong>Rules</strong>:</p>
+<ul>
+<li>Version includes <code>v</code> prefix</li>
+<li>Platform uses lowercase with hyphens</li>
+<li>Windows binaries have <code>.exe</code> extension</li>
+<li>Unix binaries have no extension</li>
+</ul>
+<h3 id="individual-hash-files">Individual Hash Files</h3>
+<p><strong>Pattern</strong>: <code>&lt;binary-filename&gt;.sha256</code></p>
+<p><strong>Examples</strong>:</p>
+<ul>
+<li><code>wt-v1.0.0-windows-x64.exe.sha256</code></li>
+<li><code>wt-v1.0.0-linux-x64.sha256</code></li>
+<li><code>wt-v1.0.0-linux-arm.sha256</code></li>
+<li><code>wt-v1.0.0-macos-arm64.sha256</code></li>
+</ul>
+<p><strong>Rules</strong>:</p>
+<ul>
+<li>Exact binary filename + <code>.sha256</code> extension</li>
+<li>Maintained even if binary has <code>.exe</code> extension</li>
+</ul>
+<h3 id="combined-hash-file">Combined Hash File</h3>
+<p><strong>Pattern</strong>: <code>SHA256SUMS</code> (fixed name)</p>
+<p><strong>Signature</strong>: <code>SHA256SUMS.asc</code> (fixed name)</p>
+<hr>
+<h2 id="validation--integrity">Validation &amp; Integrity</h2>
+<h3 id="hash-value-validation">Hash Value Validation</h3>
+<p><strong>Format</strong>:</p>
+<ul>
+<li>Exactly 64 characters</li>
+<li>Hexadecimal only (0-9, a-f, A-F)</li>
+<li>Case-insensitive for comparison</li>
+<li>Conventionally lowercase</li>
+</ul>
+<p><strong>Regex Pattern</strong>:</p>
+<pre><code class="lang-regex">^[a-fA-F0-9]{64}$
+</code></pre>
+<h3 id="file-format-validation">File Format Validation</h3>
+<p><strong>Individual .sha256 File</strong>:</p>
+<pre><code class="lang-regex">^[a-fA-F0-9]{64}  .+$
+</code></pre>
+<ul>
+<li>Hash (64 hex chars)</li>
+<li>Two spaces</li>
+<li>Filename (any valid filename)</li>
+<li>Newline (optional at EOF)</li>
+</ul>
+<p><strong>SHA256SUMS File</strong>:</p>
+<pre><code class="lang-regex">^([a-fA-F0-9]{64}  .+\n)+$
+</code></pre>
+<ul>
+<li>One or more entries</li>
+<li>Each entry: hash + two spaces + filename + newline</li>
+<li>File ends with newline</li>
+</ul>
+<h3 id="integrity-checks-cicd-workflow">Integrity Checks (CI/CD Workflow)</h3>
+<p><strong>Pre-Release Validation</strong>:</p>
+<ol>
+<li>Verify all binary artifacts have corresponding <code>.sha256</code> files</li>
+<li>Verify <code>SHA256SUMS</code> contains entry for each binary</li>
+<li>Verify hash values match between individual and combined files</li>
+<li>Verify file format compliance (two spaces separator)</li>
+<li>Verify hash values are valid hexadecimal</li>
+</ol>
+<p><strong>Post-Release Validation</strong> (optional workflow):</p>
+<ol>
+<li>Download all release assets</li>
+<li>Verify each binary against its <code>.sha256</code> file</li>
+<li>Verify all binaries against <code>SHA256SUMS</code> file</li>
+<li>Verify <code>SHA256SUMS.asc</code> GPG signature (if present)</li>
+</ol>
+<hr>
+<h2 id="processing-workflow">Processing Workflow</h2>
+<h3 id="hash-generation-flow">Hash Generation Flow</h3>
+<pre><code class="lang-text">1. Build Binaries
+   └─&gt; release-assets/wt-v1.0.0-&lt;platform&gt;[.exe]
+
+2. Generate Individual Hash Files
+   ├─&gt; For each binary:
+   │   ├─&gt; Calculate SHA256 hash
+   │   ├─&gt; Create &lt;binary&gt;.sha256 file
+   │   └─&gt; Write: &quot;&lt;hash&gt;  &lt;binary-filename&gt;\n&quot;
+
+3. Generate Combined Hash File
+   ├─&gt; Collect all hash values
+   ├─&gt; Sort by filename (optional, convention)
+   ├─&gt; Write SHA256SUMS file
+   └─&gt; Format: &quot;&lt;hash&gt;  &lt;filename&gt;\n&quot; per binary
+
+4. Sign Combined Hash File (optional)
+   └─&gt; Generate SHA256SUMS.asc (GPG signature)
+
+5. Upload to Release
+   ├─&gt; Upload binaries
+   ├─&gt; Upload .sha256 files
+   ├─&gt; Upload SHA256SUMS
+   └─&gt; Upload SHA256SUMS.asc
+</code></pre>
+<h3 id="hash-verification-flow-user">Hash Verification Flow (User)</h3>
+<p><strong>Individual File Verification</strong>:</p>
+<pre><code class="lang-text">1. Download binary (e.g., wt-v1.0.0-windows-x64.exe)
+2. Download corresponding .sha256 file
+3. Run platform verification command:
+   - Linux: sha256sum -c wt-v1.0.0-windows-x64.exe.sha256
+   - macOS: shasum -a 256 -c wt-v1.0.0-windows-x64.exe.sha256
+   - Windows: PowerShell comparison script
+4. Verify output shows &quot;OK&quot; or hash match
+</code></pre>
+<p><strong>Batch Verification</strong>:</p>
+<pre><code class="lang-text">1. Download all binaries
+2. Download SHA256SUMS file
+3. Run batch verification:
+   - Linux/macOS: sha256sum -c SHA256SUMS
+   - Windows: PowerShell loop through entries
+4. Verify all entries show &quot;OK&quot; or hash match
+</code></pre>
+<hr>
+<h2 id="error-handling">Error Handling</h2>
+<h3 id="generation-errors">Generation Errors</h3>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Cause</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Binary not found</td>
+<td>File path incorrect</td>
+<td>Fix binary organization step</td>
+</tr>
+<tr>
+<td>Hash calculation failed</td>
+<td>File read error, permissions</td>
+<td>Check file permissions, retry</td>
+</tr>
+<tr>
+<td>.sha256 file write failed</td>
+<td>Disk full, permissions</td>
+<td>Check disk space, directory permissions</td>
+</tr>
+<tr>
+<td>SHA256SUMS incomplete</td>
+<td>Not all binaries hashed</td>
+<td>Retry hash generation for missing binaries</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Workflow Behavior</strong>: On any generation error, fail the release workflow (FR-005) and notify release manager.</p>
+<h3 id="verification-errors-user-side">Verification Errors (User-Side)</h3>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Cause</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hash mismatch</td>
+<td>Corrupted download, tampered file</td>
+<td>Re-download binary and hash file</td>
+</tr>
+<tr>
+<td>File not found</td>
+<td>Missing binary or hash file</td>
+<td>Ensure both files downloaded</td>
+</tr>
+<tr>
+<td>Invalid format</td>
+<td>Malformed .sha256 file</td>
+<td>Re-download hash file from official release</td>
+</tr>
+<tr>
+<td>Tool not found</td>
+<td>Missing sha256sum/shasum</td>
+<td>Install coreutils or use alternative method</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<h3 id="hash-generation">Hash Generation</h3>
+<p><strong>Typical Performance</strong>:</p>
+<ul>
+<li>Small binaries (&lt;10MB): &lt;1 second per file</li>
+<li>Large binaries (50-100MB): 2-5 seconds per file</li>
+<li>Total for all binaries (4-5 files): &lt;10 seconds</li>
+</ul>
+<p><strong>Optimization</strong>:</p>
+<ul>
+<li>Generate hashes in parallel (one per binary)</li>
+<li>Use buffered I/O for large files</li>
+<li>Cache hashes if binary unchanged (not applicable for releases)</li>
+</ul>
+<h3 id="storage">Storage</h3>
+<p><strong>Disk Usage</strong>:</p>
+<ul>
+<li>Individual .sha256 file: ~100 bytes each</li>
+<li>SHA256SUMS file: ~100 bytes × number of binaries</li>
+<li>Total overhead: &lt;1 KB for typical release</li>
+</ul>
+<p><strong>Network Usage</strong>:</p>
+<ul>
+<li>Additional downloads per user: 4-5 × 100 bytes = &lt;1 KB</li>
+<li>SHA256SUMS download: ~500 bytes</li>
+<li>Negligible impact on release asset storage and bandwidth</li>
+</ul>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>This data model describes file formats and metadata, not database schemas (feature is CI/CD only)</li>
+<li>All hash values use SHA256 algorithm exclusively (industry standard as of 2026)</li>
+<li>File format follows GNU/Linux standard for maximum compatibility</li>
+<li>GPG signature for SHA256SUMS is existing feature, maintained for backward compatibility</li>
+<li>Individual .sha256 files are new addition per FR-002</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/006-release-hash-files/data-model.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

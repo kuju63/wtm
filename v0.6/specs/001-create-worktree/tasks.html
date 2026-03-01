@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: Git Worktree 作成コマンド | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: Git Worktree 作成コマンド | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-git-worktree-作成コマンド">Tasks: Git Worktree 作成コマンド</h1>
+
+<p><strong>Feature</strong>: 001-create-worktree<br>
+<strong>Branch</strong>: <code>001-create-worktree</code><br>
+<strong>Date</strong>: 2026-01-03<br>
+<strong>Input</strong>: Design documents from <code>/specs/001-create-worktree/</code></p>
+<p><strong>Prerequisites</strong>: ✅ All design documents complete</p>
+<ul>
+<li><a href="plan.html">plan.md</a> - 実装計画書</li>
+<li><a href="spec.html">spec.md</a> - 機能仕様（3 User Stories）</li>
+<li><a href="data-model.html">data-model.md</a> - 5 Core Entities</li>
+<li><a href="contracts/cli-interface.html">contracts/cli-interface.md</a> - CLI仕様</li>
+<li><a href="quickstart.html">quickstart.md</a> - 開発ガイド</li>
+</ul>
+<p><strong>Tests</strong>: TDD approach required per constitution. All tests must be written FIRST and FAIL before implementation.</p>
+<h2 id="format-----id-p-story-description-with-file-path">Format: <code>- [ ] [ID] [P?] [Story?] Description with file path</code></h2>
+<ul>
+<li><strong>[P]</strong>: Can run in parallel (different files, no dependencies)</li>
+<li><strong>[Story]</strong>: User story label (US1, US2, US3) - only for user story phases</li>
+<li>Include exact file paths</li>
+</ul>
+<hr>
+<h2 id="phase-1-setup-project-initialization">Phase 1: Setup (Project Initialization)</h2>
+<p><strong>Purpose</strong>: プロジェクト初期化と基本構造</p>
+<ul>
+<li>[X] T001 既存プロジェクト構造を確認し、specs/001-create-worktree/plan.mdのProject Structureに記載された新規ディレクトリを作成（wt.cli/Commands, Services, Models, Utils）</li>
+<li>[X] T002 NuGetパッケージをwt.cliに追加: System.CommandLine, System.IO.Abstractions, System.Text.Json</li>
+<li>[X] T003 [P] NuGetパッケージをwt.testsに追加: xUnit, FluentAssertions, Moq</li>
+<li>[X] T004 [P] .editorconfig と静的解析設定を確認（既存設定を維持）</li>
+</ul>
+<p><strong>Checkpoint</strong>: ✅ プロジェクト構造とパッケージ準備完了</p>
+<hr>
+<h2 id="phase-2-foundational-blocking-prerequisites">Phase 2: Foundational (Blocking Prerequisites)</h2>
+<p><strong>Purpose</strong>: 全User Storyで共通利用する基盤実装。この Phase が完了するまで User Story の実装は開始できません。</p>
+<p><strong>⚠️ CRITICAL</strong>: この Phase 完了まで User Story 実装は不可</p>
+<h3 id="foundational-tests-write-first-ensure-they-fail">Foundational Tests (Write FIRST, ensure they FAIL)</h3>
+<ul>
+<li>[X] T005 [P] ProcessRunner のユニットテストを作成: wt.tests/Utils/ProcessRunnerTests.cs（Gitコマンド実行の成功・失敗ケース）</li>
+<li>[X] T006 [P] PathHelper のユニットテストを作成: wt.tests/Utils/PathHelperTests.cs（パス正規化、検証）</li>
+<li>[X] T007 [P] Validators のユニットテストを作成: wt.tests/Utils/ValidatorsTests.cs（ブランチ名バリデーション）</li>
+</ul>
+<h3 id="foundational-implementation">Foundational Implementation</h3>
+<ul>
+<li>[X] T008 [P] ProcessRunner を実装: wt.cli/Utils/ProcessRunner.cs（System.Diagnostics.Process wrapper、Git コマンド実行）</li>
+<li>[X] T009 [P] PathHelper を実装: wt.cli/Utils/PathHelper.cs（System.IO.Abstractions 使用、パス正規化・検証）</li>
+<li>[X] T010 [P] Validators を実装: wt.cli/Utils/Validators.cs（ブランチ名バリデーション、正規表現: <code>^[a-zA-Z0-9][a-zA-Z0-9/_.-]*$</code>）</li>
+<li>[X] T011 [P] <code>CommandResult&lt;T&gt;</code> モデルを実装: wt.cli/Models/CommandResult.cs（Result パターン、Success/Error/Warnings）</li>
+<li>[X] T012 [P] エラーコード定数クラスを実装: wt.cli/Models/ErrorCodes.cs（GIT001-ED001 の11コード定義）</li>
+</ul>
+<p><strong>Checkpoint</strong>: ✅ 基盤完了 - User Story 実装開始可能</p>
+<hr>
+<h2 id="phase-3-user-story-1---git-worktree-作成の基本機能-priority-p1--mvp">Phase 3: User Story 1 - Git Worktree 作成の基本機能 (Priority: P1) 🎯 MVP</h2>
+<p><strong>Goal</strong>: ブランチ名を指定してコマンド実行すると、ブランチが作成され、自動的に git worktree として登録される</p>
+<p><strong>Independent Test</strong>: <code>wt create feature-test</code> を実行し、../worktrees/feature-test に worktree が作成され、feature-test ブランチにチェックアウトされていることを確認</p>
+<h3 id="tests-for-us1-write-first-ensure-they-fail-">Tests for US1 (Write FIRST, ensure they FAIL) ⚠️</h3>
+<ul>
+<li>[X] T013 [P] [US1] WorktreeInfo モデルのユニットテストを作成: wt.tests/Models/WorktreeInfoTests.cs（プロパティ検証）</li>
+<li>[X] T014 [P] [US1] BranchInfo モデルのユニットテストを作成: wt.tests/Models/BranchInfoTests.cs（バリデーション規則）</li>
+<li>[X] T015 [P] [US1] CreateWorktreeOptions モデルのユニットテストを作成: wt.tests/Models/CreateWorktreeOptionsTests.cs</li>
+<li>[X] T016 [P] [US1] GitService のユニットテストを作成: wt.tests/Services/Git/GitServiceTests.cs（IsGitRepository, GetCurrentBranch, BranchExists, CreateBranch, AddWorktree の各メソッド）</li>
+<li>[X] T017 [P] [US1] WorktreeService のユニットテストを作成: wt.tests/Services/Worktree/WorktreeServiceTests.cs（CreateWorktreeAsync の成功・失敗ケース）</li>
+<li>[X] T018 [US1] WorktreeCreateCommand のユニットテストを作成: wt.tests/Commands/Worktree/CreateCommandTests.cs（コマンド解析、実行フロー、System.CommandLine 2.0対応）</li>
+<li>[X] T019 [US1] E2E統合テストを作成: wt.tests/Integration/WorktreeE2ETests.cs（テスト用Gitリポジトリ作成、worktree作成、クリーンアップ、5テスト成功）</li>
+</ul>
+<h3 id="implementation-for-us1">Implementation for US1</h3>
+<ul>
+<li>[X] T020 [P] [US1] WorktreeInfo モデルを実装: wt.cli/Models/WorktreeInfo.cs（Path, Branch, BaseBranch, CreatedAt プロパティ）</li>
+<li>[X] T021 [P] [US1] BranchInfo モデルを実装: wt.cli/Models/BranchInfo.cs（Name, BaseBranch, Exists, IsRemote プロパティ + バリデーション）</li>
+<li>[X] T022 [P] [US1] CreateWorktreeOptions モデルを実装: wt.cli/Models/CreateWorktreeOptions.cs（BranchName, BaseBranch, Path, Editor, CheckoutExisting, OutputFormat, Verbose）</li>
+<li>[X] T023 [P] [US1] IGitService インターフェースを定義: wt.cli/Services/Git/IGitService.cs（IsGitRepositoryAsync, GetCurrentBranchAsync, BranchExistsAsync, CreateBranchAsync, AddWorktreeAsync）</li>
+<li>[X] T024 [US1] GitService を実装: wt.cli/Services/Git/GitService.cs（ProcessRunner 使用、全メソッド実装、エラーハンドリング）</li>
+<li>[X] T025 [P] [US1] IWorktreeService インターフェースを定義: wt.cli/Services/Worktree/IWorktreeService.cs（CreateWorktreeAsync）</li>
+<li>[X] T026 [US1] WorktreeService を実装: wt.cli/Services/Worktree/WorktreeService.cs（GitService, PathHelper, Validators 依存、CreateWorktreeAsync 実装）</li>
+<li>[X] T027 [US1] WorktreeCreateCommand を実装: wt.cli/Commands/Worktree/CreateCommand.cs（System.CommandLine 2.0 使用、引数・オプション定義、handler 実装）</li>
+<li>[X] T028 [US1] Program.cs を更新: wt.cli/Program.cs（WorktreeCreateCommand を RootCommand に追加、DI設定）</li>
+<li>[X] T029 [US1] エラー処理とログ出力を追加: wt.cli/Commands/Worktree/CreateCommand.cs（CommandResult に基づくエラー表示、✓/✗記号、解決策表示）</li>
+</ul>
+<p><strong>Checkpoint</strong>: US1 完了 - <code>wt create &lt;branch&gt;</code> で worktree 作成が動作</p>
+<hr>
+<h2 id="phase-4-user-story-2---エディター自動起動機能-priority-p2">Phase 4: User Story 2 - エディター自動起動機能 (Priority: P2)</h2>
+<p><strong>Goal</strong>: worktree 作成後、指定したエディター（VS Code など）を自動起動できる</p>
+<p><strong>Independent Test</strong>: <code>wt create feature-ui --editor vscode</code> を実行し、worktree 作成後に VS Code が自動起動することを確認</p>
+<h3 id="tests-for-us2-write-first-ensure-they-fail-">Tests for US2 (Write FIRST, ensure they FAIL) ⚠️</h3>
+<ul>
+<li>[X] T030 [P] [US2] EditorConfig モデルのユニットテストを作成: wt.tests/Models/EditorConfigTests.cs（EditorType, Command, Arguments, IsAvailable）</li>
+<li>[X] T031 [P] [US2] EditorService のユニットテストを作成: wt.tests/Services/Editor/EditorServiceTests.cs（LaunchEditorAsync, ResolveEditorCommand の各ケース）</li>
+<li>[X] T032 [US2] エディター起動のE2Eテストを作成: wt.tests/Integration/EditorLaunchTests.cs（VS Code起動の統合テスト）</li>
+</ul>
+<h3 id="implementation-for-us2">Implementation for US2</h3>
+<ul>
+<li>[X] T033 [P] [US2] EditorConfig モデルを実装: wt.cli/Models/EditorConfig.cs（EditorType enum, Command, Arguments, IsAvailable プロパティ）</li>
+<li>[X] T034 [P] [US2] EditorPresets を実装: wt.cli/Services/Editor/EditorPresets.cs（5エディター: vscode, vim, emacs, nano, idea のプリセット定義）</li>
+<li>[X] T035 [P] [US2] IEditorService インターフェースを定義: wt.cli/Services/Editor/IEditorService.cs（LaunchEditorAsync, ResolveEditorCommand）</li>
+<li>[X] T036 [US2] EditorService を実装: wt.cli/Services/Editor/EditorService.cs（EditorPresets 使用、PATH検索、ProcessRunner でエディター起動）</li>
+<li>[X] T037 [US2] CreateCommand に --editor オプションを追加: wt.cli/Commands/Worktree/CreateCommand.cs（-e エイリアス、EditorType enum、handler でエディター起動）</li>
+<li>[X] T038 [US2] WorktreeService にエディター起動統合: wt.cli/Services/Worktree/WorktreeService.cs（CreateWorktreeAsync 完了後に EditorService.LaunchEditorAsync 呼び出し）</li>
+<li>[X] T039 [US2] エディターが見つからない場合の警告表示: wt.cli/Services/Editor/EditorService.cs（ED001 エラーコード、worktree 作成は継続）</li>
+</ul>
+<p><strong>Checkpoint</strong>: US2 完了 - <code>wt create &lt;branch&gt; --editor &lt;type&gt;</code> でエディター自動起動が動作</p>
+<hr>
+<h2 id="phase-5-user-story-3---worktree-パスのカスタマイズ-priority-p3">Phase 5: User Story 3 - Worktree パスのカスタマイズ (Priority: P3)</h2>
+<p><strong>Goal</strong>: worktree を作成する場所（パス）をカスタマイズできる</p>
+<p><strong>Independent Test</strong>: <code>wt create experiment --path ~/custom/path</code> を実行し、指定したパスに worktree が作成されることを確認</p>
+<h3 id="tests-for-us3-write-first-ensure-they-fail-">Tests for US3 (Write FIRST, ensure they FAIL) ⚠️</h3>
+<ul>
+<li>[X] T040 [P] [US3] カスタムパスバリデーションのユニットテストを追加: wt.tests/Utils/PathHelperTests.cs（無効パス、権限エラー、ディスク容量チェック）</li>
+<li>[X] T041 [US3] カスタムパスのE2Eテストを作成: wt.tests/Integration/CustomPathTests.cs（絶対パス、相対パス、無効パスのテスト）</li>
+</ul>
+<h3 id="implementation-for-us3">Implementation for US3</h3>
+<ul>
+<li>[X] T042 [US3] PathHelper にカスタムパス検証を追加: wt.cli/Utils/PathHelper.cs（親ディレクトリ存在チェック、書き込み権限チェック、ディスク容量チェック）</li>
+<li>[X] T043 [US3] CreateCommand に --path オプションを追加: wt.cli/Commands/Worktree/CreateCommand.cs（-p エイリアス、デフォルト: <code>../worktrees/&lt;branch&gt;</code>）</li>
+<li>[X] T044 [US3] WorktreeService でカスタムパス処理: wt.cli/Services/Worktree/WorktreeService.cs（options.Path が null の場合デフォルトパス、非 null の場合カスタムパス使用）</li>
+<li>[X] T045 [US3] パスエラーハンドリングを追加: wt.cli/Services/Worktree/WorktreeService.cs（FS001-FS003 エラーコード、解決策表示）</li>
+</ul>
+<p><strong>Checkpoint</strong>: US3 完了 - <code>wt create &lt;branch&gt; --path &lt;custom&gt;</code> でカスタムパス指定が動作</p>
+<hr>
+<h2 id="phase-6-polish--cross-cutting-concerns">Phase 6: Polish &amp; Cross-Cutting Concerns</h2>
+<p><strong>Purpose</strong>: 全User Storyに影響する改善と仕上げ</p>
+<ul>
+<li>[X] T046 [P] --checkout-existing オプションを実装: wt.cli/Commands/Worktree/CreateCommand.cs（既存ブランチをチェックアウト、BR002エラー時の提案）</li>
+<li>[X] T047 [P] --output オプションを実装: wt.cli/Commands/Worktree/CreateCommand.cs（human|json 出力形式、JsonFormatter/HumanFormatter）</li>
+<li>[X] T048 [P] --verbose オプションを実装: wt.cli/Commands/Worktree/CreateCommand.cs（詳細診断情報、Git コマンド実行ログ）</li>
+<li>[X] T049 [P] --base オプションを実装: wt.cli/Commands/Worktree/CreateCommand.cs（-b エイリアス、ベースブランチ指定）</li>
+<li>[X] T050 IOutputFormatter インターフェースを定義: wt.cli/Services/Output/IOutputFormatter.cs（Format メソッド）</li>
+<li>[X] T051 [P] JsonFormatter を実装: wt.cli/Services/Output/JsonFormatter.cs（System.Text.Json 使用）</li>
+<li>[X] T052 [P] HumanFormatter を実装: wt.cli/Services/Output/HumanFormatter.cs（✓/✗記号、色付き出力）</li>
+<li>[X] T053 プログレス表示を追加: wt.cli/Commands/Worktree/CreateCommand.cs（&quot;Creating branch...&quot;, &quot;Adding worktree...&quot; メッセージ）</li>
+<li>[X] T054 [P] クロスプラットフォーム対応を検証: wt.tests/Integration/CrossPlatformTests.cs（Windows/macOS/Linux でのパス処理、改行コード）</li>
+<li>[X] T055 [P] パフォーマンステストを追加: wt.tests/Performance/PerformanceTests.cs（5秒以内の実行時間、メモリ100MB以下）</li>
+<li>[X] T056 [P] README.md を更新: README.md（インストール、使用方法、例、トラブルシューティング）</li>
+<li>[X] T057 [P] 日本語ユーザーガイドを作成: docs/ja/user-guide.md（全オプション説明、使用例）</li>
+<li>[X] T058 quickstart.md のバリデーションを実行（5フェーズワークフローが正しく動作することを確認）</li>
+<li>[X] T059 全テストを実行してカバレッジ80%以上を確認: <code>dotnet test --collect:&quot;XPlat Code Coverage&quot;</code></li>
+<li>[X] T060 憲章チェックリストを最終確認: 全12項目 PASS を検証</li>
+</ul>
+<p><strong>Checkpoint</strong>: 機能完成 - すべてのオプションが動作し、品質基準を満たす</p>
+<hr>
+<h2 id="dependencies--execution-order">Dependencies &amp; Execution Order</h2>
+<h3 id="phase-dependencies">Phase Dependencies</h3>
+<ol>
+<li><strong>Setup (Phase 1)</strong>: 依存なし - 即開始可能</li>
+<li><strong>Foundational (Phase 2)</strong>: Setup 完了後 - <strong>全 User Story をブロック</strong></li>
+<li><strong>User Story 1 (Phase 3)</strong>: Foundational 完了後 - MVP</li>
+<li><strong>User Story 2 (Phase 4)</strong>: Foundational 完了後 - US1と並行可能（別ファイル）</li>
+<li><strong>User Story 3 (Phase 5)</strong>: Foundational 完了後 - US1/US2と並行可能（別ファイル）</li>
+<li><strong>Polish (Phase 6)</strong>: 全 User Story 完了後</li>
+</ol>
+<h3 id="user-story-dependencies">User Story Dependencies</h3>
+<ul>
+<li><strong>US1 (P1)</strong>: Foundational 完了後に開始可能 - 他 Story への依存なし</li>
+<li><strong>US2 (P2)</strong>: Foundational 完了後に開始可能 - US1 の WorktreeService に統合するが、独立してテスト可能</li>
+<li><strong>US3 (P3)</strong>: Foundational 完了後に開始可能 - US1 の PathHelper を拡張するが、独立してテスト可能</li>
+</ul>
+<h3 id="within-each-user-story-tdd-workflow">Within Each User Story (TDD Workflow)</h3>
+<ol>
+<li><strong>Tests FIRST</strong> (必ず失敗することを確認)</li>
+<li><strong>Models</strong> (依存なし)</li>
+<li><strong>Services</strong> (Models に依存)</li>
+<li><strong>Commands</strong> (Services に依存)</li>
+<li><strong>Integration</strong> (全コンポーネントに依存)</li>
+</ol>
+<h3 id="parallel-opportunities">Parallel Opportunities</h3>
+<p><strong>Setup Phase</strong>:</p>
+<ul>
+<li>T002, T003, T004 は並行実行可能</li>
+</ul>
+<p><strong>Foundational Phase</strong>:</p>
+<ul>
+<li>Tests: T005, T006, T007 は並行実行可能</li>
+<li>Implementation: T008, T009, T010, T011, T012 は並行実行可能（異なるファイル）</li>
+</ul>
+<p><strong>User Story 1</strong>:</p>
+<ul>
+<li>Tests: T013, T014, T015, T016, T017 は並行実行可能</li>
+<li>Models: T020, T021, T022 は並行実行可能</li>
+<li>Interfaces: T023, T025 は並行実行可能</li>
+</ul>
+<p><strong>User Story 2</strong>:</p>
+<ul>
+<li>Tests: T030, T031 は並行実行可能</li>
+<li>Models/Presets: T033, T034, T035 は並行実行可能</li>
+</ul>
+<p><strong>User Story 3</strong>:</p>
+<ul>
+<li>Tests: T040 と T041 は並行実行可能</li>
+</ul>
+<p><strong>Polish Phase</strong>:</p>
+<ul>
+<li>T046, T047, T048, T049 は並行実行可能（同一ファイルだが別オプション）</li>
+<li>T051, T052 は並行実行可能</li>
+<li>T054, T055, T056, T057 は並行実行可能</li>
+</ul>
+<p><strong>全 User Story の並行実行</strong>:</p>
+<ul>
+<li>Foundational (Phase 2) 完了後、Phase 3, 4, 5 は並行開始可能（異なる開発者、異なるファイル）</li>
+</ul>
+<hr>
+<h2 id="parallel-example-user-story-1">Parallel Example: User Story 1</h2>
+<pre><code class="lang-bash"># テストを並行で作成（Phase 3 開始時）
+Task T013: WorktreeInfo model tests
+Task T014: BranchInfo model tests
+Task T015: CreateWorktreeOptions model tests
+Task T016: GitService tests
+Task T017: WorktreeService tests
+
+# モデルを並行で実装（テスト失敗確認後）
+Task T020: WorktreeInfo model
+Task T021: BranchInfo model
+Task T022: CreateWorktreeOptions model
+
+# インターフェースを並行で定義
+Task T023: IGitService interface
+Task T025: IWorktreeService interface
+</code></pre>
+<hr>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="mvp-first-user-story-1-のみ実装">MVP First (User Story 1 のみ実装)</h3>
+<ol>
+<li>✅ Phase 1: Setup (T001-T004)</li>
+<li>✅ Phase 2: Foundational (T005-T012) - <strong>CRITICAL</strong></li>
+<li>✅ Phase 3: User Story 1 (T013-T029)</li>
+<li><strong>STOP and VALIDATE</strong>: <code>wt create feature-test</code> を実行して動作確認</li>
+<li><strong>MVP Ready</strong>: US1 のみでデプロイ可能</li>
+</ol>
+<p>この時点で以下が動作:</p>
+<ul>
+<li><code>wt create &lt;branch&gt;</code> で worktree 作成</li>
+<li>デフォルトパス <code>../worktrees/&lt;branch&gt;</code> に作成</li>
+<li>エラー時の解決策表示</li>
+</ul>
+<h3 id="incremental-delivery-優先度順">Incremental Delivery (優先度順)</h3>
+<ol>
+<li>Setup + Foundational → 基盤完成</li>
+<li><strong>US1 → 独立テスト → デプロイ可能</strong> (MVP!)</li>
+<li>US2 追加 → 独立テスト → デプロイ可能（エディター起動機能付き）</li>
+<li>US3 追加 → 独立テスト → デプロイ可能（カスタムパス対応）</li>
+<li>Polish → 全オプション完備</li>
+</ol>
+<p>各 Story が前の Story を壊さずに価値を追加</p>
+<h3 id="parallel-team-strategy">Parallel Team Strategy</h3>
+<p>複数開発者の場合:</p>
+<ol>
+<li>チーム全員で Setup + Foundational を完成（T001-T012）</li>
+<li>Foundational 完了後:
+<ul>
+<li><strong>Developer A</strong>: US1 (T013-T029) - コア機能</li>
+<li><strong>Developer B</strong>: US2 (T030-T039) - エディター起動</li>
+<li><strong>Developer C</strong>: US3 (T040-T045) - カスタムパス</li>
+</ul>
+</li>
+<li>各 Story は独立して完成し、最後に統合</li>
+</ol>
+<hr>
+<h2 id="quality-gates">Quality Gates</h2>
+<p>各フェーズ完了時にチェック:</p>
+<ul>
+<li>✅ 全テストが GREEN（失敗なし）</li>
+<li>✅ コードカバレッジ 80% 以上</li>
+<li>✅ 憲章の全要件を満たす（12項目）</li>
+<li>✅ 各 User Story が独立してテスト可能</li>
+<li>✅ ドキュメント最新（README, user-guide）</li>
+</ul>
+<hr>
+<h2 id="task-summary">Task Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Task Count</th>
+<th>Can Parallelize</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 1: Setup</td>
+<td>4</td>
+<td>3 tasks</td>
+<td>プロジェクト初期化</td>
+</tr>
+<tr>
+<td>Phase 2: Foundational</td>
+<td>8</td>
+<td>7 tasks</td>
+<td>基盤実装（BLOCKING）</td>
+</tr>
+<tr>
+<td>Phase 3: US1 (P1)</td>
+<td>17</td>
+<td>11 tasks</td>
+<td>コア機能 - MVP</td>
+</tr>
+<tr>
+<td>Phase 4: US2 (P2)</td>
+<td>10</td>
+<td>6 tasks</td>
+<td>エディター起動</td>
+</tr>
+<tr>
+<td>Phase 5: US3 (P3)</td>
+<td>6</td>
+<td>2 tasks</td>
+<td>カスタムパス</td>
+</tr>
+<tr>
+<td>Phase 6: Polish</td>
+<td>15</td>
+<td>11 tasks</td>
+<td>仕上げ</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>60</strong></td>
+<td><strong>40</strong></td>
+<td><strong>全タスク</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Parallel Efficiency</strong>: 67% のタスクが並行実行可能（40/60）</p>
+<p><strong>Estimated Timeline</strong> (1 developer):</p>
+<ul>
+<li>Phase 1: 0.5 day</li>
+<li>Phase 2: 2 days</li>
+<li>Phase 3 (US1): 3 days → <strong>MVP Ready</strong> (5.5 days total)</li>
+<li>Phase 4 (US2): 2 days</li>
+<li>Phase 5 (US3): 1.5 days</li>
+<li>Phase 6 (Polish): 2 days</li>
+<li><strong>Total</strong>: ~11 days for full feature</li>
+</ul>
+<p><strong>MVP Timeline</strong>: 5.5 days (Setup + Foundational + US1)</p>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>[P]</strong> = 並行実行可能（異なるファイル、依存関係なし）</li>
+<li><strong>[Story]</strong> = User Story ラベル（US1, US2, US3）でタスクをトレース</li>
+<li><strong>TDD必須</strong>: 全テストを実装前に作成し、RED（失敗）を確認</li>
+<li>各 User Story は独立して完成・テスト可能</li>
+<li>Checkpoint で独立動作を検証</li>
+<li>小さく頻繁にコミット（各タスクまたは論理グループごと）</li>
+<li>避けるべき: 曖昧なタスク、同一ファイルの競合、Story 間の強い依存関係</li>
+</ul>
+<hr>
+<h2 id="suggested-mvp-scope">Suggested MVP Scope</h2>
+<h3 id="mvp--user-story-1-のみ">MVP = User Story 1 のみ</h3>
+<p>含まれる機能:</p>
+<ul>
+<li>✅ <code>wt create &lt;branch&gt;</code> で worktree 作成</li>
+<li>✅ デフォルトパス <code>../worktrees/&lt;branch&gt;</code></li>
+<li>✅ 現在のブランチをベースに新規ブランチ作成</li>
+<li>✅ エラーメッセージ + 解決策表示</li>
+<li>✅ ブランチ名バリデーション</li>
+<li>✅ Git リポジトリチェック</li>
+</ul>
+<p>含まれない機能（将来追加可能）:</p>
+<ul>
+<li>❌ エディター自動起動（US2）</li>
+<li>❌ カスタムパス指定（US3）</li>
+<li>❌ JSON 出力</li>
+<li>❌ ベースブランチ指定</li>
+</ul>
+<p><strong>MVP で検証すること</strong>:</p>
+<ol>
+<li>開発者が worktree を簡単に作成できるか？</li>
+<li>git worktree の複雑なコマンドを隠蔽できているか？</li>
+<li>エラーメッセージは理解しやすいか？</li>
+</ol>
+<p>MVP が成功したら、US2, US3 を追加して機能拡張。</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-create-worktree/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

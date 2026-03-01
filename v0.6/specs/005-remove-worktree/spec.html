@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Feature Specification: Remove Git Worktree | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Feature Specification: Remove Git Worktree | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="feature-specification-remove-git-worktree">Feature Specification: Remove Git Worktree</h1>
+
+<p><strong>Feature Branch</strong>: <code>005-remove-worktree</code>
+<strong>Created</strong>: 2026-01-24
+<strong>Status</strong>: Draft
+<strong>Input</strong>: User description: &quot;Add the feature of removing specific branch from git worktree. Optionaly, can force remove. After remove worktree, working directory removed from disk.&quot;</p>
+<h2 id="user-scenarios--testing-mandatory">User Scenarios &amp; Testing <em>(mandatory)</em></h2>
+<!--
+  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
+  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
+  you should still have a viable MVP (Minimum Viable Product) that delivers value.
+  
+  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
+  Think of each story as a standalone slice of functionality that can be:
+  - Developed independently
+  - Tested independently
+  - Deployed independently
+  - Demonstrated to users independently
+-->
+<h3 id="user-story-1---remove-a-worktree-safely-priority-p1">User Story 1 - Remove a Worktree Safely (Priority: P1)</h3>
+<p>A developer has finished work on a feature branch that was checked out in a worktree. They want to clean up the worktree and remove the associated working directory from disk to free up space and maintain a clean workspace.</p>
+<p><strong>Why this priority</strong>: This is the core MVP functionality that delivers the primary value. Without this, the feature is incomplete. It allows developers to successfully clean up worktrees they no longer need.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating a worktree, then removing it with the standard remove command, and verifying the worktree is gone and the directory is deleted from disk.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a developer has an active worktree with no uncommitted changes, <strong>When</strong> they execute the remove command on that worktree, <strong>Then</strong> the worktree is removed from the git repository and its working directory is deleted from disk</li>
+<li><strong>Given</strong> a developer specifies a worktree by name/path, <strong>When</strong> they execute the remove command, <strong>Then</strong> only that specific worktree is removed, and other worktrees remain unaffected</li>
+</ol>
+<hr>
+<h3 id="user-story-2---force-remove-a-locked-worktree-priority-p2">User Story 2 - Force Remove a Locked Worktree (Priority: P2)</h3>
+<p>A developer's worktree is locked (either via <code>git worktree lock</code> or due to uncommitted changes) and cannot be removed with a standard remove command. They need a <code>--force</code> flag to remove the worktree anyway, even if the removal cannot be performed cleanly.</p>
+<p><strong>Why this priority</strong>: High value for recovery scenarios and unblocking developers when worktrees become stuck. Provides an escape hatch for problematic situations that prevents losing work.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by creating a worktree, simulating a lock condition (either via <code>git worktree lock</code> or by creating uncommitted changes), then removing it with the <code>--force</code> flag, and verifying the worktree and directory are removed despite the lock.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a worktree has a git lock file (<code>.git/worktrees/&lt;name&gt;/locked</code>), <strong>When</strong> a developer uses the <code>--force</code> flag with the remove command, <strong>Then</strong> the worktree is forcibly removed from the git repository and the working directory is deleted from disk</li>
+<li><strong>Given</strong> a worktree has uncommitted changes (staged or unstaged modifications), <strong>When</strong> a developer uses the <code>--force</code> flag with the remove command, <strong>Then</strong> the worktree is forcibly removed despite the uncommitted changes</li>
+<li><strong>Given</strong> multiple worktrees exist and one is locked, <strong>When</strong> using the <code>--force</code> flag to remove the locked worktree, <strong>Then</strong> only the locked worktree is removed; other worktrees remain unaffected</li>
+</ol>
+<hr>
+<h3 id="edge-cases">Edge Cases</h3>
+<ul>
+<li><del>What happens when a developer attempts to remove a worktree that doesn't exist?</del> → Resolved: Return error per FR-011</li>
+<li><del>What happens when the working directory has already been deleted but the worktree entry still exists in git?</del> → Resolved: FR-012</li>
+<li><del>What happens when a developer tries to remove the main worktree or the one they're currently working in?</del> → Resolved: FR-005, FR-006</li>
+<li><del>How does the system handle permission errors when trying to delete the working directory?</del> → Resolved: FR-010</li>
+<li><del>What happens if only part of the working directory can be deleted due to locked files or permission restrictions?</del> → Resolved: FR-010</li>
+<li><del>How does the system handle worktrees with special characters in path or branch name?</del> → Resolved: FR-013</li>
+<li><del>How does the system handle worktrees on read-only file systems?</del> → Resolved: FR-014</li>
+<li><del>How does the system handle worktrees with symlinked directories?</del> → Resolved: FR-015</li>
+<li><del>How does the system handle network/remote paths?</del> → Resolved: FR-016</li>
+<li><del>What happens if git removal succeeds but directory deletion fails completely?</del> → Resolved: FR-017</li>
+</ul>
+<h2 id="requirements-mandatory">Requirements <em>(mandatory)</em></h2>
+<!--
+  ACTION REQUIRED: The content in this section represents placeholders.
+  Fill them out with the right functional requirements.
+-->
+<h3 id="functional-requirements">Functional Requirements</h3>
+<ul>
+<li><strong>FR-001</strong>: System MUST accept a worktree identifier (name or path) as input to the remove command</li>
+<li><strong>FR-002</strong>: System MUST remove the specified worktree from the git worktree tracking system</li>
+<li><strong>FR-003</strong>: System MUST delete the associated working directory from disk after removing the worktree</li>
+<li><strong>FR-004</strong>: System MUST support a <code>--force</code> flag that allows removal of locked worktrees (see Definitions section for lock conditions)</li>
+<li><strong>FR-005</strong>: System MUST prevent removal of the primary/main worktree (the main working directory of the repository)</li>
+<li><strong>FR-006</strong>: System MUST prevent removal of a worktree that is currently checked out in the active session</li>
+<li><strong>FR-007</strong>: System MUST prevent removal if the worktree has uncommitted changes, unless the <code>--force</code> flag is used</li>
+<li><strong>FR-008</strong>: System MUST provide error messages when removal fails that include: (1) the specific reason for failure, (2) the affected worktree identifier, and (3) a suggested resolution action (e.g., &quot;use --force to override&quot; or &quot;commit/stash changes first&quot;)</li>
+<li><strong>FR-009</strong>: System MUST remove only the specified worktree without affecting other worktrees in the same repository</li>
+<li><strong>FR-010</strong>: System MUST proceed with worktree removal even if some files in the working directory cannot be deleted; report which files failed to delete and why</li>
+<li><strong>FR-011</strong>: System MUST return an error when the specified worktree does not exist, with message including: (1) &quot;Worktree not found&quot;, (2) the identifier provided, and (3) suggestion to run <code>wt list</code> to see available worktrees</li>
+<li><strong>FR-012</strong>: System MUST handle the case where the worktree entry exists in git but the working directory has already been deleted; in this case, remove the git entry without attempting directory deletion</li>
+<li><strong>FR-013</strong>: System MUST handle worktrees with special characters (spaces, unicode, shell metacharacters) in path or branch name by properly escaping/quoting when invoking git commands</li>
+<li><strong>FR-014</strong>: System MUST detect read-only file system conditions and report a clear error message indicating the file system is read-only, with suggestion to check mount options or permissions</li>
+<li><strong>FR-015</strong>: System MUST follow symlinks when deleting worktree directories; delete the symlink target contents, not just the symlink itself</li>
+<li><strong>FR-016</strong>: System MUST handle network/remote paths (UNC paths on Windows, NFS/SMB mounts on Unix) with appropriate timeout handling; report network-specific errors with clear messages</li>
+<li><strong>FR-017</strong>: System MUST report partial success when git worktree removal succeeds but directory deletion fails completely; the error message must indicate the worktree was removed from git tracking but manual directory cleanup is required</li>
+</ul>
+<h3 id="key-entities">Key Entities</h3>
+<ul>
+<li><strong>Worktree</strong>: A git worktree associated with a branch, including its metadata (name, path, branch reference, locked status) and its working directory on disk</li>
+</ul>
+<h3 id="definitions">Definitions</h3>
+<ul>
+<li><p><strong>Locked Worktree</strong>: A worktree is considered &quot;locked&quot; when a <code>locked</code> file exists at <code>.git/worktrees/&lt;worktree-name&gt;/locked</code> (created by <code>git worktree lock</code> command). A locked worktree will refuse standard removal and require the <code>--force</code> flag to override.</p>
+</li>
+<li><p><strong>Uncommitted Changes</strong>: Any of the following states in the worktree's working directory:</p>
+<ol>
+<li><strong>Staged changes</strong>: Files added to the index but not yet committed</li>
+<li><strong>Unstaged modifications</strong>: Tracked files with modifications not yet staged</li>
+<li><strong>Untracked files are NOT considered uncommitted changes</strong> (consistent with git worktree remove behavior)</li>
+</ol>
+<p>A worktree with uncommitted changes will refuse standard removal (per FR-007) and require the <code>--force</code> flag to override.</p>
+</li>
+<li><p><strong>Conditions Requiring --force</strong>: The <code>--force</code> flag is required to remove a worktree when ANY of these conditions exist:</p>
+<ol>
+<li>Worktree is locked (lock file present)</li>
+<li>Worktree has uncommitted changes (staged or unstaged modifications)</li>
+</ol>
+</li>
+<li><p><strong>Main/Primary Worktree</strong>: The original working directory created when the repository was cloned or initialized. Identified by being the only worktree without a <code>.git</code> file pointing to the main repository's <code>.git/worktrees/</code> directory (i.e., its <code>.git</code> is a directory, not a file).</p>
+</li>
+<li><p><strong>Current Worktree</strong>: The worktree whose directory contains the current working directory (CWD) from which the command is executed. Determined by checking if CWD is equal to or a subdirectory of any worktree's path.</p>
+</li>
+<li><p><strong>Normal Removal</strong>: A worktree removal operation where all of the following conditions are met: (1) worktree exists, (2) has no uncommitted changes, (3) is not locked, (4) is not the main/primary worktree, (5) is not the current worktree, and (6) user has filesystem delete permissions. Used as the baseline for SC-002 success measurement.</p>
+</li>
+</ul>
+<h3 id="cli-requirements">CLI Requirements</h3>
+<ul>
+<li><strong>CLI-001</strong>: Command syntax: <code>wt remove &lt;worktree-identifier&gt; [options]</code></li>
+<li><strong>CLI-002</strong>: Options:
+<ul>
+<li><code>--force</code> or <code>-f</code>: Force removal of locked worktrees or those with uncommitted changes</li>
+<li><code>--output &lt;format&gt;</code> or <code>-o &lt;format&gt;</code>: Output format (<code>human</code> default, <code>json</code> for programmatic consumption)</li>
+<li><code>--verbose</code> or <code>-v</code>: Display detailed progress information during removal</li>
+</ul>
+</li>
+<li><strong>CLI-003</strong>: Human output format:
+<ul>
+<li>Success: <code>✓ Removed worktree '&lt;identifier&gt;' and deleted directory '&lt;path&gt;'</code></li>
+<li>Partial success: <code>⚠ Removed worktree '&lt;identifier&gt;' but some files could not be deleted: &lt;list&gt;</code></li>
+<li>Error: <code>✗ Failed to remove worktree '&lt;identifier&gt;': &lt;reason&gt;. &lt;suggestion&gt;</code></li>
+</ul>
+</li>
+<li><strong>CLI-004</strong>: JSON output format: Structured object with fields: <code>success</code> (boolean), <code>worktree</code> (identifier), <code>path</code> (directory path), <code>deletionFailures</code> (array of failed files), <code>error</code> (error details if failed)</li>
+<li><strong>CLI-005</strong>: Exit codes:
+<ul>
+<li><code>0</code>: Success (worktree removed, directory deleted)</li>
+<li><code>1</code>: General error (worktree not found, validation failed)</li>
+<li><code>2</code>: Partial success (worktree removed but directory deletion had failures)</li>
+</ul>
+</li>
+<li><strong>CLI-006</strong>: Help text must include: command description, all options with descriptions, usage examples for normal and force removal</li>
+</ul>
+<h3 id="non-functional-requirements">Non-Functional Requirements</h3>
+<ul>
+<li><strong>NFR-001</strong>: Concurrent operations: System MUST handle concurrent removal attempts on the same worktree gracefully; second attempt should receive &quot;worktree not found&quot; or &quot;removal in progress&quot; error</li>
+<li><strong>NFR-002</strong>: Logging: System SHOULD log removal operations (worktree identifier, timestamp, success/failure) when verbose mode is enabled; no persistent audit log required</li>
+</ul>
+<h2 id="success-criteria-mandatory">Success Criteria <em>(mandatory)</em></h2>
+<!--
+  ACTION REQUIRED: Define measurable success criteria.
+  These must be technology-agnostic and measurable.
+-->
+<h3 id="measurable-outcomes">Measurable Outcomes</h3>
+<ul>
+<li><strong>SC-001</strong>: Developers can remove a worktree and have its directory deleted from disk in a single command</li>
+<li><strong>SC-002</strong>: 100% of normal worktree removal operations (see Definition: Normal Removal) complete successfully on the first attempt</li>
+<li><strong>SC-003</strong>: Force removal successfully unblocks developers when standard removal fails due to locks</li>
+<li><strong>SC-004</strong>: Error messages clearly communicate why a removal failed, enabling developers to fix issues without trial-and-error</li>
+<li><strong>SC-005</strong>: No unintended worktrees are affected when removing a specific worktree from a repository with multiple worktrees</li>
+</ul>
+<h2 id="assumptions">Assumptions</h2>
+<ul>
+<li>Developers have permission to delete the working directory from disk (will fail gracefully if not)</li>
+<li>Worktrees created by the system follow standard git worktree conventions</li>
+<li>The primary worktree is always protected from removal to prevent repository corruption</li>
+<li>Force flag behavior aligns with standard git conventions (attempts removal even with locks present)</li>
+</ul>
+<h2 id="out-of-scope">Out of Scope</h2>
+<ul>
+<li><strong>Git CLI version requirements</strong>: Minimum git version is defined at the project level (see project prerequisites), not per-feature</li>
+<li><strong>Persistent audit logging</strong>: No database or file-based audit trail; verbose mode provides transient logging only</li>
+<li><strong>Batch removal</strong>: Removing multiple worktrees in a single command is not supported in this feature</li>
+<li><strong>Undo/rollback</strong>: No mechanism to restore a removed worktree; users should use standard git commands to recreate</li>
+</ul>
+<h2 id="clarifications">Clarifications</h2>
+<h3 id="session-2026-01-24">Session 2026-01-24</h3>
+<ul>
+<li><p>Q: Should the system prompt for confirmation before removing a worktree? → A: No confirmation prompt; rely only on explicit worktree selection and error messages</p>
+<ul>
+<li><strong>Impact</strong>: Removes User Story 3 from scope; simplifies UX by deferring safety to explicit targeting</li>
+<li><strong>Implementation</strong>: No interactive prompts; all removal is direct (no <code>--confirm</code> or <code>--interactive</code> flags)</li>
+</ul>
+</li>
+<li><p>Q: What happens if a worktree has uncommitted changes? → A: Prevent removal if uncommitted changes exist; require commit/stash or <code>--force</code> to override</p>
+<ul>
+<li><strong>Impact</strong>: Adds FR-007 (uncommitted changes check); aligns with git's safety model</li>
+<li><strong>Implementation</strong>: Check for uncommitted changes before proceeding; <code>--force</code> bypasses this check</li>
+</ul>
+</li>
+<li><p>Q: How should the system handle partial directory deletion (some files cannot be deleted)? → A: Proceed with removal anyway; list which files/directories failed to delete (user must manually clean up)</p>
+<ul>
+<li><strong>Impact</strong>: Clarifies FR-010 behavior; prioritizes removing worktree entry over achieving 100% disk cleanup</li>
+<li><strong>Implementation</strong>: Remove worktree from tracking regardless; report failures separately for user resolution</li>
+</ul>
+</li>
+<li><p>Q: What exactly constitutes a &quot;locked&quot; worktree? → A: A worktree is locked when: (1) a git lock file exists at <code>.git/worktrees/&lt;name&gt;/locked</code>, OR (2) uncommitted changes exist (staged or unstaged modifications; untracked files do not count)</p>
+<ul>
+<li><strong>Impact</strong>: Adds Definitions section with measurable criteria for lock detection; updates FR-004 to reference definitions</li>
+<li><strong>Implementation</strong>: Check for lock file presence and run <code>git status --porcelain</code> to detect uncommitted changes</li>
+</ul>
+</li>
+</ul>
+<h3 id="session-2026-01-25">Session 2026-01-25</h3>
+<ul>
+<li><p>Q: What should happen when a developer attempts to remove a worktree that doesn't exist? → A: Return error with message: &quot;Worktree not found&quot; + identifier + suggestion to run <code>wt list</code></p>
+<ul>
+<li><strong>Impact</strong>: Adds FR-011 for non-existent worktree handling; resolves edge case #1</li>
+<li><strong>Implementation</strong>: Check worktree existence before removal; return error code with actionable message per FR-008 format</li>
+</ul>
+</li>
+<li><p>Q: What defines a &quot;normal&quot; worktree removal operation (for SC-002)? → A: Worktree exists, has no uncommitted changes, is not locked, is not the main/current worktree, and user has delete permissions</p>
+<ul>
+<li><strong>Impact</strong>: Clarifies SC-002 to be measurable/testable; adds definition to Definitions section</li>
+<li><strong>Implementation</strong>: Test coverage should target this specific scenario for 100% success validation</li>
+</ul>
+</li>
+<li><p>Q: What happens when the working directory has already been deleted but the worktree entry still exists? → A: Remove the git entry without attempting directory deletion; report success</p>
+<ul>
+<li><strong>Impact</strong>: Adds FR-012 for orphaned worktree entry handling</li>
+<li><strong>Implementation</strong>: Check directory existence before deletion; skip deletion if missing</li>
+</ul>
+</li>
+<li><p>Q: How should special characters in paths/branch names be handled? → A: Properly escape/quote when invoking git commands</p>
+<ul>
+<li><strong>Impact</strong>: Adds FR-013 for special character handling</li>
+<li><strong>Implementation</strong>: Use proper shell escaping or pass arguments as array to avoid shell interpretation</li>
+</ul>
+</li>
+<li><p>Q: How should read-only file systems be handled? → A: Detect and report clear error with actionable message</p>
+<ul>
+<li><strong>Impact</strong>: Adds FR-014 for read-only file system handling</li>
+<li><strong>Implementation</strong>: Catch appropriate OS exceptions and translate to user-friendly message</li>
+</ul>
+</li>
+<li><p>Q: How should symlinked worktree directories be handled? → A: Follow symlinks and delete target contents</p>
+<ul>
+<li><strong>Impact</strong>: Adds FR-015 for symlink handling</li>
+<li><strong>Implementation</strong>: Use recursive delete that follows symlinks (platform-specific behavior)</li>
+</ul>
+</li>
+<li><p>Q: How should network/remote paths be handled? → A: Handle with appropriate timeout; report network-specific errors</p>
+<ul>
+<li><strong>Impact</strong>: Adds FR-016 for network path handling</li>
+<li><strong>Implementation</strong>: Add timeout handling for file operations; catch network-related exceptions</li>
+</ul>
+</li>
+<li><p>Q: What happens if git removal succeeds but directory deletion fails completely? → A: Report partial success with clear guidance</p>
+<ul>
+<li><strong>Impact</strong>: Adds FR-017 for partial success reporting</li>
+<li><strong>Implementation</strong>: Return exit code 2 with message indicating manual cleanup required</li>
+</ul>
+</li>
+<li><p>Q: What CLI syntax, options, and output formats should be used? → A: See CLI Requirements section (CLI-001 through CLI-006)</p>
+<ul>
+<li><strong>Impact</strong>: Adds CLI Requirements section with explicit syntax, options, output formats, and exit codes</li>
+<li><strong>Implementation</strong>: Follow System.CommandLine patterns consistent with existing create/list commands</li>
+</ul>
+</li>
+<li><p>Q: How should concurrent removal attempts be handled? → A: Gracefully handle with appropriate error message</p>
+<ul>
+<li><strong>Impact</strong>: Adds NFR-001 for concurrent operation handling</li>
+<li><strong>Implementation</strong>: Rely on git's own locking; report appropriate error if removal fails due to concurrent access</li>
+</ul>
+</li>
+<li><p>Q: What logging/audit requirements exist? → A: Verbose mode provides transient logging; no persistent audit log</p>
+<ul>
+<li><strong>Impact</strong>: Adds NFR-002 for logging requirements; adds to Out of Scope</li>
+<li><strong>Implementation</strong>: Use --verbose flag to enable detailed console output</li>
+</ul>
+</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

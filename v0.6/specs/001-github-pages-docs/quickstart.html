@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Quick Start: GitHub Pages Documentation Publishing | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Quick Start: GitHub Pages Documentation Publishing | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/quickstart.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="quick-start-github-pages-documentation-publishing">Quick Start: GitHub Pages Documentation Publishing</h1>
+
+<p><strong>Feature</strong>: 001-github-pages-docs<br>
+<strong>Audience</strong>: Developers implementing this feature<br>
+<strong>Est. Time</strong>: 4-6 hours for initial setup</p>
+<p>This guide provides step-by-step instructions to implement automated documentation publishing to GitHub Pages.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Repository with .NET 10.0 project (<code>wt.cli</code>)</li>
+<li>GitHub repository with Actions enabled</li>
+<li>Existing <code>docfx.json</code> configuration</li>
+<li>Git branching strategy established</li>
+</ul>
+<h2 id="implementation-phases">Implementation Phases</h2>
+<h3 id="phase-1-enable-xml-documentation-15-minutes">Phase 1: Enable XML Documentation (15 minutes)</h3>
+<h4 id="step-11-update-csproj">Step 1.1: Update .csproj</h4>
+<p>Edit <code>wt.cli/wt.cli.csproj</code>:</p>
+<pre><code class="lang-xml">&lt;PropertyGroup&gt;
+  &lt;!-- Existing properties --&gt;
+  &lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;
+  
+  &lt;!-- Add XML documentation generation --&gt;
+  &lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;
+  &lt;DocumentationFile&gt;bin\$(Configuration)\$(TargetFramework)\wt.xml&lt;/DocumentationFile&gt;
+  
+  &lt;!-- Optional: Suppress missing XML comment warnings during development --&gt;
+  &lt;NoWarn&gt;$(NoWarn);1591&lt;/NoWarn&gt;
+&lt;/PropertyGroup&gt;
+</code></pre>
+<h4 id="step-12-add-xml-documentation-comments">Step 1.2: Add XML Documentation Comments</h4>
+<p>Add XML comments to public APIs:</p>
+<pre><code class="lang-csharp">/// &lt;summary&gt;
+/// Creates a new Git worktree for the specified branch.
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;branchName&quot;&gt;Name of the branch to create worktree for.&lt;/param&gt;
+/// &lt;param name=&quot;path&quot;&gt;Optional custom path for the worktree directory.&lt;/param&gt;
+/// &lt;returns&gt;Exit code: 0 for success, 1 for failure.&lt;/returns&gt;
+public static int CreateWorktree(string branchName, string? path = null)
+{
+    // Implementation
+}
+</code></pre>
+<h4 id="step-13-verify-build">Step 1.3: Verify Build</h4>
+<pre><code class="lang-bash">cd wt.cli
+dotnet build --configuration Release
+# Verify wt.xml is generated in bin/Release/net10.0/
+ls bin/Release/net10.0/wt.xml
+</code></pre>
+<p><strong>Expected Output</strong>: XML file with API documentation exists.</p>
+<hr>
+<h3 id="phase-2-create-command-documentation-generator-1-2-hours">Phase 2: Create Command Documentation Generator (1-2 hours)</h3>
+<h4 id="step-21-create-project-structure">Step 2.1: Create Project Structure</h4>
+<pre><code class="lang-bash">mkdir -p Tools/DocGenerator
+cd Tools/DocGenerator
+dotnet new console
+dotnet add package System.CommandLine --version 2.0.2
+</code></pre>
+<h4 id="step-22-implement-generator">Step 2.2: Implement Generator</h4>
+<p>Create <code>Tools/DocGenerator/Program.cs</code>:</p>
+<pre><code class="lang-csharp">using System;
+using System.CommandLine;
+using System.CommandLine.Help;
+using System.CommandLine.IO;
+using System.IO;
+using System.Text;
+
+class MarkdownConsole : IConsole
+{
+    private readonly StringWriter _out = new StringWriter();
+    public string GetOutput() =&gt; _out.ToString();
+    
+    public IStandardStreamWriter Out =&gt; StandardStreamWriter.Create(_out);
+    public bool IsOutputRedirected =&gt; false;
+    public IStandardStreamWriter Error =&gt; Out;
+    public bool IsErrorRedirected =&gt; false;
+    public bool IsInputRedirected =&gt; false;
+}
+
+class Program
+{
+    static int Main(string[] args)
+    {
+        if (args.Length == 0)
+        {
+            Console.WriteLine(&quot;Usage: DocGenerator &lt;output-directory&gt;&quot;);
+            return 1;
+        }
+        
+        var outputDir = args[0];
+        var commandsDir = Path.Combine(outputDir, &quot;commands&quot;);
+        Directory.CreateDirectory(commandsDir);
+        
+        // Create RootCommand with same structure as wt.cli
+        var rootCommand = BuildCliStructure();
+        
+        // Generate documentation
+        GenerateCommandDocs(rootCommand, outputDir);
+        
+        Console.WriteLine($&quot;✅ Generated documentation for {rootCommand.Subcommands.Count} commands&quot;);
+        return 0;
+    }
+    
+    static RootCommand BuildCliStructure()
+    {
+        // TODO: Import actual command structure from wt.cli
+        // For now, create example structure
+        var rootCommand = new RootCommand(&quot;Git worktree manager&quot;);
+        
+        var createCommand = new Command(&quot;create&quot;, &quot;Create a new worktree&quot;);
+        createCommand.AddOption(new Option&lt;string&gt;(&quot;--path&quot;, &quot;Custom path for worktree&quot;));
+        createCommand.AddOption(new Option&lt;string&gt;(&quot;--editor&quot;, &quot;Editor to open&quot;));
+        rootCommand.AddSubcommand(createCommand);
+        
+        var listCommand = new Command(&quot;list&quot;, &quot;List all worktrees&quot;);
+        listCommand.AddOption(new Option&lt;bool&gt;(&quot;--json&quot;, &quot;Output in JSON format&quot;));
+        rootCommand.AddSubcommand(listCommand);
+        
+        return rootCommand;
+    }
+    
+    static void GenerateCommandDocs(RootCommand root, string outputDir)
+    {
+        var overview = new StringBuilder();
+        overview.AppendLine(&quot;# Command Reference&quot;);
+        overview.AppendLine();
+        overview.AppendLine(&quot;Complete reference for all `wt` commands.&quot;);
+        overview.AppendLine();
+        
+        foreach (var command in root.Subcommands)
+        {
+            var markdown = ConvertToMarkdown(command);
+            var fileName = $&quot;{command.Name}.md&quot;;
+            File.WriteAllText(Path.Combine(outputDir, &quot;commands&quot;, fileName), markdown);
+            
+            overview.AppendLine($&quot;- [`wt {command.Name}`](commands/{command.Name}.md) - {command.Description}&quot;);
+        }
+        
+        File.WriteAllText(Path.Combine(outputDir, &quot;command-reference.md&quot;), overview.ToString());
+    }
+    
+    static string ConvertToMarkdown(Command command)
+    {
+        var md = new StringBuilder();
+        md.AppendLine($&quot;# wt {command.Name}&quot;);
+        md.AppendLine();
+        md.AppendLine(command.Description);
+        md.AppendLine();
+        
+        md.AppendLine(&quot;## Usage&quot;);
+        md.AppendLine(&quot;```bash&quot;);
+        md.AppendLine($&quot;wt {command.Name} [options]&quot;);
+        md.AppendLine(&quot;```&quot;);
+        md.AppendLine();
+        
+        if (command.Options.Any())
+        {
+            md.AppendLine(&quot;## Options&quot;);
+            md.AppendLine();
+            foreach (var option in command.Options)
+            {
+                md.AppendLine($&quot;### `{string.Join(&quot;, &quot;, option.Aliases)}`&quot;);
+                md.AppendLine();
+                md.AppendLine(option.Description ?? &quot;&quot;);
+                md.AppendLine();
+            }
+        }
+        
+        return md.ToString();
+    }
+}
+</code></pre>
+<h4 id="step-23-test-locally">Step 2.3: Test Locally</h4>
+<pre><code class="lang-bash">cd Tools/DocGenerator
+dotnet run -- ../../docs
+# Verify generated files
+ls ../../docs/commands/
+cat ../../docs/command-reference.md
+</code></pre>
+<p><strong>Expected Output</strong>: Markdown files created for each command.</p>
+<hr>
+<h3 id="phase-3-create-version-manifest-script-30-minutes">Phase 3: Create Version Manifest Script (30 minutes)</h3>
+<h4 id="step-31-create-python-script">Step 3.1: Create Python Script</h4>
+<p>Create <code>.github/scripts/update-version-manifest.py</code>:</p>
+<pre><code class="lang-python">#!/usr/bin/env python3
+&quot;&quot;&quot;Update version manifest JSON file with new documentation version.&quot;&quot;&quot;
+import json
+import argparse
+import sys
+
+def update_manifest(input_file, output_file, new_version, release_date):
+    &quot;&quot;&quot;Update manifest with new version, marking it as latest.&quot;&quot;&quot;
+    
+    try:
+        with open(input_file, 'r') as f:
+            manifest = json.load(f)
+    except FileNotFoundError:
+        manifest = {'versions': []}
+    
+    # Remove &quot;latest&quot; from all versions
+    for v in manifest['versions']:
+        v['isLatest'] = False
+        v['label'] = v['label'].replace(' (latest)', '')
+    
+    # Check if version exists
+    existing = next((v for v in manifest['versions'] if v['path'] == new_version), None)
+    
+    if existing:
+        existing['released'] = release_date
+        existing['isLatest'] = True
+        existing['label'] = f&quot;{new_version} (latest)&quot;
+        print(f&quot;✅ Updated existing version: {new_version}&quot;)
+    else:
+        manifest['versions'].insert(0, {
+            'label': f&quot;{new_version} (latest)&quot;,
+            'path': new_version,
+            'released': release_date,
+            'isLatest': True
+        })
+        print(f&quot;✅ Added new version: {new_version}&quot;)
+    
+    # Sort by date
+    manifest['versions'].sort(key=lambda v: v['released'], reverse=True)
+    
+    # Write updated manifest
+    with open(output_file, 'w') as f:
+        json.dump(manifest, f, indent=2, ensure_ascii=False)
+    
+    print(f&quot;   Total versions: {len(manifest['versions'])}&quot;)
+    return 0
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--version', required=True)
+    parser.add_argument('--date', required=True)
+    parser.add_argument('--input', default='version-manifest.json')
+    parser.add_argument('--output', default='version-manifest.json')
+    args = parser.parse_args()
+    
+    sys.exit(update_manifest(args.input, args.output, args.version, args.date))
+</code></pre>
+<h4 id="step-32-make-executable">Step 3.2: Make Executable</h4>
+<pre><code class="lang-bash">chmod +x .github/scripts/update-version-manifest.py
+</code></pre>
+<h4 id="step-33-test-locally">Step 3.3: Test Locally</h4>
+<pre><code class="lang-bash">python3 .github/scripts/update-version-manifest.py \
+  --version &quot;v0.1&quot; \
+  --date &quot;2026-01-15T10:00:00Z&quot;
+  
+cat version-manifest.json
+</code></pre>
+<p><strong>Expected Output</strong>: Valid JSON with version entry.</p>
+<hr>
+<h3 id="phase-4-create-github-actions-workflow-1-hour">Phase 4: Create GitHub Actions Workflow (1 hour)</h3>
+<h4 id="step-41-create-workflow-file">Step 4.1: Create Workflow File</h4>
+<p>Create <code>.github/workflows/docs.yml</code>:</p>
+<pre><code class="lang-yaml">name: Deploy Documentation
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Manual version override (e.g., v0.1)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Documentation
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Install DocFX
+        run: dotnet tool install --global docfx --version 2.78.4
+      
+      - name: Generate command documentation
+        run: |
+          cd Tools/DocGenerator
+          dotnet run -- ../../docs
+      
+      - name: Build API documentation
+        run: |
+          cd wt.cli
+          dotnet build --configuration Release
+      
+      - name: Extract version
+        id: version
+        run: |
+          if [ -n &quot;${{ github.event.inputs.version }}&quot; ]; then
+            VERSION=&quot;${{ github.event.inputs.version }}&quot;
+          else
+            TAG=&quot;${{ github.event.release.tag_name }}&quot;
+            VERSION=$(echo $TAG | sed -E 's/^v([0-9]+)\.([0-9]+)\.[0-9]+$/v\1.\2/')
+          fi
+          echo &quot;minor=$VERSION&quot; &gt;&gt; $GITHUB_OUTPUT
+          echo &quot;Building documentation for version: $VERSION&quot;
+      
+      - name: Build versioned documentation
+        run: |
+          mkdir -p _output/${{ steps.version.outputs.minor }}
+          docfx build docfx.json --warningsAsErrors -o _output/${{ steps.version.outputs.minor }}
+      
+      - name: Fetch existing version manifest
+        run: |
+          git fetch origin gh-pages:gh-pages 2&gt;/dev/null || true
+          if git show gh-pages:version-manifest.json &gt; version-manifest.json 2&gt;/dev/null; then
+            echo &quot;✅ Existing manifest found&quot;
+          else
+            echo '{&quot;versions&quot;:[]}' &gt; version-manifest.json
+            echo &quot;✅ Created new manifest&quot;
+          fi
+      
+      - name: Update version manifest
+        run: |
+          RELEASE_DATE=&quot;${{ github.event.release.published_at || github.event.head_commit.timestamp }}&quot;
+          
+          python3 .github/scripts/update-version-manifest.py \
+            --version &quot;${{ steps.version.outputs.minor }}&quot; \
+            --date &quot;$RELEASE_DATE&quot;
+          
+          cp version-manifest.json _output/
+          cp version-manifest.json _output/${{ steps.version.outputs.minor }}/
+      
+      - name: Validate documentation links
+        run: |
+          pip install linkchecker
+          linkchecker --check-extern --ignore-url=&quot;localhost&quot; --no-warnings \
+            _output/${{ steps.version.outputs.minor }}/
+      
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_output'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+</code></pre>
+<h4 id="step-42-configure-github-pages">Step 4.2: Configure GitHub Pages</h4>
+<ol>
+<li>Go to repository Settings → Pages</li>
+<li>Source: Select &quot;GitHub Actions&quot;</li>
+<li>Save</li>
+</ol>
+<h4 id="step-43-create-environment">Step 4.3: Create Environment</h4>
+<ol>
+<li>Go to Settings → Environments</li>
+<li>Click &quot;New environment&quot;</li>
+<li>Name: <code>github-pages</code></li>
+<li>Click &quot;Configure environment&quot;</li>
+<li>(Optional) Add protection rules</li>
+</ol>
+<hr>
+<h3 id="phase-5-create-version-switcher-ui-30-45-minutes">Phase 5: Create Version Switcher UI (30-45 minutes)</h3>
+<h4 id="step-51-create-custom-template-directory">Step 5.1: Create Custom Template Directory</h4>
+<pre><code class="lang-bash">mkdir -p templates/partials
+</code></pre>
+<h4 id="step-52-create-navbar-override">Step 5.2: Create Navbar Override</h4>
+<p>Create <code>templates/partials/navbar.tmpl.partial</code>:</p>
+<pre><code class="lang-html">&lt;!-- Existing navbar content --&gt;
+&lt;nav class=&quot;navbar navbar-inverse navbar-fixed-top&quot; id=&quot;navbar&quot;&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;!-- Brand and toggle --&gt;
+    &lt;div class=&quot;navbar-header&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;navbar-toggle collapsed&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#navbar-collapse&quot;&gt;
+        &lt;span class=&quot;sr-only&quot;&gt;Toggle navigation&lt;/span&gt;
+        &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+        &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+        &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;a class=&quot;navbar-brand&quot; href=&quot;{{_rel}}index.html&quot;&gt;
+        &lt;img id=&quot;logo&quot; class=&quot;svg&quot; src=&quot;{{_rel}}logo.svg&quot; alt=&quot;{{_appName}}&quot;&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Navbar collapse --&gt;
+    &lt;div class=&quot;collapse navbar-collapse&quot; id=&quot;navbar-collapse&quot;&gt;
+      &lt;form class=&quot;navbar-form navbar-right&quot; role=&quot;search&quot; id=&quot;search&quot;&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+          &lt;input type=&quot;text&quot; class=&quot;form-control&quot; id=&quot;search-query&quot; placeholder=&quot;Search&quot; autocomplete=&quot;off&quot;&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+      
+      &lt;!-- Add version switcher --&gt;
+      &lt;div class=&quot;navbar-form navbar-right&quot;&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+          &lt;label for=&quot;version-switcher&quot; style=&quot;color: #fff; margin-right: 5px;&quot;&gt;Version:&lt;/label&gt;
+          &lt;select id=&quot;version-switcher&quot; class=&quot;form-control&quot; style=&quot;display: inline-block; width: auto;&quot;&gt;
+            &lt;option&gt;Loading...&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;script&gt;
+(function() {
+  function switchVersion(targetVersion) {
+    const currentPath = window.location.pathname;
+    const pathWithoutVersion = currentPath.replace(/\/v\d+\.\d+\//, '/');
+    window.location.href = `/${targetVersion}${pathWithoutVersion}`;
+  }
+  
+  fetch('/version-manifest.json')
+    .then(res =&gt; res.json())
+    .then(data =&gt; {
+      const selector = document.getElementById('version-switcher');
+      selector.innerHTML = '';
+      selector.onchange = function() { switchVersion(this.value); };
+      
+      data.versions.forEach(v =&gt; {
+        const option = document.createElement('option');
+        option.value = v.path;
+        option.textContent = v.label;
+        
+        if (window.location.pathname.includes(`/${v.path}/`)) {
+          option.selected = true;
+        }
+        
+        selector.appendChild(option);
+      });
+    })
+    .catch(err =&gt; {
+      console.error('Failed to load versions:', err);
+      document.getElementById('version-switcher').parentElement.parentElement.style.display = 'none';
+    });
+})();
+&lt;/script&gt;
+</code></pre>
+<h4 id="step-53-update-docfxjson-template-configuration">Step 5.3: Update docfx.json Template Configuration</h4>
+<p>Edit <code>docfx.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;build&quot;: {
+    &quot;template&quot;: [&quot;default&quot;, &quot;modern&quot;, &quot;templates&quot;]
+  }
+}
+</code></pre>
+<hr>
+<h3 id="phase-6-update-documentation-content-1-2-hours">Phase 6: Update Documentation Content (1-2 hours)</h3>
+<h4 id="step-61-create-installation-guide">Step 6.1: Create Installation Guide</h4>
+<p>Create <code>docs/installation.md</code>:</p>
+<pre><code class="lang-markdown"># Installation
+
+## System Requirements
+- **Windows**: Windows 10 or later (x64)
+- **macOS**: macOS 11 or later (ARM64/Apple Silicon)
+- **Linux**: x64 or ARM architecture
+
+**Note**: No .NET SDK or Git installation required for the `wt` tool itself.
+
+## Download
+
+Download from [latest release](https://github.com/kuju63/wt/releases/latest):
+- **Windows**: `wt-win-x64.zip`
+- **macOS**: `wt-osx-arm64.tar.gz`
+- **Linux (x64)**: `wt-linux-x64.tar.gz`
+
+## Windows Installation
+
+1. Download `wt-win-x64.zip`
+2. Extract to `C:\Program Files\wt\`
+3. Add to PATH:
+   ```powershell
+   setx PATH &quot;%PATH%;C:\Program Files\wt&quot;
+</code></pre>
+<ol>
+<li>Verify: <code>wt --version</code></li>
+</ol>
+<h2 id="macos-installation">macOS Installation</h2>
+<ol>
+<li><p>Download <code>wt-osx-arm64.tar.gz</code></p>
+</li>
+<li><p>Extract and install:</p>
+<pre><code class="lang-bash">tar -xzf wt-osx-arm64.tar.gz
+sudo mv wt /usr/local/bin/
+sudo chmod +x /usr/local/bin/wt
+</code></pre>
+</li>
+<li><p>Verify: <code>wt --version</code></p>
+</li>
+</ol>
+<h2 id="linux-installation">Linux Installation</h2>
+<ol>
+<li><p>Download appropriate archive</p>
+</li>
+<li><p>Extract and install:</p>
+<pre><code class="lang-bash">tar -xzf wt-linux-x64.tar.gz
+sudo mv wt /usr/local/bin/
+sudo chmod +x /usr/local/bin/wt
+</code></pre>
+</li>
+<li><p>Verify: <code>wt --version</code></p>
+</li>
+</ol>
+<pre><code>
+#### Step 6.2: Create Contribution Guide
+Create `docs/contributing.md`:
+
+```markdown
+# Contributing to wt
+
+## Development Environment Setup
+
+**Prerequisites for Development**:
+- .NET 10.0 SDK or later
+- Git 2.5 or later
+
+### Setup Steps
+1. Clone: `git clone https://github.com/kuju63/wt.git`
+2. Restore: `dotnet restore`
+3. Build: `dotnet build`
+4. Test: `dotnet test`
+
+## Coding Standards
+See [Constitution](../.specify/memory/constitution.md):
+- TDD required
+- Minimal dependencies
+- Clean and secure code
+
+## Pull Request Process
+1. Create feature branch
+2. Write tests first
+3. Implement feature
+4. Ensure tests pass
+5. Submit PR
+</code></pre>
+<h4 id="step-63-update-docstocyml">Step 6.3: Update docs/toc.yml</h4>
+<p>Edit <code>docs/toc.yml</code>:</p>
+<pre><code class="lang-yaml">- name: Home
+  href: index.md
+- name: Installation
+  href: installation.md
+- name: Command Reference
+  href: command-reference.md
+- name: API Reference
+  href: ../api/
+- name: Contributing
+  href: contributing.md
+</code></pre>
+<hr>
+<h3 id="phase-7-testing-and-verification-30-45-minutes">Phase 7: Testing and Verification (30-45 minutes)</h3>
+<h4 id="step-71-local-build-test">Step 7.1: Local Build Test</h4>
+<pre><code class="lang-bash"># Generate command docs
+cd Tools/DocGenerator
+dotnet run -- ../../docs
+cd ../..
+
+# Build API docs
+cd wt.cli
+dotnet build --configuration Release
+cd ..
+
+# Build DocFX
+docfx build docfx.json
+
+# Check output
+ls _site/
+open _site/index.html  # or xdg-open on Linux
+</code></pre>
+<h4 id="step-72-commit-and-push">Step 7.2: Commit and Push</h4>
+<pre><code class="lang-bash">git checkout -b 001-github-pages-docs
+git add .
+git commit -m &quot;feat: add GitHub Pages documentation publishing&quot;
+git push origin 001-github-pages-docs
+</code></pre>
+<h4 id="step-73-create-pr-and-merge">Step 7.3: Create PR and Merge</h4>
+<ol>
+<li>Create pull request</li>
+<li>Review changes</li>
+<li>Merge to main</li>
+</ol>
+<h4 id="step-74-create-release">Step 7.4: Create Release</h4>
+<ol>
+<li>Go to Releases → Draft a new release</li>
+<li>Tag: <code>v0.1.0</code></li>
+<li>Title: <code>v0.1.0 - Initial Release</code></li>
+<li>Publish release</li>
+<li>Watch Actions tab for workflow execution</li>
+</ol>
+<h4 id="step-75-verify-deployment">Step 7.5: Verify Deployment</h4>
+<p>After workflow completes:</p>
+<ol>
+<li>Visit <code>https://{username}.github.io/wt/v0.1/</code></li>
+<li>Check version switcher loads</li>
+<li>Test navigation between pages</li>
+<li>Verify API reference exists</li>
+<li>Test search functionality</li>
+</ol>
+<hr>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="issue-xml-documentation-not-generated">Issue: XML Documentation Not Generated</h3>
+<p><strong>Solution</strong>: Verify <code>&lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;</code> in <code>.csproj</code></p>
+<h3 id="issue-docfx-build-fails-with-file-not-found">Issue: DocFX Build Fails with &quot;File not found&quot;</h3>
+<p><strong>Solution</strong>: Check paths in <code>docfx.json</code> are relative to the config file location</p>
+<h3 id="issue-version-switcher-not-showing">Issue: Version Switcher Not Showing</h3>
+<p><strong>Solution</strong>: Check browser console for errors, verify <code>/version-manifest.json</code> is accessible</p>
+<h3 id="issue-link-validation-fails">Issue: Link Validation Fails</h3>
+<p><strong>Solution</strong>: Fix broken links in markdown files, ensure all referenced files exist</p>
+<h3 id="issue-github-pages-deployment-permission-denied">Issue: GitHub Pages Deployment Permission Denied</h3>
+<p><strong>Solution</strong>: Verify <code>github-pages</code> environment exists and has correct permissions</p>
+<hr>
+<h2 id="success-checklist">Success Checklist</h2>
+<ul>
+<li>✅ XML documentation enabled and building</li>
+<li>✅ Command documentation generator working</li>
+<li>✅ Version manifest script tested</li>
+<li>✅ GitHub Actions workflow created</li>
+<li>✅ Version switcher UI implemented</li>
+<li>✅ Installation guide written</li>
+<li>✅ Contribution guide written</li>
+<li>✅ Local DocFX build succeeds</li>
+<li>✅ First release published</li>
+<li>✅ Documentation deployed to GitHub Pages</li>
+<li>✅ Version switcher functional</li>
+<li>✅ All links working</li>
+<li>✅ Search functional</li>
+</ul>
+<hr>
+<h2 id="next-steps">Next Steps</h2>
+<p>After successful first release:</p>
+<ol>
+<li><strong>Monitor Analytics</strong>: Track documentation usage</li>
+<li><strong>Gather Feedback</strong>: From users on documentation clarity</li>
+<li><strong>Iterate</strong>: Improve based on feedback</li>
+<li><strong>Document Process</strong>: Update this quickstart based on experience</li>
+</ol>
+<p><strong>Estimated Total Time</strong>: 4-6 hours for full implementation</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/quickstart.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

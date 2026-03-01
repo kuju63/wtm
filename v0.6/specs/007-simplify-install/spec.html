@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Feature Specification: インストール簡素化 | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Feature Specification: インストール簡素化 | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="feature-specification-インストール簡素化">Feature Specification: インストール簡素化</h1>
+
+<p><strong>Feature Branch</strong>: <code>007-simplify-install</code>
+<strong>Created</strong>: 2026-02-17
+<strong>Status</strong>: Draft
+<strong>Input</strong>: User description: &quot;インストール手順を簡素化して、Homebrewなどのようにインストールスクリプトを実行するだけでセットアップ完了できるようにしたい。...&quot;</p>
+<h2 id="user-scenarios--testing">User Scenarios &amp; Testing</h2>
+<h3 id="user-story-1---ワンライナーでのインストール完了priority-p1">User Story 1 - ワンライナーでのインストール完了（Priority: P1）</h3>
+<p>開発初心者のユーザーとして、ターミナルに1行コマンドを貼り付けるだけで <code>wtm</code> コマンドが使える状態になりたい。</p>
+<p><strong>Why this priority</strong>: インストール体験の根幹であり、これなしには「簡素化」という目標が達成できない。</p>
+<p><strong>Independent Test</strong>: Unix環境でインストールコマンドを実行したとき、<code>wtm --version</code> が成功することで独立してテストできる。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> macOS または Linux 環境で、<strong>When</strong> README.mdに記載された1行のインストールコマンドを実行すると、<strong>Then</strong> <code>wtm</code> が <code>~/.local/bin/wtm</code> にインストールされ <code>wtm --version</code> が正常に動作する</li>
+<li><strong>Given</strong> Windows 環境で、<strong>When</strong> PowerShell の1行コマンドを実行すると、<strong>Then</strong> <code>wtm.exe</code> がユーザースコープディレクトリにインストールされ <code>wtm --version</code> が正常に動作する</li>
+<li><strong>Given</strong> インストールスクリプトが実行されるとき、<strong>When</strong> プラットフォームとアーキテクチャを自動検出すると、<strong>Then</strong> 適切なバイナリ（linux-x64, linux-arm, macos-arm64, windows-x64）が自動選択される</li>
+<li><strong>Given</strong> バイナリダウンロードが完了すると、<strong>When</strong> SHA256チェックサム検証が自動実行され、<strong>Then</strong> 検証失敗時はバイナリを削除してインストールが中断される</li>
+<li><strong>Given</strong> インストール完了後に、<strong>When</strong> インストール先ディレクトリが PATH に未登録の場合、<strong>Then</strong> シェル設定ファイルへの追記コマンドが案内される</li>
+</ol>
+<hr>
+<h3 id="user-story-2---readmemdだけでインストール完了priority-p1">User Story 2 - README.mdだけでインストール完了（Priority: P1）</h3>
+<p>プロジェクトを知ったばかりのユーザーとして、GitHub の README.md ページだけを見ればインストール手順が完結したい。</p>
+<p><strong>Why this priority</strong>: ユーザーが最初に着地するページがREADMEであり、そこからの離脱がツール採用の最大の障壁になっている。</p>
+<p><strong>Independent Test</strong>: README.mdを読むだけで（外部リンクを踏まずに）インストールコマンドを取得できることで独立してテストできる。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> ユーザーが <code>kuju63/wt</code> リポジトリのトップページを開くと、<strong>When</strong> Installation セクションを確認すると、<strong>Then</strong> コピー&amp;ペーストで実行できるインストールコマンドが表示されている</li>
+<li><strong>Given</strong> README.mdのInstallationセクションを読むとき、<strong>When</strong> ユーザーがmacOS/Linux/Windowsのどれを使っていても、<strong>Then</strong> 各OS向けのコマンドがインライン（外部リンクなし）で確認できる</li>
+<li><strong>Given</strong> インストールコマンドが記載されているとき、<strong>When</strong> ユーザーが詳細情報を必要とする場合、<strong>Then</strong> 詳細情報へのリンクはオプションとして提示され、基本的なインストールには不要である</li>
+</ol>
+<hr>
+<h3 id="user-story-3---ルート権限不要なユーザースコープインストールpriority-p2">User Story 3 - ルート権限不要なユーザースコープインストール（Priority: P2）</h3>
+<p>sudoアクセスを持たないユーザーとして、管理者権限なしに <code>wtm</code> をインストールしたい。</p>
+<p><strong>Why this priority</strong>: デフォルトの挙動（<code>~/.local/bin</code> へのインストール）によって自然に解決されるが、意識的な設計要件として明示する。</p>
+<p><strong>Independent Test</strong>: sudo/管理者権限なしにスクリプトを実行し、<code>wtm</code> が利用可能になることで独立してテストできる。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> デフォルト設定でスクリプトを実行すると、<strong>When</strong> sudo/管理者権限の要求なしに処理が完了すると、<strong>Then</strong> バイナリが <code>~/.local/bin/wtm</code>（Unix）または <code>$env:LOCALAPPDATA\Programs\wtm\wtm.exe</code>（Windows）に配置される</li>
+<li><strong>Given</strong> システム全体にインストールしたい上級ユーザーが、<strong>When</strong> <code>--prefix /usr/local</code> オプションを指定すると、<strong>Then</strong> 指定した場所に配置され（管理者権限が必要な旨を事前案内）</li>
+<li><strong>Given</strong> インストール先ディレクトリが存在しない場合、<strong>When</strong> スクリプトが実行されると、<strong>Then</strong> ディレクトリを自動作成してインストールを続行する</li>
+</ol>
+<hr>
+<h3 id="user-story-4---再実行で自動アップデートpriority-p2">User Story 4 - 再実行で自動アップデート（Priority: P2）</h3>
+<p>すでに <code>wtm</code> を使用しているユーザーとして、インストールスクリプトを再実行するだけで最新版に更新したい。</p>
+<p><strong>Why this priority</strong>: 継続的な利用においてアップデートの簡便さも重要だが、新規インストール体験より優先度は低い。</p>
+<p><strong>Independent Test</strong>: すでに旧バージョンがインストールされている環境でスクリプトを再実行し、最新バージョンに更新されることで独立してテストできる。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> 旧バージョンの <code>wtm</code> がインストールされているユーザーがターミナル（TTY）でスクリプトを再実行すると、<strong>When</strong> 新しいバージョンが利用可能な場合、<strong>Then</strong> 上書き確認プロンプトが表示され、承認後に最新版で上書きして更新が完了する</li>
+<li><strong>Given</strong> 旧バージョンの <code>wtm</code> がインストールされているユーザーが <code>--force</code> オプションを付けてスクリプトを再実行すると、<strong>When</strong> 新しいバージョンが利用可能な場合、<strong>Then</strong> 確認プロンプトなしに既存バイナリを最新版で上書きして更新が完了する</li>
+<li><strong>Given</strong> 最新バージョンの <code>wtm</code> がすでにインストールされているユーザーがスクリプトを実行すると、<strong>When</strong> 同一バージョンが検出されると、<strong>Then</strong> 最新版であることを通知して再インストールをスキップする</li>
+<li><strong>Given</strong> スクリプトが常に最新バージョンをインストールするとき、<strong>When</strong> GitHub Releases から最新バージョン情報を自動取得すると、<strong>Then</strong> ユーザーがバージョンを意識することなく常に最新版が利用できる</li>
+</ol>
+<hr>
+<h3 id="user-story-6---既存バイナリの上書き確認priority-p2">User Story 6 - 既存バイナリの上書き確認（Priority: P2）</h3>
+<p>すでに <code>wtm</code> が存在する環境で初めてインストールするユーザーとして、意図せず既存の <code>wtm</code> を上書きしないよう確認を求めてほしい。</p>
+<p><strong>Why this priority</strong>: データ損失や予期せぬ上書きを防ぐ安全策として重要。また <code>--force</code> による確認スキップは CI/CD 等の自動化環境でも必要。</p>
+<p><strong>Independent Test</strong>: インストール先に既存バイナリが存在する環境でスクリプトを実行し、インタラクティブ時は確認プロンプトが、<code>--force</code> 指定時はプロンプトなしで上書きが完了することで独立してテストできる。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> インストール先に既存の <code>wtm</code> バイナリが存在するとき、<strong>When</strong> ターミナル（TTY）でスクリプトを実行すると、<strong>Then</strong> 上書き確認プロンプト（<code>y/N</code>）が表示され、<code>y</code> を入力した場合のみ上書きが実行される</li>
+<li><strong>Given</strong> インストール先に既存の <code>wtm</code> バイナリが存在するとき、<strong>When</strong> 確認プロンプトで <code>n</code> または Enter（デフォルト拒否）を入力すると、<strong>Then</strong> インストールがキャンセルされ、既存バイナリは変更されない</li>
+<li><strong>Given</strong> インストール先に既存の <code>wtm</code> バイナリが存在するとき、<strong>When</strong> <code>--force</code> オプションを付けてスクリプトを実行すると、<strong>Then</strong> 確認プロンプトなしに上書きが完了する</li>
+<li><strong>Given</strong> インストールスクリプトがパイプ経由（<code>curl | sh</code> 等）で実行され非インタラクティブ環境の場合、<strong>When</strong> インストール先に既存の <code>wtm</code> バイナリが存在すると、<strong>Then</strong> プロンプトを表示せず上書きをスキップし、<code>--force</code> フラグの使用方法を案内するメッセージが表示される</li>
+</ol>
+<hr>
+<h3 id="user-story-5---失敗時の分かりやすいエラーガイダンスpriority-p3">User Story 5 - 失敗時の分かりやすいエラーガイダンス（Priority: P3）</h3>
+<p>インストールに失敗したユーザーとして、問題の原因と解決方法を即座に把握したい。</p>
+<p><strong>Why this priority</strong>: 異常系の体験品質を高めるが、正常系が動作することが先決。</p>
+<p><strong>Independent Test</strong>: ネットワーク不通・非対応プラットフォームなどの障害条件でスクリプトを実行し、理解しやすいエラーメッセージが表示されることで独立してテストできる。</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> ネットワーク接続がない環境でスクリプトを実行すると、<strong>When</strong> ダウンロードに失敗すると、<strong>Then</strong> ネットワーク接続確認を促すメッセージが表示される</li>
+<li><strong>Given</strong> 非対応プラットフォームでスクリプトを実行すると、<strong>When</strong> プラットフォーム検出が失敗すると、<strong>Then</strong> 対応プラットフォーム一覧と手動インストールへの案内が表示される</li>
+<li><strong>Given</strong> SHA256検証に失敗すると、<strong>When</strong> チェックサム不一致が検出されると、<strong>Then</strong> ダウンロードファイルを削除し再試行を促すメッセージが表示される</li>
+</ol>
+<hr>
+<h3 id="edge-cases">Edge Cases</h3>
+<ul>
+<li>インストール先に既存の <code>wtm</code> バイナリが存在する場合（初回インストール・アップデート共通）: TTY環境では <code>y/N</code> 確認プロンプトを表示（デフォルト拒否）する。<code>--force</code> フラグ指定時は確認をスキップして上書きを実行する。非インタラクティブ環境（パイプ実行等）では上書きをスキップし、<code>--force</code> フラグの使用方法を案内するメッセージを表示する（FR-016/FR-017/FR-018 参照）</li>
+<li><code>curl</code> も <code>wget</code> も存在しない環境: 両方試みた後に手動ダウンロードの手順を案内する</li>
+<li>GitHub Releases API レート制限: 最新バージョン情報の取得に失敗した場合、しばらく時間をおいて再試行するよう案内するメッセージを表示する</li>
+<li>macOS Gatekeeper によるブロック: インストール後に Gatekeeper 解除手順を出力する</li>
+<li>確認プロンプトでタイムアウト（標準入力が閉じられた場合）: デフォルト動作（拒否）を適用してインストールをキャンセルする</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<h3 id="functional-requirements">Functional Requirements</h3>
+<ul>
+<li><strong>FR-001</strong>: インストールスクリプト（Unix向け <code>.sh</code> / Windows向け <code>.ps1</code>）をリリース資産に含める</li>
+<li><strong>FR-002</strong>: スクリプトはプラットフォームとアーキテクチャを自動検出し対応バイナリを自動選択する</li>
+<li><strong>FR-003</strong>: デフォルトインストール先はルート権限不要なユーザースコープディレクトリとする（Unix: <code>~/.local/bin</code>、Windows: <code>$env:LOCALAPPDATA\Programs\wtm</code>）</li>
+<li><strong>FR-004</strong>: バイナリダウンロード後にSHA256チェックサム検証を自動実行し、失敗時はバイナリを削除してインストールを中断する</li>
+<li><strong>FR-005</strong>: Unix環境でバイナリに実行権限を自動付与する（ユーザーによるchmod操作を不要にする）</li>
+<li><strong>FR-006</strong>: インストール先ディレクトリが存在しない場合、自動作成する</li>
+<li><strong>FR-007</strong>: インストール先が PATH 未登録の場合、シェル設定ファイルへの PATH 追記コマンドを出力する</li>
+<li><strong>FR-008</strong>: スクリプトは常に最新バージョンを自動取得してインストールする（バージョン指定は提供しない）</li>
+<li><strong>FR-009</strong>: 再実行時に既存インストールより新しいバージョンが存在する場合、インストールフローを経てアップデートする（TTY環境では FR-016 に従い上書き確認プロンプトを表示する。<code>--force</code> 指定時または非インタラクティブ環境では FR-017/FR-018 に従う）</li>
+<li><strong>FR-010</strong>: 再実行時に同一バージョンが既にインストール済みの場合、最新版である旨を通知してスキップする</li>
+<li><strong>FR-011</strong>: <code>--prefix &lt;DIR&gt;</code> オプションでインストール先を指定できる</li>
+<li><strong>FR-012</strong>: README.md の Installation セクションは、外部リンクなしに各OS向けのインストールコマンドをインライン表示する</li>
+<li><strong>FR-013</strong>: インストールスクリプトはバージョン番号を含まない安定した永続URLから配布される</li>
+<li><strong>FR-014</strong>: リリースワークフローはインストールスクリプトをリリース資産として自動含める</li>
+<li><strong>FR-015</strong>: すべてのエラーケースで、問題内容と解決策を示す分かりやすいメッセージを出力して終了する</li>
+<li><strong>FR-016</strong>: インストール先に既存バイナリが存在し、かつインタラクティブ環境（TTY）で実行された場合、上書き確認プロンプト（<code>y/N</code>、デフォルト拒否）を表示する。ユーザーが拒否した場合はインストールをキャンセルし、既存バイナリを変更しない</li>
+<li><strong>FR-017</strong>: <code>--force</code> フラグを指定した場合、既存バイナリへの上書き確認プロンプトをスキップして上書きを実行する</li>
+<li><strong>FR-018</strong>: 非インタラクティブ環境（パイプ経由実行、標準入力が TTY でない場合）では確認プロンプトを表示せず、上書きをスキップし <code>--force</code> フラグの使用方法を案内するメッセージを出力する</li>
+</ul>
+<h3 id="key-entities">Key Entities</h3>
+<ul>
+<li><strong>インストールスクリプト（Unix）</strong>: <code>curl | sh</code> または <code>wget | sh</code> パターンで実行可能な <code>.sh</code> ファイル。プラットフォーム検出・ダウンロード・検証・配置・権限設定・PATH案内を一括担当</li>
+<li><strong>インストールスクリプト（Windows）</strong>: PowerShellで実行可能な <code>.ps1</code> ファイル。Unix版と対称的な機能セット</li>
+<li><strong>安定インストールURL</strong>: バージョン非依存の永続URL（例: <code>https://kuju63.github.io/wt/install.sh</code>）</li>
+</ul>
+<h2 id="success-criteria">Success Criteria</h2>
+<h3 id="measurable-outcomes">Measurable Outcomes</h3>
+<ul>
+<li><strong>SC-001</strong>: インストールコマンド1行の実行から <code>wtm --version</code> 確認までの所要時間が、手動インストール手順と比べて80%以上削減される（想定: 手動5分以上 → スクリプト1分以内）</li>
+<li><strong>SC-002</strong>: README.mdのInstallationセクションを読んだユーザーが外部ページ遷移なしにインストールコマンドを取得できる率が100%</li>
+<li><strong>SC-003</strong>: Unix/Windowsの全対応プラットフォームで、1行コマンドのみでルート権限なしにインストールが完了する</li>
+<li><strong>SC-004</strong>: SHA256検証を含む全ステップがユーザーの手動操作なしに完了する</li>
+<li><strong>SC-005</strong>: スクリプト配布URLは将来バージョンアップ後も変更されない（バージョン非依存の安定URL）</li>
+<li><strong>SC-006</strong>: インストールスクリプトの再実行だけで常に最新版に更新でき、ユーザーがバージョンを意識する必要がない</li>
+<li><strong>SC-007</strong>: 既存の手動インストール手順は引き続き機能し、既存ユーザーへの影響ゼロ</li>
+<li><strong>SC-008</strong>: スクリプト失敗時、ユーザーが出力メッセージを読むだけで次のアクションを把握できる（外部ドキュメント参照を必須としない）</li>
+</ul>
+<h2 id="assumptions">Assumptions</h2>
+<ul>
+<li>インストールスクリプトは GitHub Releases に加え、GitHub Pages 経由でも安定URLとして提供されることを想定</li>
+<li>Unix向けは <code>curl</code> または <code>wget</code> のいずれかが利用可能であることを前提</li>
+<li>Windows向けは PowerShell 5.1 以上が利用可能であることを前提（Windows 10以降では標準搭載）</li>
+<li>既存の手動インストール手順は変更しない（本機能は追加の手段）</li>
+<li>リリースバイナリのファイル名は <code>wtm</code>（Unix系）および <code>wtm.exe</code>（Windows）とする</li>
+</ul>
+<h2 id="out-of-scope">Out of Scope</h2>
+<ul>
+<li>Homebrew Tap、Scoop、apt/yumリポジトリへの公式対応（将来の拡張候補）</li>
+<li>NuGetの <code>dotnet tool install</code> への対応（別途フィーチャー）</li>
+<li>GUI インストーラー（.msi、.pkgなど）の提供</li>
+<li>ARM版Windowsバイナリのインストール対応</li>
+<li>インストールスクリプト自体のGPG署名検証（将来のセキュリティ強化候補）</li>
+<li>アンインストールスクリプトの提供（別途フィーチャー）</li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>006-release-hash-files で実装されたSHA256ハッシュファイル生成機能（<code>SHA256SUMS</code>、個別<code>.sha256</code>ファイル）に依存</li>
+<li>GitHub Pages デプロイ設定（既存の<code>build-and-deploy-docs</code>ジョブへの統合を想定）</li>
+<li>リリースワークフロー（<code>.github/workflows/release.yml</code>）へのスクリプト追加が必要</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

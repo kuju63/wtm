@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: インストール簡素化 | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: インストール簡素化 | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-インストール簡素化">Tasks: インストール簡素化</h1>
+
+<p><strong>Input</strong>: Design documents from <code>/specs/007-simplify-install/</code>
+<strong>Prerequisites</strong>: plan.md ✅, spec.md ✅, research.md ✅, data-model.md ✅, contracts/ ✅, quickstart.md ✅</p>
+<p><strong>Tests</strong>: <code>shellcheck</code> 静的解析 + <code>bash -n</code> 構文検査を CI に追加（シェルスクリプト向け）。ユニットテストフレームワークは不使用。</p>
+<p><strong>Organization</strong>: ユーザーストーリー別に整理。各フェーズが独立してテスト可能なインクリメントを形成。</p>
+<h2 id="format-id-p-story-description">Format: <code>[ID] [P?] [Story] Description</code></h2>
+<ul>
+<li><strong>[P]</strong>: 並列実行可（異なるファイル、未完了タスクへの依存なし）</li>
+<li><strong>[Story]</strong>: 対応するユーザーストーリー (US1〜US6)</li>
+<li>各タスクに実際のファイルパスを明記</li>
+</ul>
+<hr>
+<h2 id="phase-1-setup共有インフラ">Phase 1: Setup（共有インフラ）</h2>
+<p><strong>Purpose</strong>: リポジトリ構造の初期化と CI 環境の整備</p>
+<ul>
+<li>[X] T001 <code>scripts/</code> ディレクトリをリポジトリルートに作成（<code>mkdir scripts/</code>）</li>
+<li>[X] T002 <code>.github/workflows/test.yml</code> に <code>shellcheck</code> 静的解析ステップを追加する。<code>scripts/install.sh</code> と <code>scripts/install.ps1</code> を対象とする。スクリプトが存在しない段階での CI 失敗を防ぐため、ステップに <code>if: hashFiles('scripts/install.sh') != ''</code> 条件を付与すること。このステップは PR トリガー（<code>pull_request: branches: [main]</code>）で動作するため、<code>007-simplify-install</code> ブランチからの PR 作成後に shellcheck が実行されることを確認する</li>
+</ul>
+<hr>
+<h2 id="phase-2-foundationalスクリプト骨格">Phase 2: Foundational（スクリプト骨格）</h2>
+<p><strong>Purpose</strong>: US1〜US6 の全ユーザーストーリーが依存するスクリプト骨格を作成する</p>
+<p><strong>⚠️ CRITICAL</strong>: このフェーズ完了前に US フェーズの実装を開始しないこと</p>
+<ul>
+<li>[X] T003 <code>scripts/install.sh</code> の骨格を作成する。内容: <code>#!/bin/sh</code> shebang、<code>set -e</code>、<code>error_exit()</code> 関数（メッセージを stderr に出力して exit 1）、<code>download()</code> 関数（curl → wget フォールバック）、引数ループ（<code>--prefix</code> で <code>INSTALL_DIR</code> を設定、<code>--force</code> で <code>FORCE=true</code> を設定）、変数初期化（<code>INSTALL_DIR=&quot;${HOME}/.local/bin&quot;</code> / <code>FORCE=false</code>）、メイン処理のプレースホルダーコメント</li>
+<li>[X] T004 [P] <code>scripts/install.ps1</code> の骨格を作成する。内容: <code>param([string]$Prefix = &quot;$env:LOCALAPPDATA\Programs\wtm&quot;, [switch]$Force)</code> ブロック、<code>Exit-WithError</code> 関数（メッセージを stderr に出力して exit 1）、<code>Invoke-Download</code> 関数（<code>Invoke-WebRequest -UseBasicParsing</code>）、変数初期化（<code>$InstallDir = $Prefix</code>）、メイン処理のプレースホルダーコメント</li>
+</ul>
+<p><strong>Checkpoint</strong>: 両スクリプトの骨格が <code>bash -n scripts/install.sh</code> および <code>shellcheck scripts/install.sh</code> をパスすること</p>
+<hr>
+<h2 id="phase-3-user-story-1---ワンライナーでのインストール完了priority-p1-mvp">Phase 3: User Story 1 - ワンライナーでのインストール完了（Priority: P1）🎯 MVP</h2>
+<p><strong>Goal</strong>: macOS/Linux/Windows 環境でターミナルに1行コマンドを実行するだけで <code>wtm --version</code> が動作する状態にする</p>
+<p><strong>Independent Test</strong>: <code>bash scripts/install.sh</code> を実行して <code>~/.local/bin/wtm</code> にバイナリが配置され <code>wtm --version</code> が成功すること</p>
+<h3 id="implementation-for-user-story-1">Implementation for User Story 1</h3>
+<ul>
+<li>[X] T005 [US1] <code>scripts/install.sh</code> にプラットフォーム/アーキテクチャ自動検出を実装する。<code>uname -s</code>→<code>PLATFORM_TAG</code>（linux/macos）、<code>uname -m</code>→<code>ARCH_TAG</code>（x64/arm64/arm）のマッピング、非対応時は <code>error_exit</code> でサポート済みプラットフォーム一覧と <code>https://github.com/kuju63/wt/releases</code> を案内</li>
+<li>[X] T006 [US1] <code>scripts/install.sh</code> に GitHub API 最新バージョン取得を実装する。<code>https://api.github.com/repos/kuju63/wt/releases/latest</code> を <code>download()</code> 関数で取得し、<code>grep '&quot;tag_name&quot;' | sed -E 's/.*&quot;([^&quot;]+)&quot;.*/\1/'</code> でバージョン文字列を抽出して <code>LATEST_VERSION</code> に格納</li>
+<li>[X] T007 [US1] <code>scripts/install.sh</code> にバイナリダウンロード + SHA256検証を実装する。<code>BINARY_NAME=&quot;wtm-${LATEST_VERSION}-${PLATFORM_TAG}-${ARCH_TAG}&quot;</code>、<code>DOWNLOAD_URL</code> と <code>HASH_URL</code> を構築し、バイナリをダウンロード後に <code>sha256sum</code>→<code>shasum -a 256</code> フォールバックで検証、失敗時はバイナリを削除して <code>error_exit</code></li>
+<li>[X] T008 [US1] <code>scripts/install.sh</code> にインストール先ディレクトリ作成・バイナリ配置・実行権限付与を実装する。<code>mkdir -p &quot;$INSTALL_DIR&quot;</code>、バイナリを <code>&quot;${INSTALL_DIR}/wtm&quot;</code> に移動、<code>chmod +x &quot;${INSTALL_DIR}/wtm&quot;</code></li>
+<li>[X] T009 [US1] <code>scripts/install.sh</code> に PATH 未登録時の案内を実装する。<code>echo &quot;$PATH&quot; | tr ':' '\n' | grep -qx &quot;$INSTALL_DIR&quot;</code> で判定、未登録の場合は <code>export PATH=...</code> コマンドと <code>~/.bashrc</code>/<code>~/.zshrc</code> への追記方法を出力</li>
+<li>[X] T010 [US1] <code>scripts/install.sh</code> に macOS Gatekeeper 案内とインストール完了メッセージを実装する。<code>[ &quot;$PLATFORM_TAG&quot; = &quot;macos&quot; ]</code> が真の場合のみ <code>xattr -d com.apple.quarantine &quot;${INSTALL_DIR}/wtm&quot;</code> を案内。最後に <code>✓ wtm ${LATEST_VERSION} installed successfully!</code> + <code>wtm --version</code> / <code>wtm --help</code> の次のステップ案内を出力</li>
+<li>[X] T011 [P] [US1] <code>scripts/install.ps1</code> にバージョン取得・Windows バイナリ名構築を実装する（Part 1/3）。<code>Invoke-RestMethod &quot;https://api.github.com/repos/kuju63/wt/releases/latest&quot;</code> で <code>$LatestVersion</code> を取得（失敗時は <code>Exit-WithError</code> でレート制限・ネットワークエラーを案内）、<code>$BinaryName = &quot;wtm-${LatestVersion}-windows-x64.exe&quot;</code>・<code>$DownloadUrl</code>・<code>$HashUrl</code> を構築</li>
+<li>[X] T011b [P] [US1] <code>scripts/install.ps1</code> にバイナリダウンロード + SHA256検証を実装する（Part 2/3）。<code>Invoke-Download</code> でバイナリをダウンロード（失敗時は <code>Exit-WithError</code> でネットワーク接続確認を案内）、<code>Get-FileHash -Algorithm SHA256</code> でハッシュを取得し <code>.sha256</code> ファイルの値と比較、不一致時はバイナリを削除して <code>Exit-WithError</code></li>
+<li>[X] T011c [P] [US1] <code>scripts/install.ps1</code> にディレクトリ作成・バイナリ配置・PATH案内・完了メッセージを実装する（Part 3/3）。<code>New-Item -ItemType Directory -Force</code>、バイナリを <code>${InstallDir}\wtm.exe</code> にコピー、<code>[Environment]::GetEnvironmentVariable(&quot;PATH&quot;, &quot;User&quot;)</code> で PATH 確認・未登録時に <code>[Environment]::SetEnvironmentVariable(...)</code> コマンドを案内、<code>✓ wtm ${LatestVersion} installed successfully!</code> を出力</li>
+<li>[X] T012 [US1] <code>.github/workflows/release.yml</code> の <code>create-release</code> ジョブ内 <code>Create GitHub Release</code> ステップの <code>files:</code> セクション（line 438付近）に <code>scripts/install.sh</code> と <code>scripts/install.ps1</code> を追加</li>
+<li>[X] T013 [US1] <code>.github/workflows/release.yml</code> の <code>build-and-deploy-docs</code> ジョブ内「Build documentation」ステップと「Deploy to GitHub Pages」ステップの間に新規ステップ <code>Copy install scripts to site</code> を追加する。内容: <code>cp scripts/install.sh _site/install.sh</code> と <code>cp scripts/install.ps1 _site/install.ps1</code></li>
+</ul>
+<p><strong>Checkpoint</strong>: <code>bash scripts/install.sh</code> を実行して <code>~/.local/bin/wtm</code> にバイナリが配置され <code>wtm --version</code> が成功すること</p>
+<hr>
+<h2 id="phase-4-user-story-2---readmemdだけでインストール完了priority-p1">Phase 4: User Story 2 - README.mdだけでインストール完了（Priority: P1）</h2>
+<p><strong>Goal</strong>: GitHub の <code>kuju63/wt</code> リポジトリトップページの README.md だけを読めば、外部リンクなしにインストールコマンドが取得できる状態にする</p>
+<p><strong>Independent Test</strong>: <code>README.md</code> の Installation セクションを読んで外部リンクなしに macOS/Linux/Windows 向けのコマンドが確認できること</p>
+<h3 id="implementation-for-user-story-2">Implementation for User Story 2</h3>
+<ul>
+<li>[X] T014 [P] [US2] <code>README.md</code> の <code>## Installation</code> セクション内、<code>### Download from Releases (Recommended)</code>（line 23付近）の直前に <code>### Quick Install (推奨)</code> セクションを追加する。macOS/Linux 向け <code>curl -fsSL https://kuju63.github.io/wt/install.sh | sh</code> と Windows 向け <code>irm https://kuju63.github.io/wt/install.ps1 | iex</code> のコードブロック、および自動実行内容の箇条書き（プラットフォーム検出・ダウンロード・SHA256検証・<code>~/.local/bin</code> または <code>%LOCALAPPDATA%\Programs\wtm</code> へのインストール）を含める</li>
+<li>[X] T015 [P] [US2] <code>docs/installation.md</code> の冒頭（既存の手動インストール手順の前）に「クイックインストール」セクションを追加する。macOS/Linux と Windows の1行コマンドをコードブロックで記載し、<strong>既存の手動インストール手順は変更しない</strong>（SC-007: 既存ユーザーへの影響ゼロを保証するため、既存セクションの削除・移動を行わないこと）</li>
+</ul>
+<p><strong>Checkpoint</strong>: <code>README.md</code> を読むだけで（外部リンクを踏まずに）macOS/Linux/Windows の各インストールコマンドが確認できること</p>
+<hr>
+<h2 id="phase-5-user-story-3---ルート権限不要なユーザースコープインストールpriority-p2">Phase 5: User Story 3 - ルート権限不要なユーザースコープインストール（Priority: P2）</h2>
+<p><strong>Goal</strong>: <code>--prefix DIR</code> / <code>-Prefix &lt;path&gt;</code> オプションでインストール先を指定できる。デフォルトは sudo 不要なユーザースコープディレクトリ</p>
+<p><strong>Independent Test</strong>: <code>bash scripts/install.sh --prefix /tmp/test-install</code> を実行して <code>/tmp/test-install/wtm</code> にバイナリが配置されること</p>
+<h3 id="implementation-for-user-story-3">Implementation for User Story 3</h3>
+<ul>
+<li>[X] T016 [US3] <code>scripts/install.sh</code> の引数処理（T003 の骨格ループ）に <code>--prefix</code> 実装を確認・補完する。<code>--prefix</code> で指定されたパスを <code>INSTALL_DIR</code> に設定し、<code>mkdir -p</code> で自動作成、指定ディレクトリが PATH 未登録の場合は追記コマンドを案内する（既存の PATH 案内ロジックを再利用）</li>
+<li>[X] T017 [P] [US3] <code>scripts/install.ps1</code> の <code>-Prefix</code> パラメータ処理（T004 の骨格）を確認・補完する。<code>$Prefix</code> で指定されたパスを <code>$InstallDir</code> に設定し、<code>New-Item -Force</code> で自動作成、PATH 未登録の場合は <code>[Environment]::SetEnvironmentVariable(...)</code> コマンドを案内する</li>
+</ul>
+<p><strong>Checkpoint</strong>: <code>--prefix</code> / <code>-Prefix</code> でカスタムパスへのインストールが sudo なしで完了すること</p>
+<hr>
+<h2 id="phase-6-user-story-4---再実行で自動アップデートpriority-p2">Phase 6: User Story 4 - 再実行で自動アップデート（Priority: P2）</h2>
+<p><strong>Goal</strong>: インストールスクリプトを再実行するだけで最新版に更新できる。同一バージョンが既インストール済みの場合はスキップ</p>
+<p><strong>Independent Test</strong>: 旧バージョンの wtm がインストールされた環境でスクリプトを再実行し、新バージョンが上書きされること（同一バージョン時はスキップメッセージが表示されること）</p>
+<h3 id="implementation-for-user-story-4">Implementation for User Story 4</h3>
+<ul>
+<li>[X] T018 [US4] <code>scripts/install.sh</code> に既存インストール確認ロジックを追加する。バージョン取得後、<code>command -v &quot;${INSTALL_DIR}/wtm&quot;</code> で既存バイナリを確認し、存在する場合は <code>&quot;${INSTALL_DIR}/wtm&quot; --version</code> でバージョンを取得して <code>$LATEST_VERSION</code> と比較。同一バージョンなら <code>&quot;wtm ${LATEST_VERSION} is already the latest version. Skipping.&quot;</code> を出力して exit 0。旧バージョンなら <code>&quot;Updating wtm from ${CURRENT_VERSION} to ${LATEST_VERSION}...&quot;</code> を表示してインストールフローを続行する。<strong>注意</strong>: この時点では旧バージョン検出後に上書き確認なしでインストールフローに進む暫定実装となる。Phase 7（T020）で <code>handle_existing_install()</code> 関数を挿入することで上書き確認が追加される。T020 実装前後で動作が変わることを意識して実装すること</li>
+<li>[X] T019 [P] [US4] <code>scripts/install.ps1</code> に既存インストール確認ロジックを追加する。<code>Test-Path $InstallPath</code> で既存バイナリを確認し、存在する場合は <code>wtm.exe --version</code> でバージョン取得、同一なら skip メッセージを出力して exit 0、旧バージョンなら更新メッセージを表示してフロー続行（T021 で上書き確認が追加される暫定実装）</li>
+</ul>
+<p><strong>Checkpoint</strong>: 同一バージョンインストール済みの環境でスクリプト再実行時にスキップメッセージが表示され、既存バイナリが変更されないこと</p>
+<hr>
+<h2 id="phase-7-user-story-6---既存バイナリの上書き確認priority-p2">Phase 7: User Story 6 - 既存バイナリの上書き確認（Priority: P2）</h2>
+<p><strong>Goal</strong>: 既存バイナリが存在する場合に TTY 環境では <code>y/N</code> 確認プロンプトを表示。<code>--force</code> 指定時はスキップ。非インタラクティブ環境では上書きをスキップして案内メッセージを表示</p>
+<p><strong>Independent Test</strong>: インストール先に既存の wtm バイナリが存在する状態でスクリプトを実行し、TTY 環境では <code>y/N</code> プロンプトが表示され、<code>--force</code> 指定時はプロンプトなしで上書きされること</p>
+<h3 id="implementation-for-user-story-6">Implementation for User Story 6</h3>
+<ul>
+<li>[X] T020 [US6] <code>scripts/install.sh</code> に <code>handle_existing_install()</code> 関数を実装し、T018 の「旧バージョン検出後にインストールフロー続行」の直前に呼び出しを挿入する。関数ロジック: (1) ファイルが存在しない→return 0（新規インストール）、(2) <code>FORCE=true</code>→return 0（強制上書き）、(3) <code>[ -t 0 ]</code> が false（非TTY）→<code>&quot;Note: ${install_path} already exists. Skipping. Re-run with --force: sh -s -- --force&quot;</code> を出力して exit 0、(4) TTY: <code>printf &quot;Overwrite %s? [y/N] &quot;</code> → <code>read -r answer &lt; /dev/tty</code>、<code>[yY]</code>→return 0、それ以外→<code>&quot;Installation cancelled.&quot;</code> → exit 0。この実装により T018 の暫定動作が完全な FR-016/017/018 準拠に更新される</li>
+<li>[X] T021 [P] [US6] <code>scripts/install.ps1</code> に上書き確認ロジックを実装し、T019 の「旧バージョン検出後にフロー続行」の直前に挿入する。<code>-Force</code> スイッチが指定されていれば確認なし。<code>[Environment]::UserInteractive</code> が false（非インタラクティブ）なら <code>&quot;Note: $InstallPath already exists. Skipping. Re-run with -Force.&quot;</code> を出力して exit 0。インタラクティブの場合は <code>Read-Host &quot;Overwrite? [y/N]&quot;</code> でプロンプト表示、<code>y</code> 以外でキャンセル</li>
+</ul>
+<p><strong>Checkpoint</strong>: <code>curl -fsSL .../install.sh | sh</code>（非TTY）で既存バイナリが存在する場合にスキップメッセージが表示され、<code>sh -s -- --force</code> では上書きされること</p>
+<hr>
+<h2 id="phase-8-user-story-5---失敗時の分かりやすいエラーガイダンスpriority-p3">Phase 8: User Story 5 - 失敗時の分かりやすいエラーガイダンス（Priority: P3）</h2>
+<p><strong>Goal</strong>: ネットワーク不通・非対応プラットフォーム・SHA256検証失敗・GitHub API レート制限などのエラー時に、問題の原因と解決策を示す分かりやすいメッセージを出力する</p>
+<p><strong>Independent Test</strong>: 各エラー条件でスクリプトを実行し、出力メッセージだけで次のアクションが分かること</p>
+<h3 id="implementation-for-user-story-5">Implementation for User Story 5</h3>
+<ul>
+<li>[X] T022 [US5] <code>scripts/install.sh</code> の <code>download()</code> 関数とバージョン取得処理のエラーパスに分かりやすいメッセージを追加する。(a) curl/wget 両方が存在しない場合: <code>&quot;Error: Neither curl nor wget found. Install one and retry.&quot;</code> + <code>&quot;Manual download: https://github.com/kuju63/wt/releases&quot;</code>。(b) ダウンロード失敗（非ゼロ終了）時: <code>&quot;Error: Failed to download from ${url}. Check your network connection.&quot;</code>。(c) <strong>GitHub API バージョン取得失敗</strong>（<code>LATEST_VERSION</code> が空の場合）: <code>&quot;Error: Failed to fetch latest version from GitHub API. This may be due to rate limiting. Please wait a moment and retry.&quot;</code> + <code>&quot;Manual install: https://github.com/kuju63/wt/releases&quot;</code></li>
+<li>[X] T023 [P] [US5] <code>scripts/install.sh</code> のプラットフォーム検出エラーパスと SHA256 検証失敗パスのメッセージを充実させる。非対応 OS: <code>&quot;Error: Unsupported OS: ${OS}. Supported: linux-x64, linux-arm, macos-arm64. Manual install: https://github.com/kuju63/wt/releases&quot;</code>。SHA256 失敗: <code>&quot;Error: SHA256 verification failed for ${BINARY_NAME}. Downloaded file removed. Please retry.&quot;</code> + GitHub Releases URL</li>
+<li>[X] T024 [P] [US5] <code>scripts/install.ps1</code> に同等のエラーメッセージを実装する。(a) バージョン取得失敗（API エラー・レート制限）: <code>&quot;Error: Failed to fetch latest version. This may be due to GitHub API rate limiting. Please wait and retry.&quot;</code>。(b) ダウンロード失敗・SHA256 検証失敗の各エラーパスに問題内容と解決策を示すメッセージを追加（<code>Exit-WithError</code> 関数の呼び出し箇所を整備）</li>
+</ul>
+<p><strong>Checkpoint</strong>: 各エラー条件でスクリプトを実行したとき、ユーザーが出力だけで次のアクションを把握できること</p>
+<hr>
+<h2 id="phase-9-polish--cross-cutting-concerns">Phase 9: Polish &amp; Cross-Cutting Concerns</h2>
+<p><strong>Purpose</strong>: 全ユーザーストーリーにまたがる品質確認とドキュメント整備</p>
+<ul>
+<li>[X] T025 [P] <code>scripts/install.sh</code> の最終構文検証を実施する。<code>bash -n scripts/install.sh</code> と <code>shellcheck --severity=warning scripts/install.sh</code> を実行し、全警告・エラーを解消する</li>
+<li>[X] T026 [P] <code>scripts/install.ps1</code> の最終構文検証を実施する。PowerShell の <code>[System.Management.Automation.Language.Parser]::ParseFile()</code> または <code>pwsh -NoProfile -Command &quot;Get-Content scripts/install.ps1 | Out-Null&quot;</code> で構文エラーがないことを確認する</li>
+<li>[X] T027 <code>quickstart.md</code> のテスト計画チェックリストを実施する。<code>bash -n scripts/install.sh</code> ✅、shellcheck ✅、release.yml の変更ファイルパスの整合性を確認（<code>scripts/install.sh</code>、<code>scripts/install.ps1</code> が存在すること）。また SC-001（インストール1分以内）の手動計測を実施する: <code>time bash scripts/install.sh</code> を実行し、所要時間が1分以内であることを確認してその結果をコメントとして記録する</li>
+</ul>
+<hr>
+<h2 id="dependencies--execution-order">Dependencies &amp; Execution Order</h2>
+<h3 id="phase-dependencies">Phase Dependencies</h3>
+<ul>
+<li><strong>Setup (Phase 1)</strong>: 依存なし - 即座に開始可能</li>
+<li><strong>Foundational (Phase 2)</strong>: Phase 1 完了後 - 全 US フェーズをブロック</li>
+<li><strong>US1 (Phase 3)</strong>: Phase 2 完了後 - 他の US に非依存（MVP）</li>
+<li><strong>US2 (Phase 4)</strong>: Phase 2 完了後 - US1 と並列可（別ファイル）</li>
+<li><strong>US3 (Phase 5)</strong>: Phase 3 完了後（骨格の <code>--prefix</code> 実装を確認）</li>
+<li><strong>US4 (Phase 6)</strong>: Phase 3 完了後（既存バイナリの検出フローが必要）</li>
+<li><strong>US6 (Phase 7)</strong>: Phase 6 完了後（T020/T021 は T018/T019 のコードに挿入される）</li>
+<li><strong>US5 (Phase 8)</strong>: Phase 3 完了後 - 既存のエラーパスを充実させる作業</li>
+<li><strong>Polish (Phase 9)</strong>: 全 US フェーズ完了後</li>
+</ul>
+<h3 id="user-story-dependencies">User Story Dependencies</h3>
+<pre><code>Phase 1 → Phase 2 → Phase 3 (US1) ┬→ Phase 4 (US2) [並列可]
+                                    ├→ Phase 5 (US3)
+                                    ├→ Phase 6 (US4) → Phase 7 (US6)
+                                    └→ Phase 8 (US5)
+                                              ↓
+                                         Phase 9 (Polish)
+</code></pre>
+<h3 id="within-each-user-story">Within Each User Story</h3>
+<ul>
+<li><code>install.sh</code> の実装 → <code>install.ps1</code> の実装（対称的に実装、多くが [P] 並列可）</li>
+<li>ワークフロー変更（T012, T013）は US1 スクリプト実装後</li>
+<li>ドキュメント更新（T014, T015）は US2 として独立して並列実施可</li>
+<li>T020/T021（US6）は T018/T019（US4）の実装コードに挿入される点に注意</li>
+</ul>
+<hr>
+<h2 id="parallel-example-user-story-1">Parallel Example: User Story 1</h2>
+<pre><code class="lang-bash"># Phase 3 で並列実行可能なタスク（別ファイル）:
+Task: &quot;T005〜T010: scripts/install.sh の各機能実装（順次）&quot;
+Task: &quot;T011, T011b, T011c: scripts/install.ps1 の機能実装（Unix実装と並列可）&quot;
+
+# Phase 4 で完全並列:
+Task: &quot;T014: README.md 更新&quot;
+Task: &quot;T015: docs/installation.md 更新&quot;
+</code></pre>
+<hr>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="mvp-first-user-story-1-のみ">MVP First (User Story 1 のみ)</h3>
+<ol>
+<li>Phase 1: Setup（T001, T002）</li>
+<li>Phase 2: Foundational（T003, T004）</li>
+<li>Phase 3: US1 全タスク（T005〜T013）</li>
+<li><strong>STOP and VALIDATE</strong>: <code>bash scripts/install.sh</code> でローカルインストール確認</li>
+<li>PR を作成してレビュー → マージ → GitHub Pages デプロイ確認</li>
+</ol>
+<h3 id="incremental-delivery">Incremental Delivery</h3>
+<ol>
+<li>Phase 1 + 2 → 骨格完成</li>
+<li>Phase 3 (US1) → ワンライナーインストール動作確認 → <strong>MVP デモ可</strong></li>
+<li>Phase 4 (US2) → README 更新 → ユーザー向け公開</li>
+<li>Phase 5 (US3) + Phase 6 (US4) → --prefix + 自動更新</li>
+<li>Phase 7 (US6) → 上書き確認（セーフガード）</li>
+<li>Phase 8 (US5) → エラーガイダンス強化</li>
+<li>Phase 9 → Polish → リリース</li>
+</ol>
+<h3 id="parallel-team-strategy">Parallel Team Strategy</h3>
+<p>複数人で作業する場合:</p>
+<ol>
+<li>Phase 1 + 2 を全員で完了</li>
+<li>US1 完了後:
+<ul>
+<li>開発者 A: US3 + US4 + US6（<code>install.sh</code> 更新）</li>
+<li>開発者 B: US2 ドキュメント更新 + US5 エラーガイダンス</li>
+<li>開発者 C: US3 + US4 + US6（<code>install.ps1</code> 更新、[P] 並列可）</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>[P] タスク = 別ファイル、未完了タスクへの依存なし → 並列実行可</li>
+<li>[Story] ラベルは spec.md のユーザーストーリー番号と対応</li>
+<li><code>install.sh</code> と <code>install.ps1</code> の多くのタスクは [P] 並列実行可（対称実装）</li>
+<li>各フェーズのチェックポイントでユーザーストーリーを独立してテスト可</li>
+<li>シェルスクリプトの文字コードは UTF-8、改行コードは LF（CRLF 禁止）</li>
+<li><code>install.sh</code> の shebang は <code>#!/bin/sh</code>（bash 限定の記述を避ける）</li>
+<li>コミットは各タスクまたは論理グループ単位で実施</li>
+<li>T020/T021 は T018/T019 のコードに後から挿入される形で統合される（詳細は Phase 7 を参照）</li>
+<li>リリースバイナリ名は <code>wtm</code>（Unix系）/ <code>wtm.exe</code>（Windows）</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

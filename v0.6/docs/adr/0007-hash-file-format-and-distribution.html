@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ADR 0007: Hash File Format and Distribution Strategy | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ADR 0007: Hash File Format and Distribution Strategy | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/adr/0007-hash-file-format-and-distribution.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adr-0007-hash-file-format-and-distribution-strategy">ADR 0007: Hash File Format and Distribution Strategy</h1>
+
+<p><strong>Status</strong>: Accepted
+<strong>Date</strong>: 2026-02-17
+<strong>Context</strong>: Feature 006 - Release Binary Hash Files
+<strong>Related</strong>: <a href="../../specs/006-release-hash-files/spec.html">spec.md</a>, <a href="../../specs/006-release-hash-files/plan.html">plan.md</a></p>
+<h2 id="context">Context</h2>
+<p>Users need to verify the integrity of downloaded binaries to ensure they have not been corrupted or tampered with during download. We need to provide hash files in a format that:</p>
+<ol>
+<li>Works with standard command-line tools across all platforms (Windows, Linux, macOS)</li>
+<li>Supports both single-file and batch verification workflows</li>
+<li>Follows industry standards for maximum compatibility</li>
+<li>Provides a good user experience without requiring specialized tools</li>
+</ol>
+<p>The feature must support three user stories:</p>
+<ul>
+<li><strong>US1</strong>: Automated hash generation on release</li>
+<li><strong>US2</strong>: User-side integrity verification</li>
+<li><strong>US3</strong>: Hash documentation in release notes</li>
+</ul>
+<h2 id="decision">Decision</h2>
+<h3 id="hash-file-format-gnulinux-standard">Hash File Format: GNU/Linux Standard</h3>
+<p>We chose the <strong>GNU/Linux standard format</strong> for both individual <code>.sha256</code> files and the combined <code>SHA256SUMS</code> file:</p>
+<pre><code class="lang-text">&lt;64-char-hex-hash&gt;  &lt;filename&gt;
+</code></pre>
+<p><strong>Key characteristics</strong>:</p>
+<ul>
+<li>Exactly <strong>two spaces</strong> between hash and filename (not one space)</li>
+<li>64 hexadecimal characters (SHA256 hash)</li>
+<li>Filename includes relative path if applicable</li>
+</ul>
+<p><strong>Example individual file</strong> (<code>wt-v1.0.0-windows-x64.exe.sha256</code>):</p>
+<pre><code class="lang-text">a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-windows-x64.exe
+</code></pre>
+<p><strong>Example combined file</strong> (<code>SHA256SUMS</code>):</p>
+<pre><code class="lang-text">a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-linux-x64
+b2c3d4e5f6a78901234567890123456789012345678901234567890123456789  wt-v1.0.0-macos-arm64
+c3d4e5f6a7b89012345678901234567890123456789012345678901234567890  wt-v1.0.0-windows-x64.exe
+</code></pre>
+<h3 id="distribution-strategy-dual-approach">Distribution Strategy: Dual Approach</h3>
+<p>We provide <strong>both</strong> individual <code>.sha256</code> files and a combined <code>SHA256SUMS</code> file:</p>
+<table>
+<thead>
+<tr>
+<th>File Type</th>
+<th>Purpose</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Individual <code>.sha256</code></strong></td>
+<td>One file per binary</td>
+<td>Single-file download verification</td>
+</tr>
+<tr>
+<td><strong>SHA256SUMS</strong></td>
+<td>All hashes in one file</td>
+<td>Batch verification, CI/CD automation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Release assets structure</strong>:</p>
+<pre><code>wt-v1.0.0-windows-x64.exe
+wt-v1.0.0-windows-x64.exe.sha256  (NEW)
+wt-v1.0.0-linux-x64
+wt-v1.0.0-linux-x64.sha256  (NEW)
+wt-v1.0.0-macos-arm64
+wt-v1.0.0-macos-arm64.sha256  (NEW)
+SHA256SUMS  (EXISTING - maintained)
+SHA256SUMS.asc  (EXISTING - GPG signature)
+</code></pre>
+<h3 id="release-notes-display">Release Notes Display</h3>
+<p>Hash values are displayed directly in release notes using a <strong>code block format</strong>:</p>
+<pre><code class="lang-markdown">## 📋 Checksums
+
+​```text
+a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd  wt-v1.0.0-linux-x64
+b2c3d4e5f6a78901234567890123456789012345678901234567890123456789  wt-v1.0.0-macos-arm64
+c3d4e5f6a7b89012345678901234567890123456789012345678901234567890  wt-v1.0.0-windows-x64.exe
+​```
+
+See the [Release Verification Guide](link) for verification instructions.
+</code></pre>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li>Users can quickly view hashes without downloading separate files</li>
+<li>Code block preserves formatting for copy-paste</li>
+<li>Link to verification guide keeps release notes concise</li>
+<li>GitHub release page already provides download links for assets</li>
+</ul>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<h3 id="alternative-1-hash-only-format">Alternative 1: Hash-Only Format</h3>
+<p><strong>Approach</strong>: Individual files contain only the hash value (no filename)</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Simpler file structure</li>
+<li>Smaller file size</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Cannot use automated verification tools (<code>sha256sum -c</code>, <code>shasum -a 256 -c</code>)</li>
+<li>Users must manually compare hash values</li>
+<li>Not compatible with standard Linux/macOS workflows</li>
+</ul>
+<p><strong>Rejected</strong>: Incompatible with standard command-line tools, poor user experience</p>
+<h3 id="alternative-2-bsd-format">Alternative 2: BSD Format</h3>
+<p><strong>Approach</strong>: Use BSD-style format: <code>SHA256 (filename) = hash</code></p>
+<p><strong>Example</strong>:</p>
+<pre><code class="lang-text">SHA256 (wt-v1.0.0-windows-x64.exe) = a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd
+</code></pre>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Self-documenting format</li>
+<li>Human-readable</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Not the default format for <code>sha256sum</code> (Linux)</li>
+<li>Requires <code>-r</code> flag for macOS <code>shasum</code></li>
+<li>Less common in industry (Node.js, Terraform use GNU format)</li>
+</ul>
+<p><strong>Rejected</strong>: Less standard, requires additional flags for verification</p>
+<h3 id="alternative-3-sha256sums-only-no-individual-files">Alternative 3: SHA256SUMS Only (No Individual Files)</h3>
+<p><strong>Approach</strong>: Provide only the combined <code>SHA256SUMS</code> file</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Simpler release workflow</li>
+<li>Fewer files to upload</li>
+<li>Standard practice for many Linux distributions</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Users downloading a single binary must download <code>SHA256SUMS</code> and parse it</li>
+<li>Some package managers expect individual hash files</li>
+<li>Less convenient for single-file verification</li>
+</ul>
+<p><strong>Rejected</strong>: Poor UX for single-file downloads, misses use case for individual verification</p>
+<h3 id="alternative-4-individual-sha256-only-no-sha256sums">Alternative 4: Individual .sha256 Only (No SHA256SUMS)</h3>
+<p><strong>Approach</strong>: Provide only individual <code>.sha256</code> files</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Convenient for single-file downloads</li>
+<li>Cleaner directory structure</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>No batch verification workflow</li>
+<li>Difficult for CI/CD to verify all downloads at once</li>
+<li>Breaks existing workflows expecting <code>SHA256SUMS</code></li>
+</ul>
+<p><strong>Rejected</strong>: Removes backward compatibility, poor for automation</p>
+<h3 id="alternative-5-inline-hashes-in-release-notes-only">Alternative 5: Inline Hashes in Release Notes Only</h3>
+<p><strong>Approach</strong>: Display hashes only in release notes, no separate files</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Minimal file overhead</li>
+<li>Users can view hashes immediately</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Cannot use automated verification tools</li>
+<li>Manual copy-paste from web page is error-prone</li>
+<li>No programmatic verification in CI/CD</li>
+<li>Not standard practice</li>
+</ul>
+<p><strong>Rejected</strong>: Fails to meet automated verification requirements (FR-001, FR-002)</p>
+<h2 id="consequences">Consequences</h2>
+<h3 id="positive">Positive</h3>
+<ul>
+<li><strong>Cross-Platform Compatibility</strong>: Works with <code>sha256sum</code> (Linux), <code>shasum</code> (macOS), <code>Get-FileHash</code> (Windows PowerShell)</li>
+<li><strong>Standard Compliance</strong>: Follows GNU/Linux format used by Node.js, Terraform, and major distributions</li>
+<li><strong>Dual Workflow Support</strong>: Serves both single-file and batch verification use cases</li>
+<li><strong>Automated Verification</strong>: Compatible with standard CLI tools (<code>sha256sum -c</code>, <code>shasum -a 256 -c</code>)</li>
+<li><strong>Backward Compatibility</strong>: Maintains existing <code>SHA256SUMS</code> file for users already using it</li>
+<li><strong>Visibility</strong>: Hash values displayed in release notes for quick reference</li>
+</ul>
+<h3 id="negative">Negative</h3>
+<ul>
+<li><strong>File Overhead</strong>: Adds 4-5 small files per release (~100 bytes each, &lt;1 KB total)</li>
+<li><strong>Duplicate Information</strong>: Same hash values stored in both individual files and <code>SHA256SUMS</code></li>
+<li><strong>Maintenance</strong>: Two types of hash files to generate and validate</li>
+</ul>
+<h3 id="mitigations">Mitigations</h3>
+<ol>
+<li><strong>Automated Generation</strong>: <code>.github/scripts/generate-checksums.sh</code> generates both formats automatically</li>
+<li><strong>Format Validation</strong>: <code>.github/workflows/verify-hashes.yml</code> validates format compliance on PRs</li>
+<li><strong>Error Handling</strong>: Workflow fails if hash generation fails (FR-005 requirement)</li>
+<li><strong>Documentation</strong>: Comprehensive verification guides for all platforms</li>
+</ol>
+<h2 id="verification-workflow">Verification Workflow</h2>
+<h3 id="automated-cicd">Automated (CI/CD)</h3>
+<pre><code class="lang-bash"># GitHub Actions: verify-hashes.yml
+- Check all binaries have .sha256 files
+- Validate hash format (64 hex chars)
+- Validate file format (two spaces separator)
+- Verify hash consistency (individual vs SHA256SUMS)
+- Run sha256sum -c to verify correctness
+</code></pre>
+<h3 id="user-workflows">User Workflows</h3>
+<p><strong>Linux</strong>:</p>
+<pre><code class="lang-bash">sha256sum -c wt-v1.0.0-linux-x64.sha256
+# Or batch: sha256sum -c SHA256SUMS
+</code></pre>
+<p><strong>macOS</strong>:</p>
+<pre><code class="lang-bash">shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
+# Or batch: shasum -a 256 -c SHA256SUMS
+</code></pre>
+<p><strong>Windows PowerShell</strong>:</p>
+<pre><code class="lang-powershell">$hash = (Get-FileHash .\wt-v1.0.0-windows-x64.exe).Hash
+$expected = (Get-Content .\wt-v1.0.0-windows-x64.exe.sha256).Split(&quot; &quot;)[0]
+$hash -eq $expected  # Should return True
+</code></pre>
+<h2 id="impact-on-project-constitution">Impact on Project Constitution</h2>
+<p>This decision aligns with project constitution principles:</p>
+<ul>
+<li><strong>IV. Documentation Clarity</strong>: Comprehensive Japanese and English verification guides</li>
+<li><strong>V. Minimal Dependencies</strong>: Uses OS-standard tools only (sha256sum, shasum, Get-FileHash)</li>
+<li><strong>VI. Comprehensive Testing</strong>: Automated format validation and end-to-end testing</li>
+</ul>
+<h2 id="references">References</h2>
+<h3 id="standards--research">Standards &amp; Research</h3>
+<ul>
+<li><a href="https://help.ubuntu.com/community/HowToSHA256SUM">HowToSHA256SUM - Ubuntu Community Help Wiki</a></li>
+<li><a href="https://man7.org/linux/man-pages/man1/sha256sum.1.html">sha256sum(1) - Linux manual page</a></li>
+<li><a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/get-filehash">Get-FileHash PowerShell documentation</a></li>
+</ul>
+<h3 id="industry-examples">Industry Examples</h3>
+<ul>
+<li><a href="http://nodejs.org/dist/latest/SHASUMS256.txt">Node.js SHASUMS256.txt format</a> - GNU/Linux format</li>
+<li><a href="https://discuss.hashicorp.com/t/change-in-sha256sums-for-terraform-downloads/52522">Terraform SHA256SUMS format</a> - GNU/Linux format</li>
+<li><a href="https://github.com/denoland/deno/releases">Deno releases with checksums</a> - Individual .sha256sum files</li>
+</ul>
+<h3 id="project-documentation">Project Documentation</h3>
+<ul>
+<li><a href="../../specs/006-release-hash-files/research.html">Research Findings</a></li>
+<li><a href="../../specs/006-release-hash-files/data-model.html">Data Model</a></li>
+<li><a href="../../specs/006-release-hash-files/quickstart.html">Quickstart Guide (Japanese)</a></li>
+</ul>
+<h2 id="review-schedule">Review Schedule</h2>
+<p>This ADR should be reviewed:</p>
+<ul>
+<li>If SHA256 is deprecated or replaced with a stronger algorithm</li>
+<li>If standard hash file formats change significantly</li>
+<li>If user feedback indicates verification difficulties</li>
+<li>After 6 months of releases to assess user adoption and issues</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/adr/0007-hash-file-format-and-distribution.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

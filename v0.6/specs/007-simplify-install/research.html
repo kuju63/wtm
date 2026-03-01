@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Research: インストール簡素化 (007-simplify-install) | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Research: インストール簡素化 (007-simplify-install) | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/research.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="research-インストール簡素化-007-simplify-install">Research: インストール簡素化 (007-simplify-install)</h1>
+
+<h2 id="phase-0-research-findings">Phase 0 Research Findings</h2>
+<hr>
+<h3 id="1-github-pages-安定url配信方式">1. GitHub Pages 安定URL配信方式</h3>
+<p><strong>Decision</strong>: リリースワークフローの <code>build-and-deploy-docs</code> ジョブにスクリプトコピーステップを追加し、<code>_site/</code> に配置してデプロイする</p>
+<p><strong>Rationale</strong>:</p>
+<ul>
+<li><code>docfx.json</code> の <code>build.resource</code> に <code>scripts/**</code> を追加する代替案もあるが、DocFXはコード以外のファイルを意図的に変換してしまうリスクがある</li>
+<li>ワークフロー内で <code>cp scripts/install.sh _site/install.sh</code> を実行する方が確実かつシンプル</li>
+<li>既存の <code>peaceiris/actions-gh-pages@v4</code> デプロイステップ（<code>keep_files: true</code>）との親和性が高い</li>
+<li>結果URL: <code>https://kuju63.github.io/wt/install.sh</code> / <code>https://kuju63.github.io/wt/install.ps1</code></li>
+</ul>
+<p><strong>Alternatives considered</strong>:</p>
+<ul>
+<li>DocFX resourceとして追加: ビルド成果物に含まれるが、DocFXがファイルを解析しようとするリスク</li>
+<li>独立したGitHub Pagesワークフロー: 複雑さが増すため却下</li>
+<li>GitHub Releases資産のみで配信: バージョン非依存の安定URLが実現できないため却下</li>
+</ul>
+<hr>
+<h3 id="2-バイナリ命名パターンreleaseymlより確認済み">2. バイナリ命名パターン（release.ymlより確認済み）</h3>
+<p><strong>Decision</strong>: 以下の命名パターンを採用（バイナリ名 <code>wtm</code> に変更後）</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>File Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux x64</td>
+<td><code>wtm-${VERSION}-linux-x64</code></td>
+</tr>
+<tr>
+<td>Linux ARM</td>
+<td><code>wtm-${VERSION}-linux-arm</code></td>
+</tr>
+<tr>
+<td>macOS ARM64</td>
+<td><code>wtm-${VERSION}-macos-arm64</code></td>
+</tr>
+<tr>
+<td>Windows x64</td>
+<td><code>wtm-${VERSION}-windows-x64.exe</code></td>
+</tr>
+</tbody>
+</table>
+<p>SHA256ファイル: <code>wtm-${VERSION}-${PLATFORM}-${ARCH}.sha256</code>
+統合チェックサム: <code>SHA256SUMS</code></p>
+<hr>
+<h3 id="3-プラットフォームアーキテクチャ自動検出">3. プラットフォーム・アーキテクチャ自動検出</h3>
+<p><strong>Decision</strong>: <code>uname -s</code> / <code>uname -m</code> ベースの検出を採用（Unix）</p>
+<pre><code class="lang-bash">OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+case &quot;$ARCH&quot; in
+  x86_64|amd64) ARCH_TAG=&quot;x64&quot; ;;
+  aarch64|arm64) ARCH_TAG=&quot;arm64&quot; ;;  # macOS ARM64 / Linux ARM64
+  armv7l|armhf|arm*)  ARCH_TAG=&quot;arm&quot; ;;  # Linux ARM
+  *) error_exit &quot;Unsupported architecture: $ARCH&quot; ;;
+esac
+
+case &quot;$OS&quot; in
+  linux) PLATFORM_TAG=&quot;linux&quot; ;;
+  darwin) PLATFORM_TAG=&quot;macos&quot; ;;
+  *) error_exit &quot;Unsupported OS: $OS. See supported platforms.&quot; ;;
+esac
+</code></pre>
+<p><strong>重要</strong>: macOS ARM64は <code>uname -m</code> で <code>arm64</code> を返す（<code>aarch64</code> ではない）。</p>
+<p><strong>Alternatives considered</strong>:</p>
+<ul>
+<li><code>$OSTYPE</code> 変数: bash限定であり、dash/sh環境では使用不可</li>
+<li><code>/etc/os-release</code>: ディストリビューション検出には有用だが、バイナリ選択には不要</li>
+</ul>
+<hr>
+<h3 id="4-最新バージョン取得-github-releases-api">4. 最新バージョン取得 (GitHub Releases API)</h3>
+<p><strong>Decision</strong>: GitHub API の <code>releases/latest</code> エンドポイントを使用</p>
+<pre><code class="lang-bash">LATEST_VERSION=$(curl -fsSL \
+  &quot;https://api.github.com/repos/kuju63/wt/releases/latest&quot; \
+  | grep '&quot;tag_name&quot;' \
+  | sed -E 's/.*&quot;([^&quot;]+)&quot;.*/\1/')
+</code></pre>
+<p><strong>Rationale</strong>: <code>jq</code> を依存関係に追加せず、<code>grep</code> + <code>sed</code> で実装することで標準ツールのみに依存</p>
+<p><strong>Alternatives considered</strong>:</p>
+<ul>
+<li><code>jq</code> を使用: 追加依存が発生するため却下（最小依存の原則）</li>
+<li><code>python3 -c</code>: 利用可能な場合は代替手段として使用可能だが標準化が困難</li>
+</ul>
+<hr>
+<h3 id="5-sha256検証方式">5. SHA256検証方式</h3>
+<p><strong>Decision</strong>: プラットフォーム別に <code>sha256sum</code> (Linux) / <code>shasum</code> (macOS) を自動選択</p>
+<pre><code class="lang-bash">if command -v sha256sum &gt;/dev/null 2&gt;&amp;1; then
+  HASHER=&quot;sha256sum&quot;
+elif command -v shasum &gt;/dev/null 2&gt;&amp;1; then
+  HASHER=&quot;shasum -a 256&quot;
+else
+  error_exit &quot;No SHA256 tool found (sha256sum or shasum)&quot;
+fi
+
+# 検証: ダウンロードしたバイナリと.sha256ファイルを比較
+EXPECTED=$(curl -fsSL &quot;${HASH_URL}&quot; | cut -d' ' -f1)
+ACTUAL=$($HASHER &quot;$BIN_PATH&quot; | cut -d' ' -f1)
+if [ &quot;$EXPECTED&quot; != &quot;$ACTUAL&quot; ]; then
+  rm -f &quot;$BIN_PATH&quot;
+  error_exit &quot;SHA256 verification failed. File deleted. Please retry.&quot;
+fi
+</code></pre>
+<hr>
+<h3 id="6-macos-gatekeeper-対応">6. macOS Gatekeeper 対応</h3>
+<p><strong>Decision</strong>: インストール完了後に <code>xattr -d com.apple.quarantine</code> コマンドを案内メッセージに含める</p>
+<pre><code class="lang-bash">if [ &quot;$PLATFORM_TAG&quot; = &quot;macos&quot; ]; then
+  echo &quot;Note: If you encounter 'cannot be opened because the developer cannot be verified',&quot;
+  echo &quot;run: xattr -d com.apple.quarantine ${INSTALL_PATH}&quot;
+fi
+</code></pre>
+<p><strong>Rationale</strong>: Gatekeeperブロックは自動解除できない（セキュリティリスク）。ユーザーへの手順案内のみ行う。</p>
+<hr>
+<h3 id="7-インストール先ディレクトリ">7. インストール先ディレクトリ</h3>
+<p><strong>Decision</strong>:</p>
+<ul>
+<li>Unix デフォルト: <code>~/.local/bin</code> (sudo不要)</li>
+<li>Windows デフォルト: <code>$env:LOCALAPPDATA\Programs\wtm</code></li>
+<li><code>--prefix DIR</code> オプションでカスタマイズ可能</li>
+</ul>
+<p><strong>PATH案内</strong>:</p>
+<pre><code class="lang-bash">if ! echo &quot;$PATH&quot; | tr ':' '\n' | grep -qx &quot;$INSTALL_DIR&quot;; then
+  echo &quot;Add to PATH: export PATH=\&quot;${INSTALL_DIR}:\$PATH\&quot;&quot;
+  echo &quot;Add the above to ~/.bashrc, ~/.zshrc, or ~/.profile&quot;
+fi
+</code></pre>
+<hr>
+<h3 id="8-curl--wget-フォールバック">8. curl / wget フォールバック</h3>
+<p><strong>Decision</strong>: <code>curl</code> を優先、なければ <code>wget</code> にフォールバック</p>
+<pre><code class="lang-bash">download() {
+  local url=&quot;$1&quot; dest=&quot;$2&quot;
+  if command -v curl &gt;/dev/null 2&gt;&amp;1; then
+    curl -fsSL -o &quot;$dest&quot; &quot;$url&quot;
+  elif command -v wget &gt;/dev/null 2&gt;&amp;1; then
+    wget -q -O &quot;$dest&quot; &quot;$url&quot;
+  else
+    error_exit &quot;Neither curl nor wget found. Please download manually: $url&quot;
+  fi
+}
+</code></pre>
+<hr>
+<h3 id="9-アップデート検出既存インストール確認">9. アップデート検出（既存インストール確認）</h3>
+<p><strong>Decision</strong>: 既存バイナリのバージョン確認 → 同一なら skip、新しければ上書き</p>
+<pre><code class="lang-bash">if command -v &quot;$INSTALL_PATH&quot; &gt;/dev/null 2&gt;&amp;1; then
+  CURRENT=$(&quot;$INSTALL_PATH&quot; --version 2&gt;/dev/null | head -1 || echo &quot;unknown&quot;)
+  if [ &quot;$CURRENT&quot; = &quot;$LATEST_VERSION&quot; ]; then
+    echo &quot;wtm ${LATEST_VERSION} is already installed and up to date.&quot;
+    exit 0
+  fi
+  echo &quot;Updating wtm from $CURRENT to $LATEST_VERSION...&quot;
+fi
+</code></pre>
+<hr>
+<h3 id="10-リリースワークフローへのスクリプト追加">10. リリースワークフローへのスクリプト追加</h3>
+<p><strong>Decision</strong>: <code>release.yml</code> の <code>Create GitHub Release</code> ステップの <code>files:</code> に <code>scripts/install.sh</code> と <code>scripts/install.ps1</code> を追加</p>
+<p>これにより各バージョンのリリース資産にもインストールスクリプトが含まれる。安定URLはGitHub Pages経由で提供する。</p>
+<hr>
+<h3 id="11-インタラクティブ環境検出上書き確認-fr-016017018">11. インタラクティブ環境検出・上書き確認 (FR-016/017/018)</h3>
+<p><strong>Decision</strong>: <code>[ -t 0 ]</code>（stdin が TTY かどうか）を使用してインタラクティブ環境を判定し、<code>--force</code> フラグで強制上書きを制御する</p>
+<pre><code class="lang-bash"># インタラクティブ環境（TTY）の判定
+is_interactive() {
+  [ -t 0 ]
+}
+
+# 既存バイナリ存在時の上書き制御ロジック
+handle_existing_install() {
+  local install_path=&quot;$1&quot;
+  if [ ! -f &quot;$install_path&quot; ]; then
+    return 0  # 新規インストール: 確認不要
+  fi
+
+  if [ &quot;$FORCE&quot; = &quot;true&quot; ]; then
+    return 0  # --force: 確認スキップ
+  fi
+
+  if ! is_interactive; then
+    # 非インタラクティブ（パイプ経由等）: スキップして案内
+    echo &quot;Note: $install_path already exists.&quot;
+    echo &quot;Re-run with --force to overwrite: curl ... | sh -s -- --force&quot;
+    exit 0
+  fi
+
+  # インタラクティブ: y/N プロンプト（デフォルト拒否）
+  printf &quot;Overwrite existing %s? [y/N] &quot; &quot;$install_path&quot;
+  read -r answer &lt; /dev/tty
+  case &quot;$answer&quot; in
+    [yY]) return 0 ;;
+    *) echo &quot;Installation cancelled.&quot;; exit 0 ;;
+  esac
+}
+</code></pre>
+<p><strong>重要</strong>: パイプ実行（<code>curl | sh</code>）では stdin が TTY でないため <code>[ -t 0 ]</code> は <code>false</code> → 非インタラクティブパスに入る。これが FR-018 の要件（パイプ実行では確認なしにスキップ）を自然に満たす。</p>
+<p><strong><code>--force</code> フラグの受け渡し</strong>: <code>curl | sh -s -- --force</code> のように <code>--</code> の後に渡す。</p>
+<p><strong>Alternatives considered</strong>:</p>
+<ul>
+<li><code>tty</code> コマンド: POSIX標準だが <code>[ -t 0 ]</code> より可搬性が若干低い</li>
+<li><code>/dev/tty</code> から読み込む: TTY判定なしに stdin を TTY に切り替える方法だが、存在しない環境でエラー</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/research.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -23,7 +23,7 @@ $InstallPath = ""
 
 function Exit-WithError {
     param([string[]]$Messages)
-    $Messages | ForEach-Object { Write-Host "Error: $_" -ForegroundColor Red }
+    $Messages | ForEach-Object { Write-Output "Error: $_" }
     exit 1
 }
 
@@ -45,7 +45,7 @@ function Invoke-Download {
 }
 
 function Get-LatestVersion {
-    Write-Host "Fetching latest version..."
+    Write-Output "Fetching latest version..."
     try {
         $response = Invoke-RestMethod -Uri "https://api.github.com/repos/kuju63/wt/releases/latest" -UseBasicParsing
         $script:LatestVersion = $response.tag_name
@@ -67,7 +67,7 @@ function Get-LatestVersion {
         )
     }
 
-    Write-Host "Fetching latest version... $($script:LatestVersion)"
+    Write-Output "Fetching latest version... $($script:LatestVersion)"
 }
 
 function Test-ExistingInstall {
@@ -86,11 +86,11 @@ function Test-ExistingInstall {
     }
 
     if ($currentVersion -eq $script:LatestVersion) {
-        Write-Host "wtm $($script:LatestVersion) is already the latest version. Skipping."
+        Write-Output "wtm $($script:LatestVersion) is already the latest version. Skipping."
         exit 0
     }
 
-    Write-Host "wtm $currentVersion is already installed. Updating to $($script:LatestVersion)..."
+    Write-Output "wtm $currentVersion is already installed. Updating to $($script:LatestVersion)..."
     Invoke-HandleExistingInstall -InstallPath $script:InstallPath -CurrentVersion $currentVersion
 }
 
@@ -109,15 +109,15 @@ function Invoke-HandleExistingInstall {
     }
 
     if (-not [Environment]::UserInteractive) {
-        Write-Host "Note: $InstallPath already exists. Skipping overwrite in non-interactive mode."
-        Write-Host "To force overwrite, re-run with -Force:"
-        Write-Host "  & ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Force"
+        Write-Output "Note: $InstallPath already exists. Skipping overwrite in non-interactive mode."
+        Write-Output "To force overwrite, re-run with -Force:"
+        Write-Output "  & ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Force"
         exit 0
     }
 
     $answer = Read-Host "Overwrite existing $InstallPath? [y/N]"
     if ($answer -ne 'y' -and $answer -ne 'Y') {
-        Write-Host "Installation cancelled."
+        Write-Output "Installation cancelled."
         exit 0
     }
 }
@@ -133,10 +133,10 @@ function Install-Binary {
     $binPath = Join-Path $tmpDir $script:BinaryName
     $hashPath = Join-Path $tmpDir "$($script:BinaryName).sha256"
 
-    Write-Host "Downloading wtm $($script:LatestVersion) for windows-x64..."
+    Write-Output "Downloading wtm $($script:LatestVersion) for windows-x64..."
     Invoke-Download -Url $script:DownloadUrl -Destination $binPath
 
-    Write-Host "Verifying SHA256 checksum..."
+    Write-Output "Verifying SHA256 checksum..."
     Invoke-Download -Url $script:HashUrl -Destination $hashPath
 
     $expectedHash = (Get-Content $hashPath -Raw).Split(' ')[0].Trim()
@@ -151,7 +151,7 @@ function Install-Binary {
         )
     }
 
-    Write-Host "Installing to $($script:InstallPath)..."
+    Write-Output "Installing to $($script:InstallPath)..."
     New-Item -ItemType Directory -Path $script:InstallDir -Force | Out-Null
     Copy-Item -Path $binPath -Destination $script:InstallPath -Force
 
@@ -165,21 +165,21 @@ function Show-PathInstruction {
     $allPaths = ($userPath + ";" + $systemPath).Split(';') | Where-Object { $_ -ne "" }
 
     if ($allPaths -notcontains $script:InstallDir) {
-        Write-Host ""
-        Write-Host "Note: $($script:InstallDir) is not in your PATH."
-        Write-Host "To add it permanently, run in PowerShell:"
-        Write-Host "  [Environment]::SetEnvironmentVariable(`"PATH`", `$env:PATH + `";$($script:InstallDir)`", `"User`")"
-        Write-Host "Then restart your terminal."
+        Write-Output ""
+        Write-Output "Note: $($script:InstallDir) is not in your PATH."
+        Write-Output "To add it permanently, run in PowerShell:"
+        Write-Output "  [Environment]::SetEnvironmentVariable(`"PATH`", `$env:PATH + `";$($script:InstallDir)`", `"User`")"
+        Write-Output "Then restart your terminal."
     }
 }
 
 function Write-Success {
-    Write-Host ""
-    Write-Host "✓ wtm $($script:LatestVersion) installed successfully!"
-    Write-Host ""
-    Write-Host "Next steps:"
-    Write-Host "  wtm --version"
-    Write-Host "  wtm --help"
+    Write-Output ""
+    Write-Output "✓ wtm $($script:LatestVersion) installed successfully!"
+    Write-Output ""
+    Write-Output "Next steps:"
+    Write-Output "  wtm --version"
+    Write-Output "  wtm --help"
 }
 
 # --- Main ---

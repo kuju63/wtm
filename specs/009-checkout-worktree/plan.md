@@ -92,6 +92,7 @@ wt.tests/
 **Structure Decision**: Option 1（Single project）を採用。既存の `wt.cli` / `wt.tests` 構造に新ファイルを追加するのみ。新規プロジェクトは不要。
 
 **IInteractionService 導入の判断記録**（軽量 ADR / Constitution IV 準拠）:
+
 - **課題**: マルチリモート選択はインタラクティブ I/O を必要とする。テスト可能性のため抽象化が必要。
 - **選択肢**:
   - A) `Console.ReadLine()` を WorktreeService に直接埋め込む — テスト不可、開発者ユーザビリティ低

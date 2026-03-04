@@ -1,26 +1,26 @@
-# wt create
+# wt checkout
 
-Create a new worktree with a new branch
+Check out an existing branch as a worktree
 
 ## Syntax
 
 ## Arguments
 
-**`<branch>`**  
-Name of the branch to create
+**`<branch-name>`**  
+Name of the branch to check out
 
 ## Options
 
-`-b, --base <base>`  
-Base branch to branch from (default: current branch)
+`--remote <remote>`  
+Remote name to use (skips interactive prompt when multiple remotes found)
 
-`-p, --path <path>`  
-Path where the worktree will be created (default: ../wt-<branch>)
+`--fetch`  
+Fetch from remote before creating worktree
 
 `-e, --editor <Emacs|IntelliJIDEA|Nano|Vim|VSCode>`  
 Editor to launch after creating worktree
 
-`--output <Human|Json>`  
+`-o, --output <Human|Json>`  
 Output format (human or json) [default: Human]
 
 `-v, --verbose`  

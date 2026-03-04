@@ -314,6 +314,143 @@ public class GitService : IGitService
         return CommandResult<bool>.Success(true);
     }
 
+    /// <inheritdoc/>
+    public async Task<CommandResult<IReadOnlyList<string>>> GetRemotesAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await _processRunner.RunAsync("git", "remote", null, cancellationToken);
+
+        if (result.ExitCode != 0)
+        {
+            return CommandResult<IReadOnlyList<string>>.Failure(
+                ErrorCodes.GitCommandFailed,
+                "Failed to list remotes",
+                result.StandardError);
+        }
+
+        var remotes = result.StandardOutput
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(r => r.Trim())
+            .Where(r => !string.IsNullOrEmpty(r))
+            .ToList();
+
+        return CommandResult<IReadOnlyList<string>>.Success(remotes);
+    }
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<IReadOnlyList<RemoteBranchInfo>>> GetRemoteTrackingBranchesAsync(
+        string? branchName = null,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _processRunner.RunAsync("git", "branch -r", null, cancellationToken);
+
+        if (result.ExitCode != 0)
+        {
+            return CommandResult<IReadOnlyList<RemoteBranchInfo>>.Failure(
+                ErrorCodes.GitCommandFailed,
+                "Failed to list remote tracking branches",
+                result.StandardError);
+        }
+
+        var branches = result.StandardOutput
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(l => l.Trim())
+            .Where(l => !string.IsNullOrEmpty(l) && !l.Contains("->"))
+            .Select(ParseRemoteBranchLine)
+            .Where(b => b != null)
+            .Cast<RemoteBranchInfo>()
+            .ToList();
+
+        if (!string.IsNullOrEmpty(branchName))
+        {
+            branches = branches.Where(b => b.BranchName == branchName).ToList();
+        }
+
+        return CommandResult<IReadOnlyList<RemoteBranchInfo>>.Success(branches);
+    }
+
+    private RemoteBranchInfo? ParseRemoteBranchLine(string line)
+    {
+        // Format: "origin/branch-name" or "origin/feature/sub"
+        var slashIndex = line.IndexOf('/');
+        if (slashIndex < 0)
+        {
+            return null;
+        }
+
+        var remote = line[..slashIndex];
+        var branch = line[(slashIndex + 1)..];
+
+        if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
+        {
+            return null;
+        }
+
+        return new RemoteBranchInfo(remote, branch, line);
+    }
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<Unit>> FetchFromRemoteAsync(string remote, CancellationToken cancellationToken = default)
+    {
+        var result = await _processRunner.RunAsync("git", $"fetch {remote}", null, cancellationToken);
+
+        if (result.ExitCode != 0)
+        {
+            return CommandResult<Unit>.Failure(
+                ErrorCodes.RemoteFetchFailed,
+                $"Failed to fetch from remote '{remote}'",
+                ErrorCodes.GetSolution(ErrorCodes.RemoteFetchFailed));
+        }
+
+        return CommandResult<Unit>.Success(Unit.Value);
+    }
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<string?>> GetBranchUpstreamRemoteAsync(string branchName, CancellationToken cancellationToken = default)
+    {
+        var result = await _processRunner.RunAsync("git", $"config branch.{branchName}.remote", null, cancellationToken);
+
+        // Exit code 1 means no upstream configured — not an error
+        if (result.ExitCode == 1)
+        {
+            return CommandResult<string?>.Success(null);
+        }
+
+        if (result.ExitCode != 0)
+        {
+            return CommandResult<string?>.Failure(
+                ErrorCodes.GitCommandFailed,
+                $"Failed to get upstream remote for branch '{branchName}'",
+                result.StandardError);
+        }
+
+        var remoteName = result.StandardOutput.Trim();
+        return CommandResult<string?>.Success(string.IsNullOrEmpty(remoteName) ? null : remoteName);
+    }
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<Unit>> AddWorktreeFromRemoteAsync(
+        string worktreePath,
+        string branchName,
+        string remoteName,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _processRunner.RunAsync(
+            "git",
+            $"worktree add --track -b {branchName} \"{worktreePath}\" {remoteName}/{branchName}",
+            null,
+            cancellationToken);
+
+        if (result.ExitCode != 0)
+        {
+            return CommandResult<Unit>.Failure(
+                ErrorCodes.WorktreeCreationFailed,
+                $"Failed to create worktree from remote branch '{remoteName}/{branchName}'",
+                result.StandardError);
+        }
+
+        return CommandResult<Unit>.Success(Unit.Value);
+    }
+
     private async Task<string?> GetMainGitDirAsync(CancellationToken cancellationToken)
     {
         var result = await _processRunner.RunAsync("git", "rev-parse --git-dir", null, cancellationToken);

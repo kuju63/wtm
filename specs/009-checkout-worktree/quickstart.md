@@ -25,6 +25,7 @@
 ### Step 1: エラーコード追加（テスト不要）
 
 `wt.cli/Models/ErrorCodes.cs` に以下を追加:
+
 ```csharp
 public const string RemoteNotFound = "RM001";
 public const string RemoteFetchFailed = "RM002";
@@ -38,6 +39,7 @@ public const string BranchNotFoundAnywhere = "RM003";
 ### Step 2: モデル追加
 
 **テスト**: `wt.tests/Models/RemoteBranchInfoTests.cs`、`CheckoutWorktreeOptionsTests.cs`
+
 - `RemoteBranchInfo` のプロパティ、`FullRef` フォーマット
 - `CheckoutWorktreeOptions.Validate()` の境界値テスト
 
@@ -46,6 +48,7 @@ public const string BranchNotFoundAnywhere = "RM003";
 ### Step 3: IInteractionService + ConsoleInteractionService
 
 **テスト**: `wt.tests/Services/Interaction/ConsoleInteractionServiceTests.cs`
+
 - 有効入力（1-N）→ 対応インデックスを返す
 - 空入力 / `q` → null を返す
 - 無効入力3回 → null を返す
@@ -56,6 +59,7 @@ public const string BranchNotFoundAnywhere = "RM003";
 ### Step 4: GitService 拡張
 
 **テスト**: `wt.tests/Services/Git/GitServiceTests.cs`（既存ファイルに追加）
+
 - `GetRemotesAsync`: `git remote` 出力パース
 - `GetRemoteTrackingBranchesAsync`: `git branch -r` 出力パース（複数リモート、ブランチ名フィルタ）
 - `FetchFromRemoteAsync`: 成功/失敗シナリオ
@@ -63,12 +67,14 @@ public const string BranchNotFoundAnywhere = "RM003";
 - `AddWorktreeFromRemoteAsync`: 成功/失敗シナリオ
 
 **`git branch -r` 出力パース例**:
+
 ```
   origin/HEAD -> origin/main
   origin/feature/review-me
   upstream/feature/shared
   origin/feature/shared
 ```
+
 → `HEAD -> ...` 行はスキップ
 
 ---
@@ -78,6 +84,7 @@ public const string BranchNotFoundAnywhere = "RM003";
 **テスト**: `wt.tests/Services/Worktree/WorktreeServiceCheckoutTests.cs`
 
 主要テストシナリオ:
+
 ```
 - ローカルブランチ存在 → 正常作成
 - ローカルブランチ存在 + --fetch + upstream設定済み → fetch後作成
@@ -98,6 +105,7 @@ public const string BranchNotFoundAnywhere = "RM003";
 **テスト**: `wt.tests/Commands/Worktree/CheckoutCommandTests.cs`
 
 主要テストシナリオ:
+
 ```
 - 正常実行 → 終了コード0、成功メッセージ
 - 正常実行 --output json → JSON出力

@@ -22,6 +22,7 @@
 | `Verbose` | `bool` | - | `--verbose (-v)` 詳細出力 |
 
 **バリデーション**:
+
 - `BranchName`: null/空不可、`Validators.ValidateBranchName()` による命名規則チェック
 - `Remote`: null または空白なしの非空文字列
 
@@ -53,6 +54,7 @@
 | `BranchNotFoundAnywhere` | `"RM003"` | ブランチがローカルにもどのリモートにも存在しない |
 
 `GetSolution()` への追加:
+
 - `RM001`: `"git remote -v で設定済みリモートを確認し、--remote フラグに正しいリモート名を指定してください"`
 - `RM002`: `"ネットワーク接続と認証情報を確認し、git fetch <remote> を手動実行してください"`
 - `RM003`: `"git branch -a でブランチ一覧を確認してください。--fetch フラグを付けてリモートを最新化してから再試行することもできます"`

@@ -1,4 +1,5 @@
 using Kuju63.WorkTree.CommandLine.Models;
+using Kuju63.WorkTree.CommandLine.Services.Interaction;
 
 namespace Kuju63.WorkTree.CommandLine.Services.Worktree;
 
@@ -66,4 +67,17 @@ public interface IWorktreeService
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="CommandResult{T}"/> containing the removal result.</returns>
     Task<CommandResult<RemoveWorktreeResult>> RemoveWorktreeAsync(RemoveWorktreeOptions options, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Checks out an existing branch as a worktree.
+    /// Prefers local branches; falls back to remote tracking refs if not found locally.
+    /// </summary>
+    /// <param name="options">The options for checking out the worktree.</param>
+    /// <param name="interactionService">Service for interactive user selection.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the created worktree information.</returns>
+    Task<CommandResult<WorktreeInfo>> CheckoutWorktreeAsync(
+        CheckoutWorktreeOptions options,
+        IInteractionService interactionService,
+        CancellationToken cancellationToken = default);
 }

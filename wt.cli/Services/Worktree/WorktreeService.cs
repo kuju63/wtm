@@ -1,24 +1,10 @@
 using Kuju63.WorkTree.CommandLine.Models;
 using Kuju63.WorkTree.CommandLine.Services.Editor;
 using Kuju63.WorkTree.CommandLine.Services.Git;
+using Kuju63.WorkTree.CommandLine.Services.Interaction;
 using Kuju63.WorkTree.CommandLine.Utils;
 
 namespace Kuju63.WorkTree.CommandLine.Services.Worktree;
-
-/// <summary>
-/// Represents a unit type (void) for generic command results.
-/// </summary>
-internal sealed class Unit
-{
-    /// <summary>
-    /// Gets the singleton instance of Unit.
-    /// </summary>
-    public static Unit Value => new();
-
-    private Unit()
-    {
-    }
-}
 
 /// <summary>
 /// Represents the result of path preparation.
@@ -479,5 +465,339 @@ public class WorktreeService : IWorktreeService
                 "Unknown validation error",
                 null)
         };
+    }
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<WorktreeInfo>> CheckoutWorktreeAsync(
+        CheckoutWorktreeOptions options,
+        IInteractionService interactionService,
+        CancellationToken cancellationToken = default)
+    {
+        // Validate options
+        var validationResult = options.Validate();
+        if (!validationResult.IsValid)
+        {
+            return CommandResult<WorktreeInfo>.Failure(
+                ErrorCodes.InvalidBranchName,
+                validationResult.ErrorMessage ?? "Invalid options",
+                ErrorCodes.GetSolution(ErrorCodes.InvalidBranchName));
+        }
+
+        // Check if in Git repository
+        var isGitRepoResult = await _gitService.IsGitRepositoryAsync(cancellationToken);
+        if (!isGitRepoResult.IsSuccess || !isGitRepoResult.Data)
+        {
+            return CommandResult<WorktreeInfo>.Failure(
+                ErrorCodes.NotGitRepository,
+                "Not in a Git repository",
+                ErrorCodes.GetSolution(ErrorCodes.NotGitRepository));
+        }
+
+        return await CheckoutWorktreeInternalAsync(options, interactionService, cancellationToken);
+    }
+
+    private async Task<CommandResult<WorktreeInfo>> CheckoutWorktreeInternalAsync(
+        CheckoutWorktreeOptions options,
+        IInteractionService interactionService,
+        CancellationToken cancellationToken)
+    {
+        // Check if local branch exists
+        var localBranchExists = await _gitService.BranchExistsAsync(options.BranchName, cancellationToken);
+        if (!localBranchExists.IsSuccess)
+        {
+            return ToWorktreeFailure(localBranchExists);
+        }
+
+        if (localBranchExists.Data)
+        {
+            // Local branch exists — handle --fetch if specified
+            if (options.Fetch)
+            {
+                var fetchResult = await FetchForLocalBranchAsync(options.BranchName, cancellationToken);
+                if (!fetchResult.IsSuccess)
+                {
+                    return ToWorktreeFailure(fetchResult);
+                }
+            }
+
+            return await CreateWorktreeFromLocalBranchAsync(options, cancellationToken);
+        }
+
+        // Local branch not found — try remote
+        return await CheckoutFromRemoteAsync(options, interactionService, cancellationToken);
+    }
+
+    private async Task<CommandResult<Unit>> FetchForLocalBranchAsync(string branchName, CancellationToken cancellationToken)
+    {
+        var upstreamResult = await _gitService.GetBranchUpstreamRemoteAsync(branchName, cancellationToken);
+        if (!upstreamResult.IsSuccess)
+        {
+            return ToUnitFailure(upstreamResult);
+        }
+
+        if (upstreamResult.Data == null)
+        {
+            // No upstream configured — this is a warning, not an error
+            // Return success with warning embedded in caller
+            return CommandResult<Unit>.Success(Unit.Value);
+        }
+
+        return await _gitService.FetchFromRemoteAsync(upstreamResult.Data, cancellationToken);
+    }
+
+    private async Task<CommandResult<WorktreeInfo>> CreateWorktreeFromLocalBranchAsync(
+        CheckoutWorktreeOptions options,
+        CancellationToken cancellationToken)
+    {
+        // Check if branch is already checked out in another worktree
+        var listResult = await _gitService.ListWorktreesAsync(cancellationToken);
+        if (listResult.IsSuccess && listResult.Data != null)
+        {
+            var existingWorktree = listResult.Data.FirstOrDefault(w =>
+                w.Branch.Equals(options.BranchName, StringComparison.OrdinalIgnoreCase));
+
+            if (existingWorktree != null)
+            {
+                return CommandResult<WorktreeInfo>.Failure(
+                    ErrorCodes.BranchAlreadyInUse,
+                    $"Branch '{options.BranchName}' is already checked out at '{existingWorktree.Path}'",
+                    ErrorCodes.GetSolution(ErrorCodes.BranchAlreadyInUse));
+            }
+        }
+
+        var pathResult = PrepareCheckoutWorktreePath(options.BranchName);
+        if (!pathResult.IsValid)
+        {
+            return CommandResult<WorktreeInfo>.Failure(
+                ErrorCodes.WorktreeAlreadyExists,
+                pathResult.ErrorMessage ?? "Invalid path",
+                ErrorCodes.GetSolution(ErrorCodes.WorktreeAlreadyExists));
+        }
+
+        var addResult = await _gitService.AddWorktreeAsync(pathResult.Path, options.BranchName, cancellationToken);
+        if (!addResult.IsSuccess)
+        {
+            return CommandResult<WorktreeInfo>.Failure(
+                addResult.ErrorCode!,
+                addResult.ErrorMessage!,
+                addResult.Solution);
+        }
+
+        var worktreeInfo = new WorktreeInfo(
+            pathResult.Path,
+            options.BranchName,
+            false,
+            string.Empty,
+            DateTime.UtcNow,
+            true);
+
+        return await LaunchEditorForCheckoutAsync(options, worktreeInfo, cancellationToken);
+    }
+
+    private async Task<CommandResult<WorktreeInfo>> CheckoutFromRemoteAsync(
+        CheckoutWorktreeOptions options,
+        IInteractionService interactionService,
+        CancellationToken cancellationToken)
+    {
+        // If --fetch is specified, fetch before searching
+        if (options.Fetch)
+        {
+            var fetchResult = await FetchRemotesForCheckoutAsync(options, cancellationToken);
+            if (!fetchResult.IsSuccess)
+            {
+                return ToWorktreeFailure(fetchResult);
+            }
+        }
+
+        // Search remote tracking branches
+        var remoteResult = await _gitService.GetRemoteTrackingBranchesAsync(options.BranchName, cancellationToken);
+        if (!remoteResult.IsSuccess)
+        {
+            return ToWorktreeFailure(remoteResult);
+        }
+
+        var matches = remoteResult.Data!;
+        if (matches.Count == 0)
+        {
+            return CommandResult<WorktreeInfo>.Failure(
+                ErrorCodes.BranchNotFoundAnywhere,
+                $"Branch '{options.BranchName}' was not found locally or in any remote",
+                ErrorCodes.GetSolution(ErrorCodes.BranchNotFoundAnywhere));
+        }
+
+        // Determine which remote to use
+        RemoteBranchInfo? selectedBranch;
+        if (!string.IsNullOrEmpty(options.Remote))
+        {
+            // --remote specified: find that specific remote
+            selectedBranch = matches.FirstOrDefault(b =>
+                b.RemoteName.Equals(options.Remote, StringComparison.OrdinalIgnoreCase));
+
+            if (selectedBranch == null)
+            {
+                return CommandResult<WorktreeInfo>.Failure(
+                    ErrorCodes.RemoteNotFound,
+                    $"Remote '{options.Remote}' does not have branch '{options.BranchName}'",
+                    ErrorCodes.GetSolution(ErrorCodes.RemoteNotFound));
+            }
+        }
+        else if (matches.Count == 1)
+        {
+            // Single match: auto-select
+            selectedBranch = matches[0];
+        }
+        else
+        {
+            // Multiple remotes — prompt user
+            var remoteNames = matches.Select(b => b.RemoteName).ToList();
+            var selectedIndex = await interactionService.SelectAsync(
+                $"Branch '{options.BranchName}' found in multiple remotes. Select one:",
+                remoteNames,
+                cancellationToken);
+
+            if (selectedIndex == null)
+            {
+                return CommandResult<WorktreeInfo>.Failure(
+                    "USR001",
+                    "User cancelled remote selection",
+                    "Re-run the command and select a remote, or use --remote <name> to specify directly");
+            }
+
+            selectedBranch = matches[selectedIndex.Value];
+        }
+
+        // Check if branch is already checked out
+        var listResult = await _gitService.ListWorktreesAsync(cancellationToken);
+        if (listResult.IsSuccess && listResult.Data != null)
+        {
+            var existingWorktree = listResult.Data.FirstOrDefault(w =>
+                w.Branch.Equals(options.BranchName, StringComparison.OrdinalIgnoreCase));
+
+            if (existingWorktree != null)
+            {
+                return CommandResult<WorktreeInfo>.Failure(
+                    ErrorCodes.BranchAlreadyInUse,
+                    $"Branch '{options.BranchName}' is already checked out at '{existingWorktree.Path}'",
+                    ErrorCodes.GetSolution(ErrorCodes.BranchAlreadyInUse));
+            }
+        }
+
+        var pathResult = PrepareCheckoutWorktreePath(options.BranchName);
+        if (!pathResult.IsValid)
+        {
+            return CommandResult<WorktreeInfo>.Failure(
+                ErrorCodes.WorktreeAlreadyExists,
+                pathResult.ErrorMessage ?? "Invalid path",
+                ErrorCodes.GetSolution(ErrorCodes.WorktreeAlreadyExists));
+        }
+
+        var addResult = await _gitService.AddWorktreeFromRemoteAsync(
+            pathResult.Path,
+            selectedBranch.BranchName,
+            selectedBranch.RemoteName,
+            cancellationToken);
+
+        if (!addResult.IsSuccess)
+        {
+            return CommandResult<WorktreeInfo>.Failure(
+                addResult.ErrorCode!,
+                addResult.ErrorMessage!,
+                addResult.Solution);
+        }
+
+        var worktreeInfo = new WorktreeInfo(
+            pathResult.Path,
+            options.BranchName,
+            false,
+            string.Empty,
+            DateTime.UtcNow,
+            true);
+
+        return await LaunchEditorForCheckoutAsync(options, worktreeInfo, cancellationToken);
+    }
+
+    private async Task<CommandResult<Unit>> FetchRemotesForCheckoutAsync(
+        CheckoutWorktreeOptions options,
+        CancellationToken cancellationToken)
+    {
+        if (!string.IsNullOrEmpty(options.Remote))
+        {
+            return await _gitService.FetchFromRemoteAsync(options.Remote, cancellationToken);
+        }
+
+        // Fetch all remotes
+        var remotesResult = await _gitService.GetRemotesAsync(cancellationToken);
+        if (!remotesResult.IsSuccess)
+        {
+            return ToUnitFailure(remotesResult);
+        }
+
+        foreach (var remote in remotesResult.Data!)
+        {
+            var fetchResult = await _gitService.FetchFromRemoteAsync(remote, cancellationToken);
+            if (!fetchResult.IsSuccess)
+            {
+                return fetchResult;
+            }
+        }
+
+        return CommandResult<Unit>.Success(Unit.Value);
+    }
+
+    private PathPrepareResult PrepareCheckoutWorktreePath(string branchName)
+    {
+        var worktreePath = $"../wt-{branchName}";
+        var resolvedPath = _pathHelper.ResolvePath(worktreePath, Environment.CurrentDirectory);
+        var normalizedPath = _pathHelper.NormalizePath(resolvedPath);
+
+        var pathValidation = _pathHelper.ValidatePath(normalizedPath);
+        if (!pathValidation.IsValid)
+        {
+            return PathPrepareResult.Invalid(pathValidation.ErrorMessage ?? "Invalid path");
+        }
+
+        try
+        {
+            _pathHelper.EnsureParentDirectoryExists(normalizedPath);
+        }
+        catch (Exception ex)
+        {
+            return PathPrepareResult.Invalid(ex.Message ?? "Failed to create parent directory");
+        }
+
+        return PathPrepareResult.Valid(normalizedPath);
+    }
+
+    private async Task<CommandResult<WorktreeInfo>> LaunchEditorForCheckoutAsync(
+        CheckoutWorktreeOptions options,
+        WorktreeInfo worktreeInfo,
+        CancellationToken cancellationToken)
+    {
+        if (!options.EditorType.HasValue || _editorService == null)
+        {
+            return CommandResult<WorktreeInfo>.Success(worktreeInfo);
+        }
+
+        var editorResult = await _editorService.LaunchEditorAsync(
+            worktreeInfo.Path,
+            options.EditorType.Value,
+            cancellationToken);
+
+        if (!editorResult.IsSuccess)
+        {
+            return CommandResult<WorktreeInfo>.Success(
+                worktreeInfo,
+                new List<string> { $"Warning: {editorResult.ErrorMessage ?? "Failed to launch editor"}" });
+        }
+
+        return CommandResult<WorktreeInfo>.Success(worktreeInfo);
+    }
+
+    private CommandResult<Unit> ToUnitFailure<T>(CommandResult<T> result)
+    {
+        return CommandResult<Unit>.Failure(
+            result.ErrorCode ?? ErrorCodes.GitCommandFailed,
+            result.ErrorMessage ?? "Operation failed",
+            result.Solution);
     }
 }

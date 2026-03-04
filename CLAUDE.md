@@ -115,6 +115,7 @@ docfx build docfx.json
 <!-- MANUAL ADDITIONS END -->
 
 ## Active Technologies
+
 - C# 13 / .NET 10.0 + System.CommandLine 2.0.3, System.IO.Abstractions 22.1.0 (009-checkout-worktree)
 - N/A（ファイルシステムへのワークツリーディレクトリ作成のみ） (009-checkout-worktree)
 

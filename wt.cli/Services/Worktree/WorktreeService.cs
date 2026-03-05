@@ -473,10 +473,16 @@ public class WorktreeService : IWorktreeService
     }
 
     /// <inheritdoc/>
+    public Task<CommandResult<WorktreeInfo>> CheckoutWorktreeAsync(
+        CheckoutWorktreeOptions options,
+        IInteractionService interactionService)
+        => CheckoutWorktreeAsync(options, interactionService, CancellationToken.None);
+
+    /// <inheritdoc/>
     public async Task<CommandResult<WorktreeInfo>> CheckoutWorktreeAsync(
         CheckoutWorktreeOptions options,
         IInteractionService interactionService,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         // Validate options
         var validationResult = options.Validate();

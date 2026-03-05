@@ -315,7 +315,11 @@ public class GitService : IGitService
     }
 
     /// <inheritdoc/>
-    public async Task<CommandResult<IReadOnlyList<string>>> GetRemotesAsync(CancellationToken cancellationToken = default)
+    public Task<CommandResult<IReadOnlyList<string>>> GetRemotesAsync()
+        => GetRemotesAsync(CancellationToken.None);
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<IReadOnlyList<string>>> GetRemotesAsync(CancellationToken cancellationToken)
     {
         var result = await _processRunner.RunAsync("git", "remote", null, cancellationToken);
 
@@ -337,9 +341,17 @@ public class GitService : IGitService
     }
 
     /// <inheritdoc/>
+    public Task<CommandResult<IReadOnlyList<RemoteBranchInfo>>> GetRemoteTrackingBranchesAsync()
+        => GetRemoteTrackingBranchesAsync(null, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public Task<CommandResult<IReadOnlyList<RemoteBranchInfo>>> GetRemoteTrackingBranchesAsync(string? branchName)
+        => GetRemoteTrackingBranchesAsync(branchName, CancellationToken.None);
+
+    /// <inheritdoc/>
     public async Task<CommandResult<IReadOnlyList<RemoteBranchInfo>>> GetRemoteTrackingBranchesAsync(
-        string? branchName = null,
-        CancellationToken cancellationToken = default)
+        string? branchName,
+        CancellationToken cancellationToken)
     {
         var result = await _processRunner.RunAsync("git", "branch -r", null, cancellationToken);
 
@@ -389,7 +401,11 @@ public class GitService : IGitService
     }
 
     /// <inheritdoc/>
-    public async Task<CommandResult<Unit>> FetchFromRemoteAsync(string remote, CancellationToken cancellationToken = default)
+    public Task<CommandResult<Unit>> FetchFromRemoteAsync(string remote)
+        => FetchFromRemoteAsync(remote, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<Unit>> FetchFromRemoteAsync(string remote, CancellationToken cancellationToken)
     {
         var result = await _processRunner.RunAsync("git", $"fetch \"{remote}\"", null, cancellationToken);
 
@@ -408,7 +424,11 @@ public class GitService : IGitService
     }
 
     /// <inheritdoc/>
-    public async Task<CommandResult<string?>> GetBranchUpstreamRemoteAsync(string branchName, CancellationToken cancellationToken = default)
+    public Task<CommandResult<string?>> GetBranchUpstreamRemoteAsync(string branchName)
+        => GetBranchUpstreamRemoteAsync(branchName, CancellationToken.None);
+
+    /// <inheritdoc/>
+    public async Task<CommandResult<string?>> GetBranchUpstreamRemoteAsync(string branchName, CancellationToken cancellationToken)
     {
         var result = await _processRunner.RunAsync("git", $"config \"branch.{branchName}.remote\"", null, cancellationToken);
 

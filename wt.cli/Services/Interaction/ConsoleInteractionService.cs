@@ -31,10 +31,14 @@ public class ConsoleInteractionService : IInteractionService
     }
 
     /// <inheritdoc/>
+    public Task<int?> SelectAsync(string prompt, IReadOnlyList<string> choices)
+        => SelectAsync(prompt, choices, CancellationToken.None);
+
+    /// <inheritdoc/>
     public Task<int?> SelectAsync(
         string prompt,
         IReadOnlyList<string> choices,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
         {

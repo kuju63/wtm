@@ -74,10 +74,22 @@ public interface IWorktreeService
     /// </summary>
     /// <param name="options">The options for checking out the worktree.</param>
     /// <param name="interactionService">Service for interactive user selection.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the created worktree information.</returns>
+    Task<CommandResult<WorktreeInfo>> CheckoutWorktreeAsync(
+        CheckoutWorktreeOptions options,
+        IInteractionService interactionService)
+        => CheckoutWorktreeAsync(options, interactionService, CancellationToken.None);
+
+    /// <summary>
+    /// Checks out an existing branch as a worktree.
+    /// Prefers local branches; falls back to remote tracking refs if not found locally.
+    /// </summary>
+    /// <param name="options">The options for checking out the worktree.</param>
+    /// <param name="interactionService">Service for interactive user selection.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="CommandResult{T}"/> containing the created worktree information.</returns>
     Task<CommandResult<WorktreeInfo>> CheckoutWorktreeAsync(
         CheckoutWorktreeOptions options,
         IInteractionService interactionService,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken);
 }

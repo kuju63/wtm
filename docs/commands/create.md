@@ -4,6 +4,10 @@ Create a new worktree with a new branch
 
 ## Syntax
 
+```bash
+wtm create <branch> [options]
+```
+
 ## Arguments
 
 **`<branch>`**  

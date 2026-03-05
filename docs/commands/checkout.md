@@ -4,6 +4,10 @@ Check out an existing branch as a worktree
 
 ## Syntax
 
+```bash
+wtm checkout <branch-name> [options]
+```
+
 ## Arguments
 
 **`<branch-name>`**  

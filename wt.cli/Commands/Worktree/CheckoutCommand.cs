@@ -40,13 +40,16 @@ public class CheckoutCommand : Command
             if (result.IsSuccess)
             {
                 DisplaySuccess(result.Data!, options.OutputFormat, parseResult.InvocationConfiguration.Output);
+                foreach (var warning in result.Warnings)
+                {
+                    parseResult.InvocationConfiguration.Error.WriteLine($"警告: {warning}");
+                }
+
                 return 0;
             }
-            else
-            {
-                DisplayError(result, options.Verbose, parseResult.InvocationConfiguration.Error);
-                return 1;
-            }
+
+            DisplayError(result, options.Verbose, parseResult.InvocationConfiguration.Error);
+            return 1;
         });
     }
 

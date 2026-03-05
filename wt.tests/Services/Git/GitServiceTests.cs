@@ -1008,7 +1008,7 @@ detached
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "fetch origin", null, default))
+            .Setup(x => x.RunAsync("git", "fetch \"origin\"", null, default))
             .ReturnsAsync(new ProcessResult(0, "", ""));
 
         // Act
@@ -1023,7 +1023,7 @@ detached
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "fetch origin", null, default))
+            .Setup(x => x.RunAsync("git", "fetch \"origin\"", null, default))
             .ReturnsAsync(new ProcessResult(1, "", "error: could not fetch origin"));
 
         // Act
@@ -1041,7 +1041,7 @@ detached
         // Arrange
         var stderrMessage = "error: could not resolve hostname 'example.com'";
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "fetch origin", null, default))
+            .Setup(x => x.RunAsync("git", "fetch \"origin\"", null, default))
             .ReturnsAsync(new ProcessResult(1, "", stderrMessage));
 
         // Act

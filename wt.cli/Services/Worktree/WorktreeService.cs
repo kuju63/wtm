@@ -510,24 +510,29 @@ public class WorktreeService : IWorktreeService
 
         if (localBranchExists.Data)
         {
+            var warnings = new List<string>();
+
             // Local branch exists — handle --fetch if specified
             if (options.Fetch)
             {
-                var fetchResult = await FetchForLocalBranchAsync(options.BranchName, cancellationToken);
+                var fetchResult = await FetchForLocalBranchAsync(options.BranchName, warnings, cancellationToken);
                 if (!fetchResult.IsSuccess)
                 {
                     return ToWorktreeFailure(fetchResult);
                 }
             }
 
-            return await CreateWorktreeFromLocalBranchAsync(options, cancellationToken);
+            return await CreateWorktreeFromLocalBranchAsync(options, warnings, cancellationToken);
         }
 
         // Local branch not found — try remote
         return await CheckoutFromRemoteAsync(options, interactionService, cancellationToken);
     }
 
-    private async Task<CommandResult<Unit>> FetchForLocalBranchAsync(string branchName, CancellationToken cancellationToken)
+    private async Task<CommandResult<Unit>> FetchForLocalBranchAsync(
+        string branchName,
+        List<string> warnings,
+        CancellationToken cancellationToken)
     {
         var upstreamResult = await _gitService.GetBranchUpstreamRemoteAsync(branchName, cancellationToken);
         if (!upstreamResult.IsSuccess)
@@ -537,8 +542,10 @@ public class WorktreeService : IWorktreeService
 
         if (upstreamResult.Data == null)
         {
-            // No upstream configured — this is a warning, not an error
-            // Return success with warning embedded in caller
+            // No upstream configured — warn the user and continue without fetching
+            warnings.Add(
+                $"Branch '{branchName}' has no upstream remote configured. Skipping fetch. " +
+                $"To set upstream, run: git branch --set-upstream-to=<remote>/<branch> {branchName}");
             return CommandResult<Unit>.Success(Unit.Value);
         }
 
@@ -547,6 +554,7 @@ public class WorktreeService : IWorktreeService
 
     private async Task<CommandResult<WorktreeInfo>> CreateWorktreeFromLocalBranchAsync(
         CheckoutWorktreeOptions options,
+        List<string> warnings,
         CancellationToken cancellationToken)
     {
         // Check if branch is already checked out in another worktree
@@ -591,7 +599,7 @@ public class WorktreeService : IWorktreeService
             DateTime.UtcNow,
             true);
 
-        return await LaunchEditorForCheckoutAsync(options, worktreeInfo, cancellationToken);
+        return await LaunchEditorForCheckoutAsync(options, worktreeInfo, warnings, cancellationToken);
     }
 
     private async Task<CommandResult<WorktreeInfo>> CheckoutFromRemoteAsync(
@@ -658,9 +666,9 @@ public class WorktreeService : IWorktreeService
             if (selectedIndex == null)
             {
                 return CommandResult<WorktreeInfo>.Failure(
-                    "USR001",
+                    ErrorCodes.UserCancelled,
                     "User cancelled remote selection",
-                    "Re-run the command and select a remote, or use --remote <name> to specify directly");
+                    ErrorCodes.GetSolution(ErrorCodes.UserCancelled));
             }
 
             selectedBranch = matches[selectedIndex.Value];
@@ -713,7 +721,7 @@ public class WorktreeService : IWorktreeService
             DateTime.UtcNow,
             true);
 
-        return await LaunchEditorForCheckoutAsync(options, worktreeInfo, cancellationToken);
+        return await LaunchEditorForCheckoutAsync(options, worktreeInfo, [], cancellationToken);
     }
 
     private async Task<CommandResult<Unit>> FetchRemotesForCheckoutAsync(
@@ -771,11 +779,12 @@ public class WorktreeService : IWorktreeService
     private async Task<CommandResult<WorktreeInfo>> LaunchEditorForCheckoutAsync(
         CheckoutWorktreeOptions options,
         WorktreeInfo worktreeInfo,
+        List<string> warnings,
         CancellationToken cancellationToken)
     {
         if (!options.EditorType.HasValue || _editorService == null)
         {
-            return CommandResult<WorktreeInfo>.Success(worktreeInfo);
+            return CommandResult<WorktreeInfo>.Success(worktreeInfo, warnings.Count > 0 ? warnings : null);
         }
 
         var editorResult = await _editorService.LaunchEditorAsync(
@@ -785,12 +794,10 @@ public class WorktreeService : IWorktreeService
 
         if (!editorResult.IsSuccess)
         {
-            return CommandResult<WorktreeInfo>.Success(
-                worktreeInfo,
-                new List<string> { $"Warning: {editorResult.ErrorMessage ?? "Failed to launch editor"}" });
+            warnings.Add($"Warning: {editorResult.ErrorMessage ?? "Failed to launch editor"}");
         }
 
-        return CommandResult<WorktreeInfo>.Success(worktreeInfo);
+        return CommandResult<WorktreeInfo>.Success(worktreeInfo, warnings.Count > 0 ? warnings : null);
     }
 
     private CommandResult<Unit> ToUnitFailure<T>(CommandResult<T> result)

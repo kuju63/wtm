@@ -32,6 +32,9 @@ public static class ErrorCodes
     public const string RemoteFetchFailed = "RM002";
     public const string BranchNotFoundAnywhere = "RM003";
 
+    // ユーザー操作 (USR001)
+    public const string UserCancelled = "USR001";
+
     /// <summary>
     /// Gets a solution message for the specified error code.
     /// </summary>
@@ -56,6 +59,7 @@ public static class ErrorCodes
             RemoteNotFound => "Check configured remotes with 'git remote -v' and specify the correct remote name with --remote flag",
             RemoteFetchFailed => "Check network connection and authentication, then run 'git fetch <remote>' manually",
             BranchNotFoundAnywhere => "Check branch list with 'git branch -a'. You can also retry with --fetch flag to update remote tracking refs",
+            UserCancelled => "Operation was cancelled by the user",
             _ => "Unknown error occurred"
         };
     }

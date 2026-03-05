@@ -391,7 +391,7 @@ public class GitService : IGitService
     /// <inheritdoc/>
     public async Task<CommandResult<Unit>> FetchFromRemoteAsync(string remote, CancellationToken cancellationToken = default)
     {
-        var result = await _processRunner.RunAsync("git", $"fetch {remote}", null, cancellationToken);
+        var result = await _processRunner.RunAsync("git", $"fetch \"{remote}\"", null, cancellationToken);
 
         if (result.ExitCode != 0)
         {
@@ -436,7 +436,7 @@ public class GitService : IGitService
     {
         var result = await _processRunner.RunAsync(
             "git",
-            $"worktree add --track -b {branchName} \"{worktreePath}\" {remoteName}/{branchName}",
+            $"worktree add --track -b \"{branchName}\" \"{worktreePath}\" \"{remoteName}/{branchName}\"",
             null,
             cancellationToken);
 

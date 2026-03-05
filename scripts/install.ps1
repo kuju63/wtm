@@ -23,7 +23,7 @@ $InstallPath = ""
 
 function Exit-WithError {
     param([string[]]$Messages)
-    $Messages | ForEach-Object { Write-Output "Error: $_" }
+    $Messages | ForEach-Object { Write-Error "Error: $_" }
     exit 1
 }
 

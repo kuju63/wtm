@@ -395,10 +395,13 @@ public class GitService : IGitService
 
         if (result.ExitCode != 0)
         {
+            var solution = string.IsNullOrEmpty(result.StandardError)
+                ? ErrorCodes.GetSolution(ErrorCodes.RemoteFetchFailed)
+                : result.StandardError;
             return CommandResult<Unit>.Failure(
                 ErrorCodes.RemoteFetchFailed,
                 $"Failed to fetch from remote '{remote}'",
-                ErrorCodes.GetSolution(ErrorCodes.RemoteFetchFailed));
+                solution);
         }
 
         return CommandResult<Unit>.Success(Unit.Value);

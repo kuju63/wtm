@@ -8,7 +8,7 @@ public sealed class Unit
     /// <summary>
     /// Gets the singleton instance of Unit.
     /// </summary>
-    public static Unit Value => new();
+    public static readonly Unit Value = new();
 
     private Unit()
     {

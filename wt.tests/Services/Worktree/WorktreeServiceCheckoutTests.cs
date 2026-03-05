@@ -621,4 +621,57 @@ public class WorktreeServiceCheckoutTests
         result.ErrorMessage.ShouldNotBeNull();
         result.ErrorMessage.ShouldContain("upstream");
     }
+
+    [Fact]
+    public async Task CheckoutWorktreeAsync_MultipleRemotes_OutOfRangeIndex_ReturnsFailure()
+    {
+        // Arrange
+        SetupGitRepo();
+        SetupLocalBranchExists("feature/shared", false);
+        SetupRemoteTrackingBranches("feature/shared", new List<RemoteBranchInfo>
+        {
+            new("origin", "feature/shared", "origin/feature/shared"),
+            new("upstream", "feature/shared", "upstream/feature/shared")
+        });
+
+        // Return an out-of-range index (2 when only 0 and 1 are valid)
+        _mockInteractionService
+            .Setup(i => i.SelectAsync(It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(2);
+
+        var options = new CheckoutWorktreeOptions { BranchName = "feature/shared" };
+
+        // Act
+        var result = await _worktreeService.CheckoutWorktreeAsync(
+            options, _mockInteractionService.Object);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.RemoteNotFound);
+    }
+
+    [Fact]
+    public async Task CheckoutWorktreeAsync_RemoteBranch_SetsRemoteOnWorktreeInfo()
+    {
+        // Arrange
+        SetupGitRepo();
+        SetupLocalBranchExists("feature/shared", false);
+        SetupRemoteTrackingBranches("feature/shared", new List<RemoteBranchInfo>
+        {
+            new("origin", "feature/shared", "origin/feature/shared"),
+        });
+        SetupListWorktrees();
+        SetupAddWorktreeFromRemote();
+
+        var options = new CheckoutWorktreeOptions { BranchName = "feature/shared" };
+
+        // Act
+        var result = await _worktreeService.CheckoutWorktreeAsync(
+            options, _mockInteractionService.Object);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldNotBeNull();
+        result.Data.Remote.ShouldBe("origin");
+    }
 }

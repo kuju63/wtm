@@ -215,7 +215,12 @@ public class WorktreeService : IWorktreeService
     private PathPrepareResult PrepareWorktreePath(CreateWorktreeOptions options)
     {
         var worktreePath = options.WorktreePath ?? $"../wt-{options.BranchName}";
-        var resolvedPath = _pathHelper.ResolvePath(worktreePath, Environment.CurrentDirectory);
+        return PrepareWorktreePathCore(worktreePath);
+    }
+
+    private PathPrepareResult PrepareWorktreePathCore(string rawPath)
+    {
+        var resolvedPath = _pathHelper.ResolvePath(rawPath, Environment.CurrentDirectory);
         var normalizedPath = _pathHelper.NormalizePath(resolvedPath);
 
         var pathValidation = _pathHelper.ValidatePath(normalizedPath);
@@ -542,7 +547,8 @@ public class WorktreeService : IWorktreeService
 
         if (upstreamResult.Data == null)
         {
-            // No upstream configured — warn the user and continue without fetching
+            // No upstream configured — add warning and continue without fetching.
+            // Warning is collected in the 'warnings' list passed by the caller.
             warnings.Add(
                 $"Branch '{branchName}' has no upstream remote configured. Skipping fetch. " +
                 $"To set upstream, run: git branch --set-upstream-to=<remote>/<branch> {branchName}");
@@ -671,6 +677,14 @@ public class WorktreeService : IWorktreeService
                     ErrorCodes.GetSolution(ErrorCodes.UserCancelled));
             }
 
+            if (selectedIndex.Value >= matches.Count)
+            {
+                return CommandResult<WorktreeInfo>.Failure(
+                    ErrorCodes.RemoteNotFound,
+                    "Selected remote index is out of range",
+                    ErrorCodes.GetSolution(ErrorCodes.RemoteNotFound));
+            }
+
             selectedBranch = matches[selectedIndex.Value];
         }
 
@@ -719,7 +733,8 @@ public class WorktreeService : IWorktreeService
             false,
             string.Empty,
             DateTime.UtcNow,
-            true);
+            true)
+        { Remote = selectedBranch.RemoteName };
 
         return await LaunchEditorForCheckoutAsync(options, worktreeInfo, [], cancellationToken);
     }
@@ -754,26 +769,7 @@ public class WorktreeService : IWorktreeService
 
     private PathPrepareResult PrepareCheckoutWorktreePath(string branchName)
     {
-        var worktreePath = $"../wt-{branchName}";
-        var resolvedPath = _pathHelper.ResolvePath(worktreePath, Environment.CurrentDirectory);
-        var normalizedPath = _pathHelper.NormalizePath(resolvedPath);
-
-        var pathValidation = _pathHelper.ValidatePath(normalizedPath);
-        if (!pathValidation.IsValid)
-        {
-            return PathPrepareResult.Invalid(pathValidation.ErrorMessage ?? "Invalid path");
-        }
-
-        try
-        {
-            _pathHelper.EnsureParentDirectoryExists(normalizedPath);
-        }
-        catch (Exception ex)
-        {
-            return PathPrepareResult.Invalid(ex.Message ?? "Failed to create parent directory");
-        }
-
-        return PathPrepareResult.Valid(normalizedPath);
+        return PrepareWorktreePathCore($"../wt-{branchName}");
     }
 
     private async Task<CommandResult<WorktreeInfo>> LaunchEditorForCheckoutAsync(

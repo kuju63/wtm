@@ -42,9 +42,14 @@ public class CheckoutCommand : Command
                 DisplaySuccess(result.Data!, options.OutputFormat, parseResult.InvocationConfiguration.Output);
                 foreach (var warning in result.Warnings)
                 {
-                    parseResult.InvocationConfiguration.Error.WriteLine($"警告: {warning}");
+                    parseResult.InvocationConfiguration.Error.WriteLine($"Warning: {warning}");
                 }
 
+                return 0;
+            }
+
+            if (result.ErrorCode == ErrorCodes.UserCancelled)
+            {
                 return 0;
             }
 
@@ -106,6 +111,7 @@ public class CheckoutCommand : Command
                 {
                     path = worktreeInfo.Path,
                     branch = worktreeInfo.Branch,
+                    remote = worktreeInfo.Remote,
                     isDetached = worktreeInfo.IsDetached,
                     createdAt = worktreeInfo.CreatedAt
                 }
@@ -117,9 +123,13 @@ public class CheckoutCommand : Command
         }
         else
         {
-            output.WriteLine("ワークツリーを作成しました");
-            output.WriteLine($"  ブランチ : {worktreeInfo.Branch}");
-            output.WriteLine($"  パス     : {worktreeInfo.Path}");
+            output.WriteLine("✓ Worktree checked out successfully");
+            output.WriteLine($"  Branch:  {worktreeInfo.Branch}");
+            output.WriteLine($"  Path:    {worktreeInfo.Path}");
+            if (!string.IsNullOrEmpty(worktreeInfo.Remote))
+            {
+                output.WriteLine($"  Remote:  {worktreeInfo.Remote}");
+            }
         }
     }
 
@@ -129,12 +139,12 @@ public class CheckoutCommand : Command
 
         if (!string.IsNullOrEmpty(result.Solution))
         {
-            error.WriteLine($"  解決方法: {result.Solution}");
+            error.WriteLine($"  Solution:   {result.Solution}");
         }
 
         if (verbose && !string.IsNullOrEmpty(result.ErrorCode))
         {
-            error.WriteLine($"  エラーコード: {result.ErrorCode}");
+            error.WriteLine($"  Error Code: {result.ErrorCode}");
         }
     }
 }

@@ -206,4 +206,136 @@ public class CheckoutCommandTests
         exitCode.ShouldNotBe(0);
         error.ShouldContain("typo");
     }
+
+    [Fact]
+    public async Task CheckoutCommand_UserCancelled_ReturnsExitCode0()
+    {
+        // Arrange
+        _mockWorktreeService
+            .Setup(s => s.CheckoutWorktreeAsync(
+                It.IsAny<CheckoutWorktreeOptions>(),
+                It.IsAny<IInteractionService>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<WorktreeInfo>.Failure(
+                ErrorCodes.UserCancelled,
+                "User cancelled remote selection",
+                ErrorCodes.GetSolution(ErrorCodes.UserCancelled)));
+
+        // Act
+        var (exitCode, _, _) = await InvokeAsync(["checkout", "feature/x"]);
+
+        // Assert
+        exitCode.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task CheckoutCommand_Success_OutputsEnglishLabels()
+    {
+        // Arrange
+        var worktreeInfo = new WorktreeInfo(
+            "/path/to/wt-feature",
+            "feature/x",
+            false,
+            string.Empty,
+            DateTime.UtcNow,
+            true);
+
+        _mockWorktreeService
+            .Setup(s => s.CheckoutWorktreeAsync(
+                It.IsAny<CheckoutWorktreeOptions>(),
+                It.IsAny<IInteractionService>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<WorktreeInfo>.Success(worktreeInfo));
+
+        // Act
+        var (exitCode, output, _) = await InvokeAsync(["checkout", "feature/x"]);
+
+        // Assert
+        exitCode.ShouldBe(0);
+        output.ShouldContain("Branch:");
+        output.ShouldContain("Path:");
+        output.ShouldNotContain("ブランチ");
+        output.ShouldNotContain("パス");
+    }
+
+    [Fact]
+    public async Task CheckoutCommand_SuccessWithRemote_DisplaysRemoteInfo()
+    {
+        // Arrange
+        var worktreeInfo = new WorktreeInfo(
+            "/path/to/wt-feature",
+            "feature/x",
+            false,
+            string.Empty,
+            DateTime.UtcNow,
+            true)
+        { Remote = "origin" };
+
+        _mockWorktreeService
+            .Setup(s => s.CheckoutWorktreeAsync(
+                It.IsAny<CheckoutWorktreeOptions>(),
+                It.IsAny<IInteractionService>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<WorktreeInfo>.Success(worktreeInfo));
+
+        // Act
+        var (exitCode, output, _) = await InvokeAsync(["checkout", "feature/x"]);
+
+        // Assert
+        exitCode.ShouldBe(0);
+        output.ShouldContain("Remote:");
+        output.ShouldContain("origin");
+    }
+
+    [Fact]
+    public async Task CheckoutCommand_SuccessWithJsonOutput_IncludesRemoteField()
+    {
+        // Arrange
+        var worktreeInfo = new WorktreeInfo(
+            "/path/to/wt-feature",
+            "feature/x",
+            false,
+            string.Empty,
+            DateTime.UtcNow,
+            true)
+        { Remote = "upstream" };
+
+        _mockWorktreeService
+            .Setup(s => s.CheckoutWorktreeAsync(
+                It.IsAny<CheckoutWorktreeOptions>(),
+                It.IsAny<IInteractionService>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<WorktreeInfo>.Success(worktreeInfo));
+
+        // Act
+        var (exitCode, output, _) = await InvokeAsync(["checkout", "feature/x", "--output", "json"]);
+
+        // Assert
+        exitCode.ShouldBe(0);
+        output.ShouldContain("\"remote\"");
+        output.ShouldContain("upstream");
+    }
+
+    [Fact]
+    public async Task CheckoutCommand_Failure_DisplaysEnglishSolutionLabel()
+    {
+        // Arrange
+        _mockWorktreeService
+            .Setup(s => s.CheckoutWorktreeAsync(
+                It.IsAny<CheckoutWorktreeOptions>(),
+                It.IsAny<IInteractionService>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CommandResult<WorktreeInfo>.Failure(
+                ErrorCodes.BranchNotFoundAnywhere,
+                "Branch not found",
+                "Check your branch name"));
+
+        // Act
+        var (exitCode, _, error) = await InvokeAsync(["checkout", "feature/nonexistent"]);
+
+        // Assert
+        exitCode.ShouldNotBe(0);
+        error.ShouldContain("Solution:");
+        error.ShouldNotContain("解決方法");
+    }
 }

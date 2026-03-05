@@ -1049,7 +1049,23 @@ detached
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
-        result.Solution.ShouldNotBeNullOrEmpty();
+        result.Solution.ShouldBe(stderrMessage);
+    }
+
+    [Fact]
+    public async Task FetchFromRemoteAsync_Failure_WithEmptyStderr_UsesFallbackSolution()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "fetch \"origin\"", null, default))
+            .ReturnsAsync(new ProcessResult(1, "", ""));
+
+        // Act
+        var result = await _gitService.FetchFromRemoteAsync("origin");
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.Solution.ShouldBe(ErrorCodes.GetSolution(ErrorCodes.RemoteFetchFailed));
     }
 
     #endregion

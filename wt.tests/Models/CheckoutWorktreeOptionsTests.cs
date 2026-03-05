@@ -110,6 +110,31 @@ public class CheckoutWorktreeOptionsTests
         result.IsValid.ShouldBeTrue();
     }
 
+    [Theory]
+    [InlineData("origin\"injected")]
+    [InlineData("origin;evil")]
+    [InlineData("origin&&evil")]
+    [InlineData("origin||evil")]
+    [InlineData("origin$HOME")]
+    [InlineData("origin`whoami`")]
+    [InlineData("origin|pipe")]
+    public void Validate_WithRemoteContainingShellMetacharacters_ShouldReturnInvalid(string remoteName)
+    {
+        // Arrange
+        var options = new CheckoutWorktreeOptions
+        {
+            BranchName = "feature/valid",
+            Remote = remoteName
+        };
+
+        // Act
+        var result = options.Validate();
+
+        // Assert
+        result.IsValid.ShouldBeFalse();
+        result.ErrorMessage.ShouldNotBeNullOrEmpty();
+    }
+
     [Fact]
     public void CheckoutWorktreeOptions_DefaultValues_ShouldBeCorrect()
     {

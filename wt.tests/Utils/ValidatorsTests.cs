@@ -58,6 +58,25 @@ public class ValidatorsTests
     }
 
     [Theory]
+    [InlineData("feature;rm -rf /", false)]
+    [InlineData("feature&&evil", false)]
+    [InlineData("feature||evil", false)]
+    [InlineData("feature$HOME", false)]
+    [InlineData("feature`whoami`", false)]
+    [InlineData("feature\"name", false)]
+    [InlineData("feature!name", false)]
+    [InlineData("feature(name)", false)]
+    public void ValidateBranchName_WithShellMetacharacters_ShouldReturnFalse(string branchName, bool expected)
+    {
+        // Act
+        var result = Validators.ValidateBranchName(branchName);
+
+        // Assert
+        result.IsValid.ShouldBe(expected);
+        result.ErrorMessage.ShouldNotBeNull();
+    }
+
+    [Theory]
     [InlineData("feature-x", "feature-x")]
     [InlineData("  feature-x  ", "feature-x")]
     [InlineData("FEATURE-X", "FEATURE-X")]

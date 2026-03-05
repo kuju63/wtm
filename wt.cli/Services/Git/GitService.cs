@@ -89,7 +89,7 @@ public class GitService : IGitService
     /// <returns>A <see cref="CommandResult{T}"/> containing <see langword="true"/> if the branch exists; otherwise, <see langword="false"/>.</returns>
     public async Task<CommandResult<bool>> BranchExistsAsync(string branchName, CancellationToken cancellationToken)
     {
-        var result = await _processRunner.RunAsync("git", $"rev-parse --verify {branchName}", null, cancellationToken);
+        var result = await _processRunner.RunAsync("git", $"rev-parse --verify \"{branchName}\"", null, cancellationToken);
         return CommandResult<bool>.Success(result.ExitCode == 0);
     }
 
@@ -111,7 +111,7 @@ public class GitService : IGitService
     /// <returns>A <see cref="CommandResult{T}"/> containing information about the created branch.</returns>
     public async Task<CommandResult<BranchInfo>> CreateBranchAsync(string branchName, string baseBranch, CancellationToken cancellationToken)
     {
-        var result = await _processRunner.RunAsync("git", $"branch {branchName} {baseBranch}", null, cancellationToken);
+        var result = await _processRunner.RunAsync("git", $"branch \"{branchName}\" \"{baseBranch}\"", null, cancellationToken);
 
         if (result.ExitCode != 0)
         {
@@ -407,7 +407,7 @@ public class GitService : IGitService
     /// <inheritdoc/>
     public async Task<CommandResult<string?>> GetBranchUpstreamRemoteAsync(string branchName, CancellationToken cancellationToken = default)
     {
-        var result = await _processRunner.RunAsync("git", $"config branch.{branchName}.remote", null, cancellationToken);
+        var result = await _processRunner.RunAsync("git", $"config \"branch.{branchName}.remote\"", null, cancellationToken);
 
         // Exit code 1 means no upstream configured — not an error
         if (result.ExitCode == 1)
@@ -469,7 +469,10 @@ public class GitService : IGitService
         if (fullPath.Contains("/worktrees/") || fullPath.Contains("\\worktrees\\"))
         {
             var worktreesIndex = fullPath.LastIndexOf("worktrees", StringComparison.OrdinalIgnoreCase);
-            return fullPath.Substring(0, worktreesIndex - 1);
+            if (worktreesIndex > 0)
+            {
+                return fullPath.Substring(0, worktreesIndex - 1);
+            }
         }
 
         return fullPath;

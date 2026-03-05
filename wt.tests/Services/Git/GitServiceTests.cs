@@ -94,7 +94,7 @@ public class GitServiceTests
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "rev-parse --verify feature-x", null, default))
+            .Setup(x => x.RunAsync("git", "rev-parse --verify \"feature-x\"", null, default))
             .ReturnsAsync(new ProcessResult(0, "abc123def", ""));
 
         // Act
@@ -110,7 +110,7 @@ public class GitServiceTests
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "rev-parse --verify nonexistent", null, default))
+            .Setup(x => x.RunAsync("git", "rev-parse --verify \"nonexistent\"", null, default))
             .ReturnsAsync(new ProcessResult(128, "", "fatal: Needed a single revision"));
 
         // Act
@@ -126,7 +126,7 @@ public class GitServiceTests
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "branch feature-x main", null, default))
+            .Setup(x => x.RunAsync("git", "branch \"feature-x\" \"main\"", null, default))
             .ReturnsAsync(new ProcessResult(0, "", ""));
 
         // Act
@@ -144,7 +144,7 @@ public class GitServiceTests
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "branch feature-x main", null, default))
+            .Setup(x => x.RunAsync("git", "branch \"feature-x\" \"main\"", null, default))
             .ReturnsAsync(new ProcessResult(128, "", "fatal: A branch named 'feature-x' already exists"));
 
         // Act
@@ -957,7 +957,7 @@ detached
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "config branch.main.remote", null, default))
+            .Setup(x => x.RunAsync("git", "config \"branch.main.remote\"", null, default))
             .ReturnsAsync(new ProcessResult(0, "origin\n", ""));
 
         // Act
@@ -973,7 +973,7 @@ detached
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "config branch.feature.remote", null, default))
+            .Setup(x => x.RunAsync("git", "config \"branch.feature.remote\"", null, default))
             .ReturnsAsync(new ProcessResult(1, "", ""));
 
         // Act
@@ -989,7 +989,7 @@ detached
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "config branch.main.remote", null, default))
+            .Setup(x => x.RunAsync("git", "config \"branch.main.remote\"", null, default))
             .ReturnsAsync(new ProcessResult(128, "", "fatal: not a git repository"));
 
         // Act
@@ -1050,6 +1050,60 @@ detached
         // Assert
         result.IsSuccess.ShouldBeFalse();
         result.Solution.ShouldNotBeNullOrEmpty();
+    }
+
+    #endregion
+
+    #region Security: quoted arguments
+
+    [Fact]
+    public async Task BranchExistsAsync_BranchNameIsQuoted_InGitCommand()
+    {
+        // Arrange: expects quoted branch name in the command
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "rev-parse --verify \"feature-x\"", null, default))
+            .ReturnsAsync(new ProcessResult(0, "abc123def", ""));
+
+        // Act
+        var result = await _gitService.BranchExistsAsync("feature-x");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+        _mockProcessRunner.Verify(x => x.RunAsync("git", "rev-parse --verify \"feature-x\"", null, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateBranchAsync_BranchAndBaseNamesAreQuoted_InGitCommand()
+    {
+        // Arrange: expects both branch name and base branch quoted
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "branch \"feature-x\" \"main\"", null, default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.CreateBranchAsync("feature-x", "main");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        _mockProcessRunner.Verify(x => x.RunAsync("git", "branch \"feature-x\" \"main\"", null, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetBranchUpstreamRemoteAsync_BranchNameIsQuoted_InConfigKey()
+    {
+        // Arrange: expects quoted branch name in config key
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "config \"branch.main.remote\"", null, default))
+            .ReturnsAsync(new ProcessResult(0, "origin\n", ""));
+
+        // Act
+        var result = await _gitService.GetBranchUpstreamRemoteAsync("main");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBe("origin");
+        _mockProcessRunner.Verify(x => x.RunAsync("git", "config \"branch.main.remote\"", null, default), Times.Once);
     }
 
     #endregion

@@ -55,9 +55,13 @@ public class CheckoutWorktreeOptions
             return branchValidation;
         }
 
-        if (Remote != null && Remote.Contains(' '))
+        if (Remote != null)
         {
-            return new ValidationResult(false, "Remote name cannot contain spaces");
+            var remoteValidation = Validators.ValidateRemoteName(Remote);
+            if (!remoteValidation.IsValid)
+            {
+                return remoteValidation;
+            }
         }
 
         return new ValidationResult(true);

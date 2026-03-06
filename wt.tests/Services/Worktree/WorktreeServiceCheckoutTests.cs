@@ -650,6 +650,36 @@ public class WorktreeServiceCheckoutTests
     }
 
     [Fact]
+    public async Task CheckoutWorktreeAsync_MultipleRemotes_NegativeIndex_ReturnsFailure()
+    {
+        // Arrange
+        var branchName = "feature/test";
+        SetupGitRepo();
+        SetupLocalBranchExists(branchName, false);
+        SetupRemoteTrackingBranches(branchName, new List<RemoteBranchInfo>
+        {
+            new("origin", branchName, $"origin/{branchName}"),
+            new("upstream", branchName, $"upstream/{branchName}"),
+        });
+        _mockInteractionService
+            .Setup(i => i.SelectAsync(
+                It.IsAny<string>(),
+                It.IsAny<IReadOnlyList<string>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(-1); // 負のインデックスを返す
+
+        var options = new CheckoutWorktreeOptions { BranchName = branchName };
+
+        // Act
+        var result = await _worktreeService.CheckoutWorktreeAsync(
+            options, _mockInteractionService.Object);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.RemoteNotFound);
+    }
+
+    [Fact]
     public async Task CheckoutWorktreeAsync_RemoteBranch_SetsRemoteOnWorktreeInfo()
     {
         // Arrange

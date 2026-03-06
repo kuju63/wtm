@@ -570,20 +570,9 @@ public class WorktreeService : IWorktreeService
         CancellationToken cancellationToken)
     {
         // Check if branch is already checked out in another worktree
-        var listResult = await _gitService.ListWorktreesAsync(cancellationToken);
-        if (listResult.IsSuccess && listResult.Data != null)
-        {
-            var existingWorktree = listResult.Data.FirstOrDefault(w =>
-                w.Branch.Equals(options.BranchName, StringComparison.OrdinalIgnoreCase));
-
-            if (existingWorktree != null)
-            {
-                return CommandResult<WorktreeInfo>.Failure(
-                    ErrorCodes.BranchAlreadyInUse,
-                    $"Branch '{options.BranchName}' is already checked out at '{existingWorktree.Path}'",
-                    ErrorCodes.GetSolution(ErrorCodes.BranchAlreadyInUse));
-            }
-        }
+        var branchInUseResult = await EnsureBranchNotCheckedOutAsync(options.BranchName, cancellationToken);
+        if (branchInUseResult != null)
+            return branchInUseResult;
 
         var pathResult = PrepareCheckoutWorktreePath(options.BranchName);
         if (!pathResult.IsValid)
@@ -683,7 +672,7 @@ public class WorktreeService : IWorktreeService
                     ErrorCodes.GetSolution(ErrorCodes.UserCancelled));
             }
 
-            if (selectedIndex.Value >= matches.Count)
+            if (selectedIndex.Value < 0 || selectedIndex.Value >= matches.Count)
             {
                 return CommandResult<WorktreeInfo>.Failure(
                     ErrorCodes.RemoteNotFound,
@@ -695,20 +684,9 @@ public class WorktreeService : IWorktreeService
         }
 
         // Check if branch is already checked out
-        var listResult = await _gitService.ListWorktreesAsync(cancellationToken);
-        if (listResult.IsSuccess && listResult.Data != null)
-        {
-            var existingWorktree = listResult.Data.FirstOrDefault(w =>
-                w.Branch.Equals(options.BranchName, StringComparison.OrdinalIgnoreCase));
-
-            if (existingWorktree != null)
-            {
-                return CommandResult<WorktreeInfo>.Failure(
-                    ErrorCodes.BranchAlreadyInUse,
-                    $"Branch '{options.BranchName}' is already checked out at '{existingWorktree.Path}'",
-                    ErrorCodes.GetSolution(ErrorCodes.BranchAlreadyInUse));
-            }
-        }
+        var branchInUseResult = await EnsureBranchNotCheckedOutAsync(options.BranchName, cancellationToken);
+        if (branchInUseResult != null)
+            return branchInUseResult;
 
         var pathResult = PrepareCheckoutWorktreePath(options.BranchName);
         if (!pathResult.IsValid)
@@ -772,6 +750,26 @@ public class WorktreeService : IWorktreeService
 
         return CommandResult<Unit>.Success(Unit.Value);
     }
+
+private async Task<CommandResult<WorktreeInfo>?> EnsureBranchNotCheckedOutAsync(
+    string branchName,
+    CancellationToken cancellationToken)
+{
+    var listResult = await _gitService.ListWorktreesAsync(cancellationToken);
+    if (listResult.IsSuccess && listResult.Data != null)
+    {
+        var existingWorktree = listResult.Data.FirstOrDefault(w =>
+            w.Branch.Equals(branchName, StringComparison.OrdinalIgnoreCase));
+        if (existingWorktree != null)
+        {
+            return CommandResult<WorktreeInfo>.Failure(
+                ErrorCodes.BranchAlreadyInUse,
+                $"Branch '{branchName}' is already checked out at '{existingWorktree.Path}'",
+                ErrorCodes.GetSolution(ErrorCodes.BranchAlreadyInUse));
+        }
+    }
+    return null;
+}
 
     private PathPrepareResult PrepareCheckoutWorktreePath(string branchName)
     {

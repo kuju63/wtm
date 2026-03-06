@@ -139,7 +139,7 @@ public class CheckoutCommand : Command
 
         if (!string.IsNullOrEmpty(result.Solution))
         {
-            error.WriteLine($"  Solution:   {result.Solution}");
+            error.WriteLine($"  Solution: {result.Solution}");
         }
 
         if (verbose && !string.IsNullOrEmpty(result.ErrorCode))

@@ -451,11 +451,18 @@ public class GitService : IGitService
     }
 
     /// <inheritdoc/>
+    public Task<CommandResult<Unit>> AddWorktreeFromRemoteAsync(
+        string worktreePath,
+        string branchName,
+        string remoteName)
+        => AddWorktreeFromRemoteAsync(worktreePath, branchName, remoteName, CancellationToken.None);
+
+    /// <inheritdoc/>
     public async Task<CommandResult<Unit>> AddWorktreeFromRemoteAsync(
         string worktreePath,
         string branchName,
         string remoteName,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var result = await _processRunner.RunAsync(
             "git",

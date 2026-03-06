@@ -11,14 +11,13 @@ namespace Kuju63.WorkTree.Tests.Commands.Worktree;
 public class CheckoutCommandTests
 {
     private readonly Mock<IWorktreeService> _mockWorktreeService;
-    private readonly Mock<IInteractionService> _mockInteractionService;
     private readonly CheckoutCommand _checkoutCommand;
 
     public CheckoutCommandTests()
     {
         _mockWorktreeService = new Mock<IWorktreeService>();
-        _mockInteractionService = new Mock<IInteractionService>();
-        _checkoutCommand = new CheckoutCommand(_mockWorktreeService.Object, _mockInteractionService.Object);
+        var mockInteractionService = new Mock<IInteractionService>();
+        _checkoutCommand = new CheckoutCommand(_mockWorktreeService.Object, mockInteractionService.Object);
     }
 
     private async Task<(int exitCode, string output, string error)> InvokeAsync(string[] args)

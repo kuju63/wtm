@@ -13,7 +13,6 @@ public class WorktreeServiceCheckoutTests
 {
     private readonly Mock<IGitService> _mockGitService;
     private readonly Mock<IPathHelper> _mockPathHelper;
-    private readonly Mock<IEditorService> _mockEditorService;
     private readonly Mock<IInteractionService> _mockInteractionService;
     private readonly WorktreeService _worktreeService;
 
@@ -21,13 +20,13 @@ public class WorktreeServiceCheckoutTests
     {
         _mockGitService = new Mock<IGitService>();
         _mockPathHelper = new Mock<IPathHelper>();
-        _mockEditorService = new Mock<IEditorService>();
+        var mockEditorService = new Mock<IEditorService>();
         _mockInteractionService = new Mock<IInteractionService>();
 
         _worktreeService = new WorktreeService(
             _mockGitService.Object,
             _mockPathHelper.Object,
-            _mockEditorService.Object);
+            mockEditorService.Object);
 
         SetupDefaultPathHelper();
     }

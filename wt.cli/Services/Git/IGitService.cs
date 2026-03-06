@@ -224,11 +224,25 @@ public interface IGitService
     /// <param name="worktreePath">The path where the worktree should be created.</param>
     /// <param name="branchName">The branch name to create locally.</param>
     /// <param name="remoteName">The remote name.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing <see cref="Unit"/> on success.</returns>
+    Task<CommandResult<Unit>> AddWorktreeFromRemoteAsync(
+        string worktreePath,
+        string branchName,
+        string remoteName)
+        => AddWorktreeFromRemoteAsync(worktreePath, branchName, remoteName, CancellationToken.None);
+
+    /// <summary>
+    /// Creates a worktree from a remote tracking branch using:
+    /// git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;
+    /// </summary>
+    /// <param name="worktreePath">The path where the worktree should be created.</param>
+    /// <param name="branchName">The branch name to create locally.</param>
+    /// <param name="remoteName">The remote name.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="CommandResult{T}"/> containing <see cref="Unit"/> on success.</returns>
     Task<CommandResult<Unit>> AddWorktreeFromRemoteAsync(
         string worktreePath,
         string branchName,
         string remoteName,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken);
 }

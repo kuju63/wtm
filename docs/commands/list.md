@@ -1,4 +1,4 @@
-# wtm list
+# wt list
 
 List all worktrees with their branch information
 

@@ -94,7 +94,7 @@ public class GitServiceTests
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "rev-parse --verify feature-x", null, default))
+            .Setup(x => x.RunAsync("git", "rev-parse --verify \"feature-x\"", null, default))
             .ReturnsAsync(new ProcessResult(0, "abc123def", ""));
 
         // Act
@@ -110,7 +110,7 @@ public class GitServiceTests
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "rev-parse --verify nonexistent", null, default))
+            .Setup(x => x.RunAsync("git", "rev-parse --verify \"nonexistent\"", null, default))
             .ReturnsAsync(new ProcessResult(128, "", "fatal: Needed a single revision"));
 
         // Act
@@ -126,7 +126,7 @@ public class GitServiceTests
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "branch feature-x main", null, default))
+            .Setup(x => x.RunAsync("git", "branch \"feature-x\" \"main\"", null, default))
             .ReturnsAsync(new ProcessResult(0, "", ""));
 
         // Act
@@ -144,7 +144,7 @@ public class GitServiceTests
     {
         // Arrange
         _mockProcessRunner
-            .Setup(x => x.RunAsync("git", "branch feature-x main", null, default))
+            .Setup(x => x.RunAsync("git", "branch \"feature-x\" \"main\"", null, default))
             .ReturnsAsync(new ProcessResult(128, "", "fatal: A branch named 'feature-x' already exists"));
 
         // Act
@@ -811,6 +811,360 @@ detached
                 null,
                 default),
             Times.Once);
+    }
+
+    #endregion
+
+    #region GetRemotesAsync
+
+    [Fact]
+    public async Task GetRemotesAsync_WithRemotes_ReturnsList()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "remote", null, default))
+            .ReturnsAsync(new ProcessResult(0, "origin\nupstream\n", ""));
+
+        // Act
+        var result = await _gitService.GetRemotesAsync();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldNotBeNull();
+        result.Data.Count.ShouldBe(2);
+        result.Data.ShouldContain("origin");
+        result.Data.ShouldContain("upstream");
+    }
+
+    [Fact]
+    public async Task GetRemotesAsync_WithEmptyOutput_ReturnsEmptyList()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "remote", null, default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.GetRemotesAsync();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldNotBeNull();
+        result.Data.Count.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task GetRemotesAsync_GitError_ReturnsFailure()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "remote", null, default))
+            .ReturnsAsync(new ProcessResult(128, "", "fatal: not a git repository"));
+
+        // Act
+        var result = await _gitService.GetRemotesAsync();
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldNotBeNullOrEmpty();
+    }
+
+    #endregion
+
+    #region GetRemoteTrackingBranchesAsync
+
+    [Fact]
+    public async Task GetRemoteTrackingBranchesAsync_ParsesOutput_ReturnsAllBranches()
+    {
+        // Arrange
+        var output = "  origin/main\n  origin/feature/review-me\n  upstream/main\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "branch -r", null, default))
+            .ReturnsAsync(new ProcessResult(0, output, ""));
+
+        // Act
+        var result = await _gitService.GetRemoteTrackingBranchesAsync();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldNotBeNull();
+        result.Data.Count.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task GetRemoteTrackingBranchesAsync_SkipsHeadLines()
+    {
+        // Arrange
+        var output = "  origin/HEAD -> origin/main\n  origin/main\n  origin/feature\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "branch -r", null, default))
+            .ReturnsAsync(new ProcessResult(0, output, ""));
+
+        // Act
+        var result = await _gitService.GetRemoteTrackingBranchesAsync();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldNotBeNull();
+        result.Data.ShouldNotContain(x => x.BranchName.Contains("HEAD"));
+        result.Data.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task GetRemoteTrackingBranchesAsync_WithBranchFilter_ReturnsMatchingBranches()
+    {
+        // Arrange
+        var output = "  origin/main\n  origin/feature/review-me\n  upstream/feature/review-me\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "branch -r", null, default))
+            .ReturnsAsync(new ProcessResult(0, output, ""));
+
+        // Act
+        var result = await _gitService.GetRemoteTrackingBranchesAsync("feature/review-me");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data!.Count.ShouldBe(2);
+        result.Data.ShouldAllBe(x => x.BranchName == "feature/review-me");
+    }
+
+    [Fact]
+    public async Task GetRemoteTrackingBranchesAsync_ParsesBranchWithMultipleSlashes()
+    {
+        // Arrange
+        var output = "  origin/feature/sub/deep\n";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "branch -r", null, default))
+            .ReturnsAsync(new ProcessResult(0, output, ""));
+
+        // Act
+        var result = await _gitService.GetRemoteTrackingBranchesAsync();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data!.Count.ShouldBe(1);
+        result.Data[0].RemoteName.ShouldBe("origin");
+        result.Data[0].BranchName.ShouldBe("feature/sub/deep");
+        result.Data[0].FullRef.ShouldBe("origin/feature/sub/deep");
+    }
+
+    #endregion
+
+    #region GetBranchUpstreamRemoteAsync
+
+    [Fact]
+    public async Task GetBranchUpstreamRemoteAsync_WithUpstream_ReturnsRemoteName()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "config \"branch.main.remote\"", null, default))
+            .ReturnsAsync(new ProcessResult(0, "origin\n", ""));
+
+        // Act
+        var result = await _gitService.GetBranchUpstreamRemoteAsync("main");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBe("origin");
+    }
+
+    [Fact]
+    public async Task GetBranchUpstreamRemoteAsync_WithoutUpstream_ReturnsNull()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "config \"branch.feature.remote\"", null, default))
+            .ReturnsAsync(new ProcessResult(1, "", ""));
+
+        // Act
+        var result = await _gitService.GetBranchUpstreamRemoteAsync("feature");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetBranchUpstreamRemoteAsync_GitError_ReturnsFailure()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "config \"branch.main.remote\"", null, default))
+            .ReturnsAsync(new ProcessResult(128, "", "fatal: not a git repository"));
+
+        // Act
+        var result = await _gitService.GetBranchUpstreamRemoteAsync("main");
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+    }
+
+    #endregion
+
+    #region FetchFromRemoteAsync
+
+    [Fact]
+    public async Task FetchFromRemoteAsync_Success_ReturnsSuccess()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "fetch \"origin\"", null, default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.FetchFromRemoteAsync("origin");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task FetchFromRemoteAsync_Failure_ReturnsMappedError()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "fetch \"origin\"", null, default))
+            .ReturnsAsync(new ProcessResult(1, "", "error: could not fetch origin"));
+
+        // Act
+        var result = await _gitService.FetchFromRemoteAsync("origin");
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.ErrorCode.ShouldBe(ErrorCodes.RemoteFetchFailed);
+        result.Solution.ShouldNotBeNullOrEmpty();
+    }
+
+    [Fact]
+    public async Task FetchFromRemoteAsync_Failure_CapturesStderr()
+    {
+        // Arrange
+        var stderrMessage = "error: could not resolve hostname 'example.com'";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "fetch \"origin\"", null, default))
+            .ReturnsAsync(new ProcessResult(1, "", stderrMessage));
+
+        // Act
+        var result = await _gitService.FetchFromRemoteAsync("origin");
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.Solution.ShouldBe(stderrMessage);
+    }
+
+    [Fact]
+    public async Task FetchFromRemoteAsync_Failure_WithEmptyStderr_UsesFallbackSolution()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "fetch \"origin\"", null, default))
+            .ReturnsAsync(new ProcessResult(1, "", ""));
+
+        // Act
+        var result = await _gitService.FetchFromRemoteAsync("origin");
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.Solution.ShouldBe(ErrorCodes.GetSolution(ErrorCodes.RemoteFetchFailed));
+    }
+
+    #endregion
+
+    #region Security: quoted arguments
+
+    [Fact]
+    public async Task BranchExistsAsync_BranchNameIsQuoted_InGitCommand()
+    {
+        // Arrange: expects quoted branch name in the command
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "rev-parse --verify \"feature-x\"", null, default))
+            .ReturnsAsync(new ProcessResult(0, "abc123def", ""));
+
+        // Act
+        var result = await _gitService.BranchExistsAsync("feature-x");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBeTrue();
+        _mockProcessRunner.Verify(x => x.RunAsync("git", "rev-parse --verify \"feature-x\"", null, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateBranchAsync_BranchAndBaseNamesAreQuoted_InGitCommand()
+    {
+        // Arrange: expects both branch name and base branch quoted
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "branch \"feature-x\" \"main\"", null, default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.CreateBranchAsync("feature-x", "main");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        _mockProcessRunner.Verify(x => x.RunAsync("git", "branch \"feature-x\" \"main\"", null, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetBranchUpstreamRemoteAsync_BranchNameIsQuoted_InConfigKey()
+    {
+        // Arrange: expects quoted branch name in config key
+        _mockProcessRunner
+            .Setup(x => x.RunAsync("git", "config \"branch.main.remote\"", null, default))
+            .ReturnsAsync(new ProcessResult(0, "origin\n", ""));
+
+        // Act
+        var result = await _gitService.GetBranchUpstreamRemoteAsync("main");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Data.ShouldBe("origin");
+        _mockProcessRunner.Verify(x => x.RunAsync("git", "config \"branch.main.remote\"", null, default), Times.Once);
+    }
+
+    #endregion
+
+    #region AddWorktreeFromRemoteAsync
+
+    [Fact]
+    public async Task AddWorktreeFromRemoteAsync_Success_CallsCorrectArgs()
+    {
+        // Arrange
+        var worktreePath = "/tmp/feature-review";
+        var branchName = "feature/review-me";
+        var remoteName = "origin";
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                It.Is<string>(s => s.Contains("worktree add --track") && s.Contains(branchName) && s.Contains(remoteName)),
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(0, "", ""));
+
+        // Act
+        var result = await _gitService.AddWorktreeFromRemoteAsync(worktreePath, branchName, remoteName);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task AddWorktreeFromRemoteAsync_Failure_ReturnsFailure()
+    {
+        // Arrange
+        _mockProcessRunner
+            .Setup(x => x.RunAsync(
+                "git",
+                It.Is<string>(s => s.Contains("worktree add --track")),
+                null,
+                default))
+            .ReturnsAsync(new ProcessResult(128, "", "error: pathspec 'origin/feature/x' did not match any file(s)"));
+
+        // Act
+        var result = await _gitService.AddWorktreeFromRemoteAsync("/tmp/x", "feature/x", "origin");
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
     }
 
     #endregion

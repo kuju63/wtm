@@ -141,4 +141,108 @@ public interface IGitService
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="CommandResult{T}"/> containing <see langword="true"/> if the worktree was removed successfully; otherwise, <see langword="false"/>.</returns>
     Task<CommandResult<bool>> RemoveWorktreeAsync(string worktreePath, bool force, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets the list of configured remotes from git remote.
+    /// </summary>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the list of remote names.</returns>
+    Task<CommandResult<IReadOnlyList<string>>> GetRemotesAsync()
+        => GetRemotesAsync(CancellationToken.None);
+
+    /// <summary>
+    /// Gets the list of configured remotes from git remote.
+    /// </summary>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the list of remote names.</returns>
+    Task<CommandResult<IReadOnlyList<string>>> GetRemotesAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets remote tracking branches from git branch -r output.
+    /// </summary>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the list of remote branch info.</returns>
+    Task<CommandResult<IReadOnlyList<RemoteBranchInfo>>> GetRemoteTrackingBranchesAsync()
+        => GetRemoteTrackingBranchesAsync(null, CancellationToken.None);
+
+    /// <summary>
+    /// Gets remote tracking branches from git branch -r output.
+    /// If branchName is specified, returns only references with that branch name.
+    /// </summary>
+    /// <param name="branchName">Optional branch name filter.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the list of remote branch info.</returns>
+    Task<CommandResult<IReadOnlyList<RemoteBranchInfo>>> GetRemoteTrackingBranchesAsync(string? branchName)
+        => GetRemoteTrackingBranchesAsync(branchName, CancellationToken.None);
+
+    /// <summary>
+    /// Gets remote tracking branches from git branch -r output.
+    /// If branchName is specified, returns only references with that branch name.
+    /// </summary>
+    /// <param name="branchName">Optional branch name filter.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the list of remote branch info.</returns>
+    Task<CommandResult<IReadOnlyList<RemoteBranchInfo>>> GetRemoteTrackingBranchesAsync(
+        string? branchName,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Executes git fetch for the specified remote.
+    /// </summary>
+    /// <param name="remote">The remote name to fetch from.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing <see cref="Unit"/> on success.</returns>
+    Task<CommandResult<Unit>> FetchFromRemoteAsync(string remote)
+        => FetchFromRemoteAsync(remote, CancellationToken.None);
+
+    /// <summary>
+    /// Executes git fetch for the specified remote.
+    /// </summary>
+    /// <param name="remote">The remote name to fetch from.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing <see cref="Unit"/> on success.</returns>
+    Task<CommandResult<Unit>> FetchFromRemoteAsync(string remote, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets the upstream remote configured for a local branch.
+    /// Returns null if no upstream is configured (not an error).
+    /// </summary>
+    /// <param name="branchName">The local branch name.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the remote name or null if not configured.</returns>
+    Task<CommandResult<string?>> GetBranchUpstreamRemoteAsync(string branchName)
+        => GetBranchUpstreamRemoteAsync(branchName, CancellationToken.None);
+
+    /// <summary>
+    /// Gets the upstream remote configured for a local branch.
+    /// Returns null if no upstream is configured (not an error).
+    /// </summary>
+    /// <param name="branchName">The local branch name.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing the remote name or null if not configured.</returns>
+    Task<CommandResult<string?>> GetBranchUpstreamRemoteAsync(string branchName, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Creates a worktree from a remote tracking branch using:
+    /// git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;
+    /// </summary>
+    /// <param name="worktreePath">The path where the worktree should be created.</param>
+    /// <param name="branchName">The branch name to create locally.</param>
+    /// <param name="remoteName">The remote name.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing <see cref="Unit"/> on success.</returns>
+    Task<CommandResult<Unit>> AddWorktreeFromRemoteAsync(
+        string worktreePath,
+        string branchName,
+        string remoteName)
+        => AddWorktreeFromRemoteAsync(worktreePath, branchName, remoteName, CancellationToken.None);
+
+    /// <summary>
+    /// Creates a worktree from a remote tracking branch using:
+    /// git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;
+    /// </summary>
+    /// <param name="worktreePath">The path where the worktree should be created.</param>
+    /// <param name="branchName">The branch name to create locally.</param>
+    /// <param name="remoteName">The remote name.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A <see cref="CommandResult{T}"/> containing <see cref="Unit"/> on success.</returns>
+    Task<CommandResult<Unit>> AddWorktreeFromRemoteAsync(
+        string worktreePath,
+        string branchName,
+        string remoteName,
+        CancellationToken cancellationToken);
 }

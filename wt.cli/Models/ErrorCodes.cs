@@ -27,6 +27,14 @@ public static class ErrorCodes
     // エディター関連エラー (ED001)
     public const string EditorNotFound = "ED001";
 
+    // リモート関連エラー (RM001-003)
+    public const string RemoteNotFound = "RM001";
+    public const string RemoteFetchFailed = "RM002";
+    public const string BranchNotFoundAnywhere = "RM003";
+
+    // ユーザー操作 (USR001)
+    public const string UserCancelled = "USR001";
+
     /// <summary>
     /// Gets a solution message for the specified error code.
     /// </summary>
@@ -48,6 +56,10 @@ public static class ErrorCodes
             PathNotWritable => "Ensure you have write permissions to the target directory",
             DiskSpaceLow => "Free up disk space and try again",
             EditorNotFound => "Install the editor or specify a custom editor command",
+            RemoteNotFound => "Check configured remotes with 'git remote -v' and specify the correct remote name with --remote flag",
+            RemoteFetchFailed => "Check network connection and authentication, then run 'git fetch <remote>' manually",
+            BranchNotFoundAnywhere => "Check branch list with 'git branch -a'. You can also retry with --fetch flag to update remote tracking refs",
+            UserCancelled => "Operation was cancelled by the user",
             _ => "Unknown error occurred"
         };
     }

@@ -19,6 +19,11 @@ public record WorktreeInfo(
 )
 {
     /// <summary>
+    /// Gets the remote name if this worktree was checked out from a remote tracking branch.
+    /// </summary>
+    public string? Remote { get; init; }
+
+    /// <summary>
     /// Gets a display-friendly branch string.
     /// </summary>
     /// <returns>

@@ -155,7 +155,7 @@ class MarkdownConsole
         _builder.AppendLine();
     }
 
-    public override string ToString() => _builder.ToString();
+    public override string ToString() => _builder.ToString().TrimEnd() + "\n";
 }
 
 /// <summary>
@@ -267,7 +267,7 @@ static class CommandDocGenerator
 
     private static void ProcessUsageLine(string trimmed, ref string? usage)
     {
-        if (trimmed.StartsWith("wt "))
+        if (trimmed.StartsWith("wt ") || trimmed.StartsWith("wtm "))
         {
             usage = trimmed;
         }

@@ -105,4 +105,25 @@ public class WorktreeInfoTests
         // Assert
         result.ShouldBe("missing");
     }
+
+    [Fact]
+    public void WorktreeInfo_Remote_DefaultsToNull()
+    {
+        // Arrange & Act
+        var info = new WorktreeInfo("/path", "feature-x", false, "abc123", DateTime.UtcNow, true);
+
+        // Assert
+        info.Remote.ShouldBeNull();
+    }
+
+    [Fact]
+    public void WorktreeInfo_Remote_CanBeSetViaInitializer()
+    {
+        // Arrange & Act
+        var info = new WorktreeInfo("/path", "feature-x", false, "abc123", DateTime.UtcNow, true)
+        { Remote = "origin" };
+
+        // Assert
+        info.Remote.ShouldBe("origin");
+    }
 }

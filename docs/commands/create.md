@@ -1,4 +1,4 @@
-# wtm create
+# wt create
 
 Create a new worktree with a new branch
 

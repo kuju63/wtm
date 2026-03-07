@@ -572,7 +572,9 @@ public class WorktreeService : IWorktreeService
         // Check if branch is already checked out in another worktree
         var branchInUseResult = await EnsureBranchNotCheckedOutAsync(options.BranchName, cancellationToken);
         if (branchInUseResult != null)
+        {
             return branchInUseResult;
+        }
 
         var pathResult = PrepareCheckoutWorktreePath(options.BranchName);
         if (!pathResult.IsValid)
@@ -686,7 +688,9 @@ public class WorktreeService : IWorktreeService
         // Check if branch is already checked out
         var branchInUseResult = await EnsureBranchNotCheckedOutAsync(options.BranchName, cancellationToken);
         if (branchInUseResult != null)
+        {
             return branchInUseResult;
+        }
 
         var pathResult = PrepareCheckoutWorktreePath(options.BranchName);
         if (!pathResult.IsValid)

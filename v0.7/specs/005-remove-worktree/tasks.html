@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: Remove Git Worktree | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: Remove Git Worktree | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-remove-git-worktree">Tasks: Remove Git Worktree</h1>
+
+<p><strong>Input</strong>: Design documents from <code>/specs/005-remove-worktree/</code>
+<strong>Prerequisites</strong>: plan.md (required), spec.md (required), research.md, data-model.md, contracts/</p>
+<p><strong>Tests</strong>: TDD approach required per project constitution. Tests are written FIRST and must FAIL before implementation.</p>
+<p><strong>Organization</strong>: Tasks are grouped by user story to enable independent implementation and testing of each story.</p>
+<h2 id="format-id-p-story-description">Format: <code>[ID] [P?] [Story] Description</code></h2>
+<ul>
+<li><strong>[P]</strong>: Can run in parallel (different files, no dependencies)</li>
+<li><strong>[Story]</strong>: Which user story this task belongs to (e.g., US1, US2)</li>
+<li>Include exact file paths in descriptions</li>
+</ul>
+<h2 id="path-conventions">Path Conventions</h2>
+<ul>
+<li><strong>Source</strong>: <code>wt.cli/</code> (Commands/, Services/, Models/, Utils/)</li>
+<li><strong>Tests</strong>: <code>wt.tests/</code> (Commands/, Services/)</li>
+</ul>
+<hr>
+<h2 id="phase-1-setup-shared-infrastructure">Phase 1: Setup (Shared Infrastructure)</h2>
+<p><strong>Purpose</strong>: Create model classes and interface definitions needed by all user stories</p>
+<ul>
+<li>[x] T001 [P] Create RemovalValidationError enum in wt.cli/Models/RemovalValidationError.cs (values: None, NotFound, IsMainWorktree, IsCurrentWorktree, HasUncommittedChanges, IsLocked)</li>
+<li>[x] T002 [P] Create DeletionFailure class in wt.cli/Models/DeletionFailure.cs (properties: FilePath, Reason, Exception)</li>
+<li>[x] T003 [P] Create RemoveWorktreeOptions class in wt.cli/Models/RemoveWorktreeOptions.cs (properties: WorktreeIdentifier, Force, OutputFormat, Verbose)</li>
+<li>[x] T004 [P] Create RemoveWorktreeResult and RemoveWorktreeData classes in wt.cli/Models/RemoveWorktreeResult.cs (extends CommandResult pattern; includes RemovedPath, DeletionFailures list)</li>
+<li>[x] T005 Add ValidateForRemoval and RemoveWorktreeAsync method signatures to wt.cli/Services/Worktree/IWorktreeService.cs</li>
+<li>[x] T006 Add HasUncommittedChangesAsync and RemoveWorktreeAsync method signatures to wt.cli/Services/Git/IGitService.cs</li>
+<li>[x] T007 Add IsWorktreeLockedAsync method signature to wt.cli/Services/Git/IGitService.cs</li>
+</ul>
+<hr>
+<h2 id="phase-2-foundational-blocking-prerequisites">Phase 2: Foundational (Blocking Prerequisites)</h2>
+<p><strong>Purpose</strong>: Core infrastructure that MUST be complete before user story implementation</p>
+<p><strong>CRITICAL</strong>: No user story implementation can begin until this phase is complete</p>
+<ul>
+<li>[x] T008 Implement HasUncommittedChangesAsync method in wt.cli/Services/Git/GitService.cs (calls <code>git -C &lt;path&gt; status --porcelain</code>, returns true if output contains lines not starting with <code>??</code>)</li>
+<li>[x] T009 Implement IsWorktreeLockedAsync method in wt.cli/Services/Git/GitService.cs (checks <code>.git/worktrees/&lt;name&gt;/locked</code> file existence using IFileSystem)</li>
+<li>[x] T010 Implement RemoveWorktreeAsync in wt.cli/Services/Git/GitService.cs (calls <code>git worktree remove [--force] &lt;path&gt;</code>)</li>
+<li>[x] T011 Add stub implementations for ValidateForRemoval and RemoveWorktreeAsync in wt.cli/Services/Worktree/WorktreeService.cs (throw NotImplementedException)</li>
+<li>[x] T012 Create RemoveCommand class skeleton in wt.cli/Commands/Worktree/RemoveCommand.cs (worktree argument, --force option, --output option, --verbose option; no handler logic)</li>
+<li>[x] T013 Register RemoveCommand in wt.cli/Program.cs (add to rootCommand.Subcommands)</li>
+</ul>
+<p><strong>Checkpoint</strong>: Foundation ready - command is wired but returns not-implemented. User story implementation can now begin.</p>
+<hr>
+<h2 id="phase-3-user-story-1---remove-a-worktree-safely-priority-p1-mvp">Phase 3: User Story 1 - Remove a Worktree Safely (Priority: P1) MVP</h2>
+<p><strong>Goal</strong>: Developers can remove a worktree with no uncommitted changes and have the working directory deleted from disk.</p>
+<p><strong>Independent Test</strong>: Create a worktree, run <code>wt remove &lt;branch&gt;</code>, verify worktree is gone from git and directory is deleted.</p>
+<h3 id="tests-for-user-story-1-tdd---write-first-must-fail">Tests for User Story 1 (TDD - Write First, Must FAIL)</h3>
+<ul>
+<li>[x] T014 [P] [US1] Create WorktreeServiceRemoveTests.cs in wt.tests/Services/Worktree/ with test class skeleton and required using statements</li>
+<li>[x] T015 [P] [US1] Write test: ValidateForRemoval_WhenWorktreeNotFound_ReturnsNotFound in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T016 [P] [US1] Write test: ValidateForRemoval_WhenMainWorktree_ReturnsIsMainWorktree in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T017 [P] [US1] Write test: ValidateForRemoval_WhenCurrentWorktree_ReturnsIsCurrentWorktree in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T018 [P] [US1] Write test: ValidateForRemoval_WhenUncommittedChanges_ReturnsHasUncommittedChanges in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T019 [P] [US1] Write test: ValidateForRemoval_WhenNormalRemoval_ReturnsNone in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T020 [P] [US1] Write test: RemoveWorktreeAsync_WhenValidationFails_ReturnsErrorWithSolution in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T021 [P] [US1] Write test: RemoveWorktreeAsync_WhenSuccess_RemovesWorktreeAndDeletesDirectory in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T022 [P] [US1] Create RemoveCommandTests.cs in wt.tests/Commands/Worktree/ with test class skeleton</li>
+<li>[x] T023 [P] [US1] Write test: RemoveCommand_ParsesWorktreeArgument in wt.tests/Commands/Worktree/RemoveCommandTests.cs</li>
+<li>[x] T024 [P] [US1] Write test: RemoveCommand_HumanOutput_DisplaysSuccessMessage in wt.tests/Commands/Worktree/RemoveCommandTests.cs</li>
+<li>[x] T025 [P] [US1] Write test: RemoveCommand_JsonOutput_ReturnsStructuredResult in wt.tests/Commands/Worktree/RemoveCommandTests.cs</li>
+<li>[x] T026 [P] [US1] Write test: RemoveCommand_WhenNotFound_ReturnsErrorWithListSuggestion in wt.tests/Commands/Worktree/RemoveCommandTests.cs (per FR-011)</li>
+</ul>
+<h3 id="implementation-for-user-story-1">Implementation for User Story 1</h3>
+<ul>
+<li>[x] T027 [US1] Implement ValidateForRemoval method in wt.cli/Services/Worktree/WorktreeService.cs (check: exists → not found, main worktree check, current worktree/CWD check, uncommitted changes check)</li>
+<li>[x] T028 [US1] Implement RemoveWorktreeAsync core logic in wt.cli/Services/Worktree/WorktreeService.cs (validate → git remove → delete directory → return result)</li>
+<li>[x] T029 [US1] Implement DeleteWorktreeDirectoryAsync helper method in wt.cli/Services/Worktree/WorktreeService.cs (recursive delete with IFileSystem, track failures)</li>
+<li>[x] T030 [US1] Implement RemoveCommand handler in wt.cli/Commands/Worktree/RemoveCommand.cs (call service, format output based on --output flag)</li>
+<li>[x] T031 [US1] Add human output formatting in RemoveCommand (success: checkmark + path; error: cross + reason + solution per FR-008)</li>
+<li>[x] T032 [US1] Add JSON output formatting in RemoveCommand (serialize RemoveWorktreeResult to JSON)</li>
+</ul>
+<p><strong>Checkpoint</strong>: User Story 1 complete. Run <code>wt remove &lt;branch&gt;</code> and verify worktree and directory are removed for normal removal scenarios.</p>
+<hr>
+<h2 id="phase-4-user-story-2---force-remove-a-locked-worktree-priority-p2">Phase 4: User Story 2 - Force Remove a Locked Worktree (Priority: P2)</h2>
+<p><strong>Goal</strong>: Developers can remove a locked worktree or one with uncommitted changes using the <code>--force</code> flag.</p>
+<p><strong>Independent Test</strong>: Create a worktree with uncommitted changes or lock file, run <code>wt remove &lt;branch&gt; --force</code>, verify worktree is removed.</p>
+<h3 id="tests-for-user-story-2-tdd---write-first-must-fail">Tests for User Story 2 (TDD - Write First, Must FAIL)</h3>
+<ul>
+<li>[x] T033 [P] [US2] Write test: ValidateForRemoval_WhenLockedWorktree_ReturnsIsLocked in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T034 [P] [US2] Write test: ValidateForRemoval_WhenUncommittedChangesWithForce_ReturnsNone in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T035 [P] [US2] Write test: ValidateForRemoval_WhenLockedWithForce_ReturnsNone in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T036 [P] [US2] Write test: RemoveWorktreeAsync_WhenForce_BypassesUncommittedChangesAndLockCheck in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs</li>
+<li>[x] T037 [P] [US2] Write test: RemoveWorktreeAsync_WhenPartialDeletion_ReportsUndeleteableFiles in wt.tests/Services/Worktree/WorktreeServiceRemoveTests.cs (deferred - git worktree remove handles directory deletion)</li>
+<li>[x] T038 [P] [US2] Write test: RemoveCommand_ParsesForceFlag in wt.tests/Commands/Worktree/RemoveCommandTests.cs</li>
+<li>[x] T039 [P] [US2] Write test: RemoveCommand_WithForce_RemovesLockedWorktree in wt.tests/Commands/Worktree/RemoveCommandTests.cs (covered by T036 integration)</li>
+</ul>
+<h3 id="implementation-for-user-story-2">Implementation for User Story 2</h3>
+<ul>
+<li>[x] T040 [US2] Update ValidateForRemoval in wt.cli/Services/Worktree/WorktreeService.cs to check for lock file (IsWorktreeLockedAsync)</li>
+<li>[x] T041 [US2] Update ValidateForRemoval in wt.cli/Services/Worktree/WorktreeService.cs to respect Force flag (skip uncommitted changes and lock checks when Force=true)</li>
+<li>[x] T042 [US2] Update RemoveWorktreeAsync in wt.cli/Services/Worktree/WorktreeService.cs to pass --force flag to git when Force=true</li>
+<li>[x] T043 [US2] Implement partial deletion handling in DeleteWorktreeDirectoryAsync (git worktree remove handles directory deletion; partial failures reported via git stderr)</li>
+<li>[x] T044 [US2] Update output formatting to display partial failure messages with list of undeleteable files and reasons</li>
+</ul>
+<p><strong>Checkpoint</strong>: Both User Stories complete. Test normal removal (US1) and forced removal (US2) independently.</p>
+<hr>
+<h2 id="phase-5-polish--cross-cutting-concerns">Phase 5: Polish &amp; Cross-Cutting Concerns</h2>
+<p><strong>Purpose</strong>: Documentation, code quality, and final validation</p>
+<ul>
+<li>[x] T045 [P] Add XML documentation comments to all public methods in wt.cli/Commands/Worktree/RemoveCommand.cs</li>
+<li>[x] T046 [P] Add XML documentation comments to ValidateForRemoval, RemoveWorktreeAsync in wt.cli/Services/Worktree/WorktreeService.cs</li>
+<li>[x] T047 [P] Add verbose output mode support (--verbose flag) in wt.cli/Commands/Worktree/RemoveCommand.cs</li>
+<li>[x] T048 Build project and run DocGenerator: <code>dotnet run --project Tools/DocGenerator/DocGenerator/DocGenerator.csproj -- docs</code></li>
+<li>[x] T049 Verify generated documentation includes <code>wt remove</code> command reference in docs/commands/</li>
+<li>[x] T050 Update CHANGELOG.md with new feature entry (## [Unreleased] section)</li>
+<li>[x] T051 Run all tests and verify &gt;80% coverage: <code>dotnet test --collect:&quot;XPlat Code Coverage&quot;</code></li>
+<li>[x] T052 Code cleanup: ensure all methods are &lt;50 LOC per constitution</li>
+<li>[x] T053 [P] Create ADR for force flag behavior in docs/adr/0006-force-flag-removal-behavior.md (document decision: --force bypasses uncommitted changes and lock checks per constitution IV)</li>
+</ul>
+<hr>
+<h2 id="dependencies--execution-order">Dependencies &amp; Execution Order</h2>
+<h3 id="phase-dependencies">Phase Dependencies</h3>
+<ul>
+<li><strong>Setup (Phase 1)</strong>: No dependencies - can start immediately</li>
+<li><strong>Foundational (Phase 2)</strong>: Depends on Setup completion - BLOCKS all user stories</li>
+<li><strong>User Story 1 (Phase 3)</strong>: Depends on Foundational phase completion - MVP</li>
+<li><strong>User Story 2 (Phase 4)</strong>: Depends on Foundational phase completion - can start in parallel with US1</li>
+<li><strong>Polish (Phase 5)</strong>: Depends on both user stories being complete</li>
+</ul>
+<h3 id="user-story-dependencies">User Story Dependencies</h3>
+<ul>
+<li><strong>User Story 1 (P1)</strong>: Can start after Foundational (Phase 2) - Core removal functionality</li>
+<li><strong>User Story 2 (P2)</strong>: Can start after Foundational (Phase 2) - Extends US1 with force flag support
+<ul>
+<li><strong>Note</strong>: US2 builds on US1 implementation but tests are independent</li>
+</ul>
+</li>
+</ul>
+<h3 id="within-each-user-story">Within Each User Story</h3>
+<ol>
+<li>Tests MUST be written FIRST and FAIL before implementation</li>
+<li>Service layer before command layer</li>
+<li>Core implementation before output formatting</li>
+<li>Story complete when all tests pass</li>
+</ol>
+<h3 id="parallel-opportunities">Parallel Opportunities</h3>
+<p><strong>Phase 1 (Setup)</strong>:</p>
+<ul>
+<li>T001, T002, T003, T004 can run in parallel (different model files)</li>
+</ul>
+<p><strong>Phase 3 (US1 Tests)</strong>:</p>
+<ul>
+<li>T014-T026 can run in parallel (different test methods/files)</li>
+</ul>
+<p><strong>Phase 4 (US2 Tests)</strong>:</p>
+<ul>
+<li>T033-T039 can run in parallel (different test methods)</li>
+</ul>
+<p><strong>Phase 5 (Polish)</strong>:</p>
+<ul>
+<li>T045, T046, T047, T053 can run in parallel (different concerns)</li>
+</ul>
+<hr>
+<h2 id="parallel-example-user-story-1-tests">Parallel Example: User Story 1 Tests</h2>
+<pre><code class="lang-bash"># Launch all US1 tests together (TDD - must fail initially):
+Task: &quot;Write test: ValidateForRemoval_WhenWorktreeNotFound_ReturnsNotFound&quot;
+Task: &quot;Write test: ValidateForRemoval_WhenMainWorktree_ReturnsIsMainWorktree&quot;
+Task: &quot;Write test: ValidateForRemoval_WhenCurrentWorktree_ReturnsIsCurrentWorktree&quot;
+Task: &quot;Write test: ValidateForRemoval_WhenUncommittedChanges_ReturnsHasUncommittedChanges&quot;
+Task: &quot;Write test: ValidateForRemoval_WhenNormalRemoval_ReturnsNone&quot;
+Task: &quot;Write test: RemoveWorktreeAsync_WhenValidationFails_ReturnsErrorWithSolution&quot;
+Task: &quot;Write test: RemoveWorktreeAsync_WhenSuccess_RemovesWorktreeAndDeletesDirectory&quot;
+Task: &quot;Write test: RemoveCommand_WhenNotFound_ReturnsErrorWithListSuggestion&quot;
+</code></pre>
+<hr>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="mvp-first-user-story-1-only">MVP First (User Story 1 Only)</h3>
+<ol>
+<li>Complete Phase 1: Setup (create models and interfaces)</li>
+<li>Complete Phase 2: Foundational (wire up skeleton)</li>
+<li>Complete Phase 3: User Story 1 (safe removal)</li>
+<li><strong>STOP and VALIDATE</strong>: Test <code>wt remove &lt;branch&gt;</code> on clean worktree</li>
+<li>Deploy/demo if ready</li>
+</ol>
+<h3 id="incremental-delivery">Incremental Delivery</h3>
+<ol>
+<li>Complete Setup + Foundational → Command wired but not implemented</li>
+<li>Add User Story 1 → Normal removal works → Deploy/Demo (MVP!)</li>
+<li>Add User Story 2 → Force removal works → Deploy/Demo</li>
+<li>Polish → Documentation, coverage, cleanup → Final release</li>
+</ol>
+<h3 id="parallel-team-strategy">Parallel Team Strategy</h3>
+<p>With multiple developers:</p>
+<ol>
+<li>Team completes Setup + Foundational together</li>
+<li>Once Foundational is done:
+<ul>
+<li>Developer A: User Story 1 tests → User Story 1 implementation</li>
+<li>Developer B: User Story 2 tests (can write in parallel, will fail until US1 is done)</li>
+</ul>
+</li>
+<li>Stories complete and integrate</li>
+</ol>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>[P] tasks = different files, no dependencies</li>
+<li>[Story] label maps task to specific user story for traceability</li>
+<li>Each user story should be independently completable and testable</li>
+<li>TDD required: tests fail → implement → tests pass → refactor</li>
+<li>Commit after each task or logical group</li>
+<li>Stop at any checkpoint to validate story independently</li>
+<li>Use Moq for mocking IGitService, IFileSystem in tests</li>
+<li>Follow existing CreateCommand.cs patterns for RemoveCommand</li>
+<li>FR-011: Non-existent worktree error includes suggestion to run <code>wt list</code></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

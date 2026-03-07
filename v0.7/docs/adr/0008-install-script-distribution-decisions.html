@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ADR 0008: Install Script Distribution and Design Decisions | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ADR 0008: Install Script Distribution and Design Decisions | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/adr/0008-install-script-distribution-decisions.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="adr-0008-install-script-distribution-and-design-decisions">ADR 0008: Install Script Distribution and Design Decisions</h1>
+
+<p><strong>Status</strong>: Accepted</p>
+<p><strong>Date</strong>: 2026-02-21</p>
+<h2 id="context">Context</h2>
+<p><code>wt</code> コマンドのインストール体験を改善するために、ワンライナーインストールスクリプトを作成・配布する。この際、以下の技術的決定を行う必要があった:</p>
+<ol>
+<li>スクリプトをどのURLで安定配布するか（GitHub Pages vs リリース資産のみ）</li>
+<li>Unix スクリプトで JSON をパースする際に <code>jq</code> を使用するか</li>
+<li>インタラクティブ/非インタラクティブ環境の判定方法</li>
+<li>デフォルトインストール先のディレクトリ</li>
+<li>SHA256検証に使用するコマンド</li>
+</ol>
+<h2 id="decision">Decision</h2>
+<h3 id="1-安定url-github-pages-経由での配信">1. 安定URL: GitHub Pages 経由での配信</h3>
+<p><code>release.yml</code> の <code>build-and-deploy-docs</code> ジョブに <code>cp scripts/install.sh _site/install.sh</code> ステップを追加し、GitHub Pages 経由で永続URLを提供する。</p>
+<ul>
+<li><strong>配信URL</strong>: <code>https://kuju63.github.io/wt/install.sh</code> / <code>.../install.ps1</code></li>
+<li>GitHub Releases 資産としても各バージョンに含める（バージョン固有URLとして）</li>
+</ul>
+<h3 id="2-jq-不使用grep--sed-で代替">2. <code>jq</code> 不使用、<code>grep</code> + <code>sed</code> で代替</h3>
+<p>GitHub API レスポンスのパースには標準ツールのみ使用する:</p>
+<pre><code class="lang-sh">LATEST_VERSION=$(curl -fsSL &quot;https://api.github.com/repos/kuju63/wt/releases/latest&quot; \
+  | grep '&quot;tag_name&quot;' \
+  | sed -E 's/.*&quot;([^&quot;]+)&quot;.*/\1/')
+</code></pre>
+<h3 id="3-tty-判定---t-0--posix準拠">3. TTY 判定: <code>[ -t 0 ]</code> (POSIX準拠)</h3>
+<p>インタラクティブ環境の判定に <code>[ -t 0 ]</code>（stdin が TTY かどうか）を使用する。</p>
+<ul>
+<li><code>curl | sh</code> 実行時は stdin が TTY でないため非インタラクティブと判定される（FR-018 の要件を自然に満たす）</li>
+<li><code>bash</code>・<code>dash</code>・<code>sh</code> 全環境で動作</li>
+</ul>
+<p>PowerShell では <code>[Environment]::UserInteractive</code> を使用する。</p>
+<h3 id="4-デフォルトインストール先">4. デフォルトインストール先</h3>
+<table>
+<thead>
+<tr>
+<th>プラットフォーム</th>
+<th>デフォルトパス</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unix</td>
+<td><code>~/.local/bin</code> (XDG Base Directory 準拠、sudo 不要)</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><code>$env:LOCALAPPDATA\Programs\wtm</code> (ユーザースコープ)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="5-sha256検証コマンド">5. SHA256検証コマンド</h3>
+<p>プラットフォーム別に自動選択:</p>
+<pre><code class="lang-sh">if command -v sha256sum &gt;/dev/null 2&gt;&amp;1; then
+  HASHER=&quot;sha256sum&quot;
+elif command -v shasum &gt;/dev/null 2&gt;&amp;1; then
+  HASHER=&quot;shasum -a 256&quot;
+fi
+</code></pre>
+<h2 id="consequences">Consequences</h2>
+<ul>
+<li>スクリプト配布URLはバージョンに依存しない永続URLとなるため、ドキュメントやリンクを更新不要</li>
+<li><code>jq</code> 依存を排除することでインストール前提条件が最小化される（Constitution Principle V 準拠）</li>
+<li>TTY 判定により <code>curl | sh</code> パターンで安全なデフォルト動作（上書きスキップ + <code>--force</code> 案内）が実現される</li>
+<li><code>sha256sum</code> / <code>shasum</code> の両方をサポートすることで Linux および macOS で動作する</li>
+</ul>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<h3 id="github-pages-の代替-リリース資産のみで配信">GitHub Pages の代替: リリース資産のみで配信</h3>
+<ul>
+<li>バージョン固有URLしか提供できず SC-005（安定URL）を満たせないため却下</li>
+</ul>
+<h3 id="docfx-resource-として追加">DocFX resource として追加</h3>
+<ul>
+<li>DocFX がファイルを解析しようとするリスクがあり、ワークフロー内でのコピーより不確実なため却下</li>
+</ul>
+<h3 id="jq-を使用"><code>jq</code> を使用</h3>
+<ul>
+<li>追加依存が発生し Constitution Principle V（最小依存）に反するため却下</li>
+</ul>
+<h3 id="ostype-変数での-os-判定"><code>$OSTYPE</code> 変数での OS 判定</h3>
+<ul>
+<li>bash 限定であり、dash/sh 環境では使用不可のため <code>uname -s</code> を採用</li>
+</ul>
+<h2 id="authors">Authors</h2>
+<ul>
+<li>Jun Kurihara <a href="mailto:lh182051+src@gmail.com">lh182051+src@gmail.com</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/adr/0008-install-script-distribution-decisions.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Implementation Plan: Checkout Existing Branch as Worktree | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Implementation Plan: Checkout Existing Branch as Worktree | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/plan.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="implementation-plan-checkout-existing-branch-as-worktree">Implementation Plan: Checkout Existing Branch as Worktree</h1>
+
+<p><strong>Branch</strong>: <code>009-checkout-worktree</code> | <strong>Date</strong>: 2026-03-04 | <strong>Spec</strong>: <a href="spec.html">spec.md</a>
+<strong>Input</strong>: Feature specification from <code>/specs/009-checkout-worktree/spec.md</code></p>
+<h2 id="summary">Summary</h2>
+<p>既存のローカルブランチまたはリモートブランチをワークツリーとしてチェックアウトする <code>checkout</code> コマンドを追加する。ローカルブランチを優先し、存在しない場合はキャッシュ済みリモートトラッキング参照を検索する。複数リモートに同名ブランチがある場合はインタラクティブプロンプトで選択させる。<code>create</code> コマンドと同様のエディタ統合・パス解決・エラーハンドリングを踏襲する。</p>
+<h2 id="technical-context">Technical Context</h2>
+<p><strong>Language/Version</strong>: C# 13 / .NET 10.0
+<strong>Primary Dependencies</strong>: System.CommandLine 2.0.3, System.IO.Abstractions 22.1.0
+<strong>Storage</strong>: N/A（ファイルシステムへのワークツリーディレクトリ作成のみ）
+<strong>Testing</strong>: xUnit 2.9.3, Shouldly 4.3.0, Moq 4.20.72, System.IO.Abstractions.TestingHelpers 22.1.0
+<strong>Target Platform</strong>: Windows (win-x64), Linux (linux-x64, linux-arm), macOS (osx-arm64)
+<strong>Project Type</strong>: Single CLI project（<code>wt.cli</code> / <code>wt.tests</code>）
+<strong>Performance Goals</strong>: ローカルブランチチェックアウトは5秒以内（SC-001）、リモートフェッチ込みは30秒以内（SC-002）
+<strong>Constraints</strong>: 新規外部依存関係なし（インタラクティブプロンプトは標準入力/出力のみ使用）
+<strong>Scale/Scope</strong>: 既存コマンド群との一貫性を維持する小規模追加実装</p>
+<h2 id="constitution-check">Constitution Check</h2>
+<p><em>GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.</em></p>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I. Developer Usability</td>
+<td>✅ PASS</td>
+<td>コマンド名 <code>checkout</code> は動詞、引数・出力は既存コマンドと一貫</td>
+</tr>
+<tr>
+<td>II. Cross-Platform</td>
+<td>✅ PASS</td>
+<td>System.IO.Abstractions使用、プロセス実行は既存ProcessRunner経由</td>
+</tr>
+<tr>
+<td>III. Clean &amp; Secure Code</td>
+<td>✅ PASS</td>
+<td>空catchなし、特定例外捕捉、入力検証あり、秘密情報なし</td>
+</tr>
+<tr>
+<td>IV. Documentation Clarity</td>
+<td>✅ PASS</td>
+<td>XML docコメント追加、ADR不要（既存パターンの拡張）</td>
+</tr>
+<tr>
+<td>V. Minimal Dependencies</td>
+<td>✅ PASS</td>
+<td>新規外部パッケージなし。インタラクティブ選択は標準I/O</td>
+</tr>
+<tr>
+<td>VI. Comprehensive Testing</td>
+<td>✅ PASS</td>
+<td>TDDサイクル遵守、ユニット/統合/E2Eテストを先行</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post-design re-check</strong>: Phase 1 設計後に再評価 → 変更なし（Constitution違反なし）</p>
+<h2 id="project-structure">Project Structure</h2>
+<h3 id="documentation-this-feature">Documentation (this feature)</h3>
+<pre><code class="lang-text">specs/009-checkout-worktree/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+│   └── checkout-command.md
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+</code></pre>
+<h3 id="source-code-repository-root">Source Code (repository root)</h3>
+<pre><code class="lang-text">wt.cli/
+├── Commands/
+│   └── Worktree/
+│       ├── CreateCommand.cs         (既存)
+│       ├── RemoveCommand.cs         (既存)
+│       └── CheckoutCommand.cs       (NEW)
+├── Models/
+│   ├── CheckoutWorktreeOptions.cs   (NEW)
+│   ├── RemoteBranchInfo.cs          (NEW)
+│   └── ErrorCodes.cs                (MODIFY: RMxxx コード追加)
+├── Services/
+│   ├── Worktree/
+│   │   ├── IWorktreeService.cs      (MODIFY: CheckoutWorktreeAsync 追加)
+│   │   └── WorktreeService.cs       (MODIFY: CheckoutWorktreeAsync 実装)
+│   ├── Git/
+│   │   ├── IGitService.cs           (MODIFY: GetRemotesAsync, GetRemoteTrackingBranchesAsync,
+│   │   │                                     GetBranchUpstreamRemoteAsync, FetchFromRemoteAsync,
+│   │   │                                     AddWorktreeFromRemoteAsync 追加)
+│   │   └── GitService.cs            (MODIFY: 上記メソッド実装)
+│   └── Interaction/
+│       ├── IInteractionService.cs   (NEW: インタラクティブ選択抽象化)
+│       └── ConsoleInteractionService.cs (NEW: Console実装)
+└── Program.cs                       (MODIFY: CheckoutCommand + InteractionService 登録)
+
+wt.tests/
+├── Commands/
+│   └── Worktree/
+│       └── CheckoutCommandTests.cs  (NEW)
+├── Services/
+│   ├── Worktree/
+│   │   └── WorktreeServiceCheckoutTests.cs (NEW)
+│   └── Git/
+│       └── GitServiceTests.cs       (MODIFY: 新メソッドのテスト追加)
+└── Integration/
+    └── CheckoutWorktreeE2ETests.cs  (NEW)
+</code></pre>
+<p><strong>Structure Decision</strong>: Option 1（Single project）を採用。既存の <code>wt.cli</code> / <code>wt.tests</code> 構造に新ファイルを追加するのみ。新規プロジェクトは不要。</p>
+<p><strong>IInteractionService 導入の判断記録</strong>（軽量 ADR / Constitution IV 準拠）:</p>
+<ul>
+<li><strong>課題</strong>: マルチリモート選択はインタラクティブ I/O を必要とする。テスト可能性のため抽象化が必要。</li>
+<li><strong>選択肢</strong>:
+<ul>
+<li>A) <code>Console.ReadLine()</code> を WorktreeService に直接埋め込む — テスト不可、開発者ユーザビリティ低</li>
+<li>B) <code>IInteractionService</code> インターフェース + <code>ConsoleInteractionService</code> 実装 — テスト容易、既存サービス抽象化パターンと一貫</li>
+</ul>
+</li>
+<li><strong>決定</strong>: B を採用。既存の <code>IGitService</code>/<code>IWorktreeService</code> パターンの自然な拡張であり、新規外部依存なし。</li>
+<li><strong>正式 ADR ファイル省略理由</strong>: 既存パターンの踏襲かつ小規模追加のため、このインライン記録をもって Constitution IV の要件を満たすと判断する。</li>
+</ul>
+<h2 id="complexity-tracking">Complexity Tracking</h2>
+<blockquote>
+<p><strong>Fill ONLY if Constitution Check has violations that must be justified</strong></p>
+</blockquote>
+<p>なし（Constitution違反なし）</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/plan.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

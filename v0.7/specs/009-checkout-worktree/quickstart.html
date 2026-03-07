@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Quickstart: checkout コマンド実装ガイド | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Quickstart: checkout コマンド実装ガイド | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/quickstart.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="quickstart-checkout-コマンド実装ガイド">Quickstart: <code>checkout</code> コマンド実装ガイド</h1>
+
+<p><strong>Date</strong>: 2026-03-04</p>
+<h2 id="実装チェックリスト依存順">実装チェックリスト（依存順）</h2>
+<pre><code>1. [ ] ErrorCodes に RM001/RM002/RM003 を追加
+2. [ ] RemoteBranchInfo モデルを追加
+3. [ ] CheckoutWorktreeOptions モデルを追加
+4. [ ] IInteractionService インターフェースを追加
+5. [ ] ConsoleInteractionService 実装を追加
+6. [ ] IGitService に拡張メソッドを追加
+7. [ ] GitService に拡張メソッドを実装
+8. [ ] IWorktreeService に CheckoutWorktreeAsync を追加
+9. [ ] WorktreeService に CheckoutWorktreeAsync を実装
+10. [ ] CheckoutCommand を追加
+11. [ ] Program.cs に CheckoutCommand を登録
+</code></pre>
+<hr>
+<h2 id="tdd-開発順序">TDD 開発順序</h2>
+<h3 id="step-1-エラーコード追加テスト不要">Step 1: エラーコード追加（テスト不要）</h3>
+<p><code>wt.cli/Models/ErrorCodes.cs</code> に以下を追加:</p>
+<pre><code class="lang-csharp">public const string RemoteNotFound = &quot;RM001&quot;;
+public const string RemoteFetchFailed = &quot;RM002&quot;;
+public const string BranchNotFoundAnywhere = &quot;RM003&quot;;
+</code></pre>
+<p><code>GetSolution()</code> メソッドにも対応解決策を追加。</p>
+<hr>
+<h3 id="step-2-モデル追加">Step 2: モデル追加</h3>
+<p><strong>テスト</strong>: <code>wt.tests/Models/RemoteBranchInfoTests.cs</code>、<code>CheckoutWorktreeOptionsTests.cs</code></p>
+<ul>
+<li><code>RemoteBranchInfo</code> のプロパティ、<code>FullRef</code> フォーマット</li>
+<li><code>CheckoutWorktreeOptions.Validate()</code> の境界値テスト</li>
+</ul>
+<hr>
+<h3 id="step-3-iinteractionservice--consoleinteractionservice">Step 3: IInteractionService + ConsoleInteractionService</h3>
+<p><strong>テスト</strong>: <code>wt.tests/Services/Interaction/ConsoleInteractionServiceTests.cs</code></p>
+<ul>
+<li>有効入力（1-N）→ 対応インデックスを返す</li>
+<li>空入力 / <code>q</code> → null を返す</li>
+<li>無効入力3回 → null を返す</li>
+<li>CancellationToken でキャンセル</li>
+</ul>
+<hr>
+<h3 id="step-4-gitservice-拡張">Step 4: GitService 拡張</h3>
+<p><strong>テスト</strong>: <code>wt.tests/Services/Git/GitServiceTests.cs</code>（既存ファイルに追加）</p>
+<ul>
+<li><code>GetRemotesAsync</code>: <code>git remote</code> 出力パース</li>
+<li><code>GetRemoteTrackingBranchesAsync</code>: <code>git branch -r</code> 出力パース（複数リモート、ブランチ名フィルタ）</li>
+<li><code>FetchFromRemoteAsync</code>: 成功/失敗シナリオ</li>
+<li><code>GetBranchUpstreamRemoteAsync</code>: upstream 設定あり/なしシナリオ</li>
+<li><code>AddWorktreeFromRemoteAsync</code>: 成功/失敗シナリオ</li>
+</ul>
+<p><strong><code>git branch -r</code> 出力パース例</strong>:</p>
+<pre><code>  origin/HEAD -&gt; origin/main
+  origin/feature/review-me
+  upstream/feature/shared
+  origin/feature/shared
+</code></pre>
+<p>→ <code>HEAD -&gt; ...</code> 行はスキップ</p>
+<hr>
+<h3 id="step-5-worktreeservicecheckoutworktreeasync">Step 5: WorktreeService.CheckoutWorktreeAsync</h3>
+<p><strong>テスト</strong>: <code>wt.tests/Services/Worktree/WorktreeServiceCheckoutTests.cs</code></p>
+<p>主要テストシナリオ:</p>
+<pre><code>- ローカルブランチ存在 → 正常作成
+- ローカルブランチ存在 + --fetch + upstream設定済み → fetch後作成
+- ローカルブランチ存在 + --fetch + upstream未設定 → 警告後作成
+- ローカルブランチ不在 + リモート1件 → 自動選択作成
+- ローカルブランチ不在 + リモート複数 + --remote指定なし → IInteractionService呼び出し
+- ローカルブランチ不在 + リモート複数 + --remote指定 → プロンプトスキップ
+- ブランチ既チェックアウト済み → BR002エラー
+- ブランチどこにも存在しない → RM003エラー
+- ワークツリーパス競合 → WT001エラー
+- インタラクティブ選択キャンセル → ユーザーキャンセルエラー
+</code></pre>
+<hr>
+<h3 id="step-6-checkoutcommand">Step 6: CheckoutCommand</h3>
+<p><strong>テスト</strong>: <code>wt.tests/Commands/Worktree/CheckoutCommandTests.cs</code></p>
+<p>主要テストシナリオ:</p>
+<pre><code>- 正常実行 → 終了コード0、成功メッセージ
+- 正常実行 --output json → JSON出力
+- エラー発生 → 終了コード1、エラーメッセージ
+- GIT001 → 終了コード2
+- --help → ヘルプテキスト
+- --remote + --fetch 組み合わせ
+</code></pre>
+<hr>
+<h2 id="主要実装ポイント">主要実装ポイント</h2>
+<h3 id="git-branch--r-出力パース"><code>git branch -r</code> 出力パース</h3>
+<pre><code class="lang-csharp">// 出力例:
+//   origin/HEAD -&gt; origin/main   ← スキップ
+//   origin/feature/review-me
+//   upstream/feature/shared
+
+private static RemoteBranchInfo? ParseRemoteTrackingLine(string line)
+{
+    var trimmed = line.Trim();
+    if (trimmed.Contains(&quot; -&gt; &quot;)) return null; // HEAD -&gt; skip
+
+    var slashIndex = trimmed.IndexOf('/');
+    if (slashIndex &lt; 0) return null;
+
+    var remote = trimmed[..slashIndex];
+    var branch = trimmed[(slashIndex + 1)..];
+    return new RemoteBranchInfo(remote, branch, trimmed);
+}
+</code></pre>
+<h3 id="getbranchupstreamremoteasync-実装"><code>GetBranchUpstreamRemoteAsync</code> 実装</h3>
+<pre><code class="lang-bash">git config branch.&lt;branchName&gt;.remote
+# 成功時: リモート名を返す
+# 失敗時(exit code 1): upstream 未設定 → null を返す（エラーではない）
+</code></pre>
+<h3 id="addworktreefromremoteasync-実装"><code>AddWorktreeFromRemoteAsync</code> 実装</h3>
+<pre><code class="lang-bash">git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;
+</code></pre>
+<hr>
+<h2 id="programcs-更新">Program.cs 更新</h2>
+<pre><code class="lang-csharp">// 既存サービスに加えて追加
+var interactionService = new ConsoleInteractionService();
+
+// CheckoutCommand 登録
+rootCommand.Subcommands.Add(new CheckoutCommand(worktreeService, interactionService));
+</code></pre>
+<hr>
+<h2 id="既存コマンドとの比較">既存コマンドとの比較</h2>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th><code>create</code></th>
+<th><code>checkout</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ブランチ作成</td>
+<td>新規作成（<code>-b</code> ベース）</td>
+<td>既存ブランチを使用</td>
+</tr>
+<tr>
+<td>リモート操作</td>
+<td>なし</td>
+<td>リモートトラッキング参照検索、fetch</td>
+</tr>
+<tr>
+<td>インタラクション</td>
+<td>なし</td>
+<td>複数リモート時の選択プロンプト</td>
+</tr>
+<tr>
+<td>エディタ起動</td>
+<td>サポート</td>
+<td>サポート（同一）</td>
+</tr>
+<tr>
+<td>パス解決</td>
+<td>PathHelper</td>
+<td>PathHelper（同一）</td>
+</tr>
+<tr>
+<td>出力形式</td>
+<td>human / json</td>
+<td>human / json（同一）</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/quickstart.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Feature Specification: Checkout Existing Branch as Worktree | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Feature Specification: Checkout Existing Branch as Worktree | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/spec.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="feature-specification-checkout-existing-branch-as-worktree">Feature Specification: Checkout Existing Branch as Worktree</h1>
+
+<p><strong>Feature Branch</strong>: <code>009-checkout-worktree</code>
+<strong>Created</strong>: 2026-03-04
+<strong>Status</strong>: Draft
+<strong>Input</strong>: User description: &quot;既存ブランチをcheckoutしてworktreeとして管理を行う。基本機能はcreateコマンドと同様にする。ユースケースとしてはコードレビューのためにremoteブランチもしくはローカルブランチを独立した環境で動作確認できること。原則としてローカルブランチを優先するが、指定のブランチが存在しない場合にはremoteリポジトリからチェックアウトを行う。複数のremoteリポジトリが存在する場合にはユーザーに対象のリポジトリを選択してもらう。remoteリポジトリはgit remoteコマンドで取得できるリポジトリとする。&quot;</p>
+<h2 id="user-scenarios--testing-mandatory">User Scenarios &amp; Testing <em>(mandatory)</em></h2>
+<h3 id="user-story-1---check-out-local-branch-as-worktree-priority-p1">User Story 1 - Check Out Local Branch as Worktree (Priority: P1)</h3>
+<p>A developer wants to review a colleague's pull request. They specify the branch name to the <code>checkout</code> command, and the tool creates an isolated worktree pointing to that local branch. The developer can then open the code in their editor without disturbing their current working state.</p>
+<p><strong>Why this priority</strong>: This is the most common use case—local branches are the default target and represent the minimum viable functionality for code review workflows.</p>
+<p><strong>Independent Test</strong>: Can be fully tested by running <code>wt checkout &lt;branch-name&gt;</code> on a repository with existing local branches and verifying that an isolated worktree is created, checkable independently of any remote.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a Git repository with a local branch <code>feature/review-me</code>, <strong>When</strong> the user runs <code>wt checkout feature/review-me</code>, <strong>Then</strong> a worktree is created at the standard path with that branch checked out, and the user is informed of the created worktree path.</li>
+<li><strong>Given</strong> a Git repository with a local branch, <strong>When</strong> the worktree is created successfully, <strong>Then</strong> the optional editor (if configured) opens at the worktree directory, matching the behavior of the <code>create</code> command.</li>
+<li><strong>Given</strong> the branch name is already checked out in another worktree, <strong>When</strong> the user runs <code>wt checkout &lt;branch-name&gt;</code>, <strong>Then</strong> the tool reports an error explaining the branch is already in use and suggests the existing worktree path.</li>
+</ol>
+<hr>
+<h3 id="user-story-2---check-out-remote-branch-as-worktree-when-local-is-absent-priority-p2">User Story 2 - Check Out Remote Branch as Worktree When Local Is Absent (Priority: P2)</h3>
+<p>A developer wants to review a remote branch that does not exist locally. They run <code>wt checkout &lt;branch-name&gt;</code>, the tool finds the branch only on the remote, fetches it, and creates a worktree for local review.</p>
+<p><strong>Why this priority</strong>: Enables the full code review workflow for branches that haven't been fetched locally yet, completing the primary use case of the feature.</p>
+<p><strong>Independent Test</strong>: Can be tested by checking out a branch that exists only on the remote (not locally) and verifying a worktree is created with the correct content.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a repository where <code>feature/remote-only</code> exists on a single remote but not locally, <strong>When</strong> the user runs <code>wt checkout feature/remote-only</code>, <strong>Then</strong> the tool fetches the branch from the remote and creates a worktree tracking that remote branch.</li>
+<li><strong>Given</strong> the remote branch fetch succeeds, <strong>When</strong> the worktree is created, <strong>Then</strong> the worktree is placed at the standard path and the user receives a confirmation message including the worktree path and the remote it was fetched from.</li>
+<li><strong>Given</strong> the remote branch does not exist on any configured remote, <strong>When</strong> the user runs <code>wt checkout &lt;branch-name&gt;</code>, <strong>Then</strong> the tool reports a clear error stating the branch was not found locally or on any remote.</li>
+</ol>
+<hr>
+<h3 id="user-story-3---select-remote-when-multiple-remotes-have-the-branch-priority-p3">User Story 3 - Select Remote When Multiple Remotes Have the Branch (Priority: P3)</h3>
+<p>A developer's repository has multiple remotes (e.g., <code>origin</code> and <code>upstream</code>). Both have a branch with the same name. The tool prompts the user to choose which remote to use before creating the worktree. Alternatively, the developer can specify the remote upfront with <code>--remote &lt;name&gt;</code> to skip the prompt.</p>
+<p><strong>Why this priority</strong>: Necessary for correctness in multi-remote workflows; without this, the tool would silently pick the wrong source, leading to review of unintended code.</p>
+<p><strong>Independent Test</strong>: Can be tested by setting up a repository with two remotes both containing a branch of the same name, then running <code>wt checkout &lt;branch-name&gt;</code> and verifying the user is prompted to select a remote; and separately running <code>wt checkout --remote origin &lt;branch-name&gt;</code> to verify the prompt is skipped.</p>
+<p><strong>Acceptance Scenarios</strong>:</p>
+<ol>
+<li><strong>Given</strong> a repository with two remotes (<code>origin</code>, <code>upstream</code>) both containing branch <code>feature/shared</code>, <strong>When</strong> the user runs <code>wt checkout feature/shared</code>, <strong>Then</strong> the tool lists the available remotes and prompts the user to select one interactively.</li>
+<li><strong>Given</strong> the user selects a remote from the prompt, <strong>Then</strong> the branch is fetched from the selected remote and a worktree is created.</li>
+<li><strong>Given</strong> the user cancels the remote selection prompt, <strong>Then</strong> no worktree is created and the operation exits cleanly with a user-friendly message.</li>
+<li><strong>Given</strong> a repository with two remotes both containing <code>feature/shared</code>, <strong>When</strong> the user runs <code>wt checkout --remote origin feature/shared</code>, <strong>Then</strong> the interactive prompt is skipped and the worktree is created from <code>origin</code> directly.</li>
+</ol>
+<hr>
+<h3 id="edge-cases">Edge Cases</h3>
+<ul>
+<li>What happens when the specified branch name is ambiguous (matches both a local branch and a differently-named remote-tracking branch)? → Local branch takes priority per the stated rule.</li>
+<li>What happens when a worktree for the same branch already exists? → Report an error with the existing worktree location.</li>
+<li>What happens when no remotes are configured and the branch does not exist locally? → Report an error that the branch cannot be found.</li>
+<li>What happens when the remote fetch fails (network error, authentication)? → Report an actionable error describing the failure and suggest manual fetch steps.</li>
+<li>What happens when the target worktree directory already exists on the filesystem? → Report an error with a clear message (same behavior as <code>create</code> command).</li>
+<li>What happens when only one remote contains the branch? → Use that remote automatically without prompting.</li>
+</ul>
+<h2 id="requirements-mandatory">Requirements <em>(mandatory)</em></h2>
+<h3 id="functional-requirements">Functional Requirements</h3>
+<ul>
+<li><strong>FR-001</strong>: The tool MUST provide a <code>checkout</code> command that accepts a branch name as a required argument.</li>
+<li><strong>FR-002</strong>: The tool MUST first search local branches for the specified name; if found locally, it MUST use the local branch to create the worktree without accessing any remote.</li>
+<li><strong>FR-003</strong>: If the branch is not found locally, the tool MUST search all remotes (discovered via <code>git remote</code>) using cached remote-tracking references by default.</li>
+<li><strong>FR-004</strong>: If the branch is found on exactly one remote, the tool MUST automatically create a worktree tracking that remote branch without prompting the user.</li>
+<li><strong>FR-004a</strong>: The <code>checkout</code> command MUST support a <code>--fetch</code> flag; when provided, the tool MUST run <code>git fetch</code> against the relevant remote(s) before searching for the branch.</li>
+<li><strong>FR-005</strong>: If the branch is found on multiple remotes and no <code>--remote</code> flag is provided, the tool MUST present an interactive selection prompt listing the available remote names and wait for the user to choose one before proceeding.</li>
+<li><strong>FR-005a</strong>: The <code>checkout</code> command MUST support a <code>--remote &lt;name&gt;</code> flag; when provided, the tool MUST skip the interactive prompt and use the specified remote directly, reporting an error if the branch does not exist on that remote.</li>
+<li><strong>FR-006</strong>: If the branch does not exist locally or on any remote, the tool MUST report a descriptive error and exit without creating any worktree.</li>
+<li><strong>FR-007</strong>: If the selected branch is already checked out in an existing worktree, the tool MUST report an error including the path of the existing worktree.</li>
+<li><strong>FR-008</strong>: The worktree MUST be created at the same default path location as the <code>create</code> command (derived from the repository root and branch name via <code>PathHelper</code>).</li>
+<li><strong>FR-009</strong>: The <code>checkout</code> command MUST support the same editor-launch option as the <code>create</code> command, opening the configured editor in the new worktree directory upon success.</li>
+<li><strong>FR-010</strong>: All success and error messages MUST be consistent with the messaging style of the existing <code>create</code> and <code>list</code> commands.</li>
+</ul>
+<h3 id="key-entities">Key Entities</h3>
+<ul>
+<li><strong>Branch</strong>: A named reference to a sequence of commits, identified by its name; may exist locally, on one or more remotes, or both.</li>
+<li><strong>Remote</strong>: A named external repository configured in the local Git repository, discoverable via <code>git remote</code>.</li>
+<li><strong>Worktree</strong>: An isolated working directory linked to the repository, checked out to a specific branch; created and managed by Git.</li>
+</ul>
+<h2 id="success-criteria-mandatory">Success Criteria <em>(mandatory)</em></h2>
+<h3 id="measurable-outcomes">Measurable Outcomes</h3>
+<ul>
+<li><strong>SC-001</strong>: Users can check out a local branch as a worktree with a single command in under 5 seconds on a repository with up to 100 local branches.</li>
+<li><strong>SC-002</strong>: Users can check out a remote-only branch as a worktree with a single command, including the fetch step, in under 30 seconds on a broadband connection of at least 10 Mbps with a remote repository of typical size (≤500 MB).</li>
+<li><strong>SC-003</strong>: When multiple remotes contain the target branch, users are presented with a clear selection prompt and can complete the worktree creation with one additional interaction.</li>
+<li><strong>SC-004</strong>: 100% of error scenarios (branch not found, already checked out, directory conflict) produce a human-readable message with sufficient context for the user to resolve the issue without consulting documentation.</li>
+<li><strong>SC-005</strong>: The <code>checkout</code> command shares the same option names and behaviors as <code>create</code> for all overlapping features: <code>--editor (-e)</code>, <code>--output (-o json|table)</code>, <code>--verbose (-v)</code>; success and error message formats follow the same structure as <code>create</code>.</li>
+</ul>
+<h2 id="assumptions">Assumptions</h2>
+<ul>
+<li>The worktree placement path and directory naming (including transformation of branch names containing path separators such as <code>/</code>) follow the same convention as the <code>create</code> command via <code>PathHelper</code>; no new naming strategy is introduced.</li>
+<li><code>git remote</code> is the authoritative source of configured remotes; no other remote discovery mechanism is needed.</li>
+<li>Interactive prompts are presented on standard output/input (TTY); non-interactive environments are out of scope for this feature.</li>
+<li>The editor integration is optional and governed by the same configuration mechanism as the <code>create</code> command.</li>
+<li>By default, remote branch lookup uses cached remote-tracking references; explicit remote fetch is performed only when the <code>--fetch</code> flag is provided.</li>
+</ul>
+<h2 id="clarifications">Clarifications</h2>
+<h3 id="session-2026-03-04">Session 2026-03-04</h3>
+<ul>
+<li>Q: Remote branch lookup strategy before searching → A: Default uses cached remote-tracking references; <code>git fetch</code> is only performed when the <code>--fetch</code> flag is explicitly provided by the user</li>
+<li>Q: Explicit remote specification flag → A: Support <code>--remote &lt;name&gt;</code> flag to bypass interactive prompt and target a specific remote directly</li>
+<li>Q: Worktree directory naming for branch names containing path separators (e.g., <code>feature/review-me</code>) → A: Apply the same transformation rules as the <code>create</code> command via <code>PathHelper</code>; no new naming strategy is introduced</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/spec.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

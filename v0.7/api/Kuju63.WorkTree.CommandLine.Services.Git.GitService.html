@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class GitService | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class GitService | wtm ">
+      
+      <meta name="description" content="Provides functionality for interacting with Git repositories.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/new/main/apiSpec/new?filename=Kuju63_WorkTree_CommandLine_Services_Git_GitService.md&amp;value=---%0Auid%3A%20Kuju63.WorkTree.CommandLine.Services.Git.GitService%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService">
+
+
+
+  <h1 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService" class="text-break">
+Class GitService  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Kuju63.html">Kuju63</a>.<a class="xref" href="Kuju63.WorkTree.html">WorkTree</a>.<a class="xref" href="Kuju63.WorkTree.CommandLine.html">CommandLine</a>.<a class="xref" href="Kuju63.WorkTree.CommandLine.Services.html">Services</a>.<a class="xref" href="Kuju63.WorkTree.CommandLine.Services.Git.html">Git</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>wtm.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides functionality for interacting with Git repositories.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class GitService : IGitService</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">GitService</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Kuju63.WorkTree.CommandLine.Services.Git.IGitService.html">IGitService</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService__ctor_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.#ctor*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService__ctor_Kuju63_WorkTree_CommandLine_Utils_IProcessRunner_System_IO_Abstractions_IFileSystem_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.#ctor(Kuju63.WorkTree.CommandLine.Utils.IProcessRunner,System.IO.Abstractions.IFileSystem)">
+  GitService(IProcessRunner, IFileSystem)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GitService(IProcessRunner processRunner, IFileSystem fileSystem)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>processRunner</code> <a class="xref" href="Kuju63.WorkTree.CommandLine.Utils.IProcessRunner.html">IProcessRunner</a></dt>
+    <dd></dd>
+    <dt><code>fileSystem</code> <span class="xref">IFileSystem</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeAsync_System_String_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(System.String,System.String)">
+  AddWorktreeAsync(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a new worktree at the specified path asynchronously. This overload does not accept a cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; AddWorktreeAsync(string path, string branchName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path where the worktree should be created.</p>
+</dd>
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The branch to checkout in the new worktree.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the worktree was added successfully; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeAsync(System.String,System.String,System.Threading.CancellationToken)">
+  AddWorktreeAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a new worktree at the specified path asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; AddWorktreeAsync(string path, string branchName, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path where the worktree should be created.</p>
+</dd>
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The branch to checkout in the new worktree.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the worktree was added successfully; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeFromRemoteAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeFromRemoteAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeFromRemoteAsync_System_String_System_String_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeFromRemoteAsync(System.String,System.String,System.String)">
+  AddWorktreeFromRemoteAsync(string, string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L454"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a worktree from a remote tracking branch using:
+git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;Unit&gt;&gt; AddWorktreeFromRemoteAsync(string worktreePath, string branchName, string remoteName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path where the worktree should be created.</p>
+</dd>
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The branch name to create locally.</p>
+</dd>
+    <dt><code>remoteName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The remote name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.Unit.html">Unit</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.Unit.html">Unit</a> on success.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeFromRemoteAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeFromRemoteAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_AddWorktreeFromRemoteAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.AddWorktreeFromRemoteAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+  AddWorktreeFromRemoteAsync(string, string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L461"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a worktree from a remote tracking branch using:
+git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;Unit&gt;&gt; AddWorktreeFromRemoteAsync(string worktreePath, string branchName, string remoteName, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path where the worktree should be created.</p>
+</dd>
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The branch name to create locally.</p>
+</dd>
+    <dt><code>remoteName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The remote name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.Unit.html">Unit</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.Unit.html">Unit</a> on success.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_BranchExistsAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_BranchExistsAsync_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(System.String)">
+  BranchExistsAsync(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks whether a branch exists (local or remote) asynchronously. This overload does not accept a cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; BranchExistsAsync(string branchName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the branch to check.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the branch exists; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_BranchExistsAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_BranchExistsAsync_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.BranchExistsAsync(System.String,System.Threading.CancellationToken)">
+  BranchExistsAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks whether a branch exists (local or remote) asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; BranchExistsAsync(string branchName, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the branch to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the branch exists; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_CreateBranchAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_CreateBranchAsync_System_String_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(System.String,System.String)">
+  CreateBranchAsync(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new branch from a base branch asynchronously. This overload does not accept a cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;BranchInfo&gt;&gt; CreateBranchAsync(string branchName, string baseBranch)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the branch to create.</p>
+</dd>
+    <dt><code>baseBranch</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The base branch to branch from.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.BranchInfo.html">BranchInfo</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing information about the created branch.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_CreateBranchAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_CreateBranchAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.CreateBranchAsync(System.String,System.String,System.Threading.CancellationToken)">
+  CreateBranchAsync(string, string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new branch from a base branch asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;BranchInfo&gt;&gt; CreateBranchAsync(string branchName, string baseBranch, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the branch to create.</p>
+</dd>
+    <dt><code>baseBranch</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The base branch to branch from.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.BranchInfo.html">BranchInfo</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing information about the created branch.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_FetchFromRemoteAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.FetchFromRemoteAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_FetchFromRemoteAsync_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.FetchFromRemoteAsync(System.String)">
+  FetchFromRemoteAsync(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L404"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes git fetch for the specified remote.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;Unit&gt;&gt; FetchFromRemoteAsync(string remote)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>remote</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The remote name to fetch from.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.Unit.html">Unit</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.Unit.html">Unit</a> on success.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_FetchFromRemoteAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.FetchFromRemoteAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_FetchFromRemoteAsync_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.FetchFromRemoteAsync(System.String,System.Threading.CancellationToken)">
+  FetchFromRemoteAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L408"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes git fetch for the specified remote.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;Unit&gt;&gt; FetchFromRemoteAsync(string remote, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>remote</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The remote name to fetch from.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.Unit.html">Unit</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.Unit.html">Unit</a> on success.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetBranchUpstreamRemoteAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetBranchUpstreamRemoteAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetBranchUpstreamRemoteAsync_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetBranchUpstreamRemoteAsync(System.String)">
+  GetBranchUpstreamRemoteAsync(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L427"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the upstream remote configured for a local branch.
+Returns null if no upstream is configured (not an error).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;string?&gt;&gt; GetBranchUpstreamRemoteAsync(string branchName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The local branch name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the remote name or null if not configured.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetBranchUpstreamRemoteAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetBranchUpstreamRemoteAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetBranchUpstreamRemoteAsync_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetBranchUpstreamRemoteAsync(System.String,System.Threading.CancellationToken)">
+  GetBranchUpstreamRemoteAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L431"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the upstream remote configured for a local branch.
+Returns null if no upstream is configured (not an error).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;string?&gt;&gt; GetBranchUpstreamRemoteAsync(string branchName, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The local branch name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the remote name or null if not configured.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetCurrentBranchAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetCurrentBranchAsync" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync">
+  GetCurrentBranchAsync()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the name of the current branch asynchronously. This overload does not accept a cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;string&gt;&gt; GetCurrentBranchAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the current branch name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetCurrentBranchAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetCurrentBranchAsync_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetCurrentBranchAsync(System.Threading.CancellationToken)">
+  GetCurrentBranchAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the name of the current branch asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;string&gt;&gt; GetCurrentBranchAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the current branch name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemoteTrackingBranchesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemoteTrackingBranchesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemoteTrackingBranchesAsync" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemoteTrackingBranchesAsync">
+  GetRemoteTrackingBranchesAsync()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L344"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets remote tracking branches from git branch -r output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;IReadOnlyList&lt;RemoteBranchInfo&gt;&gt;&gt; GetRemoteTrackingBranchesAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.RemoteBranchInfo.html">RemoteBranchInfo</a>&gt;&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the list of remote branch info.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemoteTrackingBranchesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemoteTrackingBranchesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemoteTrackingBranchesAsync_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemoteTrackingBranchesAsync(System.String)">
+  GetRemoteTrackingBranchesAsync(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L348"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets remote tracking branches from git branch -r output.
+If branchName is specified, returns only references with that branch name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;IReadOnlyList&lt;RemoteBranchInfo&gt;&gt;&gt; GetRemoteTrackingBranchesAsync(string? branchName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Optional branch name filter.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.RemoteBranchInfo.html">RemoteBranchInfo</a>&gt;&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the list of remote branch info.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemoteTrackingBranchesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemoteTrackingBranchesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemoteTrackingBranchesAsync_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemoteTrackingBranchesAsync(System.String,System.Threading.CancellationToken)">
+  GetRemoteTrackingBranchesAsync(string?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L352"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets remote tracking branches from git branch -r output.
+If branchName is specified, returns only references with that branch name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;IReadOnlyList&lt;RemoteBranchInfo&gt;&gt;&gt; GetRemoteTrackingBranchesAsync(string? branchName, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>branchName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Optional branch name filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.RemoteBranchInfo.html">RemoteBranchInfo</a>&gt;&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the list of remote branch info.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemotesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemotesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemotesAsync" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemotesAsync">
+  GetRemotesAsync()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L318"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the list of configured remotes from git remote.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;IReadOnlyList&lt;string&gt;&gt;&gt; GetRemotesAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the list of remote names.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemotesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemotesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_GetRemotesAsync_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.GetRemotesAsync(System.Threading.CancellationToken)">
+  GetRemotesAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the list of configured remotes from git remote.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;IReadOnlyList&lt;string&gt;&gt;&gt; GetRemotesAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing the list of remote names.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_HasUncommittedChangesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_HasUncommittedChangesAsync_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(System.String)">
+  HasUncommittedChangesAsync(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks whether the specified worktree has uncommitted changes asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; HasUncommittedChangesAsync(string worktreePath)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the worktree.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if there are uncommitted changes; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_HasUncommittedChangesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_HasUncommittedChangesAsync_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.HasUncommittedChangesAsync(System.String,System.Threading.CancellationToken)">
+  HasUncommittedChangesAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks whether the specified worktree has uncommitted changes asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; HasUncommittedChangesAsync(string worktreePath, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the worktree.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if there are uncommitted changes; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsGitRepositoryAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsGitRepositoryAsync" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync">
+  IsGitRepositoryAsync()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks whether the current directory is a Git repository asynchronously.
+This overload does not accept a cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; IsGitRepositoryAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if in a Git repository; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsGitRepositoryAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsGitRepositoryAsync_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsGitRepositoryAsync(System.Threading.CancellationToken)">
+  IsGitRepositoryAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks whether the current directory is a Git repository asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; IsGitRepositoryAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if in a Git repository; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsWorktreeLockedAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsWorktreeLockedAsync_System_String_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(System.String)">
+  IsWorktreeLockedAsync(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks whether the specified worktree is locked asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; IsWorktreeLockedAsync(string worktreePath)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the worktree.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the worktree is locked; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsWorktreeLockedAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_IsWorktreeLockedAsync_System_String_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.IsWorktreeLockedAsync(System.String,System.Threading.CancellationToken)">
+  IsWorktreeLockedAsync(string, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L238"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks whether the specified worktree is locked asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; IsWorktreeLockedAsync(string worktreePath, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the worktree.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the worktree is locked; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_ListWorktreesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_ListWorktreesAsync" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync">
+  ListWorktreesAsync()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L187"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all worktrees in the repository asynchronously. This overload does not accept a cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;List&lt;WorktreeInfo&gt;&gt;&gt; ListWorktreesAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<span class="xref">List</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html">WorktreeInfo</a>&gt;&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing a list of worktree information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_ListWorktreesAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_ListWorktreesAsync_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.ListWorktreesAsync(System.Threading.CancellationToken)">
+  ListWorktreesAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L195"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists all worktrees in the repository asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;List&lt;WorktreeInfo&gt;&gt;&gt; ListWorktreesAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<span class="xref">List</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.WorktreeInfo.html">WorktreeInfo</a>&gt;&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing a list of worktree information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_RemoveWorktreeAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_RemoveWorktreeAsync_System_String_System_Boolean_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(System.String,System.Boolean)">
+  RemoveWorktreeAsync(string, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes a worktree from the git repository asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; RemoveWorktreeAsync(string worktreePath, bool force)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the worktree to remove.</p>
+</dd>
+    <dt><code>force</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>If true, force removal even if the worktree is locked or has uncommitted changes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the worktree was removed successfully; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_RemoveWorktreeAsync_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync*"></a>
+
+  <h3 id="Kuju63_WorkTree_CommandLine_Services_Git_GitService_RemoveWorktreeAsync_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="Kuju63.WorkTree.CommandLine.Services.Git.GitService.RemoveWorktreeAsync(System.String,System.Boolean,System.Threading.CancellationToken)">
+  RemoveWorktreeAsync(string, bool, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L277"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes a worktree from the git repository asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;CommandResult&lt;bool&gt;&gt; RemoveWorktreeAsync(string worktreePath, bool force, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>worktreePath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path to the worktree to remove.</p>
+</dd>
+    <dt><code>force</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>If true, force removal even if the worktree is locked or has uncommitted changes.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="Kuju63.WorkTree.CommandLine.Models.CommandResult-1.html">CommandResult&lt;T&gt;</a> containing <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the worktree was removed successfully; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/wt.cli/Services/Git/GitService.cs/#L10" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

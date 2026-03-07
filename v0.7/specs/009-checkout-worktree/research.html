@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Research: Checkout Existing Branch as Worktree | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Research: Checkout Existing Branch as Worktree | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/research.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="research-checkout-existing-branch-as-worktree">Research: Checkout Existing Branch as Worktree</h1>
+
+<p><strong>Date</strong>: 2026-03-04
+<strong>Status</strong>: Complete — all NEEDS CLARIFICATION resolved</p>
+<h2 id="1-git-commands-for-remote-branch-discovery">1. Git Commands for Remote Branch Discovery</h2>
+<h3 id="decision">Decision</h3>
+<p>キャッシュ済みリモートトラッキング参照の検索には <code>git branch -r</code> の出力パースを使用する。リモート一覧は <code>git remote</code> で取得。</p>
+<h3 id="rationale">Rationale</h3>
+<ul>
+<li><code>git branch -r</code> はネットワークアクセス不要でローカルキャッシュ済みリモートトラッキング参照を返す（仕様の「キャッシュ済みリモートトラッキング参照を使用」要件に合致）</li>
+<li><code>git ls-remote</code> はリアルタイムネットワークアクセスが必要なため採用しない（<code>--fetch</code> フラグ時のみ使用）</li>
+<li>出力フォーマット: <code>origin/feature/review-me</code> → <code>remote = &quot;origin&quot;</code>, <code>branch = &quot;feature/review-me&quot;</code> に分解可能</li>
+</ul>
+<h3 id="alternatives-considered">Alternatives Considered</h3>
+<table>
+<thead>
+<tr>
+<th>代替案</th>
+<th>却下理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git ls-remote</code></td>
+<td>ネットワークアクセスが発生し、デフォルト動作の「キャッシュ使用」に反する</td>
+</tr>
+<tr>
+<td><code>git for-each-ref refs/remotes/</code></td>
+<td>動作は同等だが <code>git branch -r</code> より冗長</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-creating-worktree-tracking-remote-branch">2. Creating Worktree Tracking Remote Branch</h2>
+<h3 id="decision-1">Decision</h3>
+<p>リモートブランチからワークツリーを作成する場合: <code>git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;</code></p>
+<p>ローカルブランチからワークツリーを作成する場合: <code>git worktree add &lt;path&gt; &lt;branch&gt;</code>（既存の <code>AddWorktreeAsync</code> と同等）</p>
+<h3 id="rationale-1">Rationale</h3>
+<ul>
+<li><code>--track</code> オプションにより、作成するローカルブランチが <code>&lt;remote&gt;/&lt;branch&gt;</code> を上流として追跡する</li>
+<li><code>-b &lt;branch&gt;</code> でローカルブランチ名を明示的に指定することで、ブランチ名の混乱を防ぐ</li>
+<li><code>git worktree add &lt;path&gt; &lt;branch&gt;</code> はローカルブランチが既に存在する場合に使用（フラグなし）</li>
+</ul>
+<h3 id="alternatives-considered-1">Alternatives Considered</h3>
+<table>
+<thead>
+<tr>
+<th>代替案</th>
+<th>却下理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git checkout -b &lt;branch&gt; &lt;remote&gt;/&lt;branch&gt;</code> + <code>git worktree add</code></td>
+<td>2ステップになり複雑</td>
+</tr>
+<tr>
+<td><code>git worktree add &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;</code> (detached HEAD)</td>
+<td>detached HEADになり開発不便</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-interactive-remote-selection-no-new-dependencies">3. Interactive Remote Selection (No New Dependencies)</h2>
+<h3 id="decision-2">Decision</h3>
+<p>インタラクティブプロンプトには <code>IInteractionService</code> インターフェースを導入し、<code>ConsoleInteractionService</code> がデフォルト実装として <code>Console.Write</code> / <code>Console.ReadLine</code> を使用する。テストでは Moq でモック可能。</p>
+<h3 id="rationale-2">Rationale</h3>
+<ul>
+<li>新規外部ライブラリ（Spectre.Console等）なしで実装可能（Constitution Principle V 遵守）</li>
+<li>インターフェース抽象化によりテスト容易性を維持（Constitution Principle VI 遵守）</li>
+<li>実装シンプル: 番号付きリスト表示 → 番号入力 → バリデーション</li>
+</ul>
+<h3 id="implementation-pattern">Implementation Pattern</h3>
+<pre><code>利用可能なリモートリポジトリ:
+  1. origin
+  2. upstream
+リモートを選択してください (1-2): _
+</code></pre>
+<ul>
+<li>無効入力は再プロンプト（最大3回でキャンセル）</li>
+<li>Ctrl+C / 空エントリでキャンセル</li>
+</ul>
+<h3 id="alternatives-considered-2">Alternatives Considered</h3>
+<table>
+<thead>
+<tr>
+<th>代替案</th>
+<th>却下理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spectre.Console</td>
+<td>新規依存関係（Constitution V 違反）</td>
+</tr>
+<tr>
+<td>System.CommandLine のインタラクティブ機能</td>
+<td>v2.0.x では対話的選択UIなし</td>
+</tr>
+<tr>
+<td><code>--remote</code> フラグ強制（プロンプトなし）</td>
+<td>ユーザビリティ低下（FR-005 要件に反する）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-error-code-strategy">4. Error Code Strategy</h2>
+<h3 id="decision-3">Decision</h3>
+<p>既存エラーコード体系を拡張する。<code>RM</code> プレフィックスで新規カテゴリ「Remote」を追加:</p>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RM001</code></td>
+<td>指定リモートが存在しない</td>
+</tr>
+<tr>
+<td><code>RM002</code></td>
+<td>リモートへのフェッチ失敗（ネットワークエラー、認証失敗）</td>
+</tr>
+<tr>
+<td><code>RM003</code></td>
+<td>ブランチがローカルにもどのリモートにも存在しない</td>
+</tr>
+</tbody>
+</table>
+<p>既存コード <code>WT001</code>（ワークツリーパス競合）と <code>BR002</code>（ブランチ既にチェックアウト中）は再利用。</p>
+<h3 id="rationale-3">Rationale</h3>
+<ul>
+<li>既存の GIT/BR/WT/FS/ED 体系と一貫したパターン</li>
+<li>Remote 操作固有のエラーは専用カテゴリで明示</li>
+<li><code>ErrorCodes.GetSolution()</code> メソッドに対応解決策を追加</li>
+</ul>
+<hr>
+<h2 id="5-worktree-path-resolution-for-remote-branches">5. Worktree Path Resolution for Remote Branches</h2>
+<h3 id="decision-4">Decision</h3>
+<p>リモートブランチからのチェックアウト時のパス解決は <code>PathHelper</code> の既存ロジックを流用。ブランチ名 <code>feature/review-me</code> → ディレクトリ名変換は <code>create</code> コマンドと同一規則。</p>
+<h3 id="rationale-4">Rationale</h3>
+<ul>
+<li>仕様の「<code>PathHelper</code> と同一の変換規則」（FR-008, Assumptions 参照）に準拠</li>
+<li>新規ロジック不要</li>
+</ul>
+<hr>
+<h2 id="6---fetch-flag-implementation">6. <code>--fetch</code> Flag Implementation</h2>
+<h3 id="decision-5">Decision</h3>
+<p><code>--fetch</code> フラグの目的は<strong>最新のブランチ状態</strong>でワークツリーを作成することにある。そのため、ローカルブランチが存在する場合でも fetch を試みて最新化する。</p>
+<p>処理フロー（<code>--fetch</code> あり）:</p>
+<ol>
+<li>ローカルブランチ検索 → 見つかった場合:
+<ul>
+<li><code>git config branch.&lt;branch&gt;.remote</code> で upstream リモートを取得</li>
+<li>upstream が設定されている場合: <code>git fetch &lt;remote&gt; &lt;branch&gt;</code> で最新化してワークツリー作成</li>
+<li>upstream が未設定の場合: <strong>警告メッセージを表示</strong>して現在のローカルブランチ状態でワークツリー作成を継続</li>
+</ul>
+</li>
+<li>ローカルに見つからない場合:
+<ul>
+<li><code>git remote</code> でリモート一覧取得</li>
+<li>各リモートに <code>git fetch &lt;remote&gt;</code> 実行（並列不可、順次実行）</li>
+<li><code>git branch -r</code> でリモートトラッキング参照を再検索してワークツリー作成</li>
+</ul>
+</li>
+</ol>
+<p>処理フロー（<code>--fetch</code> なし、デフォルト）:</p>
+<ol>
+<li>ローカルブランチ検索 → 見つかれば使用</li>
+<li>見つからない場合: <code>git branch -r</code> でキャッシュ済みリモートトラッキング参照を検索</li>
+</ol>
+<h3 id="rationale-5">Rationale</h3>
+<ul>
+<li><code>--fetch</code> の主目的はブランチの最新化であるため、ローカルブランチでも最新化を試みる</li>
+<li>upstream 未設定ブランチは最新化不可能だが、作業を中断するよりも警告後継続する方がユーザビリティが高い</li>
+<li>フラグなし時はネットワークアクセスなしでパフォーマンス良好</li>
+</ul>
+<hr>
+<h2 id="summary-resolved-unknowns">Summary: Resolved Unknowns</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>リモートブランチ検索コマンド</td>
+<td><code>git branch -r</code> でキャッシュ参照、<code>--fetch</code> 時のみ <code>git fetch</code> 実行</td>
+</tr>
+<tr>
+<td>2</td>
+<td>リモートブランチからワークツリー作成</td>
+<td><code>git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>インタラクティブプロンプト実装</td>
+<td><code>IInteractionService</code> 抽象化 + <code>ConsoleInteractionService</code>（新規依存なし）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>新規エラーコード</td>
+<td><code>RM001</code>, <code>RM002</code>, <code>RM003</code> を <code>ErrorCodes</code> に追加</td>
+</tr>
+<tr>
+<td>5</td>
+<td>パス解決</td>
+<td>既存 <code>PathHelper</code> をそのまま流用</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>--fetch</code> + ローカルブランチあり</td>
+<td>upstream 設定済みなら fetch 後最新化、未設定なら警告して現状のまま継続</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>--fetch</code> + ローカルブランチなし</td>
+<td>全リモートを fetch 後にリモートトラッキング参照を再検索</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/research.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

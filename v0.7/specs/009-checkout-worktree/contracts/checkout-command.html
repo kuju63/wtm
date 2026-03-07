@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>CLI Contract: wt checkout Command | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="CLI Contract: wt checkout Command | wtm ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/contracts/checkout-command.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="cli-contract-wt-checkout-command">CLI Contract: <code>wt checkout</code> Command</h1>
+
+<p><strong>Date</strong>: 2026-03-04
+<strong>Status</strong>: Complete</p>
+<hr>
+<h2 id="command-definition">Command Definition</h2>
+<pre><code>wt checkout &lt;branch-name&gt; [options]
+</code></pre>
+<h3 id="arguments">Arguments</h3>
+<table>
+<thead>
+<tr>
+<th>名前</th>
+<th>型</th>
+<th>必須</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>branch-name</code></td>
+<td>string</td>
+<td>✅</td>
+<td>チェックアウトするブランチ名（ローカルまたはリモート）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options">Options</h3>
+<table>
+<thead>
+<tr>
+<th>フラグ</th>
+<th>短縮</th>
+<th>型</th>
+<th>デフォルト</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--remote &lt;name&gt;</code></td>
+<td>-</td>
+<td>string</td>
+<td>null</td>
+<td>使用するリモート名を明示指定（インタラクティブプロンプトをスキップ）</td>
+</tr>
+<tr>
+<td><code>--fetch</code></td>
+<td>-</td>
+<td>bool</td>
+<td>false</td>
+<td>ワークツリー作成前にリモートを fetch して最新化する</td>
+</tr>
+<tr>
+<td><code>--editor &lt;type&gt;</code></td>
+<td><code>-e</code></td>
+<td>string</td>
+<td>null</td>
+<td>ワークツリー作成後に起動するエディタ（vscode, vim, emacs, nano, idea）</td>
+</tr>
+<tr>
+<td><code>--output &lt;format&gt;</code></td>
+<td><code>-o</code></td>
+<td>string</td>
+<td>human</td>
+<td>出力形式（human | json）</td>
+</tr>
+<tr>
+<td><code>--verbose</code></td>
+<td><code>-v</code></td>
+<td>bool</td>
+<td>false</td>
+<td>詳細な進捗メッセージを表示する</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="behavior-contract">Behavior Contract</h2>
+<h3 id="priority-order-fr-002-fr-003">Priority Order (FR-002, FR-003)</h3>
+<ol>
+<li><strong>ローカルブランチ優先</strong>: 指定ブランチ名がローカルに存在する場合、リモートを参照せずローカルブランチを使用</li>
+<li><strong>リモートフォールバック</strong>: ローカルに存在しない場合、キャッシュ済みリモートトラッキング参照を検索（<code>git branch -r</code>）</li>
+</ol>
+<h3 id="remote-selection-logic-fr-004-fr-005-fr-005a">Remote Selection Logic (FR-004, FR-005, FR-005a)</h3>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>リモートが1件のみ</td>
+<td>自動選択（プロンプトなし）</td>
+</tr>
+<tr>
+<td>リモートが複数件 + <code>--remote</code> 指定なし</td>
+<td>インタラクティブ選択プロンプトを表示</td>
+</tr>
+<tr>
+<td>リモートが複数件 + <code>--remote &lt;name&gt;</code> 指定あり</td>
+<td>指定リモートを直接使用（プロンプトスキップ）</td>
+</tr>
+<tr>
+<td><code>--remote &lt;name&gt;</code> 指定 + そのリモートにブランチなし</td>
+<td>エラー (RM001)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="--fetch-flag-behavior-fr-004a"><code>--fetch</code> Flag Behavior (FR-004a)</h3>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ローカルブランチ存在 + upstream 設定済み</td>
+<td><code>git fetch &lt;remote&gt;</code> で最新化後にワークツリー作成</td>
+</tr>
+<tr>
+<td>ローカルブランチ存在 + upstream 未設定</td>
+<td>警告を表示し、現在のローカル状態でワークツリー作成を継続</td>
+</tr>
+<tr>
+<td>ローカルブランチ不在 + <code>--remote</code> 指定あり</td>
+<td>指定リモートのみ fetch</td>
+</tr>
+<tr>
+<td>ローカルブランチ不在 + <code>--remote</code> 指定なし</td>
+<td>全リモートを fetch</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="output-formats">Output Formats</h2>
+<h3 id="success-human">Success (Human)</h3>
+<pre><code>ワークツリーを作成しました
+  ブランチ : feature/review-me
+  パス     : /path/to/repo/../feature-review-me
+  リモート : origin（リモートブランチの場合のみ表示）
+</code></pre>
+<h3 id="success-json">Success (JSON)</h3>
+<pre><code class="lang-json">{
+  &quot;success&quot;: true,
+  &quot;worktree&quot;: {
+    &quot;path&quot;: &quot;/path/to/repo/../feature-review-me&quot;,
+    &quot;branch&quot;: &quot;feature/review-me&quot;,
+    &quot;remote&quot;: &quot;origin&quot;,
+    &quot;isDetached&quot;: false,
+    &quot;createdAt&quot;: &quot;2026-03-04T12:00:00Z&quot;
+  }
+}
+</code></pre>
+<h3 id="warning-upstream-未設定時">Warning (upstream 未設定時)</h3>
+<pre><code>警告: ブランチ 'feature/review-me' に upstream リモートが設定されていません。
+      最新化をスキップしてワークツリーを作成します。
+      upstream を設定するには: git branch --set-upstream-to=&lt;remote&gt;/&lt;branch&gt; feature/review-me
+</code></pre>
+<h3 id="error-human">Error (Human)</h3>
+<pre><code>エラー [RM003]: ブランチ 'feature/nonexistent' がローカルにも
+              いずれのリモートにも見つかりませんでした。
+解決方法: git branch -a でブランチ一覧を確認してください。
+          --fetch フラグを付けてリモートを最新化してから再試行することもできます。
+</code></pre>
+<h3 id="error-json">Error (JSON)</h3>
+<pre><code class="lang-json">{
+  &quot;success&quot;: false,
+  &quot;errorCode&quot;: &quot;RM003&quot;,
+  &quot;message&quot;: &quot;ブランチ 'feature/nonexistent' がローカルにもいずれのリモートにも見つかりませんでした。&quot;,
+  &quot;solution&quot;: &quot;git branch -a でブランチ一覧を確認してください。--fetch フラグを付けてリモートを最新化してから再試行することもできます。&quot;
+}
+</code></pre>
+<hr>
+<h2 id="error-codes">Error Codes</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>HTTP相当</th>
+<th>終了コード</th>
+<th>発生条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BR001</code></td>
+<td>400</td>
+<td>1</td>
+<td>ブランチ名が無効</td>
+</tr>
+<tr>
+<td><code>BR002</code></td>
+<td>409</td>
+<td>1</td>
+<td>ブランチが既に別のワークツリーでチェックアウト済み</td>
+</tr>
+<tr>
+<td><code>GIT001</code></td>
+<td>412</td>
+<td>2</td>
+<td>Git リポジトリではない</td>
+</tr>
+<tr>
+<td><code>RM001</code></td>
+<td>404</td>
+<td>1</td>
+<td><code>--remote</code> で指定したリモートが存在しない、またはそのリモートにブランチがない</td>
+</tr>
+<tr>
+<td><code>RM002</code></td>
+<td>503</td>
+<td>1</td>
+<td><code>git fetch</code> 失敗（ネットワーク/認証）</td>
+</tr>
+<tr>
+<td><code>RM003</code></td>
+<td>404</td>
+<td>1</td>
+<td>ブランチがローカルにもどのリモートにも存在しない</td>
+</tr>
+<tr>
+<td><code>WT001</code></td>
+<td>409</td>
+<td>1</td>
+<td>ワークツリー作成先パスが既に存在する</td>
+</tr>
+<tr>
+<td><code>WT002</code></td>
+<td>500</td>
+<td>1</td>
+<td><code>git worktree add</code> コマンド失敗</td>
+</tr>
+<tr>
+<td><code>FS001</code></td>
+<td>500</td>
+<td>1</td>
+<td>ディレクトリ作成失敗</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="acceptance-scenarios-from-specmd">Acceptance Scenarios (from spec.md)</h2>
+<h3 id="us1-ローカルブランチのチェックアウト">US1: ローカルブランチのチェックアウト</h3>
+<pre><code class="lang-bash"># Given: feature/review-me がローカルに存在
+wt checkout feature/review-me
+# → ワークツリー作成成功、パス表示
+# → エディタ設定があれば起動
+
+# Given: ブランチが既に別ワークツリーでチェックアウト済み
+wt checkout feature/review-me
+# → エラー BR002、既存ワークツリーパスを表示
+</code></pre>
+<h3 id="us2-リモートブランチのチェックアウト単一リモート">US2: リモートブランチのチェックアウト（単一リモート）</h3>
+<pre><code class="lang-bash"># Given: feature/remote-only がローカルになく origin にのみ存在
+wt checkout feature/remote-only
+# → origin から自動選択、ワークツリー作成成功
+
+# Given: リモートにもブランチが存在しない
+wt checkout feature/nonexistent
+# → エラー RM003
+
+# --fetch フラグで最新化してからチェックアウト
+wt checkout --fetch feature/remote-only
+</code></pre>
+<h3 id="us3-複数リモートでのインタラクティブ選択">US3: 複数リモートでのインタラクティブ選択</h3>
+<pre><code class="lang-bash"># Given: origin と upstream 両方に feature/shared が存在
+wt checkout feature/shared
+# → リモート選択プロンプト表示
+
+# --remote で直接指定
+wt checkout --remote origin feature/shared
+# → プロンプトスキップ、origin から作成
+
+# --remote で存在しないリモートを指定
+wt checkout --remote typo feature/shared
+# → エラー RM001
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/contracts/checkout-command.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

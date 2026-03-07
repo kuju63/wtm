@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Troubleshooting Guide: Automated Binary Release Pipeline | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Troubleshooting Guide: Automated Binary Release Pipeline | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/troubleshooting.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="troubleshooting-guide-automated-binary-release-pipeline">Troubleshooting Guide: Automated Binary Release Pipeline</h1>
+
+<p><strong>Feature</strong>: <code>003-automated-release-pipeline</code><br>
+<strong>Date</strong>: 2026-01-05<br>
+<strong>Related</strong>: <a href="spec.html">spec.md</a>, <a href="quickstart.html">quickstart.md</a>, <a href="testing-guide.html">testing-guide.md</a></p>
+<p>このガイドは、自動化されたバイナリリリースパイプラインで発生する一般的な問題の解決方法を説明します。</p>
+<hr>
+<h2 id="-目次">📋 目次</h2>
+<ol>
+<li><a href="#%E3%83%93%E3%83%AB%E3%83%89%E5%A4%B1%E6%95%97">ビルド失敗</a></li>
+<li><a href="#%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E5%A4%B1%E6%95%97">リリース失敗</a></li>
+<li><a href="#%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E8%A8%88%E7%AE%97%E3%81%AE%E5%95%8F%E9%A1%8C">バージョン計算の問題</a></li>
+<li><a href="#%E3%83%86%E3%82%B9%E3%83%88%E5%A4%B1%E6%95%97">テスト失敗</a></li>
+<li><a href="#%E3%82%AB%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8%E5%A0%B1%E5%91%8A%E3%81%AE%E5%95%8F%E9%A1%8C">カバレッジ報告の問題</a></li>
+<li><a href="#sbom%E7%94%9F%E6%88%90%E3%81%AE%E5%95%8F%E9%A1%8C">SBOM生成の問題</a></li>
+<li><a href="#%E3%83%87%E3%82%B8%E3%82%BF%E3%83%AB%E7%BD%B2%E5%90%8D%E3%81%AE%E5%95%8F%E9%A1%8C">デジタル署名の問題</a></li>
+<li><a href="#%E6%80%A7%E8%83%BD%E5%95%8F%E9%A1%8C%E3%81%A8%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%A2%E3%82%A6%E3%83%88">性能問題とタイムアウト</a></li>
+<li><a href="#github-actions-%E3%81%AE%E5%95%8F%E9%A1%8C">GitHub Actions の問題</a></li>
+</ol>
+<hr>
+<h2 id="ビルド失敗">ビルド失敗</h2>
+<h3 id="問題-プラットフォーム固有のビルドが失敗する">問題: プラットフォーム固有のビルドが失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: Build failed for linux-arm
+##[error]The process '/usr/bin/bash' failed with exit code 1
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>必須プラットフォーム (Windows x64, Linux x64, macOS ARM64) のビルド失敗 → リリース全体が失敗</li>
+<li>オプションプラットフォーム (Linux ARM) のビルド失敗 → 警告のみ、リリース続行</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>ビルドログを確認</strong>:</p>
+<pre><code class="lang-bash">gh run view &lt;run-id&gt; --log | grep -A 50 &quot;Build.*failed&quot;
+</code></pre>
+</li>
+<li><p><strong>ローカルでビルドを再現</strong>:</p>
+<pre><code class="lang-bash"># 問題のプラットフォームでビルドを試行
+.github/scripts/build-linux-arm.sh &quot;v0.1.0-test&quot; &quot;linux-arm&quot;
+</code></pre>
+</li>
+<li><p><strong>一般的な原因と対処</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>原因</th>
+<th>対処方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.NET SDKバージョン不一致</td>
+<td><code>.github/workflows/build.yml</code>の<code>dotnet-version</code>を確認</td>
+</tr>
+<tr>
+<td>依存関係の解決失敗</td>
+<td><code>dotnet restore</code>を実行して依存関係を確認</td>
+</tr>
+<tr>
+<td>RID (Runtime Identifier) 誤り</td>
+<td><code>wt.cli.csproj</code>の<code>&lt;RuntimeIdentifier&gt;</code>を確認</td>
+</tr>
+<tr>
+<td>ディスク容量不足</td>
+<td>GitHub Actions runnerのディスク使用量を確認</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p><strong>オプションプラットフォームの失敗を無視</strong>:</p>
+<p>Linux ARMはオプションなので、失敗しても問題ありません:</p>
+<pre><code class="lang-yaml"># .github/workflows/build.yml
+matrix:
+  include:
+    - platform: linux
+      arch: arm
+      mandatory: false  # 失敗許容
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-すべてのプラットフォームでビルドが失敗する">問題: すべてのプラットフォームでビルドが失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: dotnet restore failed
+NuGet package restore failed
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>NuGetパッケージの依存関係解決失敗</li>
+<li>ネットワーク問題</li>
+<li>パッケージソースの設定誤り</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>NuGet設定を確認</strong>:</p>
+<pre><code class="lang-bash">cat NuGet.Config  # パッケージソースが正しいか確認
+</code></pre>
+</li>
+<li><p><strong>依存関係をローカルで確認</strong>:</p>
+<pre><code class="lang-bash">dotnet restore wt.sln --verbosity detailed
+</code></pre>
+</li>
+<li><p><strong>キャッシュをクリア</strong>:</p>
+<pre><code class="lang-bash">dotnet nuget locals all --clear
+dotnet restore wt.sln
+</code></pre>
+</li>
+<li><p><strong>GitHub Actionsワークフローを再実行</strong>:</p>
+<pre><code class="lang-bash">gh run rerun &lt;run-id&gt;
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="リリース失敗">リリース失敗</h2>
+<h3 id="問題-github-releaseの作成が失敗する">問題: GitHub Releaseの作成が失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: Failed to create release
+HttpError: Resource not accessible by integration
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>GitHub token権限不足</li>
+<li>リリース名の重複</li>
+<li>ネットワークタイムアウト</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>GitHub token権限を確認</strong>:</p>
+<pre><code class="lang-yaml"># .github/workflows/release.yml
+permissions:
+  contents: write  # リリース作成に必要
+  packages: write
+</code></pre>
+</li>
+<li><p><strong>既存リリースを確認</strong>:</p>
+<pre><code class="lang-bash">gh release list | grep &quot;v1.0.0&quot;  # 同じバージョンが存在するか確認
+</code></pre>
+</li>
+<li><p><strong>既存リリースがある場合は削除</strong>:</p>
+<pre><code class="lang-bash">gh release delete v1.0.0 --yes
+git push origin :refs/tags/v1.0.0  # タグも削除
+</code></pre>
+</li>
+<li><p><strong>ワークフローを再実行</strong>:</p>
+<pre><code class="lang-bash">gh run rerun &lt;run-id&gt;
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-アセットのアップロードが失敗する">問題: アセットのアップロードが失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: Failed to upload release asset
+Error: ENOENT: no such file or directory
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>ビルドアーティファクトが存在しない</li>
+<li>ファイルパスの誤り</li>
+<li>ファイル名の誤り</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>アーティファクトの存在を確認</strong>:</p>
+<pre><code class="lang-bash"># GitHub Actionsログで確認
+gh run view &lt;run-id&gt; --log | grep -A 10 &quot;Upload build artifact&quot;
+</code></pre>
+</li>
+<li><p><strong>ローカルでファイル生成を確認</strong>:</p>
+<pre><code class="lang-bash">ls -lh release-assets/
+# 期待されるファイル:
+# - wt-v&lt;version&gt;-windows-x64.exe
+# - wt-v&lt;version&gt;-linux-x64
+# - wt-v&lt;version&gt;-macos-arm64
+# - SHA256SUMS
+# - wt-v&lt;version&gt;-sbom.json
+</code></pre>
+</li>
+<li><p><strong>ファイル名パターンを確認</strong>:</p>
+<pre><code class="lang-yaml"># .github/workflows/release.yml
+files: |
+  release-assets/wt-*-windows-*.exe
+  release-assets/wt-*-linux-*
+  release-assets/wt-*-macos-*
+  release-assets/wt-*-sbom.json
+  release-assets/wt-*-sbom.json.asc
+  release-assets/SHA256SUMS
+  release-assets/SHA256SUMS.asc
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="バージョン計算の問題">バージョン計算の問題</h2>
+<h3 id="問題-バージョンがインクリメントされない">問題: バージョンがインクリメントされない</h3>
+<p><strong>症状</strong>:</p>
+<ul>
+<li>mainにマージしてもリリースが作成されない</li>
+<li>バージョン番号が変わらない</li>
+</ul>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>Conventional Commits形式に従っていないコミット</li>
+<li><code>docs:</code>, <code>chore:</code>などのバージョン変更不要なコミットのみ</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>コミットメッセージを確認</strong>:</p>
+<pre><code class="lang-bash">git log origin/main --oneline --since=&quot;1 day ago&quot;
+</code></pre>
+</li>
+<li><p><strong>Conventional Commits形式を確認</strong>:</p>
+<p>有効なコミットタイプ:</p>
+<ul>
+<li><code>feat:</code> → MINORバージョン増加</li>
+<li><code>fix:</code> → PATCHバージョン増加</li>
+<li><code>BREAKING CHANGE:</code> → MAJORバージョン増加</li>
+</ul>
+<p>無効なコミット (バージョン変更なし):</p>
+<ul>
+<li><code>docs:</code>, <code>style:</code>, <code>refactor:</code>, <code>test:</code>, <code>chore:</code></li>
+</ul>
+</li>
+<li><p><strong>バージョンを手動で強制する</strong> (緊急時のみ):</p>
+<pre><code class="lang-bash"># GitHub Actions workflow_dispatchで手動実行
+gh workflow run release.yml -f force-version=v1.2.3
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-間違ったバージョンが計算される">問題: 間違ったバージョンが計算される</h3>
+<p><strong>症状</strong>:</p>
+<ul>
+<li>期待: PATCH増加 (v1.0.0 → v1.0.1)</li>
+<li>実際: MINOR増加 (v1.0.0 → v1.1.0)</li>
+</ul>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>コミットメッセージに誤ったタイプが含まれている</li>
+<li>スクワッシュマージ時にコミットメッセージが結合されている</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>マージされたコミットを確認</strong>:</p>
+<pre><code class="lang-bash">git log origin/main --oneline -1  # 最新のマージコミット
+git show HEAD  # コミットメッセージ全体を確認
+</code></pre>
+</li>
+<li><p><strong>スクワッシュマージのコミットメッセージを修正</strong>:</p>
+<p>PRマージ時に、適切なConventional Commitsフォーマットを使用:</p>
+<pre><code class="lang-text">fix: resolve critical bug
+
+- Fix issue #123
+- Update error handling
+</code></pre>
+</li>
+<li><p><strong>間違ったリリースを削除して再作成</strong>:</p>
+<pre><code class="lang-bash"># 間違ったリリースとタグを削除
+gh release delete v1.1.0 --yes
+git push origin :refs/tags/v1.1.0
+
+# mainブランチの最新コミットを修正 (必要に応じて)
+git revert HEAD --no-edit
+git push origin main
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="テスト失敗">テスト失敗</h2>
+<h3 id="問題-テストが失敗してprがマージできない">問題: テストが失敗してPRがマージできない</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">❌ Test and Coverage / Run Tests — Failed
+Tests failed with exit code 1
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>単体テストの失敗</li>
+<li>テストコードのバグ</li>
+<li>テスト環境の問題</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>ローカルでテストを実行</strong>:</p>
+<pre><code class="lang-bash">dotnet test wt.sln --verbosity detailed
+</code></pre>
+</li>
+<li><p><strong>失敗したテストを特定</strong>:</p>
+<pre><code class="lang-bash">dotnet test wt.sln --logger &quot;trx;LogFileName=test-results.trx&quot;
+cat TestResults/test-results.trx | grep -A 5 &quot;Outcome=\&quot;Failed\&quot;&quot;
+</code></pre>
+</li>
+<li><p><strong>テストログを確認</strong>:</p>
+<pre><code class="lang-bash">gh run view &lt;run-id&gt; --log | grep -A 20 &quot;Test.*Failed&quot;
+</code></pre>
+</li>
+<li><p><strong>テストを修正してプッシュ</strong>:</p>
+<pre><code class="lang-bash"># テストを修正
+git add wt.tests/
+git commit -m &quot;test: fix failing unit test&quot;
+git push origin &lt;branch-name&gt;
+
+# GitHub Actionsが自動的に再実行される
+gh pr checks --watch
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-テストがタイムアウトする">問題: テストがタイムアウトする</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: The operation was canceled.
+##[error]The action 'Run Tests' has timed out after 10 minutes.
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>テストが無限ループに陥っている</li>
+<li>テストの実行時間が長すぎる</li>
+<li>ネットワーク待機が発生している</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>タイムアウトしたテストを特定</strong>:</p>
+<pre><code class="lang-bash"># ローカルで個別にテストを実行
+dotnet test wt.tests/LongRunningTest.cs --verbosity detailed
+</code></pre>
+</li>
+<li><p><strong>タイムアウト時間を延長</strong> (一時的):</p>
+<pre><code class="lang-yaml"># .github/workflows/test.yml
+jobs:
+  test:
+    timeout-minutes: 20  # デフォルト: 10分
+</code></pre>
+</li>
+<li><p><strong>テストを最適化</strong>:</p>
+<ul>
+<li>不要な<code>Task.Delay()</code>を削除</li>
+<li>モックを使用して外部依存を排除</li>
+<li>テストをより小さな単位に分割</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="カバレッジ報告の問題">カバレッジ報告の問題</h2>
+<h3 id="問題-codacyへのカバレッジアップロードが失敗する">問題: Codacyへのカバレッジアップロードが失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Warning: Failed to upload coverage to Codacy
+Error: Project token is invalid
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>Codacyプロジェクトトークンの設定誤り</li>
+<li>Codacy APIの一時的な障害</li>
+<li>カバレッジファイルの形式誤り</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>Codacyトークンを確認</strong>:</p>
+<pre><code class="lang-bash"># GitHub Secrets設定を確認
+gh secret list | grep CODACY
+</code></pre>
+</li>
+<li><p><strong>トークンを再設定</strong>:</p>
+<pre><code class="lang-bash"># Codacyダッシュボードから新しいトークンを取得
+# Settings → Coverage → Project API Token
+
+# GitHub Secretsに設定
+gh secret set CODACY_PROJECT_TOKEN
+</code></pre>
+</li>
+<li><p><strong>カバレッジファイルを確認</strong>:</p>
+<pre><code class="lang-bash"># ローカルでカバレッジを生成
+dotnet test wt.sln --collect:&quot;XPlat Code Coverage&quot; --results-directory ./coverage
+
+# カバレッジファイルを確認
+find ./coverage -name &quot;coverage.cobertura.xml&quot;
+cat ./coverage/**/coverage.cobertura.xml | head -20
+</code></pre>
+</li>
+<li><p><strong>Codacy APIステータスを確認</strong>:</p>
+<ul>
+<li><a href="https://status.codacy.com/">Codacy Status Page</a> でサービスステータスを確認</li>
+<li>一時的な障害の場合は、<code>continue-on-error: true</code>により影響なし</li>
+</ul>
+</li>
+<li><p><strong>ワークフローを再実行</strong>:</p>
+<pre><code class="lang-bash">gh run rerun &lt;run-id&gt;
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-カバレッジが0と報告される">問題: カバレッジが0%と報告される</h3>
+<p><strong>症状</strong>:</p>
+<ul>
+<li>Codacyダッシュボードでカバレッジが0%</li>
+<li>テストは成功しているが、カバレッジが計測されていない</li>
+</ul>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>カバレッジ収集の設定誤り</li>
+<li>テストプロジェクトとソースプロジェクトの参照誤り</li>
+<li>カバレッジフィルターの設定誤り</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>カバレッジ収集の設定を確認</strong>:</p>
+<pre><code class="lang-bash"># テスト実行時にカバレッジを明示的に指定
+dotnet test wt.sln \
+  --collect:&quot;XPlat Code Coverage&quot; \
+  --results-directory ./coverage
+</code></pre>
+</li>
+<li><p><strong>カバレッジファイルが生成されているか確認</strong>:</p>
+<pre><code class="lang-bash">find ./coverage -name &quot;coverage.cobertura.xml&quot;
+</code></pre>
+</li>
+<li><p><strong>カバレッジフィルターを確認</strong> (runsettings):</p>
+<pre><code class="lang-xml">&lt;!-- coverletArgs.runsettings --&gt;
+&lt;RunSettings&gt;
+  &lt;DataCollectionRunSettings&gt;
+    &lt;DataCollectors&gt;
+      &lt;DataCollector friendlyName=&quot;XPlat Code Coverage&quot;&gt;
+        &lt;Configuration&gt;
+          &lt;Exclude&gt;[*.Tests]*,[*]*.Program&lt;/Exclude&gt;
+          &lt;Include&gt;[wt.cli]*&lt;/Include&gt;
+        &lt;/Configuration&gt;
+      &lt;/DataCollector&gt;
+    &lt;/DataCollectors&gt;
+  &lt;/DataCollectionRunSettings&gt;
+&lt;/RunSettings&gt;
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="sbom生成の問題">SBOM生成の問題</h2>
+<h3 id="問題-sbom生成が失敗する">問題: SBOM生成が失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: Failed to generate SBOM
+Syft error: unable to analyze packages
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>プロジェクトディレクトリのパス誤り</li>
+<li>依存関係の解決失敗</li>
+<li>Syft/Anchorツールのバージョン誤り</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>SBOM生成スクリプトを手動実行</strong>:</p>
+<pre><code class="lang-bash"># Syftを使用してローカルでSBOM生成
+syft packages dir:./wt.cli -o cyclonedx-json &gt; sbom-test.json
+</code></pre>
+</li>
+<li><p><strong>プロジェクトディレクトリを確認</strong>:</p>
+<pre><code class="lang-yaml"># .github/workflows/release.yml
+- name: Generate SBOM
+  uses: anchore/sbom-action@61119d458adab75f756bc0b9e4bde25725f86a7a
+  with:
+    path: ./wt.cli  # 正しいプロジェクトパスか確認
+    format: cyclonedx-json
+</code></pre>
+</li>
+<li><p><strong>依存関係を事前に復元</strong>:</p>
+<pre><code class="lang-yaml"># ワークフローでrestoreを追加
+- name: Restore dependencies
+  run: dotnet restore wt.sln
+
+- name: Generate SBOM
+  uses: anchore/sbom-action@...
+</code></pre>
+</li>
+<li><p><strong>Anchorアクションのバージョンを確認</strong>:</p>
+<pre><code class="lang-yaml"># 最新の安定版を使用
+uses: anchore/sbom-action@61119d458adab75f756bc0b9e4bde25725f86a7a  # v0.17.2
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-sbomに依存関係が含まれていない">問題: SBOMに依存関係が含まれていない</h3>
+<p><strong>症状</strong>:</p>
+<ul>
+<li>SBOM JSONファイルは生成されるが、<code>.components</code>が空</li>
+</ul>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>プロジェクトファイル (<code>.csproj</code>) に依存関係が含まれていない</li>
+<li>ビルド前にSBOM生成している</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>プロジェクトファイルを確認</strong>:</p>
+<pre><code class="lang-bash">cat wt.cli/wt.cli.csproj | grep PackageReference
+</code></pre>
+</li>
+<li><p><strong>SBOM生成前にビルドを実行</strong>:</p>
+<pre><code class="lang-yaml">- name: Build solution
+  run: dotnet build wt.sln --configuration Release
+
+- name: Generate SBOM
+  uses: anchore/sbom-action@...
+</code></pre>
+</li>
+<li><p><strong>SBOMの内容を確認</strong>:</p>
+<pre><code class="lang-bash">jq '.components | length' sbom.json  # 依存関係の数
+jq '.components[].name' sbom.json  # 依存関係の名前一覧
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="デジタル署名の問題">デジタル署名の問題</h2>
+<h3 id="問題-gpg署名の生成が失敗する">問題: GPG署名の生成が失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: gpg: signing failed: No secret key
+Error: gpg: signing failed: Inappropriate ioctl for device
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>GPG秘密鍵が正しく設定されていない</li>
+<li>GPGパスフレーズの誤り</li>
+<li>GPGエージェントの設定問題</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>GitHub Secretsを確認</strong>:</p>
+<pre><code class="lang-bash">gh secret list | grep GPG
+# 期待されるシークレット:
+# - GPG_PRIVATE_KEY
+# - GPG_PASSPHRASE
+</code></pre>
+</li>
+<li><p><strong>GPG秘密鍵のフォーマットを確認</strong>:</p>
+<pre><code class="lang-bash"># ASCII-armored形式であることを確認
+cat gpg-private-key.asc | head -5
+# 期待される出力:
+# -----BEGIN PGP PRIVATE KEY BLOCK-----
+</code></pre>
+</li>
+<li><p><strong>GPGキーを再インポート</strong>:</p>
+<pre><code class="lang-bash"># ローカルでテスト
+echo &quot;$GPG_PRIVATE_KEY&quot; | gpg --batch --import
+
+# キーが正しくインポートされたか確認
+gpg --list-secret-keys
+</code></pre>
+</li>
+<li><p><strong>署名スクリプトを手動実行</strong>:</p>
+<pre><code class="lang-bash"># テスト用ファイルを署名
+export GPG_PRIVATE_KEY=&quot;&lt;your-key&gt;&quot;
+export GPG_PASSPHRASE=&quot;&lt;your-passphrase&gt;&quot;
+.github/scripts/sign-artifacts.sh
+</code></pre>
+</li>
+<li><p><strong>GPGエージェント設定を確認</strong>:</p>
+<pre><code class="lang-yaml"># .github/workflows/release.yml
+- name: Sign artifacts
+  run: |
+    gpg --batch --yes --passphrase &quot;$GPG_PASSPHRASE&quot; \
+      --pinentry-mode loopback \  # CI環境で必要
+      --armor --detach-sign file.txt
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-署名検証が失敗する">問題: 署名検証が失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">gpg: BAD signature from &quot;Release Bot &lt;release@example.com&gt;&quot;
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>署名されたファイルが改変されている</li>
+<li>間違った公開鍵を使用している</li>
+<li>署名ファイルが破損している</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>公開鍵を確認</strong>:</p>
+<pre><code class="lang-bash"># 公開鍵をインポート
+curl -fsSL https://raw.githubusercontent.com/kuju63/wt/main/docs/GPG_PUBLIC_KEY.asc | gpg --import
+
+# インポートされた鍵を確認
+gpg --list-keys
+</code></pre>
+</li>
+<li><p><strong>ファイルの整合性を確認</strong>:</p>
+<pre><code class="lang-bash"># ハッシュ値を確認
+sha256sum wt-v1.0.0-sbom.json
+sha256sum -c SHA256SUMS --ignore-missing
+</code></pre>
+</li>
+<li><p><strong>署名ファイルを再ダウンロード</strong>:</p>
+<pre><code class="lang-bash"># 破損していないか確認
+gh release download v1.0.0 --pattern &quot;*.asc&quot;
+</code></pre>
+</li>
+<li><p><strong>署名を再検証</strong>:</p>
+<pre><code class="lang-bash">gpg --verify wt-v1.0.0-sbom.json.asc wt-v1.0.0-sbom.json
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="性能問題とタイムアウト">性能問題とタイムアウト</h2>
+<h3 id="問題-リリースワークフローが30分以内に完了しない">問題: リリースワークフローが30分以内に完了しない</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: The operation was canceled.
+##[error]Workflow canceled by GitHub Actions (timeout-minutes: 25)
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>ビルド時間が長すぎる</li>
+<li>外部サービス (Codacy, GitHub API) の遅延</li>
+<li>ネットワークタイムアウト</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>ワークフローのボトルネックを特定</strong>:</p>
+<pre><code class="lang-bash"># 各ステップの実行時間を確認
+gh run view &lt;run-id&gt; --log | grep &quot;##\[group\]&quot; | grep -oE &quot;[0-9]+m[0-9]+s&quot;
+</code></pre>
+</li>
+<li><p><strong>ビルドを最適化</strong>:</p>
+<ul>
+<li><p>並列ビルドを活用:</p>
+<pre><code class="lang-yaml">strategy:
+  max-parallel: 4  # 全プラットフォームを並列ビルド
+</code></pre>
+</li>
+<li><p>キャッシュを有効化:</p>
+<pre><code class="lang-yaml">- name: Cache NuGet packages
+  uses: actions/cache@v4
+  with:
+    path: ~/.nuget/packages
+    key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p><strong>外部サービスのタイムアウトを設定</strong>:</p>
+<pre><code class="lang-yaml">- name: Upload coverage to Codacy
+  timeout-minutes: 5  # Codacyアップロードに5分以上かかる場合はスキップ
+  continue-on-error: true
+</code></pre>
+</li>
+<li><p><strong>タイムアウト時間を延長</strong> (一時的):</p>
+<pre><code class="lang-yaml">create-release:
+  timeout-minutes: 30  # 25分 → 30分に延長 (SLA上限)
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-ビルドが遅い">問題: ビルドが遅い</h3>
+<p><strong>症状</strong>:</p>
+<ul>
+<li>単一プラットフォームのビルドに10分以上かかる</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>不要なビルド手順を削除</strong>:</p>
+<pre><code class="lang-yaml"># 例: Releaseビルドでデバッグシンボルを無効化
+- name: Build
+  run: dotnet publish -c Release /p:DebugType=None
+</code></pre>
+</li>
+<li><p><strong>依存関係のキャッシュ</strong>:</p>
+<pre><code class="lang-yaml">- name: Cache dependencies
+  uses: actions/cache@v4
+  with:
+    path: ~/.nuget/packages
+    key: nuget-${{ hashFiles('**/*.csproj') }}
+</code></pre>
+</li>
+<li><p><strong>ビルド構成を最適化</strong>:</p>
+<pre><code class="lang-xml">&lt;!-- wt.cli.csproj --&gt;
+&lt;PropertyGroup&gt;
+  &lt;PublishTrimmed&gt;true&lt;/PublishTrimmed&gt;  &lt;!-- トリミングで高速化 --&gt;
+  &lt;PublishReadyToRun&gt;true&lt;/PublishReadyToRun&gt;  &lt;!-- AOTコンパイル --&gt;
+&lt;/PropertyGroup&gt;
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="github-actions-の問題">GitHub Actions の問題</h2>
+<h3 id="問題-ワークフローが実行されない">問題: ワークフローが実行されない</h3>
+<p><strong>症状</strong>:</p>
+<ul>
+<li>mainにマージしてもリリースワークフローが実行されない</li>
+</ul>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>ワークフローのトリガー設定誤り</li>
+<li>ブランチ名の不一致</li>
+<li>ワークフローファイルの構文エラー</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>トリガー設定を確認</strong>:</p>
+<pre><code class="lang-yaml"># .github/workflows/release.yml
+on:
+  push:
+    branches:
+      - main  # mainブランチへのプッシュでトリガー
+</code></pre>
+</li>
+<li><p><strong>ワークフローファイルの構文を検証</strong>:</p>
+<pre><code class="lang-bash"># YAMLの構文チェック
+yamllint .github/workflows/release.yml
+</code></pre>
+</li>
+<li><p><strong>GitHub Actionsログを確認</strong>:</p>
+<pre><code class="lang-bash">gh run list --workflow=release.yml --limit 5
+</code></pre>
+</li>
+<li><p><strong>ワークフローを手動実行</strong>:</p>
+<pre><code class="lang-bash">gh workflow run release.yml
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="問題-アーティファクトのダウンロードが失敗する">問題: アーティファクトのダウンロードが失敗する</h3>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: Unable to find artifact binary-linux-x64
+</code></pre>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>ビルドジョブが失敗してアーティファクトが生成されなかった</li>
+<li>アーティファクト名の不一致</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>ビルドジョブの状態を確認</strong>:</p>
+<pre><code class="lang-bash">gh run view &lt;run-id&gt; --log | grep -A 10 &quot;Build.*linux-x64&quot;
+</code></pre>
+</li>
+<li><p><strong>アーティファクト名を確認</strong>:</p>
+<pre><code class="lang-yaml"># build.yml
+- name: Upload build artifact
+  uses: actions/upload-artifact@v4
+  with:
+    name: binary-${{ matrix.platform }}-${{ matrix.arch }}
+
+# release.yml
+- name: Download build artifacts
+  uses: actions/download-artifact@v4
+  with:
+    path: artifacts/
+</code></pre>
+</li>
+<li><p><strong>アーティファクトを手動ダウンロード</strong>:</p>
+<pre><code class="lang-bash">gh run download &lt;run-id&gt; --name binary-linux-x64
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="その他の問題">その他の問題</h2>
+<h3 id="問題-ドキュメントが古い">問題: ドキュメントが古い</h3>
+<p><strong>症状</strong>:</p>
+<ul>
+<li>ドキュメントの手順が実際の動作と一致しない</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ul>
+<li><p>ドキュメントを更新してPRを作成:</p>
+<pre><code class="lang-bash">git checkout -b docs/update-troubleshooting
+# ドキュメントを修正
+git add docs/ specs/
+git commit -m &quot;docs: update troubleshooting guide&quot;
+git push origin docs/update-troubleshooting
+gh pr create --title &quot;docs: update troubleshooting guide&quot;
+</code></pre>
+</li>
+</ul>
+<hr>
+<h3 id="問題-不明なエラー">問題: 不明なエラー</h3>
+<p><strong>症状</strong>:</p>
+<ul>
+<li>エラーメッセージが不明確</li>
+<li>ログに有用な情報がない</li>
+</ul>
+<p><strong>解決方法</strong>:</p>
+<ol>
+<li><p><strong>詳細ログを有効化</strong>:</p>
+<pre><code class="lang-yaml"># .github/workflows/*.yml
+- name: Run command
+  run: |
+    set -x  # Bashデバッグモード
+    &lt;your-command&gt; --verbosity detailed
+</code></pre>
+</li>
+<li><p><strong>GitHub Actionsデバッグモードを有効化</strong>:</p>
+<pre><code class="lang-bash"># リポジトリシークレットに設定
+gh secret set ACTIONS_STEP_DEBUG --body &quot;true&quot;
+gh secret set ACTIONS_RUNNER_DEBUG --body &quot;true&quot;
+</code></pre>
+</li>
+<li><p><strong>Issue を作成</strong>:</p>
+<pre><code class="lang-bash">gh issue create \
+  --title &quot;Release pipeline failure: &lt;error-message&gt;&quot; \
+  --body &quot;Steps to reproduce: ...&quot;
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="-関連ドキュメント">🔗 関連ドキュメント</h2>
+<ul>
+<li><a href="quickstart.html">quickstart.md</a>: クイックスタートガイド</li>
+<li><a href="testing-guide.html">testing-guide.md</a>: テストガイド</li>
+<li><a href="spec.html">spec.md</a>: 仕様書</li>
+<li><a href="../../docs/adr/0002-sbom-format-and-signature-choice.html">ADR 0002</a>: SBOM形式とデジタル署名</li>
+<li><a href="../../docs/adr/0003-semantic-versioning-conventional-commits.html">ADR 0003</a>: セマンティックバージョニング</li>
+<li><a href="../../docs/adr/0004-release-workflow-timeout-sla.html">ADR 0004</a>: タイムアウトとSLA</li>
+<li><a href="../../docs/adr/0005-quality-gates-testing-requirements.html">ADR 0005</a>: 品質ゲート</li>
+</ul>
+<hr>
+<h2 id="サポート">サポート</h2>
+<p>問題が解決しない場合:</p>
+<ol>
+<li><strong>GitHub Issueを作成</strong>: <a href="https://github.com/kuju63/wt/issues">kuju63/wt/issues</a></li>
+<li><strong>ワークフローログを添付</strong>: <code>gh run view &lt;run-id&gt; --log &gt; workflow.log</code></li>
+<li><strong>再現手順を記載</strong>: 問題を再現する最小限の手順</li>
+</ol>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/003-automated-release-pipeline/troubleshooting.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

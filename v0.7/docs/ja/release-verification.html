@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>クイックスタート: ダウンロードの検証 | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="クイックスタート: ダウンロードの検証 | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/ja/release-verification.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="クイックスタート-ダウンロードの検証">クイックスタート: ダウンロードの検証</h1>
+
+<p><strong>機能</strong>: リリースバイナリのハッシュファイル
+<strong>対象</strong>: wtツールのエンドユーザー
+<strong>日付</strong>: 2026-02-14</p>
+<h2 id="概要">概要</h2>
+<p>wtツールをダウンロードした後、ファイルが改ざんされていないことを確認するためにSHA256ハッシュを検証できます。このガイドでは、各プラットフォームでの検証方法を説明します。</p>
+<hr>
+<h2 id="検証が必要な理由">検証が必要な理由</h2>
+<p>ダウンロード中にファイルが破損したり、悪意のある改ざんが行われたりする可能性があります。SHA256ハッシュを検証することで:</p>
+<ul>
+<li>✅ ファイルが公式リリースと完全に一致することを確認</li>
+<li>✅ ダウンロード中の破損を検出</li>
+<li>✅ 悪意のある改ざんから保護</li>
+</ul>
+<hr>
+<h2 id="ダウンロード">ダウンロード</h2>
+<p>GitHubのリリースページから、お使いのプラットフォームに対応するバイナリとハッシュファイルをダウンロードします。</p>
+<p><strong>必要なファイル</strong>:</p>
+<ol>
+<li>バイナリファイル(例: <code>wt-v1.0.0-windows-x64.exe</code>)</li>
+<li>ハッシュファイル(例: <code>wt-v1.0.0-windows-x64.exe.sha256</code>)</li>
+</ol>
+<p>または:</p>
+<ol>
+<li>複数のバイナリファイル</li>
+<li><code>SHA256SUMS</code> ファイル(すべてのバイナリのハッシュを含む)</li>
+</ol>
+<hr>
+<h2 id="windows-での検証">Windows での検証</h2>
+<h3 id="前提条件">前提条件</h3>
+<ul>
+<li>PowerShell 5.1以降(Windows 10/11に標準搭載)</li>
+</ul>
+<h3 id="個別ハッシュファイルで検証">個別ハッシュファイルで検証</h3>
+<p>ダウンロードしたバイナリと同じフォルダで PowerShell を開き、以下のコマンドを実行します:</p>
+<pre><code class="lang-powershell"># ダウンロードしたファイルのハッシュを計算
+$hash = (Get-FileHash .\wt-v1.0.0-windows-x64.exe -Algorithm SHA256).Hash
+
+# ハッシュファイルから期待値を読み込む
+$expected = (Get-Content .\wt-v1.0.0-windows-x64.exe.sha256).Split(&quot; &quot;)[0]
+
+# 比較
+if ($hash -eq $expected) {
+    Write-Host &quot;✓ ハッシュ検証成功: ファイルは正常です&quot; -ForegroundColor Green
+} else {
+    Write-Host &quot;✗ ハッシュ不一致: ファイルが破損または改ざんされています&quot; -ForegroundColor Red
+}
+</code></pre>
+<h3 id="sha256sums-ファイルで一括検証">SHA256SUMS ファイルで一括検証</h3>
+<p>複数のバイナリを検証する場合:</p>
+<pre><code class="lang-powershell">Get-Content SHA256SUMS | ForEach-Object {
+    $expected, $file = $_ -split '  '
+    if (Test-Path $file) {
+        $actual = (Get-FileHash $file -Algorithm SHA256).Hash
+        if ($actual -eq $expected) {
+            Write-Host &quot;✓ $file&quot; -ForegroundColor Green
+        } else {
+            Write-Host &quot;✗ $file - ハッシュ不一致!&quot; -ForegroundColor Red
+        }
+    } else {
+        Write-Host &quot;- $file - ファイルが見つかりません&quot; -ForegroundColor Yellow
+    }
+}
+</code></pre>
+<hr>
+<h2 id="linux-での検証">Linux での検証</h2>
+<h3 id="前提条件-1">前提条件</h3>
+<ul>
+<li><code>sha256sum</code> コマンド(ほとんどのLinuxディストリビューションに標準搭載)</li>
+</ul>
+<h3 id="個別ハッシュファイルで検証-1">個別ハッシュファイルで検証</h3>
+<p>ダウンロードしたバイナリと同じディレクトリで以下のコマンドを実行します:</p>
+<pre><code class="lang-bash">sha256sum -c wt-v1.0.0-linux-x64.sha256
+</code></pre>
+<p><strong>成功時の出力</strong>:</p>
+<pre><code>wt-v1.0.0-linux-x64: OK
+</code></pre>
+<p><strong>失敗時の出力</strong>:</p>
+<pre><code>wt-v1.0.0-linux-x64: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+</code></pre>
+<h3 id="sha256sums-ファイルで一括検証-1">SHA256SUMS ファイルで一括検証</h3>
+<p>複数のバイナリを一度に検証する場合:</p>
+<pre><code class="lang-bash">sha256sum -c SHA256SUMS
+</code></pre>
+<p><strong>成功時の出力</strong>:</p>
+<pre><code>wt-v1.0.0-linux-x64: OK
+wt-v1.0.0-linux-arm: OK
+</code></pre>
+<h3 id="特定のファイルのみ検証">特定のファイルのみ検証</h3>
+<p>SHA256SUMS から特定のファイルだけを検証する場合:</p>
+<pre><code class="lang-bash">grep wt-v1.0.0-linux-x64 SHA256SUMS | sha256sum -c
+</code></pre>
+<hr>
+<h2 id="macos-での検証">macOS での検証</h2>
+<h3 id="前提条件-2">前提条件</h3>
+<ul>
+<li><code>shasum</code> コマンド(macOSに標準搭載)</li>
+</ul>
+<h3 id="個別ハッシュファイルで検証-2">個別ハッシュファイルで検証</h3>
+<p>ダウンロードしたバイナリと同じディレクトリで以下のコマンドを実行します:</p>
+<pre><code class="lang-bash">shasum -a 256 -c wt-v1.0.0-macos-arm64.sha256
+</code></pre>
+<p><strong>成功時の出力</strong>:</p>
+<pre><code>wt-v1.0.0-macos-arm64: OK
+</code></pre>
+<p><strong>失敗時の出力</strong>:</p>
+<pre><code>wt-v1.0.0-macos-arm64: FAILED
+shasum: WARNING: 1 computed checksum did NOT match
+</code></pre>
+<h3 id="sha256sums-ファイルで一括検証-2">SHA256SUMS ファイルで一括検証</h3>
+<p>複数のバイナリを一度に検証する場合:</p>
+<pre><code class="lang-bash">shasum -a 256 -c SHA256SUMS
+</code></pre>
+<h3 id="代替方法-openssl-を使用">代替方法: openssl を使用</h3>
+<pre><code class="lang-bash"># ハッシュを計算
+openssl sha256 wt-v1.0.0-macos-arm64
+
+# 出力例:
+# SHA256(wt-v1.0.0-macos-arm64)= a1b2c3d4e5f6...
+
+# ハッシュファイルの内容と手動で比較
+cat wt-v1.0.0-macos-arm64.sha256
+</code></pre>
+<hr>
+<h2 id="トラブルシューティング">トラブルシューティング</h2>
+<h3 id="ハッシュが一致しない場合">ハッシュが一致しない場合</h3>
+<ol>
+<li><strong>ファイルを再ダウンロード</strong>: ダウンロード中に破損した可能性があります</li>
+<li><strong>ハッシュファイルも再ダウンロード</strong>: ハッシュファイル自体が破損している可能性があります</li>
+<li><strong>公式リリースページから直接ダウンロード</strong>: 信頼できるソースからダウンロードしていることを確認</li>
+<li><strong>それでも一致しない場合</strong>: GitHubのIssueで報告してください</li>
+</ol>
+<h3 id="ファイルが見つからないエラー">ファイルが見つからないエラー</h3>
+<p><strong>原因</strong>: バイナリとハッシュファイルが同じディレクトリにない</p>
+<p><strong>解決方法</strong>:</p>
+<ul>
+<li>両方のファイルを同じフォルダに配置</li>
+<li>または、ファイルパスを絶対パスで指定</li>
+</ul>
+<h3 id="コマンドが見つからないエラー">コマンドが見つからないエラー</h3>
+<p><strong>Linux</strong>:</p>
+<pre><code class="lang-bash"># Debian/Ubuntu
+sudo apt-get install coreutils
+
+# Fedora/RHEL
+sudo dnf install coreutils
+</code></pre>
+<p><strong>macOS</strong>:</p>
+<pre><code class="lang-bash"># GNU coreutils をインストール(sha256sum を使いたい場合)
+brew install coreutils
+
+# sha256sum の代わりに gsha256sum を使用
+gsha256sum -c wt-v1.0.0-macos-arm64.sha256
+</code></pre>
+<hr>
+<h2 id="よくある質問">よくある質問</h2>
+<h3 id="q-sha256sums-と個別のsha256ファイルの違いは">Q: SHA256SUMS と個別の.sha256ファイルの違いは?</h3>
+<p><strong>A</strong>:</p>
+<ul>
+<li><strong>SHA256SUMS</strong>: すべてのバイナリのハッシュが1つのファイルに含まれています。複数のファイルを一度に検証する場合に便利です。</li>
+<li><strong>個別の.sha256ファイル</strong>: 各バイナリに対応するハッシュファイルです。1つのバイナリだけをダウンロード・検証する場合に便利です。</li>
+</ul>
+<p>どちらも同じハッシュ値を含んでおり、お好みの方法を選択できます。</p>
+<h3 id="q-ハッシュ検証は必須ですか">Q: ハッシュ検証は必須ですか?</h3>
+<p><strong>A</strong>: 必須ではありませんが、強く推奨します。特に:</p>
+<ul>
+<li>企業環境や本番環境で使用する場合</li>
+<li>セキュリティが重要な用途で使用する場合</li>
+<li>公式以外のミラーからダウンロードした場合</li>
+</ul>
+<h3 id="q-sha256sumsasc-ファイルは何ですか">Q: SHA256SUMS.asc ファイルは何ですか?</h3>
+<p><strong>A</strong>: これは SHA256SUMS ファイルのGPG署名です。より高度なセキュリティ検証を行いたい場合に使用します。GPG公開鍵を使用して署名を検証することで、ハッシュファイル自体が改ざんされていないことを確認できます。</p>
+<p>GPG検証の詳細については、プロジェクトの SECURITY.md またはドキュメントを参照してください。</p>
+<h3 id="q-ハッシュ値は大文字小文字を区別しますか">Q: ハッシュ値は大文字・小文字を区別しますか?</h3>
+<p><strong>A</strong>: いいえ、SHA256ハッシュの比較では大文字・小文字は区別されません。<code>A1B2C3...</code> と <code>a1b2c3...</code> は同じハッシュとして扱われます。</p>
+<hr>
+<h2 id="次のステップ">次のステップ</h2>
+<p>検証が成功したら:</p>
+<ol>
+<li><p><strong>バイナリを適切な場所に移動</strong>:</p>
+<ul>
+<li>Linux/macOS: <code>/usr/local/bin/</code> または <code>~/.local/bin/</code></li>
+<li>Windows: <code>C:\Program Files\wt\</code> または PATHに追加されたディレクトリ</li>
+</ul>
+</li>
+<li><p><strong>実行権限を付与</strong>(Linux/macOS):</p>
+<pre><code class="lang-bash">chmod +x wt-v1.0.0-linux-x64
+</code></pre>
+</li>
+<li><p><strong>wtツールを使用開始</strong>:</p>
+<pre><code class="lang-bash">wt --version
+wt --help
+</code></pre>
+</li>
+</ol>
+<p>詳細な使い方については、<a href="../../docs/user-guide.md">ユーザーガイド</a>を参照してください。</p>
+<hr>
+<h2 id="関連リソース">関連リソース</h2>
+<ul>
+<li><a href="https://github.com/kuju63/wt/releases">GitHubリリースページ</a></li>
+<li><a href="https://ja.wikipedia.org/wiki/SHA-2">SHA256とは?</a></li>
+<li><a href="https://help.ubuntu.com/community/HowToSHA256SUM">ファイル整合性検証のベストプラクティス</a></li>
+<li><a href="https://learn.microsoft.com/ja-jp/powershell/module/microsoft.powershell.utility/get-filehash">PowerShell Get-FileHash ドキュメント</a></li>
+</ul>
+<hr>
+<p><strong>サポートが必要な場合</strong>: <a href="https://github.com/kuju63/wt/issues">GitHub Issues</a>で質問またはバグ報告を行ってください。</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/ja/release-verification.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

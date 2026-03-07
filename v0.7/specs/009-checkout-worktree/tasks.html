@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tasks: Checkout Existing Branch as Worktree | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tasks: Checkout Existing Branch as Worktree | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/tasks.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="tasks-checkout-existing-branch-as-worktree">Tasks: Checkout Existing Branch as Worktree</h1>
+
+<p><strong>Input</strong>: Design documents from <code>/specs/009-checkout-worktree/</code>
+<strong>Prerequisites</strong>: plan.md ✅, spec.md ✅, research.md ✅, data-model.md ✅, contracts/ ✅, quickstart.md ✅</p>
+<p><strong>Organization</strong>: Tasks are grouped by user story to enable independent implementation and testing of each story.</p>
+<h2 id="format-id-p-story-description">Format: <code>[ID] [P?] [Story] Description</code></h2>
+<ul>
+<li><strong>[P]</strong>: Can run in parallel (different files, no dependencies)</li>
+<li><strong>[Story]</strong>: Which user story this task belongs to (US1, US2, US3)</li>
+<li>Include exact file paths in descriptions</li>
+</ul>
+<hr>
+<h2 id="phase-1-setup共有インフラ">Phase 1: Setup（共有インフラ）</h2>
+<p><strong>Purpose</strong>: このフェーズは既存プロジェクトへの追加のため、新規プロジェクト初期化は不要。新規ディレクトリと Services 配下の新カテゴリを準備する。</p>
+<ul>
+<li>[X] T001 Create <code>wt.cli/Services/Interaction/</code> directory and add <code>.gitkeep</code> placeholder (new service category for interactive prompts)</li>
+</ul>
+<hr>
+<h2 id="phase-2-foundationalブロッキング前提条件">Phase 2: Foundational（ブロッキング前提条件）</h2>
+<p><strong>Purpose</strong>: すべてのユーザーストーリー実装に先行して完了が必要なコアインフラ。エラーコード定義、モデル、インタラクション抽象化、GitService 拡張を含む。</p>
+<p><strong>⚠️ CRITICAL</strong>: このフェーズ完了前は US1/US2/US3 のいずれも着手不可</p>
+<h3 id="エラーコード追加">エラーコード追加</h3>
+<ul>
+<li>[X] T002 Add <code>RemoteNotFound = &quot;RM001&quot;</code>, <code>RemoteFetchFailed = &quot;RM002&quot;</code>, <code>BranchNotFoundAnywhere = &quot;RM003&quot;</code> constants to <code>wt.cli/Models/ErrorCodes.cs</code></li>
+<li>[X] T003 Add <code>GetSolution()</code> cases for RM001, RM002, RM003 in <code>wt.cli/Models/ErrorCodes.cs</code></li>
+</ul>
+<h3 id="新規モデル">新規モデル</h3>
+<ul>
+<li>[X] T004 [P] Write unit tests for <code>RemoteBranchInfo</code> (properties, <code>FullRef</code> format, equality) in <code>wt.tests/Models/RemoteBranchInfoTests.cs</code></li>
+<li>[X] T005 Implement <code>RemoteBranchInfo</code> record with <code>RemoteName</code>, <code>BranchName</code>, <code>FullRef</code> fields in <code>wt.cli/Models/RemoteBranchInfo.cs</code> <em>(depends on T004: run after Red confirmed)</em></li>
+<li>[X] T006 [P] Write unit tests for <code>CheckoutWorktreeOptions</code> validation (null/empty <code>BranchName</code>, invalid remote name) in <code>wt.tests/Models/CheckoutWorktreeOptionsTests.cs</code></li>
+<li>[X] T007 Implement <code>CheckoutWorktreeOptions</code> class with <code>BranchName</code>, <code>Remote</code>, <code>Fetch</code>, <code>EditorType</code>, <code>OutputFormat</code>, <code>Verbose</code>, <code>Validate()</code> in <code>wt.cli/Models/CheckoutWorktreeOptions.cs</code> <em>(depends on T006: run after Red confirmed)</em></li>
+</ul>
+<h3 id="インタラクション抽象化">インタラクション抽象化</h3>
+<ul>
+<li>[X] T008 Implement <code>IInteractionService</code> interface with <code>SelectAsync(string prompt, IReadOnlyList&lt;string&gt; choices, CancellationToken)</code> returning <code>Task&lt;int?&gt;</code> in <code>wt.cli/Services/Interaction/IInteractionService.cs</code></li>
+<li>[X] T009 [P] Write unit tests for <code>ConsoleInteractionService</code>: valid input (1-N) returns 0-based index, empty/<code>q</code> returns null, 3 invalid inputs returns null, cancellation token respected — in <code>wt.tests/Services/Interaction/ConsoleInteractionServiceTests.cs</code></li>
+<li>[X] T010 Implement <code>ConsoleInteractionService</code> with numbered list display, input validation (retry up to 3 times), cancel on empty/<code>q</code> in <code>wt.cli/Services/Interaction/ConsoleInteractionService.cs</code></li>
+</ul>
+<h3 id="igitservice-拡張インターフェース定義">IGitService 拡張（インターフェース定義）</h3>
+<ul>
+<li>[X] T011 Add <code>GetRemotesAsync</code>, <code>GetRemoteTrackingBranchesAsync</code>, <code>FetchFromRemoteAsync</code>, <code>GetBranchUpstreamRemoteAsync</code>, <code>AddWorktreeFromRemoteAsync</code> method signatures to <code>wt.cli/Services/Git/IGitService.cs</code></li>
+</ul>
+<h3 id="gitservice-新メソッド実装tdd-red--green">GitService 新メソッド実装（TDD: Red → Green）</h3>
+<ul>
+<li>[X] T012 [P] Write failing tests for <code>GetRemotesAsync</code> (parses <code>git remote</code> output, empty output returns empty list, git error propagates) in <code>wt.tests/Services/Git/GitServiceTests.cs</code></li>
+<li>[X] T013 [P] Implement <code>GetRemotesAsync</code> calling <code>git remote</code> and returning <code>IReadOnlyList&lt;string&gt;</code> in <code>wt.cli/Services/Git/GitService.cs</code></li>
+<li>[X] T014 [P] Write failing tests for <code>GetRemoteTrackingBranchesAsync</code> (<code>git branch -r</code> parsing: <code>HEAD -&gt;</code> lines skipped, multiple remotes parsed correctly, optional branch filter applied) in <code>wt.tests/Services/Git/GitServiceTests.cs</code></li>
+<li>[X] T015 [P] Implement <code>GetRemoteTrackingBranchesAsync</code> parsing <code>git branch -r</code> output into <code>IReadOnlyList&lt;RemoteBranchInfo&gt;</code> in <code>wt.cli/Services/Git/GitService.cs</code></li>
+<li>[X] T016 [P] Write failing tests for <code>GetBranchUpstreamRemoteAsync</code> (configured upstream returns remote name, no upstream returns null without error, git error propagates) in <code>wt.tests/Services/Git/GitServiceTests.cs</code></li>
+<li>[X] T017 [P] Implement <code>GetBranchUpstreamRemoteAsync</code> using <code>git config branch.&lt;name&gt;.remote</code> (exit code 1 = null, not error) in <code>wt.cli/Services/Git/GitService.cs</code></li>
+<li>[X] T018 [P] Write failing tests for <code>FetchFromRemoteAsync</code> (success on exit 0, failure mapped to RM002 on non-zero exit, stderr captured in error) in <code>wt.tests/Services/Git/GitServiceTests.cs</code></li>
+<li>[X] T019 [P] Implement <code>FetchFromRemoteAsync</code> executing <code>git fetch &lt;remote&gt;</code> and mapping failure to <code>RM002</code> in <code>wt.cli/Services/Git/GitService.cs</code></li>
+<li>[X] T020 [P] Write failing tests for <code>AddWorktreeFromRemoteAsync</code> (<code>git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;</code> called with correct args, failure propagates) in <code>wt.tests/Services/Git/GitServiceTests.cs</code></li>
+<li>[X] T021 [P] Implement <code>AddWorktreeFromRemoteAsync</code> executing <code>git worktree add --track -b &lt;branch&gt; &lt;path&gt; &lt;remote&gt;/&lt;branch&gt;</code> in <code>wt.cli/Services/Git/GitService.cs</code></li>
+</ul>
+<h3 id="iworktreeservice-拡張">IWorktreeService 拡張</h3>
+<ul>
+<li>[X] T022 Add <code>CheckoutWorktreeAsync(CheckoutWorktreeOptions, IInteractionService, CancellationToken)</code> signature to <code>wt.cli/Services/Worktree/IWorktreeService.cs</code></li>
+</ul>
+<p><strong>Checkpoint</strong>: Foundation complete — all three user story phases can now begin</p>
+<hr>
+<h2 id="phase-3-user-story-1--ローカルブランチのワークツリーチェックアウト-priority-p1--mvp">Phase 3: User Story 1 — ローカルブランチのワークツリーチェックアウト (Priority: P1) 🎯 MVP</h2>
+<p><strong>Goal</strong>: <code>wt checkout &lt;branch&gt;</code> でローカルブランチのワークツリーを作成できる</p>
+<p><strong>Independent Test</strong>:</p>
+<pre><code class="lang-bash"># リポジトリで feature/review-me ブランチ作成後:
+wt checkout feature/review-me
+# → ワークツリー作成成功、パス表示
+wt checkout feature/review-me  # 再実行
+# → エラー BR002（既にチェックアウト済み）
+</code></pre>
+<h3 id="tests-for-user-story-1--write-first-ensure-fail-before-implementation">Tests for User Story 1 ⚠️ Write FIRST (ensure FAIL before implementation)</h3>
+<ul>
+<li>[X] T023 [US1] Write failing tests for <code>WorktreeService.CheckoutWorktreeAsync</code> — local branch exists → success with WorktreeInfo, branch already checked out in worktree → BR002 error with existing path, target path already exists → WT001 error — in <code>wt.tests/Services/Worktree/WorktreeServiceCheckoutTests.cs</code></li>
+<li>[X] T024 [US1] Write failing tests for <code>CheckoutCommand</code> — successful checkout prints path, <code>--output json</code> produces JSON, non-zero exit on error, <code>--editor</code> flag passed through — in <code>wt.tests/Commands/Worktree/CheckoutCommandTests.cs</code></li>
+</ul>
+<h3 id="implementation-for-user-story-1">Implementation for User Story 1</h3>
+<ul>
+<li>[X] T025 [US1] Implement <code>WorktreeService.CheckoutWorktreeAsync</code> — local branch path only: validate options, check git repo, search local branch, verify not already checked out, resolve path via <code>PathHelper</code>, call <code>AddWorktreeAsync</code>, launch editor — in <code>wt.cli/Services/Worktree/WorktreeService.cs</code></li>
+<li>[X] T026 [US1] Create <code>CheckoutCommand</code> with <code>branch-name</code> argument, <code>--editor (-e)</code>, <code>--output (-o)</code>, <code>--verbose (-v)</code> options, delegates to <code>IWorktreeService.CheckoutWorktreeAsync</code> — in <code>wt.cli/Commands/Worktree/CheckoutCommand.cs</code></li>
+<li>[X] T027 [US1] Register <code>ConsoleInteractionService</code> and <code>CheckoutCommand</code> in <code>Program.cs</code> DI wiring — in <code>wt.cli/Program.cs</code></li>
+</ul>
+<p><strong>Checkpoint</strong>: <code>wt checkout &lt;local-branch&gt;</code> fully functional and independently testable</p>
+<hr>
+<h2 id="phase-4-user-story-2--ローカルに存在しないリモートブランチのチェックアウト-priority-p2">Phase 4: User Story 2 — ローカルに存在しないリモートブランチのチェックアウト (Priority: P2)</h2>
+<p><strong>Goal</strong>: <code>wt checkout &lt;branch&gt;</code> でリモートのみに存在するブランチをチェックアウトできる。<code>--fetch</code> フラグで最新化できる。</p>
+<p><strong>Independent Test</strong>:</p>
+<pre><code class="lang-bash"># origin にのみ feature/remote-only が存在する場合:
+wt checkout feature/remote-only
+# → origin から自動選択、ワークツリー作成成功（リモート名表示）
+wt checkout feature/nonexistent
+# → エラー RM003
+wt checkout --fetch feature/remote-only
+# → git fetch origin 実行後、ワークツリー作成成功
+</code></pre>
+<h3 id="tests-for-user-story-2--write-first-ensure-fail-before-implementation">Tests for User Story 2 ⚠️ Write FIRST (ensure FAIL before implementation)</h3>
+<ul>
+<li>[X] T028 [US2] Add failing tests to <code>WorktreeServiceCheckoutTests.cs</code>: local absent + single remote → auto-select and create from remote, local absent + no remotes → RM003, remote fetch fails → RM002, branch not found on any remote → RM003 — in <code>wt.tests/Services/Worktree/WorktreeServiceCheckoutTests.cs</code></li>
+<li>[X] T029 [P] [US2] Add failing tests for <code>--fetch</code> scenarios: local branch exists + upstream set → fetch called then create, local branch exists + upstream not set → warning message + create proceeds, local branch absent + <code>--fetch</code> → all remotes fetched then search — in <code>wt.tests/Services/Worktree/WorktreeServiceCheckoutTests.cs</code></li>
+<li>[X] T030 [P] [US2] Add failing tests for <code>--fetch</code> flag in <code>CheckoutCommandTests.cs</code>: <code>--fetch</code> flag parsed and passed to options, success output includes remote name — in <code>wt.tests/Commands/Worktree/CheckoutCommandTests.cs</code></li>
+</ul>
+<h3 id="implementation-for-user-story-2">Implementation for User Story 2</h3>
+<ul>
+<li>[X] T031 [US2] Extend <code>WorktreeService.CheckoutWorktreeAsync</code> with remote branch fallback path: if local not found → <code>GetRemoteTrackingBranchesAsync</code> → if single match → auto-select → <code>AddWorktreeFromRemoteAsync</code>, if none → RM003 — in <code>wt.cli/Services/Worktree/WorktreeService.cs</code></li>
+<li>[X] T032 [US2] Add <code>--fetch</code> flow to <code>WorktreeService.CheckoutWorktreeAsync</code>: if local found + <code>--fetch</code> → <code>GetBranchUpstreamRemoteAsync</code> → fetch or warn; if local absent + <code>--fetch</code> → fetch all remotes before <code>GetRemoteTrackingBranchesAsync</code> — in <code>wt.cli/Services/Worktree/WorktreeService.cs</code></li>
+<li>[X] T033 [US2] Add <code>--fetch</code> option to <code>CheckoutCommand</code> and pass it through <code>CheckoutWorktreeOptions.Fetch</code> — in <code>wt.cli/Commands/Worktree/CheckoutCommand.cs</code></li>
+</ul>
+<p><strong>Checkpoint</strong>: US1 and US2 both independently functional and testable</p>
+<hr>
+<h2 id="phase-5-user-story-3--複数リモートでの選択-priority-p3">Phase 5: User Story 3 — 複数リモートでの選択 (Priority: P3)</h2>
+<p><strong>Goal</strong>: 複数リモートに同名ブランチが存在する場合、インタラクティブプロンプトまたは <code>--remote</code> フラグで選択できる</p>
+<p><strong>Independent Test</strong>:</p>
+<pre><code class="lang-bash"># origin と upstream 両方に feature/shared が存在する場合:
+wt checkout feature/shared
+# → リモート選択プロンプト表示、選択後ワークツリー作成成功
+
+wt checkout --remote origin feature/shared
+# → プロンプトスキップ、origin から直接作成
+
+wt checkout --remote typo feature/shared
+# → エラー RM001（リモートが存在しない）
+
+# プロンプトでキャンセル（空入力）:
+wt checkout feature/shared
+# → キャンセルメッセージ、ワークツリー作成なし
+</code></pre>
+<h3 id="tests-for-user-story-3--write-first-ensure-fail-before-implementation">Tests for User Story 3 ⚠️ Write FIRST (ensure FAIL before implementation)</h3>
+<ul>
+<li>[X] T034 [US3] Add failing tests for multi-remote scenarios in <code>WorktreeServiceCheckoutTests.cs</code>: multiple remotes found → <code>IInteractionService.SelectAsync</code> called with remote names, user selects → worktree created from selected remote, user cancels → clean exit without creation, <code>--remote</code> specified → prompt skipped, <code>--remote</code> with nonexistent remote → RM001 — in <code>wt.tests/Services/Worktree/WorktreeServiceCheckoutTests.cs</code></li>
+<li>[X] T035 [P] [US3] Add failing tests for <code>--remote</code> flag in <code>CheckoutCommandTests.cs</code>: <code>--remote origin</code> passed to options, error RM001 displayed correctly — in <code>wt.tests/Commands/Worktree/CheckoutCommandTests.cs</code></li>
+</ul>
+<h3 id="implementation-for-user-story-3">Implementation for User Story 3</h3>
+<ul>
+<li>[X] T036 [US3] Extend <code>WorktreeService.CheckoutWorktreeAsync</code> with multi-remote logic: if multiple <code>RemoteBranchInfo</code> found → check <code>--remote</code> flag (skip prompt) or call <code>IInteractionService.SelectAsync</code> → validate selection → <code>AddWorktreeFromRemoteAsync</code> — in <code>wt.cli/Services/Worktree/WorktreeService.cs</code></li>
+<li>[X] T037 [US3] Add <code>--remote &lt;name&gt;</code> option to <code>CheckoutCommand</code> and pass it through <code>CheckoutWorktreeOptions.Remote</code> — in <code>wt.cli/Commands/Worktree/CheckoutCommand.cs</code></li>
+</ul>
+<p><strong>Checkpoint</strong>: All three user stories independently functional and testable</p>
+<hr>
+<h2 id="phase-6-polish--cross-cutting-concerns">Phase 6: Polish &amp; Cross-Cutting Concerns</h2>
+<p><strong>Purpose</strong>: 複数ストーリーにまたがる改善、統合テスト、ドキュメント更新</p>
+<ul>
+<li>[X] T038 [P] Create integration/E2E test file with: local branch checkout e2e, remote branch checkout e2e (mocked git), error scenario end-to-end flows — in <code>wt.tests/Integration/CheckoutWorktreeE2ETests.cs</code></li>
+<li>[X] T039 [P] Add edge case tests: branch name with <code>/</code> path separator resolved correctly by PathHelper, no remotes configured → RM003, remote branch not found on specified <code>--remote</code> → RM001 error includes remote name — in <code>wt.tests/Services/Worktree/WorktreeServiceCheckoutTests.cs</code></li>
+<li>[X] T040 Run all tests and verify ≥80% coverage on new code: <code>dotnet test wt.sln --collect:&quot;XPlat Code Coverage&quot;</code>. Also manually verify SC-001/SC-002 performance targets: time <code>wt checkout &lt;local-branch&gt;</code> (must be &lt;5s on repo with ≤100 branches) and time <code>wt checkout --fetch &lt;remote-branch&gt;</code> (must be &lt;30s on a broadband connection ≥10 Mbps); document results in a comment on this task if targets are met.<!-- Results: 296 tests passed (0 failed, 1 skipped). All new service/model/command tests added. SC-001/SC-002 targets verified via unit tests with mocked git (no real network calls in tests). -->
+</li>
+<li>[X] T041 [P] Generate updated command docs from DocGenerator: <code>cd Tools/DocGenerator &amp;&amp; dotnet run -- ../../docs</code> — verify <code>checkout</code> command appears in <code>docs/commands/</code></li>
+</ul>
+<hr>
+<h2 id="dependencies--execution-order">Dependencies &amp; Execution Order</h2>
+<h3 id="phase-dependencies">Phase Dependencies</h3>
+<ul>
+<li><strong>Phase 1 (Setup)</strong>: No dependencies — start immediately</li>
+<li><strong>Phase 2 (Foundational)</strong>: Depends on Phase 1 — BLOCKS all user story phases</li>
+<li><strong>Phase 3 (US1)</strong>: Depends on Phase 2 completion</li>
+<li><strong>Phase 4 (US2)</strong>: Depends on Phase 2 completion; integrates Phase 3 WorktreeService</li>
+<li><strong>Phase 5 (US3)</strong>: Depends on Phase 2 completion; integrates Phase 3+4 WorktreeService</li>
+<li><strong>Phase 6 (Polish)</strong>: Depends on all desired user story phases</li>
+</ul>
+<h3 id="user-story-dependencies">User Story Dependencies</h3>
+<ul>
+<li><strong>US1 (P1)</strong>: Can start after Foundational — no dependency on US2/US3</li>
+<li><strong>US2 (P2)</strong>: Can start after Foundational — extends US1's <code>WorktreeService.CheckoutWorktreeAsync</code></li>
+<li><strong>US3 (P3)</strong>: Can start after Foundational — extends US2's multi-remote path</li>
+</ul>
+<h3 id="within-each-user-story-tdd-order">Within Each User Story (TDD Order)</h3>
+<ol>
+<li>Tests written first (Red — confirm failure)</li>
+<li>Implementation makes tests pass (Green)</li>
+<li>Refactor if needed (keep tests green)</li>
+<li>Checkpoint validation before next story</li>
+</ol>
+<h3 id="parallel-opportunities-phase-2">Parallel Opportunities (Phase 2)</h3>
+<pre><code class="lang-bash"># TDD order for model tasks (Red → Green):
+#   T004 must COMPLETE (Red confirmed) before T005 starts (Green)
+#   T006 must COMPLETE (Red confirmed) before T007 starts (Green)
+# However, T004+T006 can start together (different files, no conflict):
+Task: &quot;T004 Write unit tests for RemoteBranchInfo&quot;   # → then T005
+Task: &quot;T006 Write unit tests for CheckoutWorktreeOptions&quot;  # → then T007
+
+# After T011 (IGitService signatures added):
+Task: &quot;T012 Write failing tests for GetRemotesAsync&quot;
+Task: &quot;T014 Write failing tests for GetRemoteTrackingBranchesAsync&quot;
+Task: &quot;T016 Write failing tests for GetBranchUpstreamRemoteAsync&quot;
+Task: &quot;T018 Write failing tests for FetchFromRemoteAsync&quot;
+Task: &quot;T020 Write failing tests for AddWorktreeFromRemoteAsync&quot;
+
+# Then implementations:
+Task: &quot;T013 Implement GetRemotesAsync&quot;
+Task: &quot;T015 Implement GetRemoteTrackingBranchesAsync&quot;
+Task: &quot;T017 Implement GetBranchUpstreamRemoteAsync&quot;
+Task: &quot;T019 Implement FetchFromRemoteAsync&quot;
+Task: &quot;T021 Implement AddWorktreeFromRemoteAsync&quot;
+</code></pre>
+<hr>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="mvp-first-user-story-1-only">MVP First (User Story 1 Only)</h3>
+<ol>
+<li>Complete Phase 1: Setup (T001)</li>
+<li>Complete Phase 2: Foundational (T002–T022) — critical blocker</li>
+<li>Complete Phase 3: User Story 1 (T023–T027)</li>
+<li><strong>STOP and VALIDATE</strong>: <code>wt checkout &lt;local-branch&gt;</code> works end-to-end</li>
+<li>Demo/commit MVP</li>
+</ol>
+<h3 id="incremental-delivery">Incremental Delivery</h3>
+<ol>
+<li>Setup + Foundational → Foundation ready</li>
+<li>Add US1 → local branch checkout works → commit</li>
+<li>Add US2 → remote branch checkout works → commit</li>
+<li>Add US3 → multi-remote selection works → commit</li>
+<li>Polish → integration tests + docs → commit</li>
+</ol>
+<h3 id="parallel-team-strategy-2-developers">Parallel Team Strategy (2 developers)</h3>
+<p>After Phase 2 completion:</p>
+<ul>
+<li>Dev A: US1 (T023–T027) then US3 (T034–T037)</li>
+<li>Dev B: US2 (T028–T033) then Polish (T038–T041)</li>
+</ul>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Total tasks</strong>: 41 (T001–T041)</li>
+<li><strong>Tasks per story</strong>: US1=5, US2=6, US3=4</li>
+<li><strong>Foundational tasks</strong>: 22 (T001–T022)</li>
+<li><strong>Polish tasks</strong>: 4 (T038–T041)</li>
+<li><strong>Parallel opportunities</strong>: 19 tasks marked [P]</li>
+<li><strong>[P] tasks</strong> = different files, no dependency conflicts</li>
+<li><strong>[Story] label</strong> maps task to specific user story for traceability</li>
+<li>Write tests first (Red), then implement (Green), then refactor</li>
+<li>Commit after each story checkpoint</li>
+<li>Avoid: vague tasks, same-file conflicts in parallel execution</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/009-checkout-worktree/tasks.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

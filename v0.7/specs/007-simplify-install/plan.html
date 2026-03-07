@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Implementation Plan: インストール簡素化 | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Implementation Plan: インストール簡素化 | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/plan.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="implementation-plan-インストール簡素化">Implementation Plan: インストール簡素化</h1>
+
+<p><strong>Branch</strong>: <code>007-simplify-install</code> | <strong>Date</strong>: 2026-02-28 | <strong>Spec</strong>: <a href="spec.html">spec.md</a>
+<strong>Input</strong>: Feature specification from <code>/specs/007-simplify-install/spec.md</code></p>
+<h2 id="summary">Summary</h2>
+<p>インストールスクリプト（<code>scripts/install.sh</code> / <code>scripts/install.ps1</code>）を新規作成し、GitHub Pages および GitHub Releases 経由で安定URLから配布することで、ワンライナーインストールを実現する。C# コードの変更はなし。プラットフォーム自動検出・SHA256検証・PATH案内・TTY対応の上書き確認を一括で担うシェルスクリプトと、それを配信するためのワークフロー・ドキュメント変更が主な実装対象。リリースバイナリ名は <code>wtm</code>（Unix系）および <code>wtm.exe</code>（Windows）。</p>
+<h2 id="technical-context">Technical Context</h2>
+<p><strong>Language/Version</strong>: Bash (POSIX sh 互換) / PowerShell 5.1+
+<strong>Primary Dependencies</strong>: <code>curl</code> または <code>wget</code> (Unix)、<code>Invoke-WebRequest</code> (Windows PowerShell 組み込み)
+<strong>Storage</strong>: N/A（ファイルシステムへのバイナリ配置のみ）
+<strong>Testing</strong>: <code>bash -n</code> 構文検査、<code>shellcheck</code> 静的解析、GitHub Actions CI
+<strong>Target Platform</strong>: Linux (x64/ARM)、macOS (ARM64)、Windows (x64)
+<strong>Project Type</strong>: CLI ツール向けインストールスクリプト（単一プロジェクト）
+<strong>Performance Goals</strong>: インストール完了まで1分以内（SC-001）
+<strong>Constraints</strong>: <code>jq</code> / <code>python3</code> などの追加依存なし、sudo不要なユーザースコープインストール
+<strong>Scale/Scope</strong>: 単一機能追加（シェルスクリプト2ファイル + ワークフロー変更 + ドキュメント更新）</p>
+<h2 id="constitution-check">Constitution Check</h2>
+<p><em>GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.</em></p>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I. Developer Usability</td>
+<td>✅ PASS</td>
+<td>ワンライナーインストール、明確なエラーガイダンス、PATH案内を実装</td>
+</tr>
+<tr>
+<td>II. Cross-Platform</td>
+<td>✅ PASS</td>
+<td>Unix (.sh) と Windows (.ps1) を対称的に実装。各プラットフォームでCIテスト</td>
+</tr>
+<tr>
+<td>III. Clean &amp; Secure Code</td>
+<td>✅ PASS</td>
+<td>SHA256検証必須、最小権限（sudo不要）、<code>shellcheck</code> 静的解析でセキュリティチェック</td>
+</tr>
+<tr>
+<td>IV. Documentation Clarity</td>
+<td>✅ PASS</td>
+<td>README.md に日本語/英語両方のインストールコマンドをインライン記載</td>
+</tr>
+<tr>
+<td>V. Minimal Dependencies</td>
+<td>✅ PASS</td>
+<td><code>curl</code>/<code>wget</code> のみ（標準ツール）。<code>jq</code> 不使用、<code>grep</code>+<code>sed</code> で代替</td>
+</tr>
+<tr>
+<td>VI. Comprehensive Testing</td>
+<td>✅ PASS (例外)</td>
+<td><code>bash -n</code> 構文検査 + <code>shellcheck</code> + GitHub Actions 統合テスト。シェルスクリプトの性質上 TDD を採用せず <code>shellcheck</code> による静的解析で代替（例外理由は ADR に記録）</td>
+</tr>
+<tr>
+<td>VII. Quantitative Thresholds</td>
+<td>✅ PASS (例外)</td>
+<td>スクリプトは関数分割設計（各関数50行以内目標）。スクリプト全体は複数機能を一括実装するため50行超過を許容（例外理由は ADR に記録）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post-Design Re-check</strong>: FR-016/017/018（TTY/force/非インタラクティブ）追加後も全ゲートをパス。TTY検出ロジック（<code>[ -t 0 ]</code>）は POSIX 準拠で Principle II/III を満たす。バイナリ名 <code>wtm</code> への変更後も設計方針の変更なし。</p>
+<p><strong>Complexity Tracking</strong>: 該当なし（憲章違反なし）</p>
+<h2 id="project-structure">Project Structure</h2>
+<h3 id="documentation-this-feature">Documentation (this feature)</h3>
+<pre><code class="lang-text">specs/007-simplify-install/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output
+├── data-model.md        # Phase 1 output
+├── quickstart.md        # Phase 1 output
+├── contracts/
+│   └── install-script-interface.md  # Phase 1 output
+└── tasks.md             # Phase 2 output (/speckit.tasks command)
+</code></pre>
+<h3 id="source-code-repository-root">Source Code (repository root)</h3>
+<pre><code class="lang-text">scripts/                          # 新規ディレクトリ
+├── install.sh                    # Unix用インストールスクリプト (新規)
+└── install.ps1                   # Windows PowerShell用インストールスクリプト (新規)
+
+.github/
+└── workflows/
+    └── release.yml               # 変更: リリース資産追加 + GitHub Pages配信
+
+docs/
+└── installation.md               # 変更: クイックインストールセクション追加
+
+README.md                         # 変更: Quick Install セクション追加
+</code></pre>
+<p><strong>Structure Decision</strong>: 単一プロジェクト構造（Option 1）。C# ソースコードの変更なし。<code>scripts/</code> ディレクトリを新規作成してインストールスクリプトを管理する。既存の <code>.github/scripts/</code> はビルド/リリース自動化スクリプトを格納しているため、ユーザー向けインストールスクリプトは分離して <code>scripts/</code> に配置する。</p>
+<h2 id="implementation-phases">Implementation Phases</h2>
+<h3 id="phase-1-インストールスクリプト作成">Phase 1: インストールスクリプト作成</h3>
+<ol>
+<li><p><code>scripts/install.sh</code> 作成</p>
+<ul>
+<li>プラットフォーム/アーキテクチャ検出（<code>uname -s</code> / <code>uname -m</code>）</li>
+<li>GitHub API で最新バージョン取得（<code>grep</code>+<code>sed</code>、<code>jq</code> 不使用）</li>
+<li>既存インストール確認（同一バージョンならスキップ）</li>
+<li><strong>TTY/force/非インタラクティブ上書き制御</strong>（FR-016/017/018）:
+<ul>
+<li><code>[ -t 0 ]</code> で TTY 判定</li>
+<li><code>--force</code> フラグで確認スキップ</li>
+<li>非TTY環境では上書きスキップ＋<code>--force</code> 使用案内</li>
+</ul>
+</li>
+<li>インストール先ディレクトリ作成（存在しない場合）</li>
+<li>バイナリダウンロード（<code>curl</code> → <code>wget</code> フォールバック）</li>
+<li>SHA256検証（<code>sha256sum</code> → <code>shasum</code> フォールバック）</li>
+<li><code>chmod +x</code> で実行権限付与</li>
+<li>PATH確認・シェル設定ファイルへの追記コマンド案内</li>
+<li>macOS Gatekeeper 案内</li>
+</ul>
+</li>
+<li><p><code>scripts/install.ps1</code> 作成（Unix版と対称的な機能セット）</p>
+<ul>
+<li><code>[Environment]::UserInteractive</code> でインタラクティブ判定（FR-016/018）</li>
+<li><code>-Force</code> パラメータ対応（FR-017）</li>
+</ul>
+</li>
+</ol>
+<h3 id="phase-2-ワークフロー変更">Phase 2: ワークフロー変更</h3>
+<p><code>release.yml</code> に以下を追加：</p>
+<ol>
+<li><code>create-release</code> ジョブ: <code>Create GitHub Release</code> ステップの <code>files:</code> に <code>scripts/install.sh</code> / <code>scripts/install.ps1</code> を追加</li>
+<li><code>build-and-deploy-docs</code> ジョブ: &quot;Build documentation&quot; と &quot;Deploy to GitHub Pages&quot; の間に <code>cp scripts/install.sh _site/install.sh</code> / <code>cp scripts/install.ps1 _site/install.ps1</code> ステップを追加</li>
+</ol>
+<h3 id="phase-3-ドキュメント更新">Phase 3: ドキュメント更新</h3>
+<ol>
+<li><code>README.md</code>: <code>### Download from Releases (Recommended)</code> の前に <code>### Quick Install (推奨)</code> セクション追加</li>
+<li><code>docs/installation.md</code>: 冒頭に「クイックインストール」セクション追加（既存手順を保持）</li>
+</ol>
+<h3 id="phase-4-ci-テスト追加">Phase 4: CI テスト追加</h3>
+<p><code>test.yml</code> または新規ワークフローに <code>shellcheck</code> 静的解析ステップを追加</p>
+<h2 id="key-decisions">Key Decisions</h2>
+<table>
+<thead>
+<tr>
+<th>決定事項</th>
+<th>根拠</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GitHub Pages で安定URL配信</td>
+<td>バージョン非依存の永続URL実現（SC-005）。DocFX <code>resource</code> 追加より確実</td>
+</tr>
+<tr>
+<td><code>jq</code> 不使用、<code>grep</code>+<code>sed</code> で代替</td>
+<td>最小依存の原則（Principle V）</td>
+</tr>
+<tr>
+<td><code>[ -t 0 ]</code> で TTY 判定</td>
+<td>POSIX 準拠、bash/dash/sh 全環境で動作</td>
+</tr>
+<tr>
+<td><code>--force</code> フラグ受け渡しは <code>sh -s --</code> 構文</td>
+<td><code>curl \| sh</code> パターンでのパラメータ渡しの標準的手法</td>
+</tr>
+<tr>
+<td><code>~/.local/bin</code> をデフォルトインストール先</td>
+<td>sudo不要（SC-003）、XDG Base Directory 準拠</td>
+</tr>
+<tr>
+<td>バイナリ名 <code>wtm</code> (変更)</td>
+<td>リリースバイナリが <code>wt</code> から <code>wtm</code> に変更されたことに追従</td>
+</tr>
+</tbody>
+</table>
+<h2 id="artifacts-generated">Artifacts Generated</h2>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>状態</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>specs/007-simplify-install/research.md</code></td>
+<td>✅ 完成（バイナリ名 wtm 反映済み）</td>
+</tr>
+<tr>
+<td><code>specs/007-simplify-install/data-model.md</code></td>
+<td>✅ 完成（バイナリ名 wtm 反映済み）</td>
+</tr>
+<tr>
+<td><code>specs/007-simplify-install/quickstart.md</code></td>
+<td>✅ 完成</td>
+</tr>
+<tr>
+<td><code>specs/007-simplify-install/contracts/install-script-interface.md</code></td>
+<td>✅ 完成（バイナリ名 wtm 反映済み）</td>
+</tr>
+<tr>
+<td><code>specs/007-simplify-install/plan.md</code></td>
+<td>✅ このファイル</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/plan.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

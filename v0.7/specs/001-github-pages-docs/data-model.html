@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Data Model: GitHub Pages Documentation Publishing | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Data Model: GitHub Pages Documentation Publishing | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/data-model.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="data-model-github-pages-documentation-publishing">Data Model: GitHub Pages Documentation Publishing</h1>
+
+<p><strong>Feature</strong>: 001-github-pages-docs<br>
+<strong>Date</strong>: 2026-01-15<br>
+<strong>Phase</strong>: Phase 1 - Design</p>
+<p>This document defines the key entities, their attributes, relationships, and validation rules for the GitHub Pages documentation publishing feature.</p>
+<h2 id="entities">Entities</h2>
+<h3 id="1-documentation-version">1. Documentation Version</h3>
+<p>Represents a specific minor version of the documentation (e.g., v1.0, v1.1, v2.0).</p>
+<p><strong>Attributes</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+<th>Validation Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>label</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Display name in version switcher (e.g., &quot;v1.0 (latest)&quot;)</td>
+<td>Must match pattern: <code>v\d+\.\d+( \(latest\))?</code></td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>URL path segment for this version</td>
+<td>Must match pattern: <code>v\d+\.\d+</code></td>
+</tr>
+<tr>
+<td><code>released</code></td>
+<td>datetime</td>
+<td>Yes</td>
+<td>ISO 8601 timestamp of release</td>
+<td>Must be valid ISO 8601 format</td>
+</tr>
+<tr>
+<td><code>isLatest</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td>Whether this is the latest version</td>
+<td>Only one version can have <code>isLatest: true</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>Has many: Documentation Pages</li>
+<li>Has many: Command Documentation Pages</li>
+<li>Has one: API Reference Section</li>
+</ul>
+<p><strong>State Transitions</strong>:</p>
+<pre><code>[New Release] → Version Created (isLatest=true)
+                ↓
+                All other versions: isLatest → false
+                ↓
+                Version Published to GitHub Pages
+</code></pre>
+<p><strong>Business Rules</strong>:</p>
+<ul>
+<li>Exactly one version must be marked as <code>isLatest: true</code> at all times</li>
+<li>Version path must be unique across all versions</li>
+<li>Versions are immutable once published (no content changes to deployed versions)</li>
+<li>Minor version level only (patch versions share documentation: v1.0.0, v1.0.1, v1.0.2 → all use v1.0)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;label&quot;: &quot;v1.2 (latest)&quot;,
+  &quot;path&quot;: &quot;v1.2&quot;,
+  &quot;released&quot;: &quot;2026-01-15T10:30:00Z&quot;,
+  &quot;isLatest&quot;: true
+}
+</code></pre>
+<hr>
+<h3 id="2-version-manifest">2. Version Manifest</h3>
+<p>Aggregates all available documentation versions for the version switcher UI.</p>
+<p><strong>Attributes</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+<th>Validation Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>versions</code></td>
+<td>array</td>
+<td>Yes</td>
+<td>List of Documentation Version objects</td>
+<td>Must contain at least 1 version</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>Contains many: Documentation Versions (aggregation)</li>
+</ul>
+<p><strong>State Transitions</strong>:</p>
+<pre><code>[First Release] → Empty manifest → First version added
+                                    ↓
+[New Release]  → Fetch existing → Update with new version → Deploy
+</code></pre>
+<p><strong>Business Rules</strong>:</p>
+<ul>
+<li>Stored at GitHub Pages root: <code>/version-manifest.json</code></li>
+<li>Copied to each version directory for redundancy</li>
+<li>Automatically updated on every release</li>
+<li>Sorted by release date (newest first)</li>
+<li>Idempotent updates (re-running same version updates timestamp, doesn't duplicate)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="lang-json">{
+  &quot;versions&quot;: [
+    {
+      &quot;label&quot;: &quot;v1.1 (latest)&quot;,
+      &quot;path&quot;: &quot;v1.1&quot;,
+      &quot;released&quot;: &quot;2026-01-15T10:30:00Z&quot;,
+      &quot;isLatest&quot;: true
+    },
+    {
+      &quot;label&quot;: &quot;v1.0&quot;,
+      &quot;path&quot;: &quot;v1.0&quot;,
+      &quot;released&quot;: &quot;2026-01-01T14:20:00Z&quot;,
+      &quot;isLatest&quot;: false
+    }
+  ]
+}
+</code></pre>
+<hr>
+<h3 id="3-command-documentation-page">3. Command Documentation Page</h3>
+<p>Represents documentation for a single CLI command.</p>
+<p><strong>Attributes</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+<th>Validation Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>commandName</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Name of the command (e.g., &quot;create&quot;)</td>
+<td>Must match existing CLI command</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Command purpose and overview</td>
+<td>Non-empty, extracted from System.CommandLine</td>
+</tr>
+<tr>
+<td><code>usage</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Syntax pattern</td>
+<td>Format: <code>wt {commandName} [options]</code></td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td>array</td>
+<td>No</td>
+<td>List of command options</td>
+<td>Each option must have aliases, description</td>
+</tr>
+<tr>
+<td><code>examples</code></td>
+<td>array</td>
+<td>Yes</td>
+<td>Usage examples</td>
+<td>At least 1 example required</td>
+</tr>
+<tr>
+<td><code>filePath</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>Markdown file location</td>
+<td>Format: <code>docs/commands/{commandName}.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>Belongs to: Documentation Version</li>
+<li>Generated from: CLI Command Definition (wt.cli RootCommand)</li>
+</ul>
+<p><strong>State Transitions</strong>:</p>
+<pre><code>[CLI Code Change] → DocGenerator extracts metadata → Markdown generated → DocFX builds → HTML deployed
+</code></pre>
+<p><strong>Business Rules</strong>:</p>
+<ul>
+<li>Auto-generated from System.CommandLine definitions (no manual editing)</li>
+<li>One markdown file per command</li>
+<li>Must exist for every command in wt.cli RootCommand.Subcommands</li>
+<li>Regenerated on every documentation build</li>
+<li>Examples are manually curated in DocGenerator code</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="lang-markdown"># wt create
+
+Create a new Git worktree with optional editor integration.
+
+## Usage
+```bash
+wt create [options] &lt;branch-name&gt;
+</code></pre>
+<h2 id="options">Options</h2>
+<h3 id="--path--p"><code>--path</code>, <code>-p</code></h3>
+<p>Custom path for the worktree directory.
+<strong>Type:</strong> <code>string</code></p>
+<h3 id="--editor--e"><code>--editor</code>, <code>-e</code></h3>
+<p>Editor to open after creation (vscode, vim, emacs).
+<strong>Type:</strong> <code>string</code></p>
+<h2 id="examples">Examples</h2>
+<h3 id="create-worktree-with-default-path">Create worktree with default path</h3>
+<pre><code class="lang-bash">wt create feature-login
+</code></pre>
+<h3 id="create-with-custom-path">Create with custom path</h3>
+<pre><code class="lang-bash">wt create feature-login --path /tmp/wt-login
+</code></pre>
+<pre><code>
+---
+
+### 4. API Reference Section
+
+Generated documentation for all public APIs in wt.cli project.
+
+**Attributes**:
+| Attribute | Type | Required | Description | Validation Rules |
+|-----------|------|----------|-------------|-----------------|
+| `namespace` | string | Yes | .NET namespace (e.g., &quot;Kuju63.WorkTree.CommandLine&quot;) | Valid .NET namespace |
+| `classes` | array | Yes | Public classes with XML docs | Auto-generated by DocFX |
+| `interfaces` | array | Yes | Public interfaces with XML docs | Auto-generated by DocFX |
+| `outputPath` | string | Yes | Generated files location | `api/` directory |
+
+**Relationships**:
+- Belongs to: Documentation Version
+- Generated from: wt.cli.csproj XML documentation
+
+**State Transitions**:
+</code></pre>
+<p>[Build wt.cli] → Generate XML docs → DocFX metadata extraction → API HTML generation → Deployment</p>
+<pre><code>
+**Business Rules**:
+- 100% auto-generated from XML documentation comments (per SC-007)
+- Requires `&lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;` in .csproj
+- Only public types and members are documented
+- Cross-references to .NET framework via xref configuration
+- Must build successfully for Release configuration
+
+**Example Structure**:
+</code></pre>
+<p>api/
+├── Kuju63.WorkTree.CommandLine.html
+├── Kuju63.WorkTree.CommandLine.Commands.html
+├── Kuju63.WorkTree.CommandLine.Commands.CreateCommand.html
+└── toc.yml</p>
+<pre><code>
+---
+
+### 5. Installation Guide
+
+Platform-specific instructions for installing the self-contained native binary.
+
+**Attributes**:
+| Attribute | Type | Required | Description | Validation Rules |
+|-----------|------|----------|-------------|-----------------|
+| `platforms` | array | Yes | Supported platforms (Windows, macOS, Linux) | Must cover: win-x64, linux-x64, linux-arm, osx-arm64 |
+| `downloadLinks` | array | Yes | Links to GitHub release assets per platform | Must reference actual release artifacts |
+| `installationSteps` | array | Yes | Step-by-step instructions per platform | At least 2 steps per platform (download + install) |
+| `verificationCommand` | string | Yes | Command to verify installation | Must be: `wt --version` or `wt --help` |
+| `filePath` | string | Yes | Markdown file location | `docs/installation.md` |
+
+**Relationships**:
+- Belongs to: Documentation Version
+- Referenced by: Homepage (primary entry point per SC-001)
+
+**State Transitions**:
+</code></pre>
+<p>[Manual Creation] → Version-specific review → Committed to repository → Built by DocFX</p>
+<pre><code>
+**Business Rules**:
+- **NO .NET SDK required** - binary is self-contained native application
+- **NO Git required for installation** - only needed for actual worktree operations
+- Manually authored markdown file
+- Must be complete before v1.0 release
+- Updated when installation process changes
+- Platform-specific sections clearly marked with OS names
+- Must include troubleshooting section for common issues
+
+**Example Sections**:
+```markdown
+# Installation
+
+## System Requirements
+- **Windows**: Windows 10 or later (x64)
+- **macOS**: macOS 11 or later (ARM64/Apple Silicon)
+- **Linux**: x64 or ARM architecture
+
+**Note**: No .NET SDK or Git installation required for the `wt` tool itself. Git is only needed when you actually use worktrees.
+
+## Download
+
+Download the appropriate binary for your platform from the [latest release](https://github.com/kuju63/wt/releases/latest):
+- **Windows**: `wt-win-x64.zip`
+- **macOS**: `wt-osx-arm64.tar.gz`
+- **Linux (x64)**: `wt-linux-x64.tar.gz`
+- **Linux (ARM)**: `wt-linux-arm.tar.gz`
+
+## Windows Installation
+
+1. Download `wt-win-x64.zip` from releases
+2. Extract to `C:\Program Files\wt\` (or any preferred location)
+3. Add to PATH:
+   ```powershell
+   setx PATH &quot;%PATH%;C:\Program Files\wt&quot;
+</code></pre>
+<ol>
+<li><p>Restart terminal</p>
+</li>
+<li><p>Verify installation:</p>
+<pre><code class="lang-powershell">wt --version
+</code></pre>
+</li>
+</ol>
+<h2 id="macos-installation">macOS Installation</h2>
+<ol>
+<li><p>Download <code>wt-osx-arm64.tar.gz</code></p>
+</li>
+<li><p>Extract and move to <code>/usr/local/bin</code>:</p>
+<pre><code class="lang-bash">tar -xzf wt-osx-arm64.tar.gz
+sudo mv wt /usr/local/bin/
+sudo chmod +x /usr/local/bin/wt
+</code></pre>
+</li>
+<li><p>Verify installation:</p>
+<pre><code class="lang-bash">wt --version
+</code></pre>
+</li>
+</ol>
+<h2 id="linux-installation">Linux Installation</h2>
+<ol>
+<li><p>Download the appropriate archive for your architecture</p>
+</li>
+<li><p>Extract and install:</p>
+<pre><code class="lang-bash">tar -xzf wt-linux-x64.tar.gz
+sudo mv wt /usr/local/bin/
+sudo chmod +x /usr/local/bin/wt
+</code></pre>
+</li>
+<li><p>Verify installation:</p>
+<pre><code class="lang-bash">wt --version
+</code></pre>
+</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="command-not-found">Command not found</h3>
+<ul>
+<li>Ensure the wt binary is in your PATH</li>
+<li>On Windows, restart your terminal after updating PATH</li>
+</ul>
+<h3 id="permission-denied-macoslinux">Permission denied (macOS/Linux)</h3>
+<ul>
+<li>Run: <code>sudo chmod +x /usr/local/bin/wt</code></li>
+</ul>
+<h3 id="git-not-found">Git not found</h3>
+<ul>
+<li>Install Git separately: <code>git --version</code> to check</li>
+<li>Only required when actually using worktree commands</li>
+</ul>
+<pre><code>
+---
+
+### 6. Contribution Guide
+
+Guidelines for contributing code, documentation, or bug reports to the project.
+
+**Attributes**:
+| Attribute | Type | Required | Description | Validation Rules |
+|-----------|------|----------|-------------|-----------------|
+| `developmentSetup` | section | Yes | Environment setup instructions | Must include .NET SDK requirement (for development only) |
+| `codingStandards` | section | Yes | Reference to constitution principles | Must link to constitution.md |
+| `pullRequestProcess` | section | Yes | PR submission guidelines | Step-by-step process |
+| `issueTemplates` | section | Yes | Bug report and feature request formats | Link to GitHub issue templates |
+| `filePath` | string | Yes | Markdown file location | `docs/contributing.md` |
+
+**Relationships**:
+- Belongs to: Documentation Version
+- References: Project Constitution (.specify/memory/constitution.md)
+
+**State Transitions**:
+</code></pre>
+<p>[Manual Creation] → Constitution alignment check → Committed → Built by DocFX</p>
+<pre><code>
+**Business Rules**:
+- Must align with Constitution principles (especially III, V, VI)
+- Must reference TDD workflow (Constitution VI)
+- Must include code of conduct link
+- **Clearly distinguish**: User installation (no .NET) vs. Developer setup (.NET SDK required)
+- Language: Primarily Japanese with English technical terms
+
+**Example Sections**:
+```markdown
+# Contributing to wt
+
+## Development Environment Setup
+
+**Note**: Unlike user installation, development requires the .NET SDK.
+
+### Prerequisites for Development
+- .NET 10.0 SDK or later
+- Git 2.5 or later
+- Your preferred editor (VS Code, Rider, Visual Studio)
+
+### Setup Steps
+1. Clone repository: `git clone https://github.com/kuju63/wt.git`
+2. Restore dependencies: `dotnet restore`
+3. Build: `dotnet build`
+4. Run tests: `dotnet test`
+5. Run locally: `dotnet run --project wt.cli -- create test-branch`
+
+## Coding Standards
+This project follows the principles defined in our [Constitution](../.specify/memory/constitution.md):
+- **TDD (Test-Driven Development)** required for all features
+- **Minimal dependencies** - justify each new package
+- **Clean and secure code** - pass all static analysis
+
+## Pull Request Process
+1. Create feature branch from main
+2. Write tests first (TDD)
+3. Implement feature
+4. Ensure all tests pass: `dotnet test`
+5. Update documentation if needed
+6. Submit PR with clear description
+
+## Reporting Issues
+Use GitHub issue templates:
+- Bug Report: Include `wt --version` output and repro steps
+- Feature Request: Describe use case and proposed solution
+</code></pre>
+<hr>
+<h2 id="entity-relationship-diagram">Entity Relationship Diagram</h2>
+<pre><code>┌─────────────────────────┐
+│   Version Manifest      │
+│  (version-manifest.json)│
+└────────┬────────────────┘
+         │ contains *
+         ▼
+┌─────────────────────────┐
+│  Documentation Version  │ ◄─┐
+│  (v1.0/, v1.1/, ...)    │   │
+└────────┬────────────────┘   │
+         │ has *              │ belongs to
+         ├────────────────────┼─────────────┐
+         │                    │             │
+         ▼                    │             │
+┌─────────────────────────┐  │             │
+│ Command Documentation   │  │             │
+│   (commands/*.md)       │──┘             │
+└─────────────────────────┘                │
+                                           │
+         ┌─────────────────────────────────┤
+         │                                 │
+         ▼                                 │
+┌─────────────────────────┐                │
+│   API Reference         │                │
+│     (api/*)             │────────────────┘
+└─────────────────────────┘                
+                                           
+         ┌─────────────────────────────────┤
+         │                                 │
+         ▼                                 │
+┌─────────────────────────┐                │
+│  Installation Guide     │                │
+│ (docs/installation.md)  │────────────────┘
+└─────────────────────────┘                
+                                           
+         ┌─────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│  Contribution Guide     │
+│ (docs/contributing.md)  │
+└─────────────────────────┘
+</code></pre>
+<h2 id="data-flow">Data Flow</h2>
+<h3 id="documentation-build-flow">Documentation Build Flow</h3>
+<pre><code>1. Release Published (GitHub Event)
+   ↓
+2. Extract Version (v1.2.3 → v1.2)
+   ↓
+3. Generate Command Docs (Tools/DocGenerator)
+   ↓
+4. Build API Docs (wt.cli XML → DocFX metadata)
+   ↓
+5. Build Static Site (DocFX → HTML/CSS/JS)
+   ↓
+6. Fetch Existing Manifest (gh-pages branch)
+   ↓
+7. Update Manifest (Python script)
+   ↓
+8. Validate Links (LinkChecker)
+   ↓
+9. Deploy to GitHub Pages (v1.2/ directory + manifest)
+</code></pre>
+<h3 id="version-switcher-flow">Version Switcher Flow</h3>
+<pre><code>1. User loads documentation page
+   ↓
+2. JavaScript fetches /version-manifest.json
+   ↓
+3. Populate dropdown with versions
+   ↓
+4. Detect current version from URL (/v1.2/...)
+   ↓
+5. Pre-select in dropdown
+   ↓
+6. User selects different version
+   ↓
+7. Extract path without version (e.g., /installation.html)
+   ↓
+8. Navigate to /v1.1/installation.html
+</code></pre>
+<h2 id="validation-rules-summary">Validation Rules Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Key Validation</th>
+<th>Error Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Documentation Version</td>
+<td>Only one <code>isLatest: true</code></td>
+<td>Python script enforces, removes from others</td>
+</tr>
+<tr>
+<td>Version Manifest</td>
+<td>At least 1 version</td>
+<td>Build fails if empty after update</td>
+</tr>
+<tr>
+<td>Command Documentation</td>
+<td>Must exist for all CLI commands</td>
+<td>DocGenerator throws if command missing</td>
+</tr>
+<tr>
+<td>API Reference</td>
+<td>XML docs must build successfully</td>
+<td><code>dotnet build</code> fails → deployment stops</td>
+</tr>
+<tr>
+<td>Installation Guide</td>
+<td>No .NET/Git prerequisites mentioned for users</td>
+<td>Manual PR review verification</td>
+</tr>
+<tr>
+<td>Contribution Guide</td>
+<td>.NET SDK required for developers only</td>
+<td>Manual PR review verification</td>
+</tr>
+</tbody>
+</table>
+<h2 id="storage-and-persistence">Storage and Persistence</h2>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Storage Location</th>
+<th>Format</th>
+<th>Persistence Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Version Manifest</td>
+<td><code>/version-manifest.json</code> on gh-pages</td>
+<td>JSON</td>
+<td>Updated on every release, versioned in git history</td>
+</tr>
+<tr>
+<td>Documentation Version</td>
+<td><code>/v{major}.{minor}/</code> directory</td>
+<td>Static HTML/CSS/JS</td>
+<td>Immutable once published, kept for 2+ years (SC-006)</td>
+</tr>
+<tr>
+<td>Command Docs</td>
+<td><code>docs/commands/*.md</code> (source)</td>
+<td>Markdown → HTML</td>
+<td>Auto-generated, committed to main branch</td>
+</tr>
+<tr>
+<td>API Reference</td>
+<td><code>api/</code> directory (generated)</td>
+<td>HTML</td>
+<td>Auto-generated, not committed (build artifact)</td>
+</tr>
+<tr>
+<td>Installation Guide</td>
+<td><code>docs/installation.md</code> (source)</td>
+<td>Markdown → HTML</td>
+<td>Manually authored, committed to main branch</td>
+</tr>
+<tr>
+<td>Contribution Guide</td>
+<td><code>docs/contributing.md</code> (source)</td>
+<td>Markdown → HTML</td>
+<td>Manually authored, committed to main branch</td>
+</tr>
+</tbody>
+</table>
+<h2 id="platform-specific-binary-mapping">Platform-Specific Binary Mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Runtime Identifier</th>
+<th>Release Asset Name</th>
+<th>Installation Path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows x64</td>
+<td>win-x64</td>
+<td>wt-win-x64.zip</td>
+<td>C:\Program Files\wt\ (or user choice)</td>
+</tr>
+<tr>
+<td>macOS ARM64</td>
+<td>osx-arm64</td>
+<td>wt-osx-arm64.tar.gz</td>
+<td>/usr/local/bin/</td>
+</tr>
+<tr>
+<td>Linux x64</td>
+<td>linux-x64</td>
+<td>wt-linux-x64.tar.gz</td>
+<td>/usr/local/bin/</td>
+</tr>
+<tr>
+<td>Linux ARM</td>
+<td>linux-arm</td>
+<td>wt-linux-arm.tar.gz</td>
+<td>/usr/local/bin/</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Point</strong>: All binaries are self-contained with <code>PublishSingleFile=true</code> and <code>SelfContained=true</code>. No runtime dependencies required for end users.</p>
+<h2 id="future-considerations">Future Considerations</h2>
+<h3 id="automatic-update-mechanism-not-in-current-scope">Automatic Update Mechanism (Not in Current Scope)</h3>
+<ul>
+<li>Self-update command: <code>wt update</code></li>
+<li>Check for new versions on startup?</li>
+<li>Auto-download and replace binary?</li>
+</ul>
+<h3 id="package-manager-distribution-not-in-current-scope">Package Manager Distribution (Not in Current Scope)</h3>
+<ul>
+<li>Windows: <code>winget install wt</code></li>
+<li>macOS: <code>brew install wt</code></li>
+<li>Linux: <code>apt install wt</code> / <code>snap install wt</code></li>
+</ul>
+<h3 id="deprecation-strategy-not-in-current-scope">Deprecation Strategy (Not in Current Scope)</h3>
+<ul>
+<li>When to remove old versions from GitHub Pages?</li>
+<li>Archive location for deprecated versions?</li>
+<li>User notification for deprecated versions?</li>
+</ul>
+<hr>
+<p><strong>Next Steps</strong>: Create contracts/ directory with schema definitions for GitHub Actions workflow and DocFX configuration.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/001-github-pages-docs/data-model.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

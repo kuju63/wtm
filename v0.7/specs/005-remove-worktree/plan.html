@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Implementation Plan: Remove Git Worktree | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Implementation Plan: Remove Git Worktree | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/plan.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="implementation-plan-remove-git-worktree">Implementation Plan: Remove Git Worktree</h1>
+
+<p><strong>Branch</strong>: <code>005-remove-worktree</code> | <strong>Date</strong>: 2026-01-24 | <strong>Spec</strong>: <a href="spec.html">spec.md</a>
+<strong>Input</strong>: Feature specification from <code>specs/005-remove-worktree/spec.md</code></p>
+<p><strong>Note</strong>: This plan is produced by the <code>/speckit.plan</code> command. See <code>.specify/templates/commands/plan.md</code> for the execution workflow.</p>
+<h2 id="summary">Summary</h2>
+<p>Implement a new CLI command to safely remove git worktrees and their associated working directories from disk. The feature prioritizes developer safety through explicit targeting (no confirmation prompts), protection of the main worktree and currently-checked-out worktrees, and graceful handling of locked/problematic worktrees via an optional <code>--force</code> flag. Uncommitted changes will block removal unless force is used, aligning with git's safety model.</p>
+<h2 id="technical-context">Technical Context</h2>
+<p><strong>Language/Version</strong>: C# / .NET 10.0
+<strong>Primary Dependencies</strong>: System.CommandLine 2.0.2 (CLI parsing), System.IO.Abstractions 22.1.0 (file system)
+<strong>Storage</strong>: File system operations (worktree directory management); git metadata management via git command-line
+<strong>Testing</strong>: xUnit 2.9.3 with Shouldly 4.3.0 (fluent assertions) and Moq 4.20.72 (mocking)
+<strong>Target Platform</strong>: Cross-platform (Windows x64, Linux x64/ARM, macOS ARM64); self-contained single-file executables
+<strong>Project Type</strong>: CLI single-project application with service abstraction layer
+<strong>Performance Goals</strong>: Instantaneous removal (sub-second execution for typical worktrees, &lt;100ms for metadata cleanup)
+<strong>Constraints</strong>: No external service dependencies; must respect OS-level permission restrictions; graceful handling of partial failures
+<strong>Scale/Scope</strong>: Single command addition to existing <code>wt</code> CLI; aligns with existing <code>create</code> and <code>list</code> command patterns</p>
+<h2 id="constitution-check">Constitution Check</h2>
+<p><em>GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.</em></p>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Status</th>
+<th>Justification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>I. Developer Usability (CLI Priority)</strong></td>
+<td>✅ PASS</td>
+<td>Feature adds new <code>remove</code> command following verb-noun pattern (existing model: <code>create</code>, <code>list</code>). Help messages and JSON output format integrated.</td>
+</tr>
+<tr>
+<td><strong>II. Cross-Platform</strong></td>
+<td>✅ PASS</td>
+<td>Uses System.IO.Abstractions for OS-agnostic file operations; no OS-specific APIs. Existing build matrix covers Windows/Linux/macOS.</td>
+</tr>
+<tr>
+<td><strong>III. Clean &amp; Secure Code</strong></td>
+<td>✅ PASS</td>
+<td>Extends existing service architecture (IWorktreeService). Input validation via existing validators. No hardcoded paths or secrets.</td>
+</tr>
+<tr>
+<td><strong>IV. Documentation Clarity</strong></td>
+<td>✅ PASS</td>
+<td>Technical decisions recorded in clarifications section of spec. ADR will be created for force/uncommitted-changes behavior.</td>
+</tr>
+<tr>
+<td><strong>V. Minimal Dependencies</strong></td>
+<td>✅ PASS</td>
+<td>Zero new dependencies required; uses existing System.CommandLine and System.IO.Abstractions.</td>
+</tr>
+<tr>
+<td><strong>VI. Comprehensive Testing</strong></td>
+<td>✅ PASS</td>
+<td>TDD approach enforced: tests written before implementation. Integration + unit tests planned (integration: e2e removal; unit: worktree validation).</td>
+</tr>
+<tr>
+<td><strong>VII. Quantitative Thresholds</strong></td>
+<td>✅ PASS</td>
+<td>Method LOC target &lt;50 (removal logic is straightforward); cyclomatic complexity &lt;8 (simple if/else guard clauses); test coverage &gt;80% required.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Gate Status</strong>: ✅ <strong>PASS</strong> — Feature aligns with all constitutional principles.</p>
+<h2 id="project-structure">Project Structure</h2>
+<h3 id="documentation-this-feature">Documentation (this feature)</h3>
+<pre><code class="lang-text">specs/005-remove-worktree/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+</code></pre>
+<h3 id="source-code-repository-root">Source Code (repository root)</h3>
+<pre><code class="lang-text">wt.cli/
+├── Commands/
+│   ├── Worktree/
+│   │   ├── CreateCommand.cs
+│   │   └── RemoveCommand.cs           [NEW - this feature]
+│   └── ListCommand.cs
+├── Services/
+│   ├── Worktree/
+│   │   ├── IWorktreeService.cs        [extend: add RemoveWorktree methods]
+│   │   └── WorktreeService.cs         [extend: implement RemoveWorktree + validation]
+│   ├── Git/
+│   │   ├── IGitService.cs             [extend: add HasUncommittedChanges, RemoveWorktree methods]
+│   │   └── GitService.cs              [extend: implement HasUncommittedChanges, RemoveWorktree]
+│   ├── Editor/
+│   │   └── IEditorService.cs
+│   └── Output/
+│       └── OutputService.cs
+├── Models/
+│   ├── RemoveWorktreeOptions.cs       [NEW]
+│   ├── RemoveWorktreeResult.cs        [NEW]
+│   ├── RemovalValidationError.cs      [NEW enum]
+│   └── DeletionFailure.cs             [NEW]
+├── Formatters/
+│   └── TableFormatter.cs              [reuse: output formatting]
+├── Utils/
+│   ├── IProcessRunner.cs              [reuse: git execution]
+│   ├── PathHelper.cs                  [reuse: path handling]
+│   └── Validators.cs                  [extend: add validation helpers]
+└── Program.cs                         [extend: register RemoveCommand]
+
+wt.tests/
+├── Commands/
+│   ├── Worktree/
+│   │   ├── CreateCommandTests.cs
+│   │   └── RemoveCommandTests.cs      [NEW]
+│   └── ListCommandTests.cs
+└── Services/
+    ├── Worktree/
+    │   └── WorktreeServiceRemoveTests.cs   [NEW]
+    └── Git/
+        └── GitServiceTests.cs
+</code></pre>
+<p><strong>Structure Decision</strong>: Extends existing .NET CLI architecture with minimal new code:</p>
+<ul>
+<li>1 new command class (RemoveCommand.cs) following System.CommandLine pattern</li>
+<li>4 new model classes (RemoveWorktreeOptions, RemoveWorktreeResult, RemovalValidationError, DeletionFailure)</li>
+<li>2 new methods in existing IWorktreeService and IGitService interfaces</li>
+<li>2 new test files (unit tests only; E2E deferred to future infrastructure)</li>
+<li>Reuses existing error handling, output formatting, and dependency injection patterns</li>
+<li>All changes follow existing verb-noun command model and service architecture</li>
+<li>File system operations use existing IFileSystem abstraction (System.IO.Abstractions)</li>
+</ul>
+<h2 id="key-definitions-from-spec">Key Definitions (from Spec)</h2>
+<p>Per the spec Definitions section, the following measurable criteria are used:</p>
+<ul>
+<li><strong>Locked Worktree</strong>: Detected by presence of <code>.git/worktrees/&lt;name&gt;/locked</code> file</li>
+<li><strong>Uncommitted Changes</strong>: Staged changes or unstaged modifications (untracked files excluded); detected via <code>git status --porcelain</code></li>
+<li><strong>--force Required When</strong>: Either lock file present OR uncommitted changes exist</li>
+<li><strong>Main Worktree</strong>: <code>.git</code> in worktree path is a directory (not a file)</li>
+<li><strong>Current Worktree</strong>: CWD is within the worktree's path</li>
+</ul>
+<h2 id="complexity-tracking">Complexity Tracking</h2>
+<p><strong>No violations</strong> — All changes comply with constitution thresholds. No complexity tracking required.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/005-remove-worktree/plan.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

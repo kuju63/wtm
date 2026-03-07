@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>SBOM生成 クイックスタートガイド | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="SBOM生成 クイックスタートガイド | wtm ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/docs/guides/sbom-usage.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="sbom生成-クイックスタートガイド">SBOM生成 クイックスタートガイド</h1>
+
+<p>このガイドでは、wtプロジェクトのSBOM（Software Bill of Materials）生成機能の使用方法を説明します。</p>
+<hr>
+<h2 id="-目次">📋 目次</h2>
+<ol>
+<li><a href="#%E6%A6%82%E8%A6%81">概要</a></li>
+<li><a href="#%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E5%90%91%E3%81%91%E3%82%AC%E3%82%A4%E3%83%89">ユーザー向けガイド</a></li>
+<li><a href="#%E9%96%8B%E7%99%BA%E8%80%85%E5%90%91%E3%81%91%E3%82%AC%E3%82%A4%E3%83%89">開発者向けガイド</a></li>
+<li><a href="#%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0">トラブルシューティング</a></li>
+</ol>
+<hr>
+<h2 id="概要">概要</h2>
+<h3 id="sbomとは">SBOMとは？</h3>
+<p>SBOM（Software Bill of Materials）は、ソフトウェアの「部品表」です。アプリケーションが使用しているすべての依存関係（ライブラリ、パッケージ）を一覧化したドキュメントで、以下の目的で使用されます：</p>
+<ul>
+<li><strong>サプライチェーンの透明性</strong>: ソフトウェアに含まれる全コンポーネントを明示</li>
+<li><strong>脆弱性管理</strong>: 依存関係の脆弱性を追跡・修正</li>
+<li><strong>ライセンスコンプライアンス</strong>: 使用ライブラリのライセンスを確認</li>
+<li><strong>監査証跡</strong>: セキュリティ監査やコンプライアンスチェックに利用</li>
+</ul>
+<h3 id="wtプロジェクトのsbom">wtプロジェクトのSBOM</h3>
+<p>wtプロジェクトは、各リリースに対して以下を提供します：</p>
+<p>✅ <strong>SPDX 2.3形式のSBOM</strong> - ISO/IEC 5962:2021準拠<br>
+✅ <strong>GitHub依存関係グラフ統合</strong> - Dependabot/Renovateアラート自動有効化<br>
+✅ <strong>リリースアセット添付</strong> - 誰でもダウンロード可能</p>
+<hr>
+<h2 id="ユーザー向けガイド">ユーザー向けガイド</h2>
+<h3 id="sbomの取得方法">SBOMの取得方法</h3>
+<h4 id="方法1-githubリリースからダウンロード推奨">方法1: GitHubリリースからダウンロード（推奨）</h4>
+<ol>
+<li><a href="https://github.com/kuju63/wt/releases">wtのリリースページ</a>にアクセス</li>
+<li>使用しているバージョンを選択（例: v1.0.0）</li>
+<li><strong>Assets</strong> セクションから <code>wt-v1.0.0-sbom.spdx.json</code> をダウンロード</li>
+</ol>
+<pre><code class="lang-bash"># 最新リリースからダウンロード（Linux/macOS）
+VERSION=$(curl -s https://api.github.com/repos/kuju63/wt/releases/latest | grep '&quot;tag_name&quot;:' | sed -E 's/.*&quot;([^&quot;]+)&quot;.*/\1/')
+curl -L https://github.com/kuju63/wt/releases/download/${VERSION}/wt-${VERSION}-sbom.spdx.json \
+  -o wt-sbom.spdx.json
+
+# または特定バージョンを指定してダウンロード
+curl -L https://github.com/kuju63/wt/releases/download/v1.0.0/wt-v1.0.0-sbom.spdx.json \
+  -o wt-sbom.spdx.json
+</code></pre>
+<h4 id="方法2-github依存関係グラフから確認">方法2: GitHub依存関係グラフから確認</h4>
+<ol>
+<li><a href="https://github.com/kuju63/wt">wtリポジトリ</a>にアクセス</li>
+<li><strong>Insights</strong> タブをクリック</li>
+<li><strong>Dependency graph</strong> を選択</li>
+<li>すべての依存関係とバージョンを確認</li>
+</ol>
+<h3 id="sbomの検証">SBOMの検証</h3>
+<p>SBOMが正しいフォーマットか検証する方法：</p>
+<pre><code class="lang-bash"># SPDX検証ツールをインストール
+npm install -g @spdx/spdx-validator
+
+# SBOMを検証
+spdx-validator wt-sbom.spdx.json
+</code></pre>
+<p>成功時の出力：</p>
+<pre><code class="lang-text">✓ SPDX document is valid
+</code></pre>
+<h3 id="sbomの内容を確認">SBOMの内容を確認</h3>
+<h4 id="依存関係の一覧表示">依存関係の一覧表示</h4>
+<pre><code class="lang-bash"># jqを使用してパッケージ名とバージョンを抽出
+jq -r '.packages[] | &quot;\(.name)@\(.versionInfo)&quot;' wt-sbom.spdx.json
+</code></pre>
+<p>出力例：</p>
+<pre><code class="lang-text">System.CommandLine@2.0.1
+System.IO.Abstractions@22.1.0
+System.Memory@4.5.5
+...
+</code></pre>
+<h4 id="ライセンス情報の確認">ライセンス情報の確認</h4>
+<pre><code class="lang-bash"># パッケージ名とライセンスを表示
+jq -r '.packages[] | &quot;\(.name): \(.licenseDeclared)&quot;' wt-sbom.spdx.json
+</code></pre>
+<p>出力例：</p>
+<pre><code class="lang-text">System.CommandLine: MIT
+System.IO.Abstractions: MIT
+System.Memory: MIT
+...
+</code></pre>
+<h3 id="脆弱性チェック">脆弱性チェック</h3>
+<h4 id="方法1-github-dependabot自動">方法1: GitHub Dependabot（自動）</h4>
+<p>wtプロジェクトは自動的にDependabotが有効化されており、脆弱性が発見されると：</p>
+<ol>
+<li>リポジトリの <strong>Security</strong> タブにアラート表示</li>
+<li>メンテナに自動通知</li>
+<li>可能であれば自動修正PRが作成される</li>
+</ol>
+<h4 id="方法2-ローカルでのスキャン">方法2: ローカルでのスキャン</h4>
+<pre><code class="lang-bash"># OSV Scannerを使用（推奨）
+osv-scanner --sbom=wt-sbom.spdx.json
+
+# Grypeを使用
+grype sbom:wt-sbom.spdx.json
+</code></pre>
+<h3 id="エンタープライズ向け-sbom統合">エンタープライズ向け: SBOM統合</h3>
+<h4 id="1-dependency-trackへのインポート">1. Dependency-Trackへのインポート</h4>
+<pre><code class="lang-bash"># Dependency-Track APIを使用
+curl -X POST &quot;https://your-dependency-track.com/api/v1/bom&quot; \
+  -H &quot;X-Api-Key: YOUR_API_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d @wt-sbom.spdx.json
+</code></pre>
+<h4 id="2-コンプライアンスチェック">2. コンプライアンスチェック</h4>
+<pre><code class="lang-bash"># SPDX Toolsを使用してライセンスコンプライアンスを確認
+spdx-tools verify wt-sbom.spdx.json
+</code></pre>
+<hr>
+<h2 id="開発者向けガイド">開発者向けガイド</h2>
+<h3 id="ローカルでのsbom生成">ローカルでのSBOM生成</h3>
+<p>開発中にローカルでSBOMを生成する方法：</p>
+<h4 id="1-microsoft-sbom-toolのインストール">1. Microsoft SBOM Toolのインストール</h4>
+<pre><code class="lang-bash">dotnet tool install --global Microsoft.Sbom.DotNetTool
+</code></pre>
+<h4 id="2-依存関係のリストア">2. 依存関係のリストア</h4>
+<pre><code class="lang-bash">cd /path/to/wt
+dotnet restore --locked-mode
+</code></pre>
+<h4 id="3-sbom生成">3. SBOM生成</h4>
+<pre><code class="lang-bash">sbom-tool generate \
+  -b ./sbom-output \
+  -bc . \
+  -pn kuju63/wt \
+  -pv 1.0.0-dev \
+  -nsb https://github.com/kuju63/wt/sbom/dev
+</code></pre>
+<h4 id="パラメータ説明">パラメータ説明</h4>
+<ul>
+<li><code>-b</code>: 出力ディレクトリ</li>
+<li><code>-bc</code>: ビルドコンポーネントのルートパス</li>
+<li><code>-pn</code>: パッケージ名</li>
+<li><code>-pv</code>: バージョン</li>
+<li><code>-nsb</code>: 名前空間URI（一意性保証）</li>
+</ul>
+<p>生成されたSBOMは <code>./sbom-output/_manifest/spdx_2.2/manifest.spdx.json</code> に出力されます。</p>
+<h3 id="cicdでの動作確認">CI/CDでの動作確認</h3>
+<h4 id="pr時の自動テスト推奨">PR時の自動テスト（推奨）</h4>
+<p>Pull Requestを作成すると、SBOM生成テストが自動実行されます：</p>
+<pre><code class="lang-bash"># ブランチを作成してPRを開く
+git checkout -b feature/add-dependency
+git push origin feature/add-dependency
+gh pr create --title &quot;Add new dependency&quot;
+
+# テスト結果を確認
+gh pr checks
+</code></pre>
+<p>PR時テストで確認される項目：</p>
+<ul>
+<li>✅ 依存関係のリストアが成功するか</li>
+<li>✅ SBOM生成が成功するか</li>
+<li>✅ SPDX 2.3フォーマットが正しいか</li>
+<li>✅ 必須パッケージ（System.CommandLine等）が含まれているか</li>
+<li>✅ パフォーマンス目標（15分以内）を満たしているか</li>
+</ul>
+<h4 id="ワークフローの手動実行">ワークフローの手動実行</h4>
+<pre><code class="lang-bash"># リリースワークフローを手動トリガー
+gh workflow run release.yml \
+  --ref feature/your-branch
+
+# SBOM テストワークフローを手動実行
+gh workflow run sbom-test.yml \
+  --ref feature/your-branch
+
+# 実行状況の確認
+gh run list --workflow=release.yml --limit 1
+gh run list --workflow=sbom-test.yml --limit 1
+</code></pre>
+<h4 id="ローカルでのワークフロー検証">ローカルでのワークフロー検証</h4>
+<pre><code class="lang-bash"># act を使用してGitHub Actionsをローカル実行
+act release --secret GITHUB_TOKEN=your_token
+</code></pre>
+<h3 id="sbom生成のカスタマイズ">SBOM生成のカスタマイズ</h3>
+<h4 id="プラットフォーム固有の依存関係を含める">プラットフォーム固有の依存関係を含める</h4>
+<pre><code class="lang-bash"># 特定のランタイムIDで生成
+dotnet restore --locked-mode -r win-x64
+sbom-tool generate -b ./sbom-output -bc . -pn kuju63/wt -pv 1.0.0 -nsb https://github.com/kuju63/wt/sbom/1.0.0
+</code></pre>
+<h3 id="新しい依存関係の追加時">新しい依存関係の追加時</h3>
+<p>新しいNuGetパッケージを追加する際の手順：</p>
+<ol>
+<li><p><strong>依存関係を追加</strong></p>
+<pre><code class="lang-bash">dotnet add wt.cli/wt.cli.csproj package NewPackage
+</code></pre>
+</li>
+<li><p><strong>ロックファイルを更新</strong></p>
+<pre><code class="lang-bash">dotnet restore --locked-mode
+</code></pre>
+</li>
+<li><p><strong>SBOM生成をテスト</strong></p>
+<pre><code class="lang-bash">sbom-tool generate -b ./test-sbom -bc . -pn kuju63/wt -pv test -nsb https://github.com/kuju63/wt/sbom/test
+jq '.packages[] | select(.name==&quot;NewPackage&quot;)' ./test-sbom/_manifest/spdx_2.2/manifest.spdx.json
+</code></pre>
+</li>
+<li><p><strong>リリース時に自動反映</strong>: リリースワークフローが自動的に新しい依存関係を含むSBOMを生成</p>
+</li>
+</ol>
+<hr>
+<h2 id="トラブルシューティング">トラブルシューティング</h2>
+<h3 id="よくある問題と解決方法">よくある問題と解決方法</h3>
+<h4 id="問題1-sbom生成が失敗する">問題1: SBOM生成が失敗する</h4>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: No packages found in the build directory
+</code></pre>
+<p><strong>原因</strong>: 依存関係が復元されていない</p>
+<p><strong>解決方法</strong>:</p>
+<pre><code class="lang-bash"># 依存関係をリストア
+dotnet restore --locked-mode
+
+# SBOM生成を再実行
+sbom-tool generate -b ./sbom-output -bc . -pn kuju63/wt -pv 1.0.0 -nsb https://github.com/kuju63/wt/sbom/1.0.0
+</code></pre>
+<h4 id="問題2-github-api呼び出しが403-forbiddenで失敗">問題2: GitHub API呼び出しが403 Forbiddenで失敗</h4>
+<p><strong>症状</strong>:</p>
+<pre><code class="lang-text">Error: Resource not accessible by integration
+</code></pre>
+<p><strong>原因</strong>: GITHUB_TOKENの権限不足</p>
+<p><strong>解決方法</strong>:</p>
+<pre><code class="lang-yaml"># .github/workflows/release.ymlで権限を設定
+permissions:
+  contents: write
+  id-token: write
+</code></pre>
+<h4 id="問題3-sbomに一部の依存関係が含まれていない">問題3: SBOMに一部の依存関係が含まれていない</h4>
+<p><strong>症状</strong>: NuGetパッケージの一部がSBOMに表示されない</p>
+<p><strong>原因</strong>: プラットフォーム固有の依存関係が復元されていない</p>
+<p><strong>解決方法</strong>:</p>
+<pre><code class="lang-bash"># すべてのターゲットプラットフォームで復元
+dotnet restore --locked-mode -r win-x64
+dotnet restore --locked-mode -r linux-x64
+dotnet restore --locked-mode -r linux-arm
+dotnet restore --locked-mode -r osx-arm64
+
+# SBOM生成
+sbom-tool generate -b ./sbom-output -bc . -pn kuju63/wt -pv 1.0.0 -nsb https://github.com/kuju63/wt/sbom/1.0.0
+</code></pre>
+<h4 id="問題4-ワークフローがタイムアウトする">問題4: ワークフローがタイムアウトする</h4>
+<p><strong>症状</strong>: GitHub Actionsが15分でタイムアウト</p>
+<p><strong>原因</strong>: 大規模な依存関係ツリー</p>
+<p><strong>解決方法</strong>:</p>
+<pre><code class="lang-yaml"># キャッシュを有効化
+- uses: actions/cache@v4
+  with:
+    path: ~/.nuget/packages
+    key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+# タイムアウトを延長（最大60分）
+timeout-minutes: 30
+</code></pre>
+<h3 id="デバッグ方法">デバッグ方法</h3>
+<h4 id="詳細ログの有効化">詳細ログの有効化</h4>
+<pre><code class="lang-bash"># SBOM Tool詳細ログ
+sbom-tool generate \
+  -b ./sbom-output \
+  -bc . \
+  -pn kuju63/wt \
+  -pv 1.0.0 \
+  -nsb https://github.com/kuju63/wt/sbom/1.0.0 \
+  -v Diagnostic  # ログレベル: Diagnostic, Information, Warning, Error
+</code></pre>
+<pre><code class="lang-yaml"># GitHub Actions詳細ログ
+- name: Generate SBOM
+  run: sbom-tool generate ...
+  env:
+    ACTIONS_STEP_DEBUG: true
+</code></pre>
+<h4 id="sbom内容の詳細確認">SBOM内容の詳細確認</h4>
+<pre><code class="lang-bash"># すべてのパッケージ情報を表示
+jq '.packages[]' wt-sbom.spdx.json
+
+# 特定パッケージの依存関係を表示
+jq '.relationships[] | select(.spdxElementId | contains(&quot;System.CommandLine&quot;))' wt-sbom.spdx.json
+
+# ドキュメントメタデータを表示
+jq '{version: .spdxVersion, name: .name, created: .creationInfo.created}' wt-sbom.spdx.json
+</code></pre>
+<hr>
+<h2 id="追加リソース">追加リソース</h2>
+<h3 id="ドキュメント">ドキュメント</h3>
+<ul>
+<li><a href="https://spdx.github.io/spdx-spec/">SPDX仕様</a></li>
+<li><a href="https://github.com/microsoft/sbom-tool">Microsoft SBOM Tool</a></li>
+<li><a href="https://docs.github.com/en/rest/dependency-graph/dependency-submission">GitHub Dependency Submission API</a></li>
+<li><a href="https://github.com/package-url/purl-spec">Package URL仕様</a></li>
+</ul>
+<h3 id="ツール">ツール</h3>
+<ul>
+<li><a href="https://www.npmjs.com/package/@spdx/spdx-validator">SPDX Validator</a> - SPDXフォーマット検証</li>
+<li><a href="https://github.com/google/osv-scanner">OSV Scanner</a> - 脆弱性スキャン</li>
+<li><a href="https://github.com/anchore/grype">Grype</a> - 脆弱性検出</li>
+<li><a href="https://dependencytrack.org/">Dependency-Track</a> - SBOMプラットフォーム</li>
+</ul>
+<h3 id="コミュニティ">コミュニティ</h3>
+<ul>
+<li><a href="https://github.com/kuju63/wt/issues">Issue報告</a></li>
+<li><a href="https://github.com/kuju63/wt/discussions">Discussion</a></li>
+</ul>
+<hr>
+<h2 id="サポート">サポート</h2>
+<p>質問や問題がある場合は、以下の方法でお問い合わせください：</p>
+<ul>
+<li><strong>GitHub Issues</strong>: <a href="https://github.com/kuju63/wt/issues">https://github.com/kuju63/wt/issues</a></li>
+<li><strong>GitHub Discussions</strong>: <a href="https://github.com/kuju63/wt/discussions">https://github.com/kuju63/wt/discussions</a></li>
+</ul>
+<hr>
+<p>最終更新: 2026-01-10</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/docs/guides/sbom-usage.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

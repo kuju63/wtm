@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Contract: インストールスクリプト インターフェース仕様 | wtm </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Contract: インストールスクリプト インターフェース仕様 | wtm ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/contracts/install-script-interface.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="wtm">
+            wtm
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="contract-インストールスクリプト-インターフェース仕様">Contract: インストールスクリプト インターフェース仕様</h1>
+
+<h2 id="1-unix-インストールスクリプト-scriptsinstallsh">1. Unix インストールスクリプト (<code>scripts/install.sh</code>)</h2>
+<h3 id="インターフェース">インターフェース</h3>
+<pre><code class="lang-bash">curl -fsSL https://kuju63.github.io/wt/install.sh | sh
+# または
+curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --prefix /usr/local
+# 強制上書き（--force）
+curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --force
+# 組み合わせ
+curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --prefix /usr/local --force
+</code></pre>
+<h3 id="引数">引数</h3>
+<table>
+<thead>
+<tr>
+<th>オプション</th>
+<th>説明</th>
+<th>デフォルト</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--prefix &lt;DIR&gt;</code></td>
+<td>インストール先ディレクトリ</td>
+<td><code>${HOME}/.local/bin</code></td>
+</tr>
+<tr>
+<td><code>--force</code></td>
+<td>既存バイナリへの上書き確認プロンプトをスキップ（FR-017）</td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="インタラクティブ非インタラクティブ挙動fr-016017018">インタラクティブ/非インタラクティブ挙動（FR-016/017/018）</h3>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>挙動</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>既存バイナリなし</td>
+<td>確認なしにインストール</td>
+</tr>
+<tr>
+<td><code>--force</code> フラグあり</td>
+<td>確認なしに上書き</td>
+</tr>
+<tr>
+<td>既存バイナリあり + TTY（インタラクティブ）</td>
+<td><code>y/N</code> 確認プロンプト（デフォルト拒否）</td>
+</tr>
+<tr>
+<td>既存バイナリあり + 非TTY（パイプ経由等）</td>
+<td>上書きをスキップし <code>--force</code> 使用方法を案内</td>
+</tr>
+</tbody>
+</table>
+<h3 id="終了コード">終了コード</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>成功（インストール完了 または 最新版インストール済みによるスキップ）</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>エラー（非対応プラットフォーム / ネットワークエラー / SHA256失敗 等）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="標準出力正常系">標準出力（正常系）</h3>
+<pre><code>Detecting platform... linux-x64
+Fetching latest version... v1.2.3
+wtm v1.2.0 is already installed. Updating to v1.2.3...
+  ↳ または: wtm v1.2.3 is already the latest version. Skipping.
+Downloading wtm v1.2.3 for linux-x64...
+Verifying SHA256 checksum...
+Installing to /home/user/.local/bin/wtm...
+chmod +x /home/user/.local/bin/wtm
+
+✓ wtm v1.2.3 installed successfully!
+
+Next steps:
+  wtm --version   # verify installation
+  wtm --help      # see available commands
+</code></pre>
+<h3 id="標準出力path未登録時の追加案内">標準出力（PATH未登録時の追加案内）</h3>
+<pre><code>Note: /home/user/.local/bin is not in your PATH.
+To add it, run:
+  echo 'export PATH=&quot;$HOME/.local/bin:$PATH&quot;' &gt;&gt; ~/.bashrc
+  source ~/.bashrc
+</code></pre>
+<h3 id="標準出力macos-gatekeeper-案内">標準出力（macOS Gatekeeper 案内）</h3>
+<pre><code>Note: On macOS, if you see &quot;cannot be opened because the developer cannot be verified&quot;:
+  xattr -d com.apple.quarantine /home/user/.local/bin/wtm
+</code></pre>
+<h3 id="標準出力上書き確認プロンプト---インタラクティブ-tty">標準出力（上書き確認プロンプト - インタラクティブ TTY）</h3>
+<pre><code>/home/user/.local/bin/wtm already exists (current: v1.2.0, new: v1.2.3).
+Overwrite existing /home/user/.local/bin/wtm? [y/N]
+</code></pre>
+<pre><code>Installation cancelled.
+</code></pre>
+<h3 id="標準出力上書きスキップ---非インタラクティブ環境">標準出力（上書きスキップ - 非インタラクティブ環境）</h3>
+<pre><code>Note: /home/user/.local/bin/wtm already exists. Skipping overwrite in non-interactive mode.
+To force overwrite, re-run with --force:
+  curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --force
+</code></pre>
+<h3 id="標準エラー出力異常系">標準エラー出力（異常系）</h3>
+<pre><code>Error: Unsupported platform: freebsd
+Supported platforms: linux-x64, linux-arm, macos-arm64
+Manual install: https://github.com/kuju63/wt/releases
+</code></pre>
+<pre><code>Error: SHA256 verification failed for wtm-v1.2.3-linux-x64.
+       Downloaded file has been removed. Please retry.
+</code></pre>
+<pre><code>Error: Failed to download binary. Please check your network connection.
+       URL: https://github.com/kuju63/wt/releases/download/v1.2.3/wtm-v1.2.3-linux-x64
+</code></pre>
+<hr>
+<h2 id="2-windows-インストールスクリプト-scriptsinstallps1">2. Windows インストールスクリプト (<code>scripts/install.ps1</code>)</h2>
+<h3 id="インターフェース-1">インターフェース</h3>
+<pre><code class="lang-powershell">irm https://kuju63.github.io/wt/install.ps1 | iex
+# または（パラメータ付き）
+&amp; ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Prefix &quot;$env:ProgramFiles\wtm&quot;
+# 強制上書き（-Force）
+&amp; ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Force
+</code></pre>
+<h3 id="パラメータ">パラメータ</h3>
+<table>
+<thead>
+<tr>
+<th>パラメータ</th>
+<th>説明</th>
+<th>デフォルト</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-Prefix &lt;path&gt;</code></td>
+<td>インストール先ディレクトリ</td>
+<td><code>$env:LOCALAPPDATA\Programs\wtm</code></td>
+</tr>
+<tr>
+<td><code>-Force</code></td>
+<td>既存バイナリへの上書き確認プロンプトをスキップ（FR-017）</td>
+<td><code>$false</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="インタラクティブ非インタラクティブ挙動fr-016017018-1">インタラクティブ/非インタラクティブ挙動（FR-016/017/018）</h3>
+<p>PowerShell は <code>[Environment]::UserInteractive</code> で対話モードを判定。<code>irm | iex</code> は現在のセッション内でスクリプトを実行するため <code>[Environment]::UserInteractive</code> の値は変化しない。インタラクティブなターミナルから実行した場合は <code>$true</code> のまま確認プロンプトが表示される。非インタラクティブ環境（サービス、タスクスケジューラ等）では <code>$false</code> となり上書きをスキップする。Unix の <code>curl | sh</code> とは異なり、<code>irm | iex</code> はパイプ経由でも非インタラクティブにはならない点に注意。</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>挙動</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>既存バイナリなし</td>
+<td>確認なしにインストール</td>
+</tr>
+<tr>
+<td><code>-Force</code> 指定あり</td>
+<td>確認なしに上書き</td>
+</tr>
+<tr>
+<td>既存バイナリあり + インタラクティブ</td>
+<td><code>y/N</code> 確認プロンプト（デフォルト拒否）</td>
+</tr>
+<tr>
+<td>既存バイナリあり + 非インタラクティブ</td>
+<td>上書きをスキップし <code>-Force</code> 使用方法を案内</td>
+</tr>
+</tbody>
+</table>
+<h3 id="終了コード-1">終了コード</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>成功</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>エラー</td>
+</tr>
+</tbody>
+</table>
+<h3 id="標準出力正常系-1">標準出力（正常系）</h3>
+<pre><code>Fetching latest version... v1.2.3
+Downloading wtm v1.2.3 for windows-x64...
+Verifying SHA256 checksum...
+Installing to C:\Users\user\AppData\Local\Programs\wtm\wtm.exe...
+
+✓ wtm v1.2.3 installed successfully!
+
+Next steps:
+  wtm --version
+  wtm --help
+</code></pre>
+<h3 id="path未登録時の案内">PATH未登録時の案内</h3>
+<pre><code>Note: C:\Users\user\AppData\Local\Programs\wtm is not in your PATH.
+To add it permanently, run in an Administrator PowerShell:
+  [Environment]::SetEnvironmentVariable(&quot;PATH&quot;, $env:PATH + &quot;;C:\Users\user\AppData\Local\Programs\wtm&quot;, &quot;User&quot;)
+Then restart your terminal.
+</code></pre>
+<hr>
+<h2 id="3-github-pages-配信仕様">3. GitHub Pages 配信仕様</h2>
+<h3 id="配信ファイル">配信ファイル</h3>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>安定URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scripts/install.sh</code></td>
+<td><code>https://kuju63.github.io/wt/install.sh</code></td>
+</tr>
+<tr>
+<td><code>scripts/install.ps1</code></td>
+<td><code>https://kuju63.github.io/wt/install.ps1</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="デプロイ方法">デプロイ方法</h3>
+<p><code>release.yml</code> の <code>build-and-deploy-docs</code> ジョブに以下ステップを追加：</p>
+<pre><code class="lang-yaml">- name: Copy install scripts to site
+  run: |
+    cp scripts/install.sh _site/install.sh
+    cp scripts/install.ps1 _site/install.ps1
+</code></pre>
+<p>このステップは &quot;Build documentation&quot; の後、&quot;Deploy to GitHub Pages&quot; の前に実行する。</p>
+<hr>
+<h2 id="4-リリース資産への追加仕様">4. リリース資産への追加仕様</h2>
+<p><code>release.yml</code> の <code>Create GitHub Release</code> ステップの <code>files:</code> に以下を追加：</p>
+<pre><code class="lang-yaml">files: |
+  ...（既存）...
+  scripts/install.sh
+  scripts/install.ps1
+</code></pre>
+<p>これにより <code>https://github.com/kuju63/wt/releases/download/v1.2.3/install.sh</code> としてもアクセス可能になる（安定URLとは別に各バージョン毎にもアーカイブされる）。</p>
+<hr>
+<h2 id="5-readmemd-更新仕様">5. README.md 更新仕様</h2>
+<h3 id="追加セクション位置">追加セクション位置</h3>
+<p>既存の <code>### Download from Releases (Recommended)</code> の前に <code>### Quick Install (Recommended)</code> セクションを追加。</p>
+<h3 id="内容">内容</h3>
+<pre><code class="lang-markdown">### Quick Install (推奨)
+
+**macOS / Linux:**
+
+\```bash
+curl -fsSL https://kuju63.github.io/wt/install.sh | sh
+\```
+
+**Windows (PowerShell):**
+
+\```powershell
+irm https://kuju63.github.io/wt/install.ps1 | iex
+\```
+
+インストールスクリプトは自動的に：
+- プラットフォーム・アーキテクチャを検出
+- 最新バージョンをダウンロード
+- SHA256チェックサムを検証
+- `~/.local/bin`（Unix）または `%LOCALAPPDATA%\Programs\wtm`（Windows）にインストール
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/kuju63/wt/blob/main/specs/007-simplify-install/contracts/install-script-interface.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

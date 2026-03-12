@@ -1,7 +1,7 @@
 # install.ps1 - wtm installer for Windows (PowerShell 5.1+)
 # Usage: irm https://kuju63.github.io/wt/install.ps1 | iex
-#        & ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Prefix "$env:ProgramFiles\wtm"
-#        & ([scriptblock]::Create((irm https://kuju63.github.io/wt/install.ps1))) -Force
+#        & ([scriptblock]::Create((irm https://kuju63.github.io/wtm/install.ps1))) -Prefix "$env:ProgramFiles\wtm"
+#        & ([scriptblock]::Create((irm https://kuju63.github.io/wtm/install.ps1))) -Force
 [CmdletBinding()]
 param(
     [string]$Prefix = "$env:LOCALAPPDATA\Programs\wtm",
@@ -47,14 +47,14 @@ function Invoke-Download {
 function Get-LatestVersion {
     Write-Output "Fetching latest version..."
     try {
-        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/kuju63/wt/releases/latest" -UseBasicParsing
+        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/kuju63/wtm/releases/latest" -UseBasicParsing
         $script:LatestVersion = $response.tag_name
     }
     catch {
         Exit-WithError @(
             "Failed to fetch latest version.",
             "This may be due to GitHub API rate limiting. Please wait and retry.",
-            "Manual install: https://github.com/kuju63/wt/releases",
+            "Manual install: https://github.com/kuju63/wtm/releases",
             "Error: $_"
         )
     }
@@ -63,7 +63,7 @@ function Get-LatestVersion {
         Exit-WithError @(
             "Failed to fetch latest version from GitHub API.",
             "This may be due to rate limiting. Please wait a moment and retry.",
-            "Manual install: https://github.com/kuju63/wt/releases"
+            "Manual install: https://github.com/kuju63/wtm/releases"
         )
     }
 
@@ -124,7 +124,7 @@ function Invoke-HandleExistingInstall {
 
 function Build-Urls {
     $script:BinaryName = "wtm-$($script:LatestVersion)-windows-x64.exe"
-    $script:DownloadUrl = "https://github.com/kuju63/wt/releases/download/$($script:LatestVersion)/$($script:BinaryName)"
+    $script:DownloadUrl = "https://github.com/kuju63/wtm/releases/download/$($script:LatestVersion)/$($script:BinaryName)"
     $script:HashUrl = "$($script:DownloadUrl).sha256"
 }
 
@@ -147,7 +147,7 @@ function Install-Binary {
         Exit-WithError @(
             "SHA256 verification failed for $($script:BinaryName).",
             "Downloaded file has been removed. Please retry.",
-            "Manual install: https://github.com/kuju63/wt/releases"
+            "Manual install: https://github.com/kuju63/wtm/releases"
         )
     }
 

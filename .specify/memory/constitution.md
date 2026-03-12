@@ -15,7 +15,7 @@ Sync Impact Report (Version Update):
 - Follow-up TODOs: None
 -->
 
-# wt Project Constitution
+# wtm Project Constitution
 
 ## Core Principles
 

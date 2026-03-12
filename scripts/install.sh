@@ -1,8 +1,8 @@
 #!/bin/sh
 # install.sh - wtm installer for Unix (macOS/Linux)
-# Usage: curl -fsSL https://kuju63.github.io/wt/install.sh | sh
-#        curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --prefix /usr/local
-#        curl -fsSL https://kuju63.github.io/wt/install.sh | sh -s -- --force
+# Usage: curl -fsSL https://kuju63.github.io/wtm/install.sh | sh
+#        curl -fsSL https://kuju63.github.io/wtm/install.sh | sh -s -- --prefix /usr/local
+#        curl -fsSL https://kuju63.github.io/wtm/install.sh | sh -s -- --force
 # shellcheck disable=SC3043  # 'local' is widely supported in sh implementations (bash, dash, ash, ksh)
 set -e
 
@@ -38,7 +38,7 @@ download() {
         wget -q -O "$dest" "$url"
     else
         error_exit "Neither curl nor wget found. Install one and retry." \
-            "Manual download: https://github.com/kuju63/wt/releases"
+            "Manual download: https://github.com/kuju63/wtm/releases"
     fi
 }
 
@@ -50,7 +50,7 @@ download_stdout() {
         wget -q -O - "$url"
     else
         error_exit "Neither curl nor wget found. Install one and retry." \
-            "Manual download: https://github.com/kuju63/wt/releases"
+            "Manual download: https://github.com/kuju63/wtm/releases"
     fi
 }
 
@@ -109,7 +109,7 @@ detect_platform() {
         *)
             error_exit "Unsupported architecture: $arch" \
                 "Supported: x64 (Linux/macOS), arm64 (macOS only), arm (Linux only)" \
-                "Manual install: https://github.com/kuju63/wt/releases"
+                "Manual install: https://github.com/kuju63/wtm/releases"
             ;;
     esac
 
@@ -122,14 +122,14 @@ detect_platform() {
             ;;
         *)
             error_exit "Unsupported OS: $os. Supported: linux-x64, linux-arm, macos-arm64" \
-                "Manual install: https://github.com/kuju63/wt/releases"
+                "Manual install: https://github.com/kuju63/wtm/releases"
             ;;
     esac
 
     if [ "$PLATFORM_TAG" = "linux" ] && [ "$ARCH_TAG" = "arm64" ]; then
         error_exit "Unsupported platform: linux-arm64" \
             "Supported: linux-x64, linux-arm, macos-arm64" \
-            "Manual install: https://github.com/kuju63/wt/releases"
+            "Manual install: https://github.com/kuju63/wtm/releases"
     fi
 
     echo "Detecting platform... ${PLATFORM_TAG}-${ARCH_TAG}"
@@ -137,14 +137,14 @@ detect_platform() {
 
 fetch_latest_version() {
     local api_response
-    api_response=$(download_stdout "https://api.github.com/repos/kuju63/wt/releases/latest" 2>/dev/null) || true
+    api_response=$(download_stdout "https://api.github.com/repos/kuju63/wtm/releases/latest" 2>/dev/null) || true
 
     LATEST_VERSION=$(echo "$api_response" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
 
     if [ -z "$LATEST_VERSION" ]; then
         error_exit "Failed to fetch latest version from GitHub API." \
             "This may be due to rate limiting. Please wait a moment and retry." \
-            "Manual install: https://github.com/kuju63/wt/releases"
+            "Manual install: https://github.com/kuju63/wtm/releases"
     fi
 
     echo "Fetching latest version... $LATEST_VERSION"
@@ -169,7 +169,7 @@ check_existing_install() {
 
 build_urls() {
     BINARY_NAME="wtm-${LATEST_VERSION}-${PLATFORM_TAG}-${ARCH_TAG}"
-    DOWNLOAD_URL="https://github.com/kuju63/wt/releases/download/${LATEST_VERSION}/${BINARY_NAME}"
+    DOWNLOAD_URL="https://github.com/kuju63/wtm/releases/download/${LATEST_VERSION}/${BINARY_NAME}"
     HASH_URL="${DOWNLOAD_URL}.sha256"
 }
 
@@ -212,7 +212,7 @@ download_and_verify() {
         rm -rf "$tmp_dir"
         error_exit "SHA256 verification failed for ${BINARY_NAME}." \
             "Downloaded file has been removed. Please retry." \
-            "Manual install: https://github.com/kuju63/wt/releases"
+            "Manual install: https://github.com/kuju63/wtm/releases"
     fi
 
     echo "Installing to ${INSTALL_PATH}..."

@@ -1,4 +1,4 @@
-# Copilot instructions for this repository (wt)
+# Copilot instructions for this repository (wtm)
 
 ## Build, test, and run
 

@@ -6,7 +6,7 @@
 (function() {
   'use strict';
 
-  const VERSION_MANIFEST_URL = '/wt/versions.json';
+  const VERSION_MANIFEST_URL = '/wtm/versions.json';
 
   /**
    * Fetches the version manifest from the server

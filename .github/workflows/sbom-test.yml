@@ -155,7 +155,7 @@ jobs:
           retention-days: 30
 
       - name: Comment PR with results
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

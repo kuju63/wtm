@@ -56,7 +56,7 @@ jobs:
       - name: Calculate next version
         id: version
         if: github.event.inputs.force-version == ''
-        uses: paulhatch/semantic-version@9f72830310d5ed81233b641ee59253644cd8a8fc # v6.0.2
+        uses: paulhatch/semantic-version@79147b94804704a613626766998afe7b2bd0bb47 # v6.0.5
         with:
           tag_prefix: "v"
           major_pattern: "(BREAKING CHANGE:|BREAKING:)"
